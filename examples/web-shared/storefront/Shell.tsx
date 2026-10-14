@@ -57,6 +57,7 @@ export function StoreShell<V extends string>({
   onPanelOpenChange,
   placeholder,
   composerLabel,
+  hideComposer = false,
   banner,
   children,
   minimal = false,
@@ -82,6 +83,8 @@ export function StoreShell<V extends string>({
   placeholder: string;
   /** Accessible label for the storefront composer. Defaults to an English generic label. */
   composerLabel?: string;
+  /** A landing page may render the existing Composer inline instead of docking it. */
+  hideComposer?: boolean;
   /** A strip between the app bar and the page. */
   banner?: ReactNode;
   children: ReactNode;
@@ -202,7 +205,7 @@ export function StoreShell<V extends string>({
         <div className="flex min-h-0 flex-1">
           <div className="flex min-w-0 flex-1 flex-col">
             <main className="min-h-0 flex-1">{children}</main>
-            <div className="relative shrink-0 px-4 pb-4 pt-2 sm:px-6">
+            {!hideComposer ? <div className="relative shrink-0 px-4 pb-4 pt-2 sm:px-6">
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-x-0 -top-6 h-6 bg-linear-to-b from-transparent to-(--ground)"
@@ -215,7 +218,7 @@ export function StoreShell<V extends string>({
                 placeholder={placeholder}
                 className="mx-auto max-w-[760px]"
               />
-            </div>
+            </div> : null}
           </div>
 
           <div

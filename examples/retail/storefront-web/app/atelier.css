@@ -238,3 +238,110 @@ main:has(.wow-home)+div {border-top:1px solid #d4cbbb;background:#f7f4ed;padding
 main:has(.wow-home)+div>div[aria-hidden] {display:none}
 main:has(.wow-home)+div form {border-radius:3px;border-color:#b9ae99;box-shadow:none}
 main:has(.wow-home)+div textarea {font-size:16px}
+
+/* WOW23: one editorial journey, no duplicated product wall or dock on the landing. */
+.wow-polish{gap:48px;padding-bottom:8px}
+.wow-polish :is(a,button,summary):focus-visible{outline:2px solid #a67c43;outline-offset:4px}
+.wow-polish .wow-hero{border-top:0}
+.wow-polish .wow-hero-top{padding:0 0 14px;font-size:12px}
+.wow-hero-top nav{display:flex;gap:24px}
+.wow-polish .wow-hero-top a{text-decoration:none}
+.wow-polish .wow-hero-composition{grid-template-columns:1fr 1fr;min-height:465px}
+.wow-polish .wow-hero-copy{padding:40px 35px 35px 0}
+.wow-polish .wow-hero h1{font-size:clamp(42px,5.5vw,76px);line-height:1.01;letter-spacing:-.055em}
+.wow-polish .wow-hero h1 em{color:#79624d}
+.wow-polish .wow-hero-copy>p{font-size:16px;line-height:1.65;max-width:410px}
+.wow-polish .wow-hero-art{background:#eae6df;border:0;min-height:465px;isolation:isolate;padding:30px;overflow:hidden}
+.wow-polish .wow-art-coordinate{top:25px;left:28px;font-size:10px;letter-spacing:.16em;z-index:2;color:#63584e}
+.wow-composition{width:100%;height:100%;transition:transform .75s cubic-bezier(.22,.8,.3,1);overflow:visible;color:#655c51}
+.wow-hero-art>.wow-composition{position:absolute;width:110%;height:110%;inset:-3% -5%;z-index:-1}
+.wow-hero-art:hover>.wow-composition,.wow-hero-art:focus-visible>.wow-composition{transform:rotate(5deg)!important}
+.wow-polish .wow-art-caption{font-size:29px;line-height:1.08;margin:0;position:relative;max-width:200px}
+.wow-polish .wow-art-caption em{color:#443d3a;letter-spacing:-.04em}
+.wow-polish .wow-art-invite{font-size:12px;margin-top:18px;border-color:#9f958783;padding-top:14px}
+.wow-polish .wow-hero-foot{font-size:12px;padding-block:18px}
+.wow-polish .wow-hero-foot a{min-height:44px;display:flex;align-items:center}
+.wow-polish .wow-atlas{background:#222c28;padding:28px 32px 10px;border-radius:3px}
+.wow-polish .wow-atlas-top{padding:0 0 20px;align-items:center}
+.wow-polish .wow-atlas h2{margin:8px 0 0;font-size:40px;line-height:1.12}
+.wow-polish .wow-atlas-top .wow-edition{font-size:11px;text-align:right;line-height:1.6}
+.wow-polish .wow-atlas-grid{grid-template-columns:1fr 1fr;grid-template-rows:auto auto;gap:0 40px;padding-top:22px;align-items:start}
+.wow-polish .wow-atlas-intro{grid-column:1;grid-row:1}
+.wow-polish .wow-atlas-label{font-size:12px;margin:0 0 8px;color:#d3d6c9}
+.wow-polish .wow-atlas select{max-width:none;font-size:16px;background:#344039;color:#fff8e9;border-color:#7a8274}
+.wow-polish .wow-atlas-variant{font-size:13px;margin:9px 0 0;color:#c8cbbf}
+.wow-polish .wow-atlas-controls{grid-column:1;grid-row:2;padding-top:25px}
+.wow-polish .wow-atlas-layer-buttons{margin:0;justify-content:flex-start;font-size:12px;color:#d3bd92}
+.wow-polish .wow-atlas-layer-buttons button{font-size:12px;min-height:44px;padding:8px 13px}
+.wow-polish .wow-atlas-instrument{grid-column:2;grid-row:1/3;min-height:0;padding:0}
+.wow-atlas-material{height:285px;position:relative;isolation:isolate;display:grid;place-items:center;overflow:hidden}
+.wow-atlas-material .wow-composition{position:absolute;inset:-14% 0;width:100%;height:125%;z-index:-1;color:#c4baa5;opacity:.9}
+.wow-polish .wow-atlas-core{position:static;width:auto;max-width:90%;padding:12px 28px;text-align:center;font-size:44px;line-height:1.15;color:#202b25;text-shadow:0 1px #f8eddc99}
+.wow-atlas-core small{display:block;font:10px/1.5 var(--font-body),sans-serif;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;color:#3f4c40}
+.wow-polish .wow-atlas-notes{margin:0;padding:0;min-height:0;text-align:left;background:none}
+.wow-polish .wow-atlas-notes .wow-note-hint{font-size:12px;line-height:1.6;margin:10px 0;color:#c8cbbf}
+.wow-polish .wow-atlas-notes ul{justify-content:flex-start;gap:8px;font:16px/1.3 var(--font-body),sans-serif;margin:0}
+.wow-polish .wow-atlas-notes li button{min-height:44px;border:1px solid #85907d80;border-radius:40px;padding:10px 15px;transition:background .2s,color .2s;color:#f6f2e7}
+.wow-polish .wow-atlas-notes li button[aria-pressed=true]{background:#e6d4ae;color:#243027;border-color:#e6d4ae}
+.wow-polish .wow-atlas-matches{grid-column:1/-1;min-height:0;padding:20px 0 18px;border-top:1px solid #9aab8b55;margin-top:20px}
+.wow-polish .wow-atlas-matches>p{font-size:13px;color:#e4d4b1;margin-bottom:12px}
+.wow-atlas-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wow-polish .wow-atlas-matches a{display:block;position:relative;margin:0;background:#354239;border:1px solid #97a68d55;padding:13px 38px 13px 16px;min-height:72px;text-decoration:none;border-radius:2px;line-height:1.3}
+.wow-atlas-matches a span{display:block;font-size:11px;color:#ccd0c3;margin-bottom:4px}
+.wow-atlas-matches a strong{font-size:20px;font-family:Georgia,serif;font-weight:400;color:#fff8eb}
+.wow-atlas-matches a i{position:absolute;right:14px;top:25px;font-style:normal}
+.wow-polish .wow-atlas-matches small{font-size:11px;color:#bfc7b7;margin-top:10px}
+.wow-atlas-empty{grid-column:1/-1;min-height:72px;font-size:14px;color:#d4d8ca;max-width:450px;line-height:1.6}
+.wow-polish .wow-atlas-bottom{align-items:start;padding:4px 0 0;font-size:12px}
+.wow-atlas-bottom details{max-width:55%;color:#c7cebf}
+.wow-atlas-bottom summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:12px}
+.wow-atlas-bottom summary::after{content:' +';padding-left:12px}
+.wow-polish .wow-atlas-bottom p{font-size:12px;padding-bottom:15px;line-height:1.6}
+.wow-polish .wow-atlas-bottom>a{display:flex;align-items:center;min-height:44px;font-size:12px}
+.wow-polish .wow-section-heading{margin-bottom:20px}
+.wow-polish .wow-section-heading h2{font-size:36px;line-height:1.15}
+.wow-polish .wow-selection-grid{grid-template-columns:1fr 1fr;gap:28px}
+.wow-polish .wow-selection-item:nth-child(2){padding-top:0}
+.wow-polish .wow-selection-photo,.wow-polish .wow-selection-item:nth-child(2) .wow-selection-photo{height:290px}
+.wow-polish .wow-selection-copy{padding:20px 0 0}
+.wow-polish .wow-selection-copy h3{font-size:32px;margin-block:7px}
+.wow-polish .wow-selection-notes{margin:12px 0;font-size:13px;min-height:21px}
+.wow-polish .wow-selection-copy p{font-size:13px}
+.wow-polish .wow-selection-item>p{font-size:11px;line-height:1.6;margin-top:4px}
+.wow-audience-index{display:grid;grid-template-columns:repeat(3,1fr);border-block:1px solid #c9c0b1}
+.wow-audience-index>a{display:flex;align-items:center;gap:18px;padding:23px 20px;min-width:0;border-right:1px solid #c9c0b1}
+.wow-audience-index>a:last-child{border-right:0}
+.wow-audience-number{font:11px Georgia;color:#8b7250}
+.wow-audience-index h3{font:30px/1.2 Georgia;margin-bottom:6px}
+.wow-audience-index p{font-size:12px;color:#696459}
+.wow-audience-index>a>span:last-child{margin-left:auto;font-size:20px}
+.wow-polish nav[aria-label="Duftwelten im Katalog"]{display:flex;align-items:center;gap:8px;border:0;padding:16px 0 0;font-size:12px}
+.wow-polish nav[aria-label="Duftwelten im Katalog"]>span{margin-right:8px;color:#716858}
+.wow-polish nav[aria-label="Duftwelten im Katalog"] a{display:flex;align-items:center;min-height:44px;padding:8px 12px;border:1px solid #d3c9b6;border-radius:30px}
+.wow-catalog-index-link{display:inline-flex;align-items:center;min-height:44px;font-size:13px;text-decoration:underline;text-underline-offset:4px;margin-top:6px}
+.wow-advisor{background:#e9e3d7;padding:30px;display:grid;grid-template-columns:1fr 1fr;gap:18px 30px;align-items:center;scroll-margin:20px}
+.wow-advisor h2{font-size:30px;font-weight:500;letter-spacing:-.04em;margin:8px 0}
+.wow-advisor p:not(.wow-kicker){font-size:14px;line-height:1.7;color:#655f53}
+.wow-advisor form{border-radius:3px;box-shadow:none;min-height:60px;margin:0}
+.wow-advisor form button{min-width:44px;min-height:44px;border-radius:2px}
+.wow-advisor textarea{font-size:16px}
+.wow-advisor-links{grid-column:2;display:flex;gap:20px;font-size:12px}
+.wow-advisor-links a{min-height:44px;display:flex;align-items:center}
+.wow-polish .wow-affiliate-note{border-top:1px solid #c9c0b1;padding-top:22px;font-size:12px;line-height:1.8;color:#686154;display:grid;grid-template-columns:1fr 1fr;gap:10px 35px}
+.wow-affiliate-note strong{display:block;font-size:14px;font-weight:600;color:#39372e;margin-bottom:3px}
+.wow-affiliate-note>a{grid-column:1/-1;min-height:44px;display:flex;align-items:center;text-decoration:underline;text-underline-offset:4px}
+.wow-polish footer{margin-top:0!important}
+@media(max-width:1023px){
+.wow-polish .wow-hero-composition{min-height:410px}.wow-polish .wow-hero-art{min-height:410px;padding:24px}.wow-polish .wow-hero h1{font-size:52px}.wow-polish .wow-hero-copy{padding-right:22px}.wow-audience-index>a{padding:20px 10px;gap:10px}.wow-audience-index h3{font-size:26px}.wow-polish .wow-atlas-grid{column-gap:20px}.wow-polish .wow-selection-photo,.wow-polish .wow-selection-item:nth-child(2) .wow-selection-photo{height:250px}
+}
+@media(max-width:639px){
+.wow-polish{gap:30px}.wow-polish .wow-hero-top{padding-bottom:8px;gap:10px}.wow-polish .wow-hero-top .wow-kicker{font-size:9px;letter-spacing:.08em}.wow-hero-top nav{gap:15px;font-size:12px}
+.wow-polish .wow-hero-composition{display:flex;flex-direction:column;min-height:0}.wow-polish .wow-hero-copy{padding:26px 0 18px}.wow-polish .wow-hero h1{font-size:clamp(39px,11.4vw,52px);line-height:1.02;margin-bottom:18px}.wow-polish .wow-hero-copy>p{font-size:15px;margin-bottom:20px;line-height:1.65}
+.wow-polish .wow-hero-art{min-height:210px;height:210px;padding:20px;justify-content:flex-end}.wow-hero-art>.wow-composition{width:280px;height:250px;inset:-27px -15px auto auto;transform:rotate(-8deg)}.wow-polish .wow-art-coordinate{left:20px;top:16px;font-size:8px;letter-spacing:.1em}.wow-polish .wow-art-caption{font-size:27px;max-width:170px}.wow-polish .wow-art-invite{font-size:11px;max-width:none;width:100%;margin-top:14px;padding-top:10px;line-height:1.4}.wow-polish .wow-hero-foot{font-size:11px;padding:5px 0;gap:12px}.wow-polish .wow-hero-foot a{max-width:160px;text-align:right}
+.wow-polish .wow-atlas{padding:21px 18px 6px}.wow-polish .wow-atlas-top{padding-bottom:17px}.wow-polish .wow-atlas h2{font-size:32px;line-height:1.12;margin-top:7px}.wow-polish .wow-atlas-top .wow-edition{font-size:8px;letter-spacing:.12em}.wow-polish .wow-atlas-grid{display:grid;grid-template-columns:1fr;gap:0;padding-top:16px}.wow-polish .wow-atlas-intro{grid-column:1;grid-row:1}.wow-polish .wow-atlas-label{font-size:11px}.wow-polish .wow-atlas-variant{font-size:12px;margin-top:7px}.wow-polish .wow-atlas-instrument{grid-column:1;grid-row:2}.wow-atlas-material{height:145px;margin:2px 0}.wow-atlas-material .wow-composition{height:200%;width:100%;top:-50%;left:0}.wow-polish .wow-atlas-core{font-size:38px;padding:0 20px}.wow-atlas-core small{font-size:9px;margin-bottom:7px}
+.wow-polish .wow-atlas-controls{grid-column:1;grid-row:3;padding-top:0}.wow-polish .wow-atlas-layer-buttons{font-size:10px}.wow-polish .wow-atlas-notes .wow-note-hint{font-size:11px;margin:7px 0 9px}.wow-polish .wow-atlas-notes ul{gap:6px;font-size:14px}.wow-polish .wow-atlas-notes li button{min-height:44px;padding:9px 13px}.wow-polish .wow-atlas-matches{grid-column:1;grid-row:4;margin-top:17px;padding:15px 0}.wow-polish .wow-atlas-matches>p{font-size:12px;margin-bottom:10px}.wow-atlas-result-grid{gap:8px}.wow-polish .wow-atlas-matches a{padding:12px 23px 12px 11px;min-height:76px}.wow-atlas-matches a span{font-size:10px}.wow-atlas-matches a strong{font-size:18px}.wow-atlas-matches a i{right:8px;top:27px}.wow-polish .wow-atlas-matches small{font-size:10px;line-height:1.6}.wow-polish .wow-atlas-bottom{display:flex;justify-content:space-between;gap:10px;flex-wrap:nowrap}.wow-atlas-bottom details{max-width:45%}.wow-atlas-bottom summary,.wow-polish .wow-atlas-bottom>a{font-size:10px;margin:0}.wow-polish .wow-atlas-bottom p{font-size:11px}
+.wow-polish .wow-section-heading h2{font-size:30px}.wow-polish .wow-selection-grid{gap:14px}.wow-polish .wow-selection-photo,.wow-polish .wow-selection-item:nth-child(2) .wow-selection-photo{height:190px}.wow-polish .wow-selection-copy{padding-top:14px}.wow-polish .wow-selection-copy h3{font-size:25px;min-height:58px}.wow-polish .wow-selection-copy .wow-kicker{font-size:9px;letter-spacing:.09em;min-height:27px;display:block}.wow-polish .wow-selection-copy p{font-size:11px;min-height:35px}.wow-polish .wow-selection-notes{font-size:11px;line-height:1.6;min-height:53px;margin:6px 0}.wow-polish .wow-text-link{font-size:11px;gap:5px;min-height:52px;padding:12px 0}.wow-polish .wow-selection-item>p{font-size:10px;line-height:1.6}.wow-polish .wow-selection-number{font-size:9px;left:12px;top:12px}
+.wow-audience-index{grid-template-columns:1fr}.wow-audience-index>a{border-right:0;border-bottom:1px solid #c9c0b1;padding:16px 6px;gap:20px}.wow-audience-index>a:last-child{border-bottom:0}.wow-audience-index h3{font-size:26px;margin-bottom:4px}.wow-audience-index p{font-size:11px}.wow-polish nav[aria-label="Duftwelten im Katalog"]{font-size:11px;gap:7px}.wow-polish nav[aria-label="Duftwelten im Katalog"]>span{width:100%;margin-bottom:3px}.wow-polish nav[aria-label="Duftwelten im Katalog"] a{padding:7px 11px}.wow-catalog-index-link{font-size:12px}
+.wow-advisor{grid-template-columns:1fr;padding:22px 18px;gap:15px}.wow-advisor h2{font-size:28px}.wow-advisor p:not(.wow-kicker){font-size:13px}.wow-advisor-links{grid-column:1;gap:18px;font-size:11px}.wow-polish .wow-affiliate-note{grid-template-columns:1fr;font-size:11px;gap:10px;padding-top:20px}.wow-affiliate-note strong{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){.wow-composition{transition:none!important}.wow-hero-art:hover>.wow-composition,.wow-hero-art:focus-visible>.wow-composition{transform:none!important}}

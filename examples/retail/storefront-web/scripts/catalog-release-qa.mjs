@@ -58,7 +58,7 @@ for(const width of [320,390,768,1440]) {
    const sources=await card.locator('img').evaluateAll(xs=>xs.map(x=>x.getAttribute('src')));
    assert.ok(sources.length>0&&sources.every(src=>photos.some(p=>p.url===src)),'Selection uses registered originals');
  }
- if(width<768){const a=await selection.nth(0).boundingBox(),b=await selection.nth(1).boundingBox();assert.ok(b.y>=a.y+a.height,'Both mobile selections are vertically reachable without a hidden carousel');}
+ if(width<768){const a=await selection.nth(0).boundingBox(),b=await selection.nth(1).boundingBox();assert.ok(a.x>=0&&b.x+b.width<=width&&a.x+a.width<=b.x,'Both original selections fit side by side without overlap or a hidden carousel');assert.ok(a.height>=44&&b.height>=44,'Both product links retain touch targets');}
  const selectedPath=new URL(await selection.first().getAttribute('href'),base).pathname;
  await selection.first().focus();await page.keyboard.press('Enter');await page.waitForURL(url=>url.pathname===selectedPath);
  assert.equal(new URL(page.url()).pathname,selectedPath,'Original-photo selection navigates to its exact product');

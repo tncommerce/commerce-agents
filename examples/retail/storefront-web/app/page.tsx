@@ -156,6 +156,7 @@ export default function StorefrontPage() {
       onPanelOpenChange={setPanelOpen}
       placeholder="Frage an die Duftberatung …"
       composerLabel="Nachricht an DUFYND Advisor"
+      hideComposer={chat.items.length === 0}
     >
       {/* The conversation stays mounted under the other view so its cards keep their state. */}
       <div className={view === "assistant" ? "h-full" : "hidden"}>

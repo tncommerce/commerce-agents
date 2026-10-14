@@ -44,7 +44,7 @@ export async function verifyHomeNavigationAttribution(browser, baseUrl) {
             else await page.getByRole("button", { name: "Suchen", exact: true }).click();
             path = "/duft";
           } else if (surface === "selected") {
-            const card = page.locator(".dufynd-home-selected-card [role=button]:visible").first();
+            const card = page.locator("a[data-dufynd-original-card]").nth(1);
             await card.focus();
             await card.press("Enter");
           } else {

@@ -64,6 +64,12 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           assert.equal(transition,'0s','reduced motion removes atlas transitions');
           await atlas.scrollIntoViewIfNeeded();
           await page.screenshot({path:`${outputDir}/wow22-atlas-${width}-interaction.png`});
+          await atlas.screenshot({path:`${outputDir}/polish23-atlas-${width}-complete.png`});
+          assert.equal(await page.locator('a[data-dufynd-original-card]').count(),2,'one curated original selection, without repeated product rows');
+          assert.equal(await page.locator('.wow-advisor textarea').count(),1,'existing advisor composer is inline on the homepage');
+          assert.equal(await page.locator('textarea').count(),1,'no second fixed composer overlaps homepage content');
+          const advisor=page.locator('.wow-advisor textarea');await advisor.fill('Isolierte Eingabe ohne Versand');
+          assert.equal(await advisor.inputValue(),'Isolierte Eingabe ohne Versand');await advisor.fill('');
           for(const [part,selector] of [['selection','.wow-selection'],['audiences','.wow-audiences'],['footer','.wow-home footer']]) {
             const el=page.locator(selector).first();if(await el.count()){
               await el.scrollIntoViewIfNeeded();
@@ -84,6 +90,8 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
               await page.screenshot({path:`${outputDir}/wow22-home-${width}-scroll-${String(frame++).padStart(2,'0')}.png`});
             }
             metrics.scrollFrames=frame;metrics.scrollHeight=extent.height;
+            if(width===390) {metrics.baselineScrollHeight=5841;metrics.scrollReduction=1-extent.height/5841;assert.ok(extent.height<=3800,'390px homepage must be substantially shorter than WOW22');}
+            if(width===320) assert.ok(extent.height<=4200,'320px retains a compact complete scroll journey');
             await scroll.evaluate(el=>{el.scrollTop=0;});
           }
           metrics.searchBottom=search.y+search.height;

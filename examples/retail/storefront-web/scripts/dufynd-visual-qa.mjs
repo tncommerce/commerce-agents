@@ -1242,8 +1242,7 @@ try {
 
           if ([390, 1440].includes(viewport.width)) {
             const productControl = page
-              .locator('[role="button"]:visible')
-              .filter({ hasText: "Details" })
+              .locator('a[data-dufynd-original-card]:visible')
               .first();
             if ((await productControl.count()) !== 1) {
               throw new Error(
@@ -1252,7 +1251,7 @@ try {
             }
 
             await productControl.focus();
-            await page.keyboard.press("Space");
+            await page.keyboard.press("Enter");
             await page.waitForURL(
               (current) => current.pathname.startsWith("/duft/"),
               { timeout: 5_000 },

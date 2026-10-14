@@ -1,14 +1,15 @@
 "use client";
+import ScentComposition from "./ScentComposition";
 import AcquisitionInternalLink from "./AcquisitionInternalLink";
 import { appendAcquisitionAttribution } from "@/lib/analytics";
 
 export default function AtelierHero() {
   return <section className="wow-hero" aria-labelledby="dufynd-home-discovery-heading">
-    <div className="wow-hero-top"><span className="wow-kicker">DUFYND / Das Duft-Atelier</span><AcquisitionInternalLink href="/marken">Marken A–Z ↗</AcquisitionInternalLink></div>
+    <div className="wow-hero-top"><span className="wow-kicker">Die Welt der Düfte</span><nav aria-label="Schnellzugriff"><AcquisitionInternalLink href="/marken">Marken A–Z</AcquisitionInternalLink><AcquisitionInternalLink href="/merkliste">Merkliste</AcquisitionInternalLink></nav></div>
     <div className="wow-hero-composition">
       <div className="wow-hero-copy">
         <h1 id="dufynd-home-discovery-heading">Finde den Duft,<br />der zu dir <em>passt.</em></h1>
-        <p>Parfum verstehen. Favoriten vergleichen.<br />Deinen Weg zum passenden Händler finden.</p>
+        <p>Entdecke Duftprofile. Vergleiche deine Favoriten.<br />Finde passende Händlerangebote.</p>
         <form action="/duft" method="get" role="search" aria-label="DUFYND Duftkatalog durchsuchen" className="wow-search" onSubmit={event => {
           event.preventDefault(); const query = String(new FormData(event.currentTarget).get("q") || ""); const target = new URL("/duft", window.location.origin); target.searchParams.set("q", query); window.location.assign(appendAcquisitionAttribution(target.toString()));
         }}>
@@ -19,12 +20,12 @@ export default function AtelierHero() {
         <div className="wow-hero-actions"><AcquisitionInternalLink className="dufynd-hero-primary" href="/duftfinder">Meinen Duft finden →</AcquisitionInternalLink><AcquisitionInternalLink href="/vergleich">Düfte vergleichen</AcquisitionInternalLink></div>
       </div>
       <a href="#duft-atlas" className="wow-hero-art" aria-label="Den interaktiven Duftnoten-Atlas entdecken">
-        <span className="wow-art-coordinate">D / 01</span>
-        <span className="wow-art-sphere" aria-hidden><i /><i /><i /><b>D</b></span>
-        <span className="wow-art-caption">Die Architektur<br /><em>eines Duftes.</em></span>
-        <span className="wow-art-invite">Atlas entdecken <span aria-hidden>↓</span></span>
+        <span className="wow-art-coordinate">DUFYND / NOTENSTUDIE 01</span>
+        <ScentComposition />
+        <span className="wow-art-caption">Duft hat<br /><em>viele Facetten.</em></span>
+        <span className="wow-art-invite">Eine Note. Deine nächste Entdeckung. <span aria-hidden>↗</span></span>
       </a>
     </div>
-    <div className="wow-hero-foot"><span>Duftwissen statt Blindkauf.</span><span>Entdecken · Vergleichen · Händler wählen</span></div>
+    <div className="wow-hero-foot"><span>Duftprofile verstehen.</span><a href="#duft-atlas">Den Duftnoten-Atlas öffnen ↓</a></div>
   </section>;
 }
