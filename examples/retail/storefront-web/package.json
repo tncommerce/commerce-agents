@@ -9,14 +9,14 @@
     "prebuild": "npm run test:brand-discovery && node scripts/test-photo-integration.mjs && node scripts/prepare-public-build.mjs && node scripts/generate-released-profiles.mjs && node scripts/test-release-gate.mjs && node scripts/test-scent-scenes.mjs && node scripts/test-public-fragrance-data.mjs && node scripts/test-brand-identity.mjs && node scripts/test-fragrance-metadata.mjs && npm run test:acquisition-entry && npm run test:fragrance-search && npm run test:model-viewer && npm run test:catalog-request && npm run test:analytics-session-ownership && node scripts/generate-launch-seo.mjs",
     "launch:check": "node scripts/check-launch-readiness.mjs",
     "launch:check:strict": "node scripts/check-launch-readiness.mjs --strict",
+    "test:brand-discovery": "node scripts/test-brand-discovery.mjs",
     "seo:generate": "node scripts/generate-launch-seo.mjs",
     "test:model-viewer": "node scripts/test-model-viewer-loader.mjs",
     "test:catalog-request": "node scripts/test-catalog-request.mjs",
     "test:analytics-session-ownership": "node scripts/test-analytics-session-ownership.mjs",
     "test:fragrance-search": "node scripts/test-fragrance-search-identity.mjs",
     "test:acquisition-entry": "node scripts/test-acquisition-entry.mjs",
-    "postbuild": "node scripts/export-review-pages.mjs && node scripts/verify-public-export.mjs",
-    "test:brand-discovery": "node scripts/test-brand-discovery.mjs"
+    "postbuild": "node scripts/export-review-pages.mjs && node scripts/verify-public-export.mjs"
   },
   "dependencies": {
     "next": "16.3.6",
