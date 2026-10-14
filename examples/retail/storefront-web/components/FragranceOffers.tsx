@@ -15,6 +15,7 @@ import {
 import type { MerchantOffersPayload } from "@/lib/types";
 import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
+import styles from "./FragranceOffers.module.css";
 
 function OfferRecoveryLinks({ alternativesHref }: { alternativesHref?: string }) {
   return (
@@ -287,7 +288,7 @@ export default function FragranceOffers({
           return (
             <div
               key={offer.offer_id}
-              className={`flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3.5 sm:px-5 ${
+              className={`${focusedLanding ? styles.focusedOffer : ""} flex flex-wrap items-center justify-between gap-3 rounded-2xl border px-4 py-3.5 sm:px-5 ${
                 best
                   ? "border-(--accent)/45 bg-(--accent-soft)/45 shadow-(--shadow-sm)"
                   : "border-(--line) bg-(--well)/35"
@@ -320,7 +321,7 @@ export default function FragranceOffers({
                 </div>
 
                 <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                  <span className="text-[18px] font-bold text-(--ink)">
+                  <span className={`${focusedLanding ? styles.total : ""} text-[18px] font-bold text-(--ink)`}>
                     {formatMoney(
                       displayedPrice,
                       offer.currency,
@@ -348,13 +349,14 @@ export default function FragranceOffers({
                 </div>
 
                 {showPriceBreakdown ? (
-                  <p data-offer-breakdown className="mt-1 text-[11px] text-(--ink-soft)">
-                    Artikel {formatMoney(offer.price, offer.currency)} · {offer.shipping_label || `Versand ${formatMoney(offer.shipping_cost!, offer.currency)}`}
-                  </p>
+                  <dl data-offer-breakdown className={styles.breakdown}>
+                    <div><dt>Artikel</dt><dd>{formatMoney(offer.price, offer.currency)}</dd></div>
+                    <div><dt>Versand</dt><dd>{formatMoney(offer.shipping_cost!, offer.currency)}</dd></div>
+                  </dl>
                 ) : null}
 
                 {formatUpdatedAt(offer.last_updated_at) ? (
-                  <div className="mt-1 text-[10.5px] text-(--ink-soft)">
+                  <div className="mt-2 text-[10.5px] text-(--ink-soft)">
                     Preis & Bestand geprüft:{" "}
                     {formatUpdatedAt(offer.last_updated_at)}
                   </div>
@@ -374,7 +376,7 @@ export default function FragranceOffers({
                       ? "sponsored noopener noreferrer"
                       : "noopener noreferrer"
                   }
-                  className={`${focusedLanding ? "inline-flex min-h-11 items-center justify-center " : ""}w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
+                  className={`${focusedLanding ? `${styles.merchantAction} inline-flex min-h-11 items-center justify-center ` : ""}w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
                     best
                       ? "bg-(--accent-strong) shadow-sm hover:brightness-95"
                       : "bg-(--ink) hover:opacity-90"

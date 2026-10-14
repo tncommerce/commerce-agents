@@ -41,6 +41,19 @@ function currentAnalyticsSessionId(): string | null {
   } catch {
     // Blocked browser storage cannot block analytics or shopping.
   }
+  // Internal anchors already carry sid. Continue it across full document
+  // navigation when storage is unavailable, but never adopt a social/shared
+  // URL's session or install it as the API/advisor transport session.
+  const incoming = new URLSearchParams(window.location?.search || "").get("sid");
+  try {
+    if (incoming && ANALYTICS_SESSION_PATTERN.test(incoming) &&
+        typeof document !== "undefined" &&
+        new URL(document.referrer).origin === window.location.origin) {
+      analyticsSessionMemory = incoming;
+      try { window.sessionStorage.setItem(ANALYTICS_SESSION_STORAGE_KEY, incoming); } catch { /* Memory remains available. */ }
+      return incoming;
+    }
+  } catch { /* Missing or invalid referrer cannot prove internal navigation. */ }
   const session = api.session;
   if (!session || !ANALYTICS_SESSION_PATTERN.test(session)) return null;
   analyticsSessionMemory = session;

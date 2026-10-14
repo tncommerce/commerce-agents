@@ -17,7 +17,7 @@ try{for(const width of [320,390,768,1440]){
  assert.ok(originalPositions.length>=3,'default discovery needs its verified original-photo lead');
  assert.deepEqual(originalPositions,originalPositions.map((_,index)=>index),
    'verified originals must precede the editorial-only study cards');
- assert.ok(await page.locator('.dufynd-catalog-originals-intro a[href*="bildnachweise"]').count(),
+ assert.ok(await page.locator('[aria-label="Originalaufnahmen zuerst"] a[href*="bildnachweise"]').count(),
    'license/source evidence must be accessible from the catalog');
  // All catalog cards, including future pagination/filter states using this
  // renderer, must never show unlicensed product-scene artwork.
