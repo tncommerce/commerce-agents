@@ -50,8 +50,18 @@ for(const width of [320,390,768,1440]) {
  }
  assert.equal(sum,publicCount);assert.equal(new Set(names.map(x=>x.toLowerCase())).size,names.length);
  await page.goto(base);await page.locator('#dufynd-home-search').waitFor();
- const searchBounds=await page.locator('#dufynd-home-search').boundingBox();assert.ok(searchBounds.y<400,'Mobile search visible early');
- if(width<768){await page.getByRole('button',{name:'Weitere Düfte',exact:true}).click();await page.waitForTimeout(400);assert.ok(await page.locator('#dufynd-original-strip').evaluate(x=>x.scrollLeft>0),'Swipe navigation works');}
+ const searchBounds=await page.locator('#dufynd-home-search').boundingBox();assert.ok(searchBounds.y+searchBounds.height<740,'Search remains in the first viewport');
+ const selection=page.locator('.wow-selection [data-dufynd-original-card]');
+ assert.equal(await selection.count(),2,'Editorial selection exposes both original-photo products');
+ for(const card of await selection.all()) {
+   await card.scrollIntoViewIfNeeded();
+   const sources=await card.locator('img').evaluateAll(xs=>xs.map(x=>x.getAttribute('src')));
+   assert.ok(sources.length>0&&sources.every(src=>photos.some(p=>p.url===src)),'Selection uses registered originals');
+ }
+ if(width<768){const a=await selection.nth(0).boundingBox(),b=await selection.nth(1).boundingBox();assert.ok(b.y>=a.y+a.height,'Both mobile selections are vertically reachable without a hidden carousel');}
+ const selectedPath=new URL(await selection.first().getAttribute('href'),base).pathname;
+ await selection.first().focus();await page.keyboard.press('Enter');await page.waitForURL(url=>url.pathname===selectedPath);
+ assert.equal(new URL(page.url()).pathname,selectedPath,'Original-photo selection navigates to its exact product');
  for(const p of pilots){
   const response=await page.goto(`${base}/review/duft/${p.slug}`);assert.equal(response.status(),200);
   assert.ok((await page.locator('meta[name=robots]').getAttribute('content')).includes('noindex'));
@@ -98,7 +108,7 @@ for(const width of [320,390,768,1440]) {
   assert.ok(links.every(h=>pilots.some(p=>h===`/review/duft/${p.slug}`)),'Previous/next links are real wave routes');
   assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No horizontal overflow');
  }
- assert.deepEqual(errors,[]);report.push({width,status:'passed',review_pages:pilots.length,checks:['public_metrics','honest_catalog_visuals','brand_counts','mobile_search','swipe_controls','exact_review_pages','early_art','metadata','review_navigation','no_offers','noindex','no_overflow','no_page_errors']});await page.close();
+ assert.deepEqual(errors,[]);report.push({width,status:'passed',review_pages:pilots.length,checks:['public_metrics','honest_catalog_visuals','brand_counts','early_search','original_selection_navigation','exact_review_pages','early_art','metadata','review_navigation','no_offers','noindex','no_overflow','no_page_errors']});await page.close();
 }
 await photoIntegrationQa(browser,{base,out});
 }finally{await browser.close();}
