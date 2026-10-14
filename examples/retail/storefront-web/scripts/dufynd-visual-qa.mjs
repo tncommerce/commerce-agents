@@ -3024,6 +3024,13 @@ try {
       );
     }
 
+    // SITE-13 keeps secondary purchase-page actions in a native disclosure.
+    // Expand it like a visitor before inspecting its visible comparison link.
+    await productDetailAttributionPage
+      .locator("details > summary")
+      .filter({ hasText: "Merken, teilen & vergleichen" })
+      .click();
+
     const candidates = [
       productDetailAttributionPage.getByRole("link", { name: "Düfte" }),
       productDetailAttributionPage.getByRole("link", { name: "Duftberatung öffnen" }),
