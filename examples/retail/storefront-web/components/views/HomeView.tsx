@@ -24,7 +24,9 @@ import {
 } from "@/lib/fragranceCatalog";
 import type { Product } from "@/lib/types";
 import AcquisitionInternalLink from "../AcquisitionInternalLink";
-import DiscoveryIntro from "../DiscoveryIntro";
+import AtelierHero from "../AtelierHero";
+import AtelierSelection from "../AtelierSelection";
+import ScentAtlas from "../ScentAtlas";
 import ProductTile, {
   ProductImage,
   ProductRow,
@@ -254,81 +256,10 @@ export default function HomeView({
     { women: 0, men: 0, unisex: 0 },
   );
   return (
-    <div className="mx-auto flex w-full max-w-[1180px] flex-col gap-4 px-4 sm:gap-6 sm:px-6">
-
-      <section
-        aria-labelledby="dufynd-home-search-heading"
-        className="rounded-[22px] border border-(--line) bg-(--card) p-3.5 shadow-(--shadow-sm) sm:p-4"
-      >
-        <div className="grid gap-3 lg:grid-cols-[0.72fr_1.28fr] lg:items-center">
-          <div>
-            <div className="text-[9.5px] font-semibold uppercase tracking-[0.13em] text-(--accent-ink)">
-              Direkt entdecken
-            </div>
-            <h2
-              id="dufynd-home-search-heading"
-              className="mt-1 text-[16px] font-semibold tracking-[-0.02em] text-(--ink)"
-            >
-              Schon einen Duft oder eine Marke im Kopf?
-            </h2>
-            <p className="mt-1 text-[11.5px] leading-5 text-(--ink-soft)">
-              Suche direkt im aktuellen DUFYND-Katalog oder öffne den Vergleich.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <form
-              action="/duft"
-              onSubmit={(event) => {
-                event.preventDefault();
-                const query = String(
-                  new FormData(event.currentTarget).get("q") || "",
-                );
-                const target = new URL("/duft", window.location.origin);
-                target.searchParams.set("q", query);
-                window.location.assign(
-                  appendAcquisitionAttribution(target.toString()),
-                );
-              }}
-              method="get"
-              role="search"
-              aria-label="DUFYND Duftkatalog durchsuchen"
-              className="flex min-w-0 flex-1 gap-2"
-            >
-              <label htmlFor="dufynd-home-search" className="sr-only">
-                Duft oder Marke suchen
-              </label>
-              <input
-                id="dufynd-home-search"
-                name="q"
-                type="search"
-                maxLength={80}
-                placeholder="z. B. Naxos, Dior oder Vanille"
-                className="min-w-0 flex-1 rounded-xl border border-(--line) bg-(--surface) px-3.5 py-2.5 text-[12.5px] text-(--ink) outline-none transition placeholder:text-(--ink-faint) focus:border-(--accent)"
-              />
-              <button
-                type="submit"
-                className="shrink-0 rounded-xl bg-(--ink) px-4 py-2.5 text-[12px] font-semibold text-(--surface) transition hover:opacity-90"
-              >
-                Suchen
-              </button>
-            </form>
-
-            <AcquisitionInternalLink
-              href="/vergleich"
-              className="rounded-xl border border-(--line) bg-(--surface) px-4 py-2.5 text-center text-[12px] font-semibold text-(--accent-ink) transition hover:border-(--accent)"
-            >
-              Düfte vergleichen
-            </AcquisitionInternalLink>
-          </div>
-        </div>
-      </section>
-
-      <DiscoveryIntro />
-
-      <div className="[&_button]:py-2.5 sm:[&_button]:py-3">
-        <Starters items={STARTERS} />
-      </div>
+    <div className="wow-home mx-auto w-full">
+      <AtelierHero />
+      <div id="duft-atlas"><ScentAtlas /></div>
+      <AtelierSelection />
       <nav
         aria-label="Duftwelten im Katalog"
         className="flex items-center gap-2 overflow-x-auto pb-1 text-[11px] sm:gap-3"
@@ -353,7 +284,7 @@ export default function HomeView({
       </nav>
       <section
         aria-labelledby="dufynd-audience-discovery-heading"
-        className="dufynd-home-audience-stage rounded-[26px] border border-white/10 p-3.5 shadow-(--shadow-sm) sm:p-5"
+        className="dufynd-home-audience-stage wow-audiences"
         data-dufynd-home-audience-stage
       >
         <div className="flex items-end justify-between gap-4">
@@ -444,7 +375,7 @@ export default function HomeView({
         <span>·</span>
         <AcquisitionInternalLink href="/transparenz" className="font-medium text-(--accent-ink)">Mehr erfahren</AcquisitionInternalLink>
       </div>
-      <section className="hidden gap-3 sm:grid sm:grid-cols-3" aria-label="So funktioniert DUFYND">
+      <section className="wow-trust" aria-label="So funktioniert DUFYND">
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
           <div className="text-[13px] font-semibold text-(--ink)">Empfehlungen nach deinen Kriterien</div>
           <p className="mt-1 text-[12.5px] leading-5 text-(--ink-soft)">
@@ -474,7 +405,7 @@ export default function HomeView({
         </p>
       </div>
       <HomeSection
-        title="Starte so, wie es zu dir passt"
+        title="Dein nächster Schritt"
         subtitle="Beratung, Alternativen oder Geschenkideen"
       >
         <div className="grid gap-2.5 sm:grid-cols-3">
@@ -548,6 +479,7 @@ export default function HomeView({
           Meine Merkliste
         </AcquisitionInternalLink>
       </div>
+      <details className="wow-advisor-starts"><summary>Persönliche Beratung starten</summary><Starters items={STARTERS} /></details>
       <PersonalLibrarySummary />
       <MerchantDiscovery sessionSettled={sessionSettled} />
 

@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import "./premium-discovery.css";
+import "./atelier.css";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 
 const instrumentSans = Instrument_Sans({

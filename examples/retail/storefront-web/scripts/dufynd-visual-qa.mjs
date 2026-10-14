@@ -8,6 +8,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
+import { verifyWowExperience } from "./wow-experience-qa.mjs";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
@@ -285,6 +286,10 @@ const report = {
 };
 
 try {
+  try {
+    const results = await verifyWowExperience(browser, baseUrl, outputDir);
+    report.checks.push({ label: "wow22-experience", status: "passed", results });
+  } catch (error) { report.failures.push({ label: "wow22-experience", message: String(error) }); }
   try {
     report.checks.push(...await verifyBrandDiscovery(browser, baseUrl, outputDir));
   } catch (error) { report.failures.push({ label: "brand-discovery", message: String(error) }); }
