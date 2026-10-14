@@ -24,11 +24,11 @@ def test_non_3d_hero_keeps_product_truth_visual_mode() -> None:
 
 def test_homepage_photo_entry_does_not_instantiate_a_bottle_model() -> None:
     home = HOME.read_text(encoding="utf-8")
-    intro = Path("examples/retail/storefront-web/components/DiscoveryIntro.tsx").read_text(
+    intro = Path("examples/retail/storefront-web/components/AtelierSelection.tsx").read_text(
         encoding="utf-8"
     )
-    assert "<DiscoveryIntro />" in home
+    assert "<AtelierSelection />" in home
     assert "FragranceModel3D" not in home + intro
     assert "model-viewer" not in intro
-    assert "isVerifiedProductTruthVisual(visual)" in intro
+    assert "originalPhotoFor(p)" in intro
     assert 'mode="cutout"' in intro

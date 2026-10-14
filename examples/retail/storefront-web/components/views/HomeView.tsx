@@ -368,13 +368,6 @@ export default function HomeView({
           })}
         </div>
       </section>
-      <div className="flex flex-wrap gap-x-2 gap-y-1 text-[11.5px] text-(--ink-soft) sm:hidden">
-        <span>Unabhängige Empfehlungen</span>
-        <span>·</span>
-        <span>Transparente Händlerangebote</span>
-        <span>·</span>
-        <AcquisitionInternalLink href="/transparenz" className="font-medium text-(--accent-ink)">Mehr erfahren</AcquisitionInternalLink>
-      </div>
       <section className="wow-trust" aria-label="So funktioniert DUFYND">
         <div className="rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm)">
           <div className="text-[13px] font-semibold text-(--ink)">Empfehlungen nach deinen Kriterien</div>
@@ -395,7 +388,7 @@ export default function HomeView({
           </p>
         </div>
       </section>
-      <div className="-mt-2 hidden space-y-1 text-[12px] text-(--ink-soft) sm:block">
+      <div className="wow-affiliate-note space-y-2 text-[13px] leading-6 text-(--ink-soft)">
         <AcquisitionInternalLink href="/transparenz" className="font-medium text-(--accent-ink) hover:underline">
           So bewertet DUFYND Empfehlungen und Händlerangebote
         </AcquisitionInternalLink>

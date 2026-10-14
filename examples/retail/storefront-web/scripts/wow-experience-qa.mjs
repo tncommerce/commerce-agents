@@ -28,7 +28,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
         await page.goto(baseUrl+route+'?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'networkidle'});
         await page.locator('h1').first().waitFor();
         await page.screenshot({path:`${outputDir}/wow22-${name}-${width}-first.png`});
-        const metrics = await page.evaluate(() => ({...window.__wowPerf,overflow:document.documentElement.scrollWidth-innerWidth,dom:performance.getEntriesByType('navigation')[0].domContentLoadedEventEnd,resources:performance.getEntriesByType('resource').reduce((n,r)=>n+(r.transferSize||0),0)}));
+        const metrics = await page.evaluate(() => ({...window.__wowPerf,overflow:Math.max(document.documentElement.scrollWidth-innerWidth,...[...document.querySelectorAll('.panel-scroll')].map(el=>el.scrollWidth-el.clientWidth)),dom:performance.getEntriesByType('navigation')[0].domContentLoadedEventEnd,resources:performance.getEntriesByType('resource').reduce((n,r)=>n+(r.transferSize||0),0)}));
         assert.ok(metrics.overflow <= 1,`${name}/${width}: horizontal overflow ${metrics.overflow}`);
         assert.ok(metrics.cls < .1,`${name}/${width}: CLS ${metrics.cls}`);
         if(name==='home') {
@@ -37,8 +37,9 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await page.locator('.wow-hero-art').click();
           const atlas=page.locator('[data-scent-atlas]');
           await atlas.locator('select').selectOption('2');
-          await atlas.getByText('EDT · 100 ml',{exact:true}).waitFor();
+          await atlas.getByText('Eau de Toilette · 100 ml',{exact:true}).waitFor();
           const notes=atlas.locator('.wow-atlas-notes button');
+          assert.deepEqual(await notes.allTextContents(), ['Minze','Mandarine','Rose','Zimt','Amber','Leder'], 'Rabanne uses documented key notes, never an invented pyramid');
           await notes.first().focus();await page.keyboard.press('Enter');
           assert.equal(await notes.first().getAttribute('aria-pressed'),'true');
           await atlas.locator('[data-atlas-matches] small').waitFor();
@@ -51,7 +52,13 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await atlas.scrollIntoViewIfNeeded();
           await page.screenshot({path:`${outputDir}/wow22-atlas-${width}-interaction.png`});
           for(const [part,selector] of [['selection','.wow-selection'],['audiences','.wow-audiences'],['footer','.wow-home footer']]) {
-            const el=page.locator(selector).first();if(await el.count()){await el.scrollIntoViewIfNeeded();await page.screenshot({path:`${outputDir}/wow22-home-${width}-${part}.png`});}
+            const el=page.locator(selector).first();if(await el.count()){
+              await el.scrollIntoViewIfNeeded();
+              await el.locator('img').evaluateAll(images=>Promise.all(images.map(async image=>{image.loading='eager';await Promise.race([image.decode().catch(()=>{}),new Promise(r=>setTimeout(r,8000))]);})));
+              const broken=await el.locator('img').evaluateAll(images=>images.filter(i=>!i.complete||i.naturalWidth===0).map(i=>i.src));
+              assert.deepEqual(broken,[],`${part}/${width}: selected originals must decode`);
+              await page.screenshot({path:`${outputDir}/wow22-home-${width}-${part}.png`});
+            }
           }
           const scroll=page.locator('.panel-scroll').filter({has:page.locator('.wow-home')});
           if(await scroll.count()) await scroll.evaluate(el=>{el.scrollTop=0;});

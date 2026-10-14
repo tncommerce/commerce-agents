@@ -42,7 +42,7 @@ export default function ScentAtlas() {
           <p className="wow-atlas-variant">{product.concentration} · {product.volume_ml} ml</p>
         </div>
         <div className="wow-atlas-instrument" data-atlas-layer={layer}>
-          <svg className="wow-atlas-orbits" viewBox="0 0 460 380" aria-hidden="true">
+          <svg className="wow-atlas-orbits" style={{ transform: `rotate(${productIndex * 17 + (selectedNote ? (current?.notes.indexOf(selectedNote) || 0) * 12 : layer * 20)}deg)` }} viewBox="0 0 460 380" aria-hidden="true">
             <defs>
               <radialGradient id={`${uid}-glass`} cx="32%" cy="24%"><stop stopColor="#fff9e4" stopOpacity=".9" /><stop offset=".45" stopColor="#a18960" stopOpacity=".18" /><stop offset="1" stopColor="#524433" stopOpacity=".05" /></radialGradient>
               <linearGradient id={`${uid}-rim`} x2="1" y2="1"><stop stopColor="#e8d5aa" /><stop offset=".45" stopColor="#837557" stopOpacity=".25" /><stop offset="1" stopColor="#e8d5aa" /></linearGradient>
@@ -52,6 +52,7 @@ export default function ScentAtlas() {
             <path d="M230 12V46M230 326V360M40 185H72M388 185H420" stroke="#b6a788" strokeWidth=".6" />
             <circle cx="230" cy="185" r="4" fill="#e6c78e" />
           </svg>
+          <div className="wow-atlas-core" aria-hidden="true">{selectedNote ? noteLabel(selectedNote) : "DUFT / ATLAS"}</div>
           <div className="wow-atlas-layer-buttons" aria-label="Duftnoten-Ebene wählen">
             {groups.map((group, i) => <button key={group.label} type="button" aria-pressed={layer === i} aria-controls={`${uid}-notes`} onClick={() => { setLayer(i); setSelectedNote(null); }}><span>0{i+1}</span>{group.label}</button>)}
           </div>

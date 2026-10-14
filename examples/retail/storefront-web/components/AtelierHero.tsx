@@ -13,7 +13,7 @@ export default function AtelierHero() {
           event.preventDefault(); const query = String(new FormData(event.currentTarget).get("q") || ""); const target = new URL("/duft", window.location.origin); target.searchParams.set("q", query); window.location.assign(appendAcquisitionAttribution(target.toString()));
         }}>
           <label htmlFor="dufynd-home-search" className="sr-only">Duft oder Marke suchen</label>
-          <input id="dufynd-home-search" name="q" type="search" maxLength={80} placeholder="Duft, Marke oder Duftnote" />
+          <input id="dufynd-home-search" name="q" type="search" maxLength={80} placeholder="Duft, Marke, Note" />
           <button type="submit">Suchen <span aria-hidden>↗</span></button>
         </form>
         <div className="wow-hero-actions"><AcquisitionInternalLink className="dufynd-hero-primary" href="/duftfinder">Meinen Duft finden →</AcquisitionInternalLink><AcquisitionInternalLink href="/vergleich">Düfte vergleichen</AcquisitionInternalLink></div>
