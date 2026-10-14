@@ -377,3 +377,74 @@ main:has(.wow-home)+div textarea {font-size:16px}
  .wow-polish .wow-affiliate-note{font-size:12px}
  .wow-polish .wow-advisor-links{font-size:12px;gap:14px}
 }
+
+
+/* WOW24: original optical material signature, dark botanical glass rather
+   than the former low-contrast beige rendering. No brand bottle is depicted. */
+.wow-polish .wow-hero-art{
+  background:
+    radial-gradient(ellipse 66% 73% at 73% 40%,#536e61 0%,#273e37 43%,transparent 83%),
+    linear-gradient(132deg,#182722 0%,#1b302e 54%,#101d20 100%);
+  color:#f7efdd;
+  box-shadow:inset 0 0 0 1px #b6a27b36,inset 0 0 85px #050c1028;
+}
+.wow-polish .wow-hero-art::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+  background:
+    linear-gradient(90deg,transparent 97%,#f5dfb70e 98%) 0 0/79px 100%,
+    radial-gradient(ellipse 50% 45% at 67% 37%,#f7d5a019,transparent 95%);
+}
+.wow-polish .wow-art-coordinate{color:#e3d4b8;z-index:2;letter-spacing:.19em}
+.wow-polish .wow-art-caption{color:#fcf4e6;z-index:2;text-shadow:0 2px 22px #05130d8a}
+.wow-polish .wow-art-caption em{color:#ebc997}
+.wow-polish .wow-art-invite{z-index:2;color:#f4e5cd;border-color:#e9d7b185;font-weight:500}
+.wow-hero-art>.wow-composition{opacity:1;filter:drop-shadow(0 16px 23px #07161580)}
+.wow-hero-art:hover>.wow-composition,.wow-hero-art:focus-visible>.wow-composition{transform:scale(1.055) rotate(2.5deg)!important}
+.wow-polish .wow-selection-photo{background:#faf8f4;border-color:#ded6c8}
+.wow-polish .wow-selection-link:focus-visible .wow-selection-photo{outline:2px solid #967445;outline-offset:-3px}
+.wow-polish .wow-selection-copy h3{color:#232b29}
+.wow-polish .wow-selection-item>p{color:#686459}
+
+@media(max-width:639px){
+  .wow-polish .wow-hero-art{background:
+    radial-gradient(ellipse 75% 115% at 78% 35%,#526c60 0%,#2a433b 37%,transparent 84%),
+    linear-gradient(135deg,#182823,#152327 100%)}
+  .wow-polish .wow-art-caption{font-size:26px;max-width:172px}
+  .wow-polish .wow-art-invite{font-size:11px}
+  /* Two honest licensed originals get full editorial reading width rather
+     than illegible half-size portrait cards and 9px labels. */
+  .wow-polish .wow-selection-grid{grid-template-columns:1fr;gap:15px}
+  .wow-polish .wow-selection-item{
+    background:#fffdf9;border:1px solid #ddd3c2;
+    box-shadow:0 12px 26px -26px #132b24c7;min-width:0;
+  }
+  .wow-polish .wow-selection-link{
+    display:grid;grid-template-columns:minmax(0,44%) minmax(0,56%);
+    min-height:226px;align-items:stretch;
+  }
+  .wow-polish .wow-selection-photo,
+  .wow-polish .wow-selection-item:nth-child(2) .wow-selection-photo{
+    height:100%;min-height:226px;border:0;border-right:1px solid #e6ded0;
+    background:#fffefa;
+  }
+  .wow-polish .wow-selection-photo .dufynd-product-object{inset:5% 5%!important}
+  .wow-polish .wow-selection-number{left:10px;top:10px;font-size:10px}
+  .wow-polish .wow-selection-copy{
+    display:flex;flex-direction:column;align-items:stretch;justify-content:center;
+    padding:14px 13px 11px;min-width:0;
+  }
+  .wow-polish .wow-selection-copy .wow-kicker{font-size:10px;min-height:0;letter-spacing:.04em;overflow-wrap:anywhere}
+  .wow-polish .wow-selection-copy h3{
+    font-size:clamp(22px,6.1vw,27px);line-height:1.06;margin:9px 0 10px;
+    min-height:0;overflow-wrap:break-word;
+  }
+  .wow-polish .wow-selection-copy p{font-size:12px;min-height:0;line-height:1.45}
+  .wow-polish .wow-selection-notes{font-size:12px;min-height:0;line-height:1.4;margin:9px 0 10px}
+  .wow-polish .wow-text-link{font-size:12px;min-height:0;line-height:1.4;padding:10px 0 2px;margin-top:auto;gap:8px}
+  .wow-polish .wow-selection-item>p{padding:9px 12px 10px;margin:0;border-top:1px solid #ebe3d7;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .wow-hero-art:hover>.wow-composition,.wow-hero-art:focus-visible>.wow-composition{
+    transform:none!important;transition:none!important;
+  }
+}

@@ -81,7 +81,18 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await atlas.scrollIntoViewIfNeeded();
           await page.screenshot({path:`${outputDir}/wow22-atlas-${width}-interaction.png`});
           await atlas.screenshot({path:`${outputDir}/polish23-atlas-${width}-complete.png`});
-          assert.equal(await page.locator('a[data-dufynd-original-card]').count(),2,'one curated original selection, without repeated product rows');
+          const editorialCards=page.locator('a[data-dufynd-original-card]');
+          assert.equal(await editorialCards.count(),2,'one curated original selection, without repeated product rows');
+          if(width<=390){
+            const firstCard=await editorialCards.nth(0).boundingBox();
+            const secondCard=await editorialCards.nth(1).boundingBox();
+            const firstPhoto=await editorialCards.nth(0).locator('.wow-selection-photo').boundingBox();
+            assert.ok(firstCard&&secondCard&&firstPhoto&&secondCard.y>firstCard.y+firstCard.height,
+              'licensed mobile editorial cards are individually readable in a vertical journey');
+            assert.ok(firstPhoto.width>=105,'mobile source photo remains prominent, not a tiny thumbnail');
+            assert.ok(firstCard.x>=0&&firstCard.x+firstCard.width<=width,
+              'mobile original-photo entry fits the viewport');
+          }
           assert.equal(await page.locator('.wow-advisor textarea').count(),1,'existing advisor composer is inline on the homepage');
           assert.equal(await page.locator('textarea').count(),1,'no second fixed composer overlaps homepage content');
           const advisor=page.locator('.wow-advisor textarea');await advisor.fill('Isolierte Eingabe ohne Versand');
