@@ -1,0 +1,9 @@
+.focusedOffer {padding:20px;background:#f8f6ee;border-color:#c8b78d;gap:18px}
+.focusedOffer>div {flex:1;min-width:180px}
+.focusedOffer .total {font-size:32px;line-height:1.2;letter-spacing:-.04em;font-weight:650;margin-top:6px}
+.breakdown {margin-top:12px;padding-top:10px;border-top:1px solid #d9d1bd;font-size:12px;line-height:1.7;color:var(--ink-soft);max-width:300px}
+.breakdown>div {display:flex;justify-content:space-between;gap:20px}
+.breakdown dd {font-variant-numeric:tabular-nums;color:var(--ink)}
+.merchantAction {min-height:48px}
+.merchantAction:focus-visible {outline:3px solid var(--ink);outline-offset:3px}
+@media(max-width:600px){.focusedOffer {padding:16px}.focusedOffer>div {width:100%;min-width:0}.breakdown {max-width:none}.merchantAction {width:100%}}

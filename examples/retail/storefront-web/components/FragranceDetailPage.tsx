@@ -237,6 +237,7 @@ export default async function FragrancePage({
 
   // First-money landing prices come only from freshness-gated merchant offers.
   const offerOnlyPricing = fragrance.product_id === "SC-RABANNE-1-MILLION-EDT-100";
+  const SecondaryActions = offerOnlyPricing ? "details" : "div";
   const checkedAt = formatCheckedAt(
     fragrance.market.checked_at,
   );
@@ -518,7 +519,9 @@ export default async function FragrancePage({
                 ) : null}
               </div>
 
-              {!review && <div className="mt-4 flex flex-wrap items-center gap-2">
+              {!review && <SecondaryActions className="mt-3">
+                {offerOnlyPricing ? <summary className="min-h-11 cursor-pointer py-3 text-[11px] font-semibold text-(--ink-soft)">Merken, teilen & vergleichen</summary> : null}
+                <div className="flex flex-wrap items-center gap-2">
                 <FragranceSaveControls
                   productId={fragrance.product_id}
                   compact
@@ -533,7 +536,8 @@ export default async function FragrancePage({
                 >
                   Mit anderem Duft vergleichen →
                 </AcquisitionInternalLink>
-              </div>}
+                </div>
+              </SecondaryActions>}
 
               {fragrance.community.rating_10 != null ? <>
               <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)">

@@ -23,6 +23,9 @@ export default function DiscoveryIntro({
   catalog?: boolean;
 }) {
   const strip = useRef<HTMLDivElement>(null);
+  const socialProduct = catalog
+    ? LIVE_FRAGRANCES.find((entry) => entry.product_id === "SC-RABANNE-1-MILLION-EDT-100")
+    : undefined;
   const originals = ORIGINAL_IDS.flatMap((id) => {
     const fragrance = LIVE_FRAGRANCES.find((entry) => entry.product_id === id);
     const visual =
@@ -88,6 +91,25 @@ export default function DiscoveryIntro({
           Duftprofile entdecken · Händlerangebote separat prüfen
         </p>
       </div>
+      {socialProduct ? (
+        <AcquisitionInternalLink
+          href={`/duft/${socialProduct.slug}`}
+          className={styles.socialProduct}
+          data-social-product-entry
+          onClick={() => void trackAnalyticsEvent("product_open", {
+            product_id: socialProduct.product_id,
+            source: "catalog_social_entry",
+          })}
+        >
+          <span className={styles.socialLabel}>Aus unseren Duftvideos</span>
+          <span className={styles.socialIdentity}>
+            <span>{socialProduct.brand}</span>
+            <strong>{socialProduct.name}</strong>
+          </span>
+          <span className={styles.socialVariant}>{socialProduct.concentration} · {socialProduct.volume_ml} ml</span>
+          <span className={styles.socialAction}>Duft & Händlerangebote ansehen <span aria-hidden>→</span></span>
+        </AcquisitionInternalLink>
+      ) : null}
       {!catalog ? <div
         className={styles.selection}
         aria-label="Auswahl mit freigegebenen Originalaufnahmen"

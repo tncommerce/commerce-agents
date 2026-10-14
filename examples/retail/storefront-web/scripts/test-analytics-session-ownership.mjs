@@ -17,7 +17,7 @@ function deferred() {
   return { promise, resolve };
 }
 
-function client(initialize, post = async () => ({ ok: true }), browserWindow) {
+function client(initialize, post = async () => ({ ok: true }), browserWindow, referrer = "") {
   const requests = [];
   const timers = new Map();
   let initializations = 0;
@@ -30,7 +30,7 @@ function client(initialize, post = async () => ({ ok: true }), browserWindow) {
   const module = { exports: {} };
   vm.runInNewContext(code, {
     module, exports: module.exports, AbortController, URL, URLSearchParams, crypto: webcrypto,
-    ...(browserWindow ? { window: browserWindow } : {}),
+    ...(browserWindow ? { window: browserWindow, document: { referrer } } : {}),
     require: (name) => {
       if (name === "./acquisitionEntry") return entryModule.exports;
       assert.equal(name, "./api");
@@ -176,6 +176,24 @@ for (const blocked of [false, true]) {
   assert.equal(env.api.session, "qa-transport-session-2-1234567890");
 }
 console.log("DUFYND analytics funnel identity: document navigation, transport recovery, invalid and blocked storage passed.");
+
+// Storage-denied document navigation must retain a valid same-origin funnel
+// identity, without restoring the API/advisor transport or trusting shared URLs.
+for (const referrer of ["https://dufynd.test/duft", "https://instagram.com/", "", "https://dufynd.test.evil.test/"]) {
+  const original = "qa-original-funnel-123456789";
+  const replacement = "qa-new-transport-123456789";
+  const browserWindow = {
+    location: { origin: "https://dufynd.test", search: `?sid=${original}&src=tiktok&cmp=qa_site13&content=qa_profile` },
+    sessionStorage: { getItem() { throw Error("denied"); }, setItem() { throw Error("denied"); } },
+  };
+  const env = client(async () => replacement, undefined, browserWindow, referrer);
+  await env.trackAnalyticsEvent("fragrance_detail_view", { product_id: "SC-TEST" });
+  assert.equal(env.requests[0].payload.analytics_session_id,
+    referrer === "https://dufynd.test/duft" ? original : replacement,
+    "only an internal document navigation may continue the URL funnel identity");
+  assert.equal(env.api.session, replacement);
+  assert.equal(env.requests[0].payload.campaign_id, "qa_site13");
+}
 
 // Explicit internal QA persists across navigation and un-attributed clickouts.
 {

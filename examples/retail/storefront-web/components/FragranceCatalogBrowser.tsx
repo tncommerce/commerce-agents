@@ -1205,22 +1205,18 @@ export default function FragranceCatalogBrowser({
         <>
           {!hasChanges && featuredOriginalCount > 0 ? (
             <div
-              className="dufynd-catalog-originals-intro mt-5"
+              className="dufynd-catalog-originals-note mt-4"
               aria-label="Originalaufnahmen zuerst"
             >
               <div>
-                <p className="dufynd-catalog-originals-eyebrow">
-                  DUFYND / ORIGINALFOTOGRAFIE
-                </p>
-                <h2>Den Duft entdecken. Den echten Flakon sehen.</h2>
                 <p>
-                  {featuredOriginalCount} exakt zugeordnete Produktaufnahmen zuerst.
-                  Danach weitere Duftprofile mit klar gekennzeichneten Illustrationen.
+                  <strong>{featuredOriginalCount} Originalaufnahmen zuerst.</strong>{" "}
+                  Illustrationen sind gekennzeichnet.
                 </p>
               </div>
               <AcquisitionInternalLink
                 href="/bildnachweise"
-                className="dufynd-catalog-originals-evidence"
+                className="dufynd-catalog-photo-evidence"
               >
                 Bildnachweise ansehen <span aria-hidden>↗</span>
               </AcquisitionInternalLink>

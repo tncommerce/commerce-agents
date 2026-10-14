@@ -10,6 +10,7 @@ import { chromium } from "playwright";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
+import { verifySite13Funnel } from "./site13-funnel-qa.mjs";
 import { verifySocialProductEntry, verifyFirstMoneyLandingStates } from "./social-product-entry-qa.mjs";
 import { verifyPublicShareLinks } from "./public-share-qa.mjs";
 import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
@@ -320,6 +321,8 @@ try {
     report.failures.push({ label: "catalog-recovery", message: String(error) });
   }
   try {
+    const site13 = await verifySite13Funnel(browser, baseUrl);
+    report.checks.push({ label: "site13-storage-and-mobile-funnel", status: "passed", cases: site13.length });
     const cases = await verifyFirstMoneyFunnel(browser, baseUrl);
     report.checks.push({ label: "first-money-funnel-attribution", status: "passed", cases });
   } catch (error) {
@@ -3020,6 +3023,13 @@ try {
           String(response?.status() ?? "no response"),
       );
     }
+
+    // SITE-13 keeps secondary purchase-page actions in a native disclosure.
+    // Expand it like a visitor before inspecting its visible comparison link.
+    await productDetailAttributionPage
+      .locator("details > summary")
+      .filter({ hasText: "Merken, teilen & vergleichen" })
+      .click();
 
     const candidates = [
       productDetailAttributionPage.getByRole("link", { name: "Düfte" }),

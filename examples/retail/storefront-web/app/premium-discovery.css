@@ -350,6 +350,9 @@
 
 
 /* Original-first catalog: style evidence, not imagined packshots. */
+.dufynd-catalog-originals-note {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0 16px;padding:8px 0;color:var(--ink-soft);font-size:11px;line-height:1.6}
+.dufynd-catalog-photo-evidence {display:inline-flex;align-items:center;min-height:44px;gap:12px;font-weight:600;color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px}
+.dufynd-catalog-photo-evidence:focus-visible {outline:2px solid var(--accent-ink);outline-offset:3px}
 .dufynd-catalog-originals-intro {
   position: relative;
   display: flex;
