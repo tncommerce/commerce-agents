@@ -232,3 +232,9 @@
 }
 .dufynd-catalog-page article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-stage::after,
 .dufynd-catalog-page article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-body::before {display:none}
+/* Keep the existing advisor operable, clearly distinguished from catalogue search.
+   Remove the inherited blur veil which obscured the end of actual page content. */
+main:has(.wow-home)+div {border-top:1px solid #d4cbbb;background:#f7f4ed;padding-top:10px;padding-bottom:max(12px,env(safe-area-inset-bottom))}
+main:has(.wow-home)+div>div[aria-hidden] {display:none}
+main:has(.wow-home)+div form {border-radius:3px;border-color:#b9ae99;box-shadow:none}
+main:has(.wow-home)+div textarea {font-size:16px}

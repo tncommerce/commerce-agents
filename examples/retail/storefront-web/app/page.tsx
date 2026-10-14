@@ -154,7 +154,7 @@ export default function StorefrontPage() {
       panel={null}
       panelOpen={panelOpen}
       onPanelOpenChange={setPanelOpen}
-      placeholder="Beschreibe deinen Wunsch, einen Duft oder dein Budget…"
+      placeholder="Frage an die Duftberatung …"
       composerLabel="Nachricht an DUFYND Advisor"
     >
       {/* The conversation stays mounted under the other view so its cards keep their state. */}

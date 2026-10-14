@@ -48,7 +48,10 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           const matches=atlas.locator('[data-atlas-matches] a');
           assert.ok(await matches.count() > 0, 'leather must match released profiles despite source capitalisation');
           assert.ok(await matches.filter({hasText:'Explorer'}).count(), 'documented Explorer leather note must be discoverable');
-          for(const link of await matches.all()) assert.equal(new URL(await link.getAttribute('href'),baseUrl).searchParams.get('cmp'),'wow22_fixture');
+          for(const link of await matches.all()) {
+            await link.focus(); // Existing link contract refreshes attribution on native focus/pointerdown.
+            assert.equal(new URL(await link.getAttribute('href'),baseUrl).searchParams.get('cmp'),'wow22_fixture');
+          }
           const transition=await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration);
           assert.equal(transition,'0s','reduced motion removes atlas transitions');
           await atlas.scrollIntoViewIfNeeded();
@@ -77,6 +80,12 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           }
           metrics.searchBottom=search.y+search.height;
           metrics.keyboard=true;metrics.touch=width<1024;metrics.reducedMotion=true;
+          const destination=new URL(await matches.first().getAttribute('href'),baseUrl).pathname;
+          await matches.first().focus();await page.keyboard.press('Enter');
+          await page.waitForURL(url=>url.pathname===destination);
+          assert.equal(new URL(page.url()).searchParams.get('cmp'),'wow22_fixture','actual atlas keyboard navigation preserves campaign');
+          assert.equal(new URL(page.url()).searchParams.get('src'),'instagram');
+          metrics.atlasDestination=destination;
         } else {
           await page.evaluate(async()=>{for(let y=0;y<document.documentElement.scrollHeight;y+=600){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,25));}window.scrollTo(0,0);});
           await page.evaluate(()=>Promise.all([...document.images].map(i=>i.decode().catch(()=>{}))));
