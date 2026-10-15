@@ -10,10 +10,7 @@ import pytest
 DSN = os.getenv("DUFYND_TEST_DATABASE_URL")
 pytestmark = pytest.mark.skipif(not DSN, reason="dedicated PostgreSQL service required")
 ROOT = Path(__file__).resolve().parents[1]
-MIGRATION = (
-    ROOT
-    / "supabase/migrations/20261015180054_dufynd_analytics_retention_v1.sql"
-)
+MIGRATION = ROOT / "supabase/migrations/20261015180054_dufynd_analytics_retention_v1.sql"
 
 
 @pytest.fixture(scope="module", autouse=True)
