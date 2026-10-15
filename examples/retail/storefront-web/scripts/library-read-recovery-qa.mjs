@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
 export async function verifyLibraryReadRecovery(browser, baseUrl) {
@@ -20,8 +21,9 @@ export async function verifyLibraryReadRecovery(browser, baseUrl) {
             }
           }, {key,initial});
           await page.route('**/api/session', r => r.fulfill({json:{session_id:'qa-library-read',name:'QA'}}));
-          await page.route('**/api/analytics/events', r => {events.push(r.request().postDataJSON());return r.fulfill({json:{ok:true}})});
+          await page.route((url) => url.pathname === '/api/analytics/events', r => {events.push(r.request().postDataJSON());return r.fulfill({json:{ok:true}})});
           await page.goto(`${baseUrl}/duft/xerjoff-naxos`);
+          await chooseMeasurement(page, 'granted');
           const wishlist = page.getByRole('button',{name:/Merken|Gemerkt|Bereits in Sammlung/});
           const owned = page.getByRole('button',{name:/Meine Sammlung|In meiner Sammlung/});
           const control = action.startsWith('wishlist') ? wishlist : owned;

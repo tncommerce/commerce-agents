@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
 export async function verifyAcquisitionEntry(browser, baseUrl) {
@@ -15,12 +16,13 @@ export async function verifyAcquisitionEntry(browser, baseUrl) {
       const events=[];
       await context.route('**/*',r=>new URL(r.request().url()).hostname===new URL(baseUrl).hostname ? r.continue() : r.abort());
       await context.route('**/api/session',r=>r.fulfill({json:{session_id:'qa_acquisition_entry_session'}}));
-      await context.route('**/api/analytics/events',r=>{events.push(r.request().postDataJSON());return r.fulfill({json:{ok:true}});});
+      await context.route((url) => url.pathname === '/api/analytics/events',r=>{events.push(r.request().postDataJSON());return r.fulfill({json:{ok:true}});});
       await context.route('**/api/merchant-offers/**',r=>r.fulfill({json:{offers:[],best_offer_id:null}}));
       await context.route('**/api/clickout/**',()=>{throw new Error('No affiliate requests allowed');});
       const page=await context.newPage();
       try {
         await page.goto(`${baseUrl}/start?qa=1&${sample.query}`,{waitUntil:'networkidle',referer:sample.referrer});
+        await chooseMeasurement(page, 'granted');
         const link=page.locator('a').filter({hasText:'Yves Saint Laurent Libre'}).first();
         await link.waitFor();
         const href=new URL(await link.getAttribute('href'),baseUrl);

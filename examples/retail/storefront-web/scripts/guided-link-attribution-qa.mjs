@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyGuidedLinkAttribution(browser, baseUrl) {
@@ -26,7 +27,7 @@ export async function verifyGuidedLinkAttribution(browser, baseUrl) {
         await page.route("**/api/products?**", (route) => route.fulfill({ json: { products: [] } }));
         await page.route("**/api/memory", (route) => route.fulfill({ json: { facts: [] } }));
         await page.route("**/api/merchant-partners", (route) => route.fulfill({ json: { partners: [] } }));
-        await page.route("**/api/analytics/events", (route) => {
+        await page.route((url) => url.pathname === "/api/analytics/events", (route) => {
           events.push(route.request().postDataJSON());
           return route.fulfill({ json: { ok: true } });
         });
@@ -35,6 +36,7 @@ export async function verifyGuidedLinkAttribution(browser, baseUrl) {
           return route.fulfill({ status: 200, contentType: "text/event-stream", body: "" });
         });
         await page.goto(`${baseUrl}/parfum-geschenkberater?src=tiktok&cmp=gift_video&content=video_1`);
+        await chooseMeasurement(page, "granted");
         const link = page.getByRole("link", { name: "Geschenkberatung starten", exact: true });
         await page.waitForFunction(() => {
           const link = Array.from(document.querySelectorAll("a")).find((element) => element.textContent?.trim() === "Geschenkberatung starten");
@@ -55,13 +57,18 @@ export async function verifyGuidedLinkAttribution(browser, baseUrl) {
         assert.equal(messages.length, storage === "all_denied" ? 0 : 1,
           "attribution handoff must preserve the existing storage-based confirmation gate");
         const homeView = events.find((event) => event.event === "page_view" && event.source === "storefront");
-        assert.ok(homeView, "the destination page view must be recorded");
         const consultation = events.find((event) => event.event === "consultation_start");
-        if (storage !== "all_denied") assert.ok(consultation);
-        for (const event of [homeView, consultation].filter(Boolean)) {
-          assert.equal(event.acquisition_source, "tiktok");
-          assert.equal(event.campaign_id, "gift_video");
-          assert.equal(event.content_id, "video_1");
+        if (storage === "all_denied") {
+          assert.equal(homeView, undefined, "memory-only consent must not survive document navigation");
+          assert.equal(consultation, undefined, "no destination telemetry after unpersisted consent is revoked");
+        } else {
+          assert.ok(homeView, "the destination page view must be recorded");
+          assert.ok(consultation);
+          for (const event of [homeView, consultation]) {
+            assert.equal(event.acquisition_source, "tiktok");
+            assert.equal(event.campaign_id, "gift_video");
+            assert.equal(event.content_id, "video_1");
+          }
         }
         assert.equal(new URL(page.url()).searchParams.get("cmp"), "gift_video");
       } finally {

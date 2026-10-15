@@ -21,6 +21,7 @@ import {
   normalizeGuidedPrompt,
 } from "@/lib/advisorStarts";
 import { trackAnalyticsEvent } from "@/lib/analytics";
+import { measurementAllowed, subscribeMeasurement } from "@/lib/measurementConsent";
 
 type View = "assistant";
 
@@ -56,10 +57,22 @@ export default function StorefrontPage() {
   });
 
   useEffect(() => {
-    if (!session.sessionId || analyticsSessionRef.current === session.sessionId) return;
-    analyticsSessionRef.current = session.sessionId;
     consultationTrackedRef.current = false;
-    void trackAnalyticsEvent("page_view", { source: "storefront" });
+  }, [session.sessionId]);
+
+  useEffect(() => {
+    const trackCurrentPage = () => {
+      if (!measurementAllowed()) {
+        analyticsSessionRef.current = null;
+        return;
+      }
+      if (!session.sessionId || analyticsSessionRef.current === session.sessionId) return;
+      analyticsSessionRef.current = session.sessionId;
+      void trackAnalyticsEvent("page_view", { source: "storefront" });
+    };
+    const unsubscribe = subscribeMeasurement(trackCurrentPage);
+    trackCurrentPage();
+    return unsubscribe;
   }, [session.sessionId]);
   useEffect(() => {
     if (

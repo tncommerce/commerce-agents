@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyHomeNavigationAttribution(browser, baseUrl) {
@@ -24,11 +25,12 @@ export async function verifyHomeNavigationAttribution(browser, baseUrl) {
           await page.route("**/api/session", (route) => route.fulfill({ json: { session_id: "qa-home-navigation", name: "QA Guest" } }));
           await page.route("**/api/products?**", (route) => route.fulfill({ json: { products: [] } }));
           await page.route("**/api/merchant-partners", (route) => route.fulfill({ json: { partners: [] } }));
-          await page.route("**/api/analytics/events", (route) => {
+          await page.route((url) => url.pathname === "/api/analytics/events", (route) => {
             events.push(route.request().postDataJSON());
             return route.fulfill({ json: { ok: true } });
           });
           await page.goto(`${baseUrl}/?src=youtube&cmp=home_qa&content=video_3`);
+          await chooseMeasurement(page, 'granted');
           await page.waitForFunction(() => {
             const link = document.querySelector("a.dufynd-hero-primary");
             return link && new URL(link.href).searchParams.get("cmp") === "home_qa";

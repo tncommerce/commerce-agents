@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyFirstMoneyFunnel(browser, baseUrl) {
@@ -19,7 +20,8 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
           sessionRequests += 1;
           return route.fulfill({ json: { session_id: `${session}-${sessionRequests}` } });
         });
-        await page.route("**/api/analytics/events", (route) => {
+        await page.route((url) => url.pathname === "/api/analytics/events", (route) => {
+          assert.equal(new URL(route.request().url()).searchParams.get("measurement"), "granted-v1");
           assert.equal(route.request().postDataJSON().internal_qa, true);
           events.push({ ...route.request().postDataJSON(), session: route.request().headers()["x-session-id"] });
           return route.fulfill({ json: { ok: true } });
@@ -35,20 +37,30 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
             }],
           },
         }));
-        // First-party navigation only: no network redirect, click or sale is created.
-        const response = await page.goto(`${baseUrl}/start?qa=1&src=${source}&cmp=${campaign}&content=${content}`);
+        // A QA marker is not a grant. Use the real, explicit preference UI.
+        const response = await page.goto(`${baseUrl}/start?qa=1&src=${source}&cmp=${campaign}&content=${content}`, { waitUntil: "domcontentloaded" });
         assert.ok(response?.ok());
-        await page.waitForFunction(() => sessionStorage.getItem("dufynd_internal_qa_v1") === "1");
+        await page.locator('[data-measurement-choice="unknown"]').waitFor();
+        assert.equal(events.length, 0, "fresh entry must not collect optional analytics");
+        await chooseMeasurement(page, "granted");
+        for (let attempt = 0; attempt < 100 && !events.some((e) => e.event === "page_view"); attempt += 1) {
+          await page.waitForTimeout(25);
+        }
+        const initialView = events.find((e) => e.event === "page_view");
+        assert.ok(initialView, "explicit grant records the current page, not an unconsented backlog");
+        const measurementSession = initialView.analytics_session_id;
+        assert.match(measurementSession, /^[a-f0-9-]{36}$/);
+        assert.notEqual(measurementSession, `${session}-1`, "measurement identity must be independent from functional transport");
         const catalogLink = page.getByRole("link", { name: "Katalog entdecken", exact: true });
         await catalogLink.waitFor();
+        await catalogLink.focus();
         const landingHref = new URL(await catalogLink.getAttribute("href"), baseUrl);
         for (const [key, value] of [["src", source], ["cmp", campaign], ["content", content]]) {
           assert.equal(landingHref.searchParams.get(key), value);
         }
         await catalogLink.click();
-        // Navigation is ready at DOMContentLoaded; a slow decorative image must
-        // not block this functional funnel. The visible controls, offer and
-        // analytics assertions below still prove the interactive page is ready.
+        // Visible controls prove readiness; an unresolved decorative image cannot
+        // block the funnel. Keep the deliberately pending-image regression.
         await page.waitForURL((url) => url.pathname === "/duft", { waitUntil: "domcontentloaded" });
         const productLink = page.locator(`a[href*="/duft/${slug}"]`);
         for (let attempt = 0; attempt < 6 && (await productLink.count()) === 0; attempt += 1) {
@@ -64,9 +76,10 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
         await offers.scrollIntoViewIfNeeded();
         const link = offers.getByRole("link", { name: `Bei ${merchant} ansehen`, exact: true });
         await link.waitFor({ state: "visible" });
+        await link.focus();
         const clickout = new URL(await link.getAttribute("href"));
         assert.equal(clickout.pathname, `/api/clickout/${offerId}`);
-        for (const [key, value] of [["src", source], ["cmp", campaign], ["content", content], ["sid", `${session}-1`]]) {
+        for (const [key, value] of [["src", source], ["cmp", campaign], ["content", content], ["sid", measurementSession], ["measurement", "granted-v1"]]) {
           assert.equal(clickout.searchParams.get(key), value);
         }
         for (let attempt = 0; attempt < 100 && !events.some((e) => e.event === "offer_section_view"); attempt += 1) {
@@ -76,13 +89,12 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
           const row = events.find((e) => e.event === event);
           assert.ok(row, `${slug}/${source} missing ${event}`);
           assert.ok(row.session.startsWith(`${session}-`), "missing valid transport session");
-          assert.equal(row.analytics_session_id, `${session}-1`, "navigation split the analytics funnel");
+          assert.equal(row.analytics_session_id, measurementSession, "navigation split the independent analytics funnel");
           assert.equal(row.acquisition_source, source);
           assert.equal(row.campaign_id, campaign);
           assert.equal(row.content_id, content);
           if (event !== "page_view") assert.equal(row.product_id, productId);
         }
-        // Distinct transport sessions are allowed; the analytics identity must remain stable.
         assert.ok(sessionRequests >= 1);
         cases += 1;
       } catch (error) {
