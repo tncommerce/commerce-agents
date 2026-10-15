@@ -31,8 +31,10 @@ export async function verifyBrandDiscovery(browser, baseUrl, outputDir, widths =
       assert.match(await page.locator('meta[name=robots]').getAttribute('content'), /noindex/);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await page.getByRole('searchbox').fill('CHANEL');
+      await page.waitForFunction(() => document.querySelectorAll('[data-brand-slug]').length === 1);
       assert.equal(await page.locator('[data-brand-slug]').count(), 1);
       await page.getByRole('searchbox').fill('no-such-brand-fixture');
+      await page.waitForFunction(() => document.querySelectorAll('[data-brand-slug]').length === 0);
       assert.equal(await page.locator('[data-brand-slug]').count(), 0);
       await page.getByRole('searchbox').fill('');
       const products = new Set();
