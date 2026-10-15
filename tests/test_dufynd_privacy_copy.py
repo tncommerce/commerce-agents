@@ -10,7 +10,7 @@ def test_privacy_notice_matches_consent_and_clickout_runtime() -> None:
     text = PRIVACY.read_text(encoding="utf-8")
 
     for expected in (
-        'Nur wenn du „Analyse erlauben“ ausgewählt hast',
+        "Nur wenn du „Analyse erlauben“ ausgewählt hast",
         "Eine kopierte Weiterleitungs-URL ist deshalb kein Zustimmungsnachweis",
         "wird das optionale Analyseereignis verworfen",
         "Art. 6 Abs. 1 lit. a DSGVO",
