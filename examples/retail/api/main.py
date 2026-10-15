@@ -298,7 +298,8 @@ async def merchant_clickout(
         offer_id=offer.offer_id,
     )
     return RedirectResponse(
-        url=target, status_code=302,
+        url=target,
+        status_code=302,
         headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
     )
 

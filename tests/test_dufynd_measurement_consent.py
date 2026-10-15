@@ -4,6 +4,7 @@ All stores, trackers and redirects are in-memory fixtures. No HTTP request is
 sent to Supabase, an affiliate network, a merchant, or the deployed application.
 This is not an ASGI/CORS or complete application-integration test.
 """
+
 from __future__ import annotations
 
 import ast
@@ -14,8 +15,16 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 ROOT = Path(__file__).resolve().parents[1]
-APP_SOURCE = ROOT / "api/main.py" if (ROOT / "api/main.py").exists() else ROOT / "examples/retail/api/main.py"
-BASE_SOURCE = ROOT / "baseline/main.py" if (ROOT / "baseline/main.py").exists() else ROOT / "tests/fixtures/privacy26-base-main.py"
+APP_SOURCE = (
+    ROOT / "api/main.py"
+    if (ROOT / "api/main.py").exists()
+    else ROOT / "examples/retail/api/main.py"
+)
+BASE_SOURCE = (
+    ROOT / "baseline/main.py"
+    if (ROOT / "baseline/main.py").exists()
+    else ROOT / "tests/fixtures/privacy26-base-main.py"
+)
 
 
 class Redirect:
@@ -44,19 +53,31 @@ def environment(path: Path):
     functions = []
     for node in tree.body:
         if isinstance(node, ast.AsyncFunctionDef) and node.name in {
-            "merchant_partner_clickout", "merchant_clickout", "analytics_event"
+            "merchant_partner_clickout",
+            "merchant_clickout",
+            "analytics_event",
         }:
             node.decorator_list = []
             functions.append(node)
     assert len(functions) == 3
     module = ast.Module(
-        body=[ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0), *functions],
+        body=[
+            ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0),
+            *functions,
+        ],
         type_ignores=[],
     )
     ast.fix_missing_locations(module)
     records = {"analytics": [], "clickouts": [], "target_calls": []}
-    offer = SimpleNamespace(product_id="SC-RABANNE-1-MILLION-EDT-100", merchant_id="perfumetrader", offer_id="fixture-offer")
-    partner = SimpleNamespace(merchant_id="perfumetrader", affiliate_url="https://affiliate.invalid/base?publisher=synthetic")
+    offer = SimpleNamespace(
+        product_id="SC-RABANNE-1-MILLION-EDT-100",
+        merchant_id="perfumetrader",
+        offer_id="fixture-offer",
+    )
+    partner = SimpleNamespace(
+        merchant_id="perfumetrader",
+        affiliate_url="https://affiliate.invalid/base?publisher=synthetic",
+    )
 
     async def analytics_record(**kwargs):
         records["analytics"].append(kwargs)
@@ -68,15 +89,25 @@ def environment(path: Path):
 
     def target(_offer, **kwargs):
         records["target_calls"].append(kwargs)
-        return "https://affiliate.invalid/base?publisher=synthetic" + ("&synthetic_ref=measured" if kwargs else "")
+        return "https://affiliate.invalid/base?publisher=synthetic" + (
+            "&synthetic_ref=measured" if kwargs else ""
+        )
 
     context = {
-        "RedirectResponse": Redirect, "HTTPException": HTTPException, "uuid4": uuid4,
-        "partner_store": SimpleNamespace(eligible=lambda key: partner if key == "perfumetrader" else None),
-        "offer_store": SimpleNamespace(eligible_offer=lambda key: offer if key == "fixture-offer" else None),
+        "RedirectResponse": Redirect,
+        "HTTPException": HTTPException,
+        "uuid4": uuid4,
+        "partner_store": SimpleNamespace(
+            eligible=lambda key: partner if key == "perfumetrader" else None
+        ),
+        "offer_store": SimpleNamespace(
+            eligible_offer=lambda key: offer if key == "fixture-offer" else None
+        ),
         "_live_dufynd_offer_product": lambda _key: True,
         "offer_clickout_target": target,
-        "partner_clickout_url": lambda _partner, **kw: partner.affiliate_url + "&synthetic_ref=measured",
+        "partner_clickout_url": lambda _partner, **kw: (
+            partner.affiliate_url + "&synthetic_ref=measured"
+        ),
         "sanitize_attribution_identifier": lambda value: value,
         "analytics_tracker": SimpleNamespace(record=analytics_record),
         "clickout_tracker": SimpleNamespace(record=clickout_record),
@@ -87,10 +118,19 @@ def environment(path: Path):
 
 def request():
     return SimpleNamespace(
-        analytics_session_id="synthetic_analytics_123456", event_id=None,
-        event="page_view", internal_qa=True, product_id=None, source="fixture",
-        acquisition_source="instagram", campaign_id="synthetic", content_id=None,
-        search_term=None, result_count=None, surface="fixture", related_product_id=None,
+        analytics_session_id="synthetic_analytics_123456",
+        event_id=None,
+        event="page_view",
+        internal_qa=True,
+        product_id=None,
+        source="fixture",
+        acquisition_source="instagram",
+        campaign_id="synthetic",
+        content_id=None,
+        search_term=None,
+        result_count=None,
+        surface="fixture",
+        related_product_id=None,
         item_position=None,
     )
 
@@ -98,31 +138,56 @@ def request():
 async def run():
     cases = 0
     for choice in [None, "denied", "denied-v1", "true", "granted", "GRANTED-V1", "granted-v0", ""]:
-        for kind, key in [("merchant_partner_clickout", "perfumetrader"), ("merchant_clickout", "fixture-offer")]:
+        for kind, key in [
+            ("merchant_partner_clickout", "perfumetrader"),
+            ("merchant_clickout", "fixture-offer"),
+        ]:
             ctx, records = environment(APP_SOURCE)
             tasks = Tasks()
-            out = await ctx[kind](key, tasks, src="instagram", cmp="stale", sid="stale_identifier_123456", qa=True, measurement=choice)
+            out = await ctx[kind](
+                key,
+                tasks,
+                src="instagram",
+                cmp="stale",
+                sid="stale_identifier_123456",
+                qa=True,
+                measurement=choice,
+            )
             assert out.status_code == 302
             assert out.url == "https://affiliate.invalid/base?publisher=synthetic"
             assert out.headers == {"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"}
             assert not records["analytics"] and not records["clickouts"] and not tasks.items
             cases += 1
         ctx, records = environment(APP_SOURCE)
-        out = await ctx["analytics_event"](request(), SimpleNamespace(session_id="functional_session"), measurement=choice)
+        out = await ctx["analytics_event"](
+            request(), SimpleNamespace(session_id="functional_session"), measurement=choice
+        )
         assert out == {"ok": True, "recorded": False, "storage": "disabled"}
         assert not records["analytics"]
         cases += 1
-    for kind, key in [("merchant_partner_clickout", "perfumetrader"), ("merchant_clickout", "fixture-offer")]:
+    for kind, key in [
+        ("merchant_partner_clickout", "perfumetrader"),
+        ("merchant_clickout", "fixture-offer"),
+    ]:
         ctx, records = environment(APP_SOURCE)
         tasks = Tasks()
-        out = await ctx[kind](key, tasks, src="instagram", cmp="synthetic", sid="synthetic_session", measurement="granted-v1")
+        out = await ctx[kind](
+            key,
+            tasks,
+            src="instagram",
+            cmp="synthetic",
+            sid="synthetic_session",
+            measurement="granted-v1",
+        )
         assert out.status_code == 302 and "synthetic_ref=measured" in out.url
         assert len(tasks.items) == 1
         assert tasks.items[0][1]["campaign_id"] == "synthetic"
         assert bool(records["clickouts"]) == (kind == "merchant_clickout")
         cases += 1
     ctx, records = environment(APP_SOURCE)
-    out = await ctx["analytics_event"](request(), SimpleNamespace(session_id="functional_session"), measurement="granted-v1")
+    out = await ctx["analytics_event"](
+        request(), SimpleNamespace(session_id="functional_session"), measurement="granted-v1"
+    )
     assert out["ok"] and out["event_id"] == "fixture-event"
     assert len(records["analytics"]) == 1
     cases += 1
@@ -141,7 +206,18 @@ async def run():
     tasks = Tasks()
     await ctx["merchant_clickout"]("fixture-offer", tasks, qa=True)
     assert len(records["clickouts"]) == 1 and len(tasks.items) == 1
-    print(json.dumps({"status": "PASS", "cases": cases, "negative_control": "parent logs absent-consent clickout", "external_requests": 0, "scope": "actual extracted endpoint bodies; synthetic stores, no full app/ASGI"}, indent=2))
+    print(
+        json.dumps(
+            {
+                "status": "PASS",
+                "cases": cases,
+                "negative_control": "parent logs absent-consent clickout",
+                "external_requests": 0,
+                "scope": "actual extracted endpoint bodies; synthetic stores, no full app/ASGI",
+            },
+            indent=2,
+        )
+    )
 
 
 def test_measurement_gate_endpoint_bodies():
