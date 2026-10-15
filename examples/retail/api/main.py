@@ -135,12 +135,22 @@ async def merchant_partner_clickout(
     content: str | None = None,
     sid: str | None = None,
     qa: bool = False,
+    measurement: str | None = None,
 ) -> RedirectResponse:
     partner = partner_store.eligible(partner_key)
     if partner is None or partner.affiliate_url is None:
         raise HTTPException(
             status_code=404,
             detail="Merchant partner not available",
+        )
+
+    if measurement != "granted-v1":
+        # Affiliate navigation remains available, but no DUFYND event, session,
+        # campaign or dynamically generated click reference is recorded/added.
+        return RedirectResponse(
+            url=partner.affiliate_url,
+            status_code=302,
+            headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
         )
 
     acquisition_source = sanitize_attribution_identifier(src)
@@ -166,6 +176,7 @@ async def merchant_partner_clickout(
     return RedirectResponse(
         url=target or partner.affiliate_url,
         status_code=302,
+        headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
     )
 
 
@@ -191,7 +202,12 @@ async def product_offers(product_id: str) -> dict:
 async def analytics_event(
     request: AnalyticsEventRequest,
     record: host.CurrentSession,
+    measurement: str | None = None,
 ) -> dict:
+    # A missing, invalid, denied or QA-only signal never permits telemetry.
+    if measurement != "granted-v1":
+        return {"ok": True, "recorded": False, "storage": "disabled"}
+
     # Scope the client retry key to its stable funnel identity. A renewed API
     # transport session must not turn a lost response into a second event.
     from uuid import NAMESPACE_URL, uuid5
@@ -229,6 +245,7 @@ async def merchant_clickout(
     content: str | None = None,
     sid: str | None = None,
     qa: bool = False,
+    measurement: str | None = None,
 ) -> RedirectResponse:
     offer = offer_store.eligible_offer(offer_id)
     if offer is None or not _live_dufynd_offer_product(offer.product_id):
@@ -237,6 +254,13 @@ async def merchant_clickout(
     target = offer_clickout_target(offer)
     if target is None:
         raise HTTPException(status_code=404, detail="Offer not available")
+
+    if measurement != "granted-v1":
+        return RedirectResponse(
+            url=target,
+            status_code=302,
+            headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
+        )
 
     acquisition_source = sanitize_attribution_identifier(src)
     campaign_id = sanitize_attribution_identifier(cmp)
@@ -273,7 +297,10 @@ async def merchant_clickout(
         event_id=click_id,
         offer_id=offer.offer_id,
     )
-    return RedirectResponse(url=target, status_code=302)
+    return RedirectResponse(
+        url=target, status_code=302,
+        headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
+    )
 
 
 @app.post("/api/cart/add")
