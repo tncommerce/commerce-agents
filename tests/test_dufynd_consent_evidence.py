@@ -5,7 +5,6 @@ import hashlib
 import json
 
 import pytest
-
 from scripts.dufynd_free_acceptance import STAGES, FixtureChecker, coverage, maker_fixture
 from scripts.dufynd_independent_checker import (
     CheckerIdentity,
