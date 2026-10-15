@@ -50,8 +50,9 @@ def test_lost_write_response_retry_is_one_qa_event(monkeypatch, tmp_path):
         second = await main.analytics_event(
             payload, SimpleNamespace(session_id="new-transport"), measurement="granted-v1"
         )
-        assert first["storage"] == "local_fallback"
+        assert first["storage"] == "dropped"
         assert second["storage"] == "supabase"
+        assert not (tmp_path / "fallback.jsonl").exists()
         assert first["event_id"] == second["event_id"]
         assert len(stored) == 1
         assert next(iter(stored.values()))["traffic_class"] == "internal_qa"
