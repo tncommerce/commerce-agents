@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
 export async function verifyFooterNavigationAttribution(browser, baseUrl) {
@@ -19,6 +20,7 @@ export async function verifyFooterNavigationAttribution(browser, baseUrl) {
           await page.route('**/api/merchant-partners',r=>r.fulfill({json:{partners:[]}}));
           await page.route('**/api/analytics/events',r=>{events.push(r.request().postDataJSON());return r.fulfill({json:{ok:true}})});
           await page.goto(`${baseUrl}/merkliste?src=newsletter&cmp=footer_qa&content=cta_1`);
+          await chooseMeasurement(page, 'granted');
           for(let n=0;n<100&&!events.some(e=>e.event==='page_view');n++)await page.waitForTimeout(50);
           await page.locator(`footer a[href*='/${target}']`).click();
           await page.waitForURL(u=>u.pathname===`/${target}`);
@@ -52,6 +54,7 @@ export async function verifyFooterNavigationAttribution(browser, baseUrl) {
         await page.route('**/api/session',r=>r.fulfill({json:{session_id:'qa-footer-invalid',name:'QA'}}));
         await page.route('**/api/analytics/events',r=>r.fulfill({json:{ok:true}}));
         await page.goto(`${baseUrl}/merkliste?${query}`);
+        await chooseMeasurement(page, 'granted');
         await page.getByRole('link',{name:'← Zurück zu DUFYND',exact:true}).waitFor();
         await page.locator("footer a[href*='/duftfinder']").click();
         await page.waitForURL(u=>u.pathname==='/duftfinder');

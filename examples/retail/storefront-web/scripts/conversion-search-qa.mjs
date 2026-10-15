@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
 export async function verifyConversionSearch(browser, baseUrl, outputDir) {
@@ -12,6 +13,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
     const page=await context.newPage();
     try {
       await page.goto(`${baseUrl}/?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'networkidle'});
+      await chooseMeasurement(page, 'granted');
       await page.locator('#dufynd-home-search').fill('YSL Libre EDP 90ml');
       await page.getByRole('search',{name:'DUFYND Duftkatalog durchsuchen'}).getByRole('button',{name:'Suchen',exact:true}).click();
       await page.getByRole('heading',{name:'Libre',exact:true}).waitFor();

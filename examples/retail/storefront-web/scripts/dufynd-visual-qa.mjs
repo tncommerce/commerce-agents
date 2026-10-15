@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { verifyBrandDiscovery } from "./brand-discovery-qa.mjs";
 import { verifyNoteSculpture } from "./note-sculpture-qa.mjs";
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
@@ -1721,6 +1722,8 @@ try {
       );
     }
 
+    await chooseMeasurement(merchantOfferTimeoutPage, "denied");
+
     await merchantOfferTimeoutPage
       .getByText("Händlerangebote werden geprüft …", { exact: true })
       .waitFor({ state: "visible", timeout: 5_000 });
@@ -1845,6 +1848,7 @@ try {
       { waitUntil: "domcontentloaded", timeout: 45_000 },
     );
     if (!response?.ok()) throw new Error("session timeout QA did not load");
+    await chooseMeasurement(sessionTimeoutPage, "granted");
     const offers = sessionTimeoutPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 5_000 });
     await offers.locator("[data-clickout-preparing]").waitFor({
@@ -1937,6 +1941,7 @@ try {
       );
     }
 
+    await chooseMeasurement(attributionPage, "granted");
     const offers = attributionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
@@ -2072,6 +2077,7 @@ try {
       );
     }
 
+    await chooseMeasurement(offerImpressionPage, "granted");
     const offers = offerImpressionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
     await offers.scrollIntoViewIfNeeded();
@@ -2183,6 +2189,8 @@ try {
           String(landingResponse?.status() ?? "no response"),
       );
     }
+
+    await chooseMeasurement(acquisitionNavigationPage, "granted");
 
     await acquisitionNavigationPage
       .getByRole("link", { name: "Katalog entdecken", exact: true })
@@ -2331,6 +2339,7 @@ try {
       );
     }
 
+    await chooseMeasurement(clickoutSessionPage, "granted");
     const offers = clickoutSessionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
@@ -2454,6 +2463,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerSessionPage, "granted");
     const discovery = partnerSessionPage.getByRole("region", {
       name: "Partnerhändler entdecken",
     });
@@ -2566,6 +2576,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerSessionFailurePage, "granted");
     const discovery = partnerSessionFailurePage.getByRole("region", {
       name: "Partnerhändler entdecken",
     });
@@ -2832,6 +2843,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerTimeoutRecoveryPage, "granted");
     const loading = partnerTimeoutRecoveryPage.locator(
       "[data-merchant-discovery-loading]",
     );
@@ -2974,6 +2986,7 @@ try {
       { waitUntil: "domcontentloaded", timeout: 45_000 },
     );
     if (!response?.ok()) throw new Error("homepage session timeout QA did not load");
+    await chooseMeasurement(homeSessionTimeoutPage, "granted");
     await homeSessionTimeoutPage.locator("[data-partner-clickout-preparing]").waitFor({
       state: "visible", timeout: 5_000,
     });
@@ -3032,6 +3045,8 @@ try {
       );
     }
 
+    await chooseMeasurement(productDetailAttributionPage, "granted");
+
     // SITE-13 keeps secondary purchase-page actions in a native disclosure.
     // Expand it like a visitor before inspecting its visible comparison link.
     await productDetailAttributionPage
@@ -3086,6 +3101,7 @@ try {
       { waitUntil: "networkidle" },
     );
     if (!response?.ok()) throw new Error("free comparison did not load");
+    await chooseMeasurement(comparisonPage, "granted");
     await comparisonPage.getByRole("combobox", { name: "Duft 1" })
       .selectOption("SC-XERJOFF-NAXOS-100");
     await comparisonPage.getByRole("combobox", { name: "Duft 2" })
@@ -3198,6 +3214,7 @@ try {
       );
     }
 
+    await chooseMeasurement(comparisonDetailPage, "granted");
     const detailProductHref = await comparisonDetailPage
       .locator('[data-dufynd-comparison-side="left"] a')
       .first()

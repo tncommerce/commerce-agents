@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
 export async function verifyAcquisitionEntry(browser, baseUrl) {
@@ -21,6 +22,7 @@ export async function verifyAcquisitionEntry(browser, baseUrl) {
       const page=await context.newPage();
       try {
         await page.goto(`${baseUrl}/start?qa=1&${sample.query}`,{waitUntil:'networkidle',referer:sample.referrer});
+        await chooseMeasurement(page, 'granted');
         const link=page.locator('a').filter({hasText:'Yves Saint Laurent Libre'}).first();
         await link.waitFor();
         const href=new URL(await link.getAttribute('href'),baseUrl);

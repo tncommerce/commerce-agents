@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyHomeNavigationAttribution(browser, baseUrl) {
@@ -29,6 +30,7 @@ export async function verifyHomeNavigationAttribution(browser, baseUrl) {
             return route.fulfill({ json: { ok: true } });
           });
           await page.goto(`${baseUrl}/?src=youtube&cmp=home_qa&content=video_3`);
+          await chooseMeasurement(page, 'granted');
           await page.waitForFunction(() => {
             const link = document.querySelector("a.dufynd-hero-primary");
             return link && new URL(link.href).searchParams.get("cmp") === "home_qa";

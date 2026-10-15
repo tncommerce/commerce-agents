@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 
@@ -29,6 +30,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
     try {
       for (const [name,route] of routes) {
         const response=await page.goto(baseUrl+route+'?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'load'});
+        await chooseMeasurement(page, 'granted');
         assert.equal(response?.status(),200,`${name}/${width}: exact public route must return 200`);
         await page.locator('h1').first().waitFor({state:'visible'});
         if (name === 'home') {
@@ -136,6 +138,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           const messages=[];
           await page.route('**/api/chat',r=>{messages.push(r.request().postDataJSON().message);return r.fulfill({status:200,contentType:'text/event-stream',body:''});});
           await page.goto(baseUrl+'/?src=instagram&cmp=wow22_fixture&content=isolated',{waitUntil:'load'});
+          await chooseMeasurement(page, 'granted');
           const inline=page.locator('.wow-advisor textarea');
           await inline.fill('QA: Ein Duft für den Alltag');await inline.press('Enter');
           await page.getByText('QA: Ein Duft für den Alltag',{exact:true}).waitFor();
@@ -204,7 +207,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
   const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'no-preference'});
   try {
     await context.route('**/api/**',r=>r.fulfill({json:{session_id:'wow22-motion-fixture',products:[],partners:[],ok:true}}));
-    const p=await context.newPage();await p.goto(baseUrl,{waitUntil:'load'});
+    const p=await context.newPage();await p.goto(baseUrl,{waitUntil:'load'});await chooseMeasurement(p,'denied');
     const atlas=p.locator('[data-scent-atlas]');
     assert.notEqual(await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration),'0s');
     await atlas.locator('select').selectOption('1');

@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
@@ -63,6 +64,7 @@ export async function verifyErrorRecoveryNavigationAttribution(browser, baseUrl)
           await page.getByText("Diese Seite gibt es hier nicht.", { exact: true }).waitFor();
 
           const link = page.getByRole("link", { name: target.name, exact: true });
+          await chooseMeasurement(page, 'granted');
           await page.waitForFunction(
             ({ name }) => {
               const candidate = [...document.querySelectorAll("a")].find(
