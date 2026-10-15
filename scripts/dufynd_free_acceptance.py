@@ -87,7 +87,12 @@ STAGES = {
     ),
     "tests": (
         "examples/retail/api/tests/test_clickout_analytics_correlation.py",
-        ("sid", "campaign_id"),
+        (
+            "test_live_consent_analytics_post_correlates_offer_and_acquisition",
+            "analytics_session_id=",
+            'offer_id="qa-offer"',
+            'campaign_id="launch_02"',
+        ),
     ),
     "client_consent": (
         PREFIX + "lib/analytics.ts",

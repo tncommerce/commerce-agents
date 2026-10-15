@@ -17,12 +17,12 @@ ATTRIBUTION = (
     "examples/retail/storefront-web/components/AcquisitionLanding.tsx",
     "examples/retail/storefront-web/components/FragranceDetailPage.tsx",
     "examples/retail/storefront-web/app/vergleich/[pair]/page.tsx",
-    "examples/retail/api/merchant_partners.py",
+    "examples/retail/api/tests/test_clickout_analytics_correlation.py",
     "examples/retail/storefront-web/lib/acquisitionEntry.ts",
     "examples/retail/storefront-web/components/FragranceOffers.tsx",
     "examples/retail/api/main.py",
     "examples/retail/api/merchant_offers.py",
-    "examples/retail/api/tests/test_clickout_analytics_correlation.py",
+    "examples/retail/api/merchant_partners.py",
     "examples/retail/storefront-web/components/AcquisitionAnalytics.tsx",
     "examples/retail/storefront-web/components/AcquisitionInternalLink.tsx",
     "examples/retail/storefront-web/components/ComparisonAnalytics.tsx",
@@ -74,10 +74,10 @@ def profile_for(task: dict) -> str:
 CODE_WINDOWS = {
     "examples/retail/data/scentai_launch_attribution.md": [("## Interpretation guardrails", 0, 5)],
     "examples/retail/api/tests/test_clickout_analytics_correlation.py": [
-        ('sid=" session-partner', 6, 2),
-        ('"campaign_id": "launch_01"', 6, 2),
-        ('sid=" session-offer', 6, 2),
-        ('"session_id": "session-offer', 2, 9),
+        ("test_live_consent_analytics_post_correlates_offer_and_acquisition", 1, 7),
+        ('analytics_session_id="measurement-session', 1, 7),
+        ('offer_id="qa-offer"', 1, 4),
+        ('campaign_id="launch_02"', 1, 4),
     ],
     # Dense consent-aware code needs smaller, explicit windows, not a larger
     # context allowance. Include permission/withdrawal alongside attribution.
