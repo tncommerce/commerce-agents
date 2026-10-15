@@ -171,19 +171,54 @@ export function captureAcquisitionEntry(): AcquisitionAttribution | null {
   return entry;
 }
 
+// Check the destination before reading or persisting any acquisition/session data.
+// Internal navigation and the configured DUFYND clickout endpoint are the only
+// destinations this helper may enrich. An arbitrary external source link is not
+// a DUFYND merchant redirect, even if its pathname looks like one.
+function acquisitionTarget(url: string): URL | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const origin = window.location.origin;
+    const target = new URL(url, origin);
+    if (!/^https?:$/.test(target.protocol) || target.username || target.password) {
+      return null;
+    }
+
+    const isClickout = (prefix: string): boolean => {
+      if (!target.pathname.startsWith(prefix)) return false;
+      const offer = decodeURIComponent(target.pathname.slice(prefix.length));
+      return Boolean(offer) && offer !== "." && offer !== ".." &&
+        !/[\\/\u0000-\u0020\u007f]/.test(offer);
+    };
+
+    if (target.origin === origin) {
+      // Other API endpoints are not storefront navigation destinations.
+      return !/^\/api(?:\/|$)/.test(target.pathname) || isClickout("/api/clickout/")
+        ? target : null;
+    }
+
+    // The API may be hosted separately from the storefront. Match its exact
+    // configured origin and clickout path, not a hostname suffix or any API URL.
+    const apiRoot = new URL(api.base, origin);
+    if (!/^https?:$/.test(apiRoot.protocol) || apiRoot.username || apiRoot.password ||
+        target.origin !== apiRoot.origin) return null;
+    const prefix = `${apiRoot.pathname.replace(/\/$/, "")}/clickout/`;
+    return isClickout(prefix) ? target : null;
+  } catch {
+    // Malformed URLs or configuration must not break navigation or leak data.
+    return null;
+  }
+}
+
 export function appendAcquisitionAttribution(
   url: string,
 ): string {
+  const target = acquisitionTarget(url);
+  if (!target) return url;
+
   const attribution = captureAcquisitionEntry();
   const internalQa = isInternalQa();
   if (!attribution && !internalQa) return url;
-
-  const target = new URL(
-    url,
-    typeof window !== "undefined"
-      ? window.location.origin
-      : "http://localhost",
-  );
 
   if (internalQa) target.searchParams.set("qa", "1");
   if (attribution) target.searchParams.set("src", attribution.source);
