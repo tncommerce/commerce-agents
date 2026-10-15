@@ -290,6 +290,10 @@ export default function FragranceComparisonPicker({
     left != null &&
     right != null &&
     left.product_id !== right.product_id;
+  const hasRating = left?.community.rating_10 != null || right?.community.rating_10 != null;
+  const hasLongevity = left?.community.longevity_10 != null || right?.community.longevity_10 != null;
+  const hasProjection = left?.community.projection_10 != null || right?.community.projection_10 != null;
+  const hasCommunityData = hasRating || hasLongevity || hasProjection;
 
   useEffect(() => {
     if (!validPair || !left || !right) return;
@@ -427,7 +431,7 @@ export default function FragranceComparisonPicker({
               </div>
             </div>
 
-            <ComparisonRow
+            {hasRating && <ComparisonRow
               label="Community"
               left={formatRating(
                   left.community.rating_10,
@@ -437,8 +441,8 @@ export default function FragranceComparisonPicker({
                   right.community.rating_10,
                   right.community.provisional,
                 )}
-            />
-            <ComparisonRow
+            />}
+            {hasLongevity && <ComparisonRow
               label="Haltbarkeit"
               left={formatNumber(
                 left.community.longevity_10,
@@ -448,8 +452,8 @@ export default function FragranceComparisonPicker({
                 right.community.longevity_10,
                 right.community.provisional,
               )}
-            />
-            <ComparisonRow
+            />}
+            {hasProjection && <ComparisonRow
               label="Ausstrahlung"
               left={formatNumber(
                 left.community.projection_10,
@@ -459,7 +463,7 @@ export default function FragranceComparisonPicker({
                 right.community.projection_10,
                 right.community.provisional,
               )}
-            />
+            />}
             <ComparisonRow
               label="Frische"
               left={formatNumber(left.scores.freshness)}
@@ -494,6 +498,12 @@ export default function FragranceComparisonPicker({
           <p className="mt-2 text-[11px] leading-5 text-(--ink-soft)">
             Historische Marktbeobachtung zum angegebenen Stand, kein aktuelles Kaufangebot.
             Verfügbare Händlerangebote werden auf den Duftseiten separat geprüft.
+          </p>
+          <p className="mt-2 text-[11px] leading-5 text-(--ink-soft)">
+            {hasCommunityData
+              ? "Veröffentlichte Community-Werte sind Nutzerbewertungen auf einer 0–10-Skala und keine objektiv gemessenen Stunden oder Meter."
+              : "Community-Bewertungen, Haltbarkeit und Ausstrahlung sind für diese Varianten derzeit nicht veröffentlicht."}{" "}
+            Die DUFYND-Profilachsen sind redaktionelle Merkmale.
           </p>
 
           <FragranceComparisonEvidence left={left} right={right} />

@@ -198,7 +198,7 @@ export async function generateMetadata({
   const title =
     `${pair.left.brand} ${pair.left.name} vs. ${pair.right.brand} ${pair.right.name}`;
   const description =
-    `Vergleiche ${pair.left.brand} ${pair.left.name} und ${pair.right.brand} ${pair.right.name}: Duftprofil, Community-Bewertung, Haltbarkeit, Ausstrahlung und Preisreferenz.`;
+    `Vergleiche ${pair.left.brand} ${pair.left.name} und ${pair.right.brand} ${pair.right.name}: exakte Varianten, redaktionelle Duftprofile und historische Preisreferenzen.`;
   const canonical = `/vergleich/${pair.pair_slug}`;
 
   return {
@@ -210,6 +210,11 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       url: `${SITE_URL}${canonical}`,
+      title,
+      description,
+    },
+    twitter: {
+      card: "summary",
       title,
       description,
     },
@@ -226,6 +231,11 @@ export default async function ComparisonPage({
 
   const left = pair.left;
   const right = pair.right;
+  const hasRating = left.community.rating_10 != null || right.community.rating_10 != null;
+  const hasRatingCount = left.community.rating_count > 0 || right.community.rating_count > 0;
+  const hasLongevity = left.community.longevity_10 != null || right.community.longevity_10 != null;
+  const hasProjection = left.community.projection_10 != null || right.community.projection_10 != null;
+  const hasCommunityData = hasRating || hasRatingCount || hasLongevity || hasProjection;
   const canonicalUrl = `${SITE_URL}/vergleich/${pair.pair_slug}`;
   const breadcrumbStructuredData = {
     "@context": "https://schema.org",
@@ -330,7 +340,7 @@ export default async function ComparisonPage({
                 : ""}
             </div>
             <p className="mt-4 max-w-2xl text-[12.5px] leading-5 text-white/70">
-              Dokumentierte Duftbeziehungen, Community-Daten und redaktionelle Profilmerkmale.
+              Dokumentierte Duftbeziehungen, exakte Varianten und redaktionelle Profilmerkmale.
               Eine Duftbeziehung bedeutet keine identische Rezeptur.
             </p>
           </div>
@@ -370,7 +380,7 @@ export default async function ComparisonPage({
             </div>
           </div>
 
-          <ComparisonRow
+          {hasRating && <ComparisonRow
             label="Community"
             left={formatRating(
                   left.community.rating_10,
@@ -380,13 +390,13 @@ export default async function ComparisonPage({
                   right.community.rating_10,
                   right.community.provisional,
                 )}
-          />
-          <ComparisonRow
+          />}
+          {hasRatingCount && <ComparisonRow
             label="Bewertungen"
-            left={left.community.rating_count.toLocaleString("de-DE")}
-            right={right.community.rating_count.toLocaleString("de-DE")}
-          />
-          <ComparisonRow
+            left={left.community.rating_count > 0 ? left.community.rating_count.toLocaleString("de-DE") : "–"}
+            right={right.community.rating_count > 0 ? right.community.rating_count.toLocaleString("de-DE") : "–"}
+          />}
+          {hasLongevity && <ComparisonRow
             label="Haltbarkeit"
             left={formatNumber(
               left.community.longevity_10,
@@ -396,8 +406,8 @@ export default async function ComparisonPage({
               right.community.longevity_10,
               right.community.provisional,
             )}
-          />
-          <ComparisonRow
+          />}
+          {hasProjection && <ComparisonRow
             label="Ausstrahlung"
             left={formatNumber(
               left.community.projection_10,
@@ -407,7 +417,7 @@ export default async function ComparisonPage({
               right.community.projection_10,
               right.community.provisional,
             )}
-          />
+          />}
           <ComparisonRow
             label="Frische"
             left={formatNumber(left.scores.freshness)}
@@ -503,9 +513,10 @@ export default async function ComparisonPage({
         </section>
 
         <section className="mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[10.5px] leading-5 text-(--ink-soft)">
-          Community-Werte sind Nutzerbewertungen auf einer 0–10-Skala
-          und keine objektiv gemessenen Stunden oder Meter. Die
-          DUFYND-Profilachsen dienen der Suche und Empfehlung und sind
+          {hasCommunityData
+            ? "Veröffentlichte Community-Werte sind Nutzerbewertungen auf einer 0–10-Skala und keine objektiv gemessenen Stunden oder Meter."
+            : "Community-Bewertungen, Haltbarkeit und Ausstrahlung sind für diese Varianten derzeit nicht veröffentlicht."}{" "}
+          Die DUFYND-Profilachsen dienen der Suche und Empfehlung und sind
           redaktionelle Merkmale.
         </section>
 
