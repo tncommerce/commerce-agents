@@ -24,5 +24,6 @@ def test_privacy_notice_matches_consent_and_clickout_runtime() -> None:
         "Zusätzlich protokolliert DUFYND beim Öffnen eines Händlerlinks einen Clickout-Datensatz",
         "Clickout-Ereigniskennung an das jeweilige Partnernetzwerk",
         "Analyse- und Clickout-Ereignisse ersatzweise in lokalen Protokolldateien",
+        "Anbieter ist Supabase, Inc.",
     ):
         assert stale not in text
