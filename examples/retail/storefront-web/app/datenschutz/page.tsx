@@ -163,7 +163,7 @@ export default function DatenschutzPage() {
               </p>
               <p className="mt-2">
                 Die pseudonymisierten Analyseereignisse werden für die interne Auswertung in der von DUFYND
-                eingesetzten Supabase-Datenbankinfrastruktur gespeichert. Anbieter ist Supabase, Inc. Nach den
+                eingesetzten Supabase-Datenbankinfrastruktur gespeichert. Anbieter ist Supabase Nach den
                 veröffentlichten Datenschutzinformationen verarbeitet Supabase Kundendaten im Rahmen des
                 Dienstes grundsätzlich als Auftragsverarbeiter. Weitere Informationen findest du in der{" "}
                 <a
