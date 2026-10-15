@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyPublicShareLinks(browser, baseUrl) {
@@ -24,6 +25,7 @@ export async function verifyPublicShareLinks(browser, baseUrl) {
   };
   try {
     await page.goto(`${baseUrl}/duft/xerjoff-naxos?${query}#angebote`);
+    await chooseMeasurement(page, "denied");
     const share = page.getByRole("button", { name: /teilen$/ });
     await share.click();
     await page.waitForFunction(() => window.sharedLinks.length === 1);
@@ -42,8 +44,8 @@ export async function verifyPublicShareLinks(browser, baseUrl) {
     await share.click();
     await page.waitForFunction(() => window.sharedLinks.length === 3);
     assertPublicLink(await page.evaluate(() => window.sharedLinks[2]), "/duft/xerjoff-naxos", "#angebote");
-    assert.equal(new URL(page.url()).searchParams.has("sid"), true,
-      "sharing must not mutate the active page's navigation/session state");
+    assert.equal(new URL(page.url()).searchParams.has("sid"), false,
+      "privacy initialization removes the untrusted inbound session before sharing");
 
     await page.goto(`${baseUrl}/duft?${query}&q=Naxos&zielgruppe=unisex#katalog`);
     await page.getByRole("button", { name: "Filterlink kopieren", exact: true }).click();
@@ -51,7 +53,7 @@ export async function verifyPublicShareLinks(browser, baseUrl) {
     const catalog = assertPublicLink(await page.evaluate(() => window.sharedLinks[0]), "/duft", "#katalog");
     assert.equal(catalog.searchParams.get("q"), "Naxos");
     assert.equal(catalog.searchParams.get("zielgruppe"), "unisex");
-    assert.equal(new URL(page.url()).searchParams.has("sid"), true);
+    assert.equal(new URL(page.url()).searchParams.has("sid"), false);
 
     await page.goto(`${baseUrl}/vergleich?${query}#vergleich`);
     const leftPicker = page.getByRole("combobox", { name: /^Duft 1/ });
@@ -68,7 +70,7 @@ export async function verifyPublicShareLinks(browser, baseUrl) {
     for (const side of ["left", "right"]) {
       assert.equal(comparison.searchParams.get(side), activeComparison.searchParams.get(side));
     }
-    assert.equal(activeComparison.searchParams.has("sid"), true);
+    assert.equal(activeComparison.searchParams.has("sid"), false);
   } finally {
     await context.close();
   }

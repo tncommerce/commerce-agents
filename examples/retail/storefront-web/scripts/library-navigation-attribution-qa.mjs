@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyLibraryNavigationAttribution(browser, baseUrl) {
@@ -37,6 +38,7 @@ export async function verifyLibraryNavigationAttribution(browser, baseUrl) {
             });
             const source = mode === "sammlung" ? "collection_page" : "wishlist_page";
             await page.goto(`${baseUrl}/${surface === "summary" ? "" : mode}?src=instagram&cmp=library_qa&content=slide_4`);
+            await chooseMeasurement(page, "granted");
             const link = surface === "summary"
               ? page.getByRole("link", { name: mode === "sammlung" ? "Sammlung öffnen" : "Merkliste öffnen", exact: true })
               : surface === "card"
@@ -100,6 +102,7 @@ export async function verifyLibraryNavigationAttribution(browser, baseUrl) {
             return route.fulfill({ json: { ok: true } });
           });
           await page.goto(`${baseUrl}/${mode}?${invalid}`);
+          await chooseMeasurement(page, "granted");
           for (let n = 0; n < 100 && !events.some((e) => e.event === "page_view"); n++) await page.waitForTimeout(50);
           const event = events.find((e) => e.event === "page_view");
           assert.ok(event);

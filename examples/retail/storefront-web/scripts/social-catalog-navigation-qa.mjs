@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifySocialCatalogNavigation(browser, baseUrl) {
@@ -26,6 +27,7 @@ export async function verifySocialCatalogNavigation(browser, baseUrl) {
             return route.fulfill({ json: { ok: true } });
           });
           await page.goto(`${baseUrl}/start?src=instagram&cmp=nav_qa&content=slide_3`);
+          await chooseMeasurement(page, "granted");
           await page.waitForFunction(() => [...document.querySelectorAll("a")].filter((link) => !link.closest("footer") && new URL(link.href).origin === location.origin).every((link) => new URL(link.href).searchParams.get("cmp") === "nav_qa"));
           await page.getByRole("link", { name: "Katalog entdecken", exact: true }).click();
           await page.waitForURL((url) => url.pathname === "/duft");

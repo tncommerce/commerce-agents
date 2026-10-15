@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifySocialSearchAttribution(browser, baseUrl) {
@@ -26,6 +27,7 @@ export async function verifySocialSearchAttribution(browser, baseUrl) {
             return route.fulfill({ json: { ok: true } });
           });
           await page.goto(`${baseUrl}/start?src=instagram&cmp=carousel_qa&content=slide_2`);
+          await chooseMeasurement(page, "granted");
           for (let attempt = 0; attempt < 100 && !events.some((event) => event.event === "page_view"); attempt++) await page.waitForTimeout(50);
           assert.ok(events.some((event) => event.event === "page_view"), "wait for landing attribution initialization");
           const input = page.getByRole("searchbox", { name: "Duft oder Marke suchen", exact: true });

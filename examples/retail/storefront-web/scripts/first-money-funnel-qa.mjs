@@ -46,7 +46,6 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
         const measurementSession = await page.evaluate(() => sessionStorage.getItem("dufynd_analytics_session_v1"));
         assert.match(measurementSession, /^[a-f0-9-]{36}$/);
         assert.notEqual(measurementSession, `${session}-1`, "measurement identity must be independent from functional transport");
-        await page.waitForFunction(() => sessionStorage.getItem("dufynd_internal_qa_v1") === "1");
         for (let attempt = 0; attempt < 100 && !events.some((e) => e.event === "page_view"); attempt += 1) {
           await page.waitForTimeout(25);
         }

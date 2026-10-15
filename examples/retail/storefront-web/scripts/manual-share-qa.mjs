@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyManualShareFallback(browser, baseUrl) {
@@ -41,13 +42,14 @@ export async function verifyManualShareFallback(browser, baseUrl) {
         assert.equal(await field.getAttribute("readonly"), "");
         await field.focus();
         assert.deepEqual(await field.evaluate((input) => [input.selectionStart, input.selectionEnd]), [0, value.length]);
-        assert.equal(new URL(page.url()).searchParams.has("sid"), true);
+        assert.equal(new URL(page.url()).searchParams.has("sid"), false, "privacy initialization removes untrusted inbound sid");
         assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true,
           "manual URL must not overflow the viewport");
         return url;
       };
 
       await page.goto(`${baseUrl}/duft/xerjoff-naxos?${query}#angebote`);
+      await chooseMeasurement(page, "denied");
       const share = page.getByRole("button", { name: /teilen$/ });
       await share.click();
       await assertManual("/duft/xerjoff-naxos", "#angebote");

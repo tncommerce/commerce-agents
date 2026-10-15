@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyAcquisitionLandingNavigation(browser, baseUrl) {
@@ -27,6 +28,7 @@ export async function verifyAcquisitionLandingNavigation(browser, baseUrl) {
               return route.fulfill({ json: { ok: true } });
             });
             await page.goto(`${baseUrl}/${landing}?src=youtube&cmp=landing_qa&content=video_2`);
+            await chooseMeasurement(page, "granted");
             await page.waitForFunction(() => [...document.querySelectorAll("a")].filter((link) => !link.closest("footer") && new URL(link.href).origin === location.origin).every((link) => new URL(link.href).searchParams.get("cmp") === "landing_qa"));
             const link = surface === "catalog"
               ? page.getByRole("link", { name: "Katalog entdecken", exact: true })

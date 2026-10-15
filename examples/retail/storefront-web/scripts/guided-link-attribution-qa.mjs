@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyGuidedLinkAttribution(browser, baseUrl) {
@@ -35,6 +36,7 @@ export async function verifyGuidedLinkAttribution(browser, baseUrl) {
           return route.fulfill({ status: 200, contentType: "text/event-stream", body: "" });
         });
         await page.goto(`${baseUrl}/parfum-geschenkberater?src=tiktok&cmp=gift_video&content=video_1`);
+        await chooseMeasurement(page, "granted");
         const link = page.getByRole("link", { name: "Geschenkberatung starten", exact: true });
         await page.waitForFunction(() => {
           const link = Array.from(document.querySelectorAll("a")).find((element) => element.textContent?.trim() === "Geschenkberatung starten");
