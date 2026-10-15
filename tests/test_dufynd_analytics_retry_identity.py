@@ -44,8 +44,12 @@ def test_lost_write_response_retry_is_one_qa_event(monkeypatch, tmp_path):
     )
 
     async def run():
-        first = await main.analytics_event(payload, SimpleNamespace(session_id="old-transport"))
-        second = await main.analytics_event(payload, SimpleNamespace(session_id="new-transport"))
+        first = await main.analytics_event(
+            payload, SimpleNamespace(session_id="old-transport"), measurement="granted-v1"
+        )
+        second = await main.analytics_event(
+            payload, SimpleNamespace(session_id="new-transport"), measurement="granted-v1"
+        )
         assert first["storage"] == "local_fallback"
         assert second["storage"] == "supabase"
         assert first["event_id"] == second["event_id"]
@@ -53,7 +57,9 @@ def test_lost_write_response_retry_is_one_qa_event(monkeypatch, tmp_path):
         assert next(iter(stored.values()))["traffic_class"] == "internal_qa"
         # Reusing a client key in a different funnel cannot collide with it.
         other = payload.model_copy(update={"analytics_session_id": "qa-other-funnel-123456789"})
-        await main.analytics_event(other, SimpleNamespace(session_id="third-transport"))
+        await main.analytics_event(
+            other, SimpleNamespace(session_id="third-transport"), measurement="granted-v1"
+        )
         assert len(stored) == 2
 
     asyncio.run(run())
