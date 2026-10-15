@@ -6,6 +6,10 @@ import {
   captureAcquisitionEntry,
   trackAnalyticsEvent,
 } from "@/lib/analytics";
+import {
+  measurementAllowed,
+  subscribeMeasurement,
+} from "@/lib/measurementConsent";
 
 export default function AcquisitionAnalytics({
   source,
@@ -14,23 +18,34 @@ export default function AcquisitionAnalytics({
   source: string;
   trackPageView?: boolean;
 }) {
-  const trackedRef = useRef(false);
+  const trackedKeyRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (trackedRef.current) return;
-    trackedRef.current = true;
+    const key = `${source}:${trackPageView ? "page" : "no-page"}`;
+    const trackCurrentPage = () => {
+      if (
+        !trackPageView ||
+        trackedKeyRef.current === key ||
+        !measurementAllowed()
+      ) {
+        return;
+      }
 
-    const attribution = captureAcquisitionEntry();
-    const landingSource = attribution?.source && attribution.source !== "unknown"
-      ? `${source}_${attribution.source}`
-      : source;
+      const attribution = captureAcquisitionEntry();
+      const landingSource =
+        attribution?.source && attribution.source !== "unknown"
+          ? `${source}_${attribution.source}`
+          : source;
 
-    if (trackPageView) {
+      trackedKeyRef.current = key;
       void trackAnalyticsEvent("page_view", {
         source: landingSource,
         surface: "acquisition_landing",
       });
-    }
+    };
+
+    trackCurrentPage();
+    return subscribeMeasurement(trackCurrentPage);
   }, [source, trackPageView]);
 
   return null;

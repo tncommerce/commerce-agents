@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyLibrarySaveRecovery(browser, baseUrl) {
@@ -8,6 +9,7 @@ export async function verifyLibrarySaveRecovery(browser, baseUrl) {
     const page = await context.newPage();
     try {
       await page.goto(`${baseUrl}/duft/xerjoff-naxos`);
+      await chooseMeasurement(page, "denied");
       const wishlist = page.getByRole("button", { name: /Merken|Gemerkt|Bereits in Sammlung/ });
       const collection = page.getByRole("button", { name: /Meine Sammlung|In meiner Sammlung/ });
       await wishlist.waitFor();

@@ -3,9 +3,8 @@
 import type { ComponentPropsWithoutRef, SyntheticEvent } from "react";
 import { useEffect, useState } from "react";
 
-import {
-  appendAcquisitionAttribution,
-} from "@/lib/analytics";
+import { appendAcquisitionAttribution } from "@/lib/analytics";
+import { subscribeMeasurement } from "@/lib/measurementConsent";
 
 type Props = Omit<ComponentPropsWithoutRef<"a">, "href"> & {
   href: string;
@@ -22,11 +21,14 @@ export default function AcquisitionInternalLink({
   const [attributedHref, setAttributedHref] = useState(href);
 
   useEffect(() => {
-    setAttributedHref(appendAcquisitionAttribution(href));
+    const refreshHref = () => setAttributedHref(appendAcquisitionAttribution(href));
+    const unsubscribe = subscribeMeasurement(refreshHref);
+    refreshHref();
+    return unsubscribe;
   }, [href]);
 
-  // The session can settle after the mount effect. Refresh the actual anchor
-  // before native navigation, including keyboard and open-in-new-tab gestures.
+  // Consent and session can settle after mount. Also refresh before native
+  // navigation, including keyboard and open-in-new-tab gestures.
   const refresh = (event: SyntheticEvent<HTMLAnchorElement>) => {
     event.currentTarget.href = appendAcquisitionAttribution(href);
   };

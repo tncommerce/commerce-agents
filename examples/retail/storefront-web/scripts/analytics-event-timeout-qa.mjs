@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 async function waitFor(predicate, timeout = 12_000) {
@@ -19,19 +20,20 @@ export async function verifyAnalyticsEventTimeout(browser, baseUrl) {
     const stalled = new Promise((resolve) => { release = resolve; });
     try {
       page.on("requestfailed", (request) => {
-        if (request.url().endsWith("/api/analytics/events")) aborted += 1;
+        if (new URL(request.url()).pathname === "/api/analytics/events") aborted += 1;
       });
       await page.route("**/api/session", (route) => {
         sessions += 1;
         return route.fulfill({ json: { session_id: `qa-event-${advisor ? "advisor" : "analytics"}-${sessions}`, name: "QA Guest" } });
       });
       await page.route("**/api/products?**", (route) => route.fulfill({ json: { products: [] } }));
-      await page.route("**/api/analytics/events", async (route) => {
+      await page.route((url) => url.pathname === "/api/analytics/events", async (route) => {
         posts.push({ payload: route.request().postDataJSON(), session: route.request().headers()["x-session-id"] });
         if (posts.length === 1) await stalled;
         await route.fulfill({ json: { ok: true } }).catch(() => {});
       });
       await page.goto(`${baseUrl}/${advisor ? "" : "duft/xerjoff-naxos"}?src=tiktok&cmp=event_qa&content=event_video`);
+      await chooseMeasurement(page, "granted");
       await waitFor(() => posts.length === 1);
       assert.equal(sessions, 1);
       if (advisor) {

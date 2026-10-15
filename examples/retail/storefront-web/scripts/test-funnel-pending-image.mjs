@@ -1,11 +1,18 @@
 import assert from "node:assert/strict";
+import { fileURLToPath } from "node:url";
 import { chromium } from "playwright";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
+import { verifyMeasurementBrowser } from "./measurement-browser-qa.mjs";
 
 const baseUrl = process.argv[2] || "http://127.0.0.1:3000";
 const browser = await chromium.launch({ headless: true });
 let pendingImages = 0;
 try {
+  // Fresh contexts: consent is never globally fabricated by the QA launcher.
+  const consentCases = await verifyMeasurementBrowser(
+    browser, baseUrl, fileURLToPath(new URL("../.visual-qa/", import.meta.url)),
+  );
+  console.log(JSON.stringify({ suite: "consent26-browser", status: "passed", cases: consentCases.length, merchantClicks: 0 }));
   const fixtureBrowser = {
     async newContext(options) {
       const context = await browser.newContext(options);

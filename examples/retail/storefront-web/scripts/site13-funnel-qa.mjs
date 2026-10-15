@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 // Entirely local, default-deny QA. Artificial quotes never enter public data.
@@ -41,8 +42,12 @@ export async function verifySite13Funnel(browser, baseUrl) {
           });
           const query = source === "tiktok" ? "src=tiktok&cmp=qa_site13&content=qa_profile" : "utm_source=youtube&utm_campaign=qa_site13&utm_content=qa_profile";
           assert.ok((await page.goto(`${baseUrl}/duft?qa=1&${query}`))?.ok());
+          await chooseMeasurement(page, "granted");
           await page.waitForFunction(() => Boolean(document.querySelector("[data-social-product-entry]")?.href.includes("qa_site13")));
           await assertEventually(() => events.some((e) => e.event === "page_view"));
+          const measurementSession = events.find((e) => e.event === "page_view")?.analytics_session_id;
+          assert.match(measurementSession || "", /^[0-9a-f-]{36}$/i);
+          assert.notEqual(measurementSession, "qa-site13-transport-1-12345");
           const entry = page.locator("[data-social-product-entry]");
           assert.match(await entry.innerText(), /1 Million|1Million/);
           assert.match(await entry.innerText(), /Eau de Toilette.*100 ml/);
@@ -57,13 +62,13 @@ export async function verifySite13Funnel(browser, baseUrl) {
           await page.locator("#dufynd-hero-offer-cta").click();
           await assertEventually(() => events.some((e) => e.event === "offer_section_view"));
           const url = new URL(await merchant.getAttribute("href"));
-          for (const [key, value] of [["src", source], ["cmp", "qa_site13"], ["content", "qa_profile"], ["qa", "1"], ["sid", "qa-site13-transport-1-12345"]]) assert.equal(url.searchParams.get(key), value);
+          for (const [key, value] of [["src", source], ["cmp", "qa_site13"], ["content", "qa_profile"], ["qa", "1"], ["sid", measurementSession], ["measurement", "granted-v1"]]) assert.equal(url.searchParams.get(key), value);
           assert.equal(url.pathname, "/api/clickout/qa-site13-offer");
           assert.ok(sessionRequests >= 2, "document navigation must use a fresh API transport");
           for (const type of ["page_view", "fragrance_detail_view", "offer_section_view"]) {
             const row = events.find((e) => e.event === type);
             assert.ok(row, type);
-            assert.equal(row.analytics_session_id, "qa-site13-transport-1-12345", `${type}: split session at ${width}/${denied}/${source}`);
+            assert.equal(row.analytics_session_id, measurementSession, `${type}: split independent measurement identity at ${width}/${denied}/${source}`);
             assert.equal(row.acquisition_source, source);
             assert.equal(row.campaign_id, "qa_site13");
             assert.equal(row.content_id, "qa_profile");
