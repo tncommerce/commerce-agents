@@ -149,6 +149,7 @@ async def merchant_partner_clickout(
         headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
     )
 
+
 @app.get("/api/merchant-offers/{product_id}")
 async def product_offers(product_id: str) -> dict:
     if not _live_dufynd_offer_product(product_id):
@@ -233,6 +234,7 @@ async def merchant_clickout(
         status_code=302,
         headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
     )
+
 
 @app.post("/api/cart/add")
 async def cart_add(request: CartAddRequest, record: host.CurrentSession) -> dict:
