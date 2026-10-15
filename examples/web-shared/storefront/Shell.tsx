@@ -57,6 +57,7 @@ export function StoreShell<V extends string>({
   onPanelOpenChange,
   placeholder,
   composerLabel,
+  hideComposer = false,
   banner,
   children,
   minimal = false,
@@ -82,6 +83,8 @@ export function StoreShell<V extends string>({
   placeholder: string;
   /** Accessible label for the storefront composer. Defaults to an English generic label. */
   composerLabel?: string;
+  /** A landing page may render the existing Composer inline instead of docking it. */
+  hideComposer?: boolean;
   /** A strip between the app bar and the page. */
   banner?: ReactNode;
   children: ReactNode;
@@ -92,6 +95,16 @@ export function StoreShell<V extends string>({
   const [activityOpen, setActivityOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
   const bagButtonRef = useRef<HTMLButtonElement>(null);
+  const composerDockRef = useRef<HTMLDivElement>(null);
+  const previousComposerHidden = useRef(hideComposer);
+  useEffect(() => {
+    // The inline landing field unmounts when its first message opens the chat.
+    // Restore the typing focus only for that transition, not on other storefronts.
+    if (previousComposerHidden.current && !hideComposer) {
+      composerDockRef.current?.querySelector("textarea")?.focus({ preventScroll: true });
+    }
+    previousComposerHidden.current = hideComposer;
+  }, [hideComposer]);
   const panelRef = useRef<HTMLElement>(null);
   const home = views[0].id;
   const { send } = chat;
@@ -202,7 +215,7 @@ export function StoreShell<V extends string>({
         <div className="flex min-h-0 flex-1">
           <div className="flex min-w-0 flex-1 flex-col">
             <main className="min-h-0 flex-1">{children}</main>
-            <div className="relative shrink-0 px-4 pb-4 pt-2 sm:px-6">
+            {!hideComposer ? <div ref={composerDockRef} className="relative shrink-0 px-4 pb-4 pt-2 sm:px-6">
               <div
                 aria-hidden
                 className="pointer-events-none absolute inset-x-0 -top-6 h-6 bg-linear-to-b from-transparent to-(--ground)"
@@ -215,7 +228,7 @@ export function StoreShell<V extends string>({
                 placeholder={placeholder}
                 className="mx-auto max-w-[760px]"
               />
-            </div>
+            </div> : null}
           </div>
 
           <div

@@ -74,3 +74,29 @@
   line-height: 1.4;
   pointer-events: none;
 }
+
+.sourcePhoto {
+  display: grid;
+  place-items: center;
+  background: #fff;
+  overflow: hidden;
+}
+.sourcePhoto img {
+  display: block;
+  width: auto;
+  height: 260px;
+  max-width: 86%;
+  object-fit: contain;
+  object-position: center;
+  filter: none;
+  transform: none;
+  animation: none;
+}
+.sourcePhoto[data-variant="card"] img { height: 180px; }
+:global([data-merchant-photo-review]) :global(.dufynd-fragrance-stage-shell):has(.sourcePhoto) {
+  min-height: 360px;
+  background: #fff;
+}
+@media (max-width: 767px) {
+  :global([data-merchant-photo-review]) :global(.dufynd-fragrance-stage-shell):has(.sourcePhoto) { min-height: 320px; }
+}

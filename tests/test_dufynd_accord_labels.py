@@ -8,7 +8,7 @@ SURFACES = [
     Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx"),
     Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx"),
     Path("examples/retail/storefront-web/app/vergleich/[pair]/page.tsx"),
-    Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx"),
+    Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx"),
 ]
 
 

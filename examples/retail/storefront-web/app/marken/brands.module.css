@@ -390,3 +390,11 @@
 @media (prefers-reduced-motion:reduce) {
   .heroButton, .brandHeroLink, .brandCard, .brandArrow, .productCard, .headerLink { transition:none !important; transform:none !important; }
 }
+
+/* Atelier edition: retain the working A–Z index and make its framing consistent. */
+.hero,.brandHero {border-radius:4px;background:#222722;box-shadow:none}
+.heroContent h1 {font-weight:500}
+.heroContent h1 span {font-family:Georgia,'Times New Roman',serif;font-style:italic;color:#ddc796;font-weight:400}
+.heroDescription {font-size:16px;line-height:1.75}
+.headerLink {border-radius:3px;min-height:44px;font-size:13px}
+@media(max-width:639px){.heroDescription{font-size:14px}}

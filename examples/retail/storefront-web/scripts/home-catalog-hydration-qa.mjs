@@ -56,7 +56,8 @@ export async function verifyHomeCatalogHydration(browser, baseUrl) {
           const card = document.querySelector(`a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`);
           return card?.innerText.includes(text);
         }, { audience, text });
-        if (count) await card.locator("img").first().waitFor({ state: "attached" });
+        // Audience entries are navigation, not unlicensed product-image substitutes.
+        await card.locator("h3").waitFor({ state: "visible" });
       }
       cases++;
     } finally {

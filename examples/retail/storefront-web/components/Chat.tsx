@@ -41,7 +41,7 @@ export default function Chat({
       chat={chat}
       home={home}
       wide={WIDE}
-      maxWidthClass="max-w-[1080px]"
+      maxWidthClass="max-w-[1240px]"
       errorText={scentaiErrorText}
       renderPending={(item) => <Pending item={item} />}
       renderBlock={(segment) => (

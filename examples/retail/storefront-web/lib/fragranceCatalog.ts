@@ -1,5 +1,8 @@
-import catalog from "../../data/catalog.json";
-import scentaiProducts from "../../data/scentai_products.json";
+import approvedOriginals from "./generated/original-photos.json";
+import {RELEASED_FRAGRANCES} from './releasedProfileCatalog';
+import { canonicalBrand } from './brandIdentity';
+import catalog from "./generated/public-catalog.json";
+import scentaiProducts from "./generated/public-fragrances.json";
 
 import { fragranceSlug } from "@/lib/fragranceSlug";
 
@@ -427,7 +430,7 @@ function catalogToFragrance(
     preferredVisual,
     backdropVisual,
   );
-  const brand = String(row.brand || source?.brand || "").trim();
+  const brand = canonicalBrand(String(row.brand || source?.brand || ""));
   const name = String(
     attributes.canonical_name ||
       source?.name ||
@@ -509,7 +512,7 @@ function catalogToFragrance(
       source:
         source?.community?.source ||
         attributes.rating_source ||
-        "Parfumo",
+        "",
       rating_10: rating10,
       rating_count: ratingCount,
       longevity_10:
@@ -568,7 +571,9 @@ export const LIVE_FRAGRANCES: StaticFragrance[] = (
       product.in_stock !== false &&
       !hasSourceValidationBlockers(product.product_id),
   )
-  .map(catalogToFragrance);
+  .map(catalogToFragrance).concat(RELEASED_FRAGRANCES);
+
+if(new Set(LIVE_FRAGRANCES.map(f=>f.product_id)).size!==LIVE_FRAGRANCES.length) throw new Error('Duplicate public product ID');
 
 const slugCounts = new Map<string, number>();
 
@@ -863,4 +868,11 @@ export function getLiveFragranceByProductId(
   productId: string,
 ): StaticFragrance | null {
   return byProductId.get(productId) || null;
+}
+
+/** Asset-specific approval; fidelity alone does not establish image rights. */
+export function originalPhotoFor(fragrance: StaticFragrance): FragranceVisualAsset | null {
+  return fragrance.visuals.find(v => isVerifiedProductTruthVisual(v) && approvedOriginals.some(a =>
+    a.product_id === fragrance.product_id && a.url === v.url && a.volume_ml === fragrance.volume_ml
+  )) || null;
 }

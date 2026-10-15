@@ -1,4 +1,5 @@
 "use client";
+import { canonicalBrand } from '@/lib/brandIdentity';
 
 import {
   fragranceSearchIdentity,
@@ -22,6 +23,7 @@ import {
   catalogAudienceFor,
   fragranceMatchesAudience,
   isVerifiedProductTruthVisual,
+  originalPhotoFor,
   visualWorldFor,
   type CatalogAudience,
   type StaticFragrance,
@@ -106,10 +108,8 @@ const SORT_OPTIONS: {
   value: SortMode;
   label: string;
 }[] = [
-  { value: "popular", label: "Community-Aktivität" },
+  { value: "popular", label: "Entdecken" },
   { value: "profile", label: "Passend zum Duftprofil" },
-  { value: "rating", label: "Bewertung" },
-  { value: "performance", label: "Haltbarkeit & Ausstrahlung" },
   { value: "brand", label: "Marke A–Z" },
 ];
 
@@ -449,7 +449,7 @@ export default function FragranceCatalogBrowser({
     const initialAudience = AUDIENCE_OPTIONS.find(
       (option) => option.value === params.get("zielgruppe") && option.value !== "all",
     );
-    const initialBrand = params.get("marke");
+    const initialBrand = canonicalBrand(params.get("marke") || '');
     const initialRating = params.get("bewertung");
     const initialSort = SORT_OPTIONS.find(
       (option) => option.value === params.get("sort"),
@@ -470,7 +470,7 @@ export default function FragranceCatalogBrowser({
     if (initialBrand && fragrances.some((item) => item.brand === initialBrand)) {
       setBrand(initialBrand);
     }
-    if (initialRating && ["8", "8.3", "8.5"].includes(initialRating)) {
+    if (fragrances.some(item => item.community.rating_10 != null) && initialRating && ["8", "8.3", "8.5"].includes(initialRating)) {
       setMinimumRating(initialRating);
     }
     if (initialSort && (initialSort.value !== "profile" || matchedProfile)) {
@@ -599,6 +599,22 @@ export default function FragranceCatalogBrowser({
             minimum,
       )
       .sort((a, b) => {
+        // The broad, unfiltered "Entdecken" entry showcases only asset-verified
+        // original bottle photographs first. Search relevance, brand and scent
+        // profile choices keep their own result order.
+        if (
+          sort === "popular" &&
+          !search.trim() &&
+          audience === "all" &&
+          brand === "all" &&
+          profile === "all" &&
+          minimumRating === "0"
+        ) {
+          const photoDifference =
+            Number(Boolean(originalPhotoFor(b))) -
+            Number(Boolean(originalPhotoFor(a)));
+          if (photoDifference) return photoDifference;
+        }
         if (search.trim() && sort === "popular") {
           const relevance =
             searchScore(b, search) -
@@ -716,6 +732,9 @@ export default function FragranceCatalogBrowser({
   const hasActiveFilters = activeFilterCount > 0;
   const hasChanges =
     hasActiveFilters || sort !== "popular";
+  const featuredOriginalCount = fragrances.filter((fragrance) =>
+    Boolean(originalPhotoFor(fragrance)),
+  ).length;
 
   const visibleFragrances = filtered.slice(
     0,
@@ -799,128 +818,6 @@ export default function FragranceCatalogBrowser({
 
   return (
     <>
-      <section
-        className="mt-7 overflow-hidden rounded-[26px] border border-white/10 p-4 text-white shadow-[0_26px_70px_-38px_rgba(23,21,19,0.9)] sm:p-5"
-        style={{
-          background:
-            "radial-gradient(circle at 16% 0%, rgba(184, 137, 52, 0.28), transparent 32%), radial-gradient(circle at 86% 100%, rgba(92, 74, 52, 0.18), transparent 34%), linear-gradient(135deg, #161618 0%, #0a0b0d 72%)",
-        }}
-        aria-label="Duftgefühl entdecken"
-      >
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/[0.55]">
-              Discovery
-            </div>
-            <h2 className="mt-1.5 text-[21px] font-semibold tracking-[-0.025em] sm:text-[24px]">
-              Nach Duftgefühl entdecken
-            </h2>
-            <p className="mt-2 max-w-2xl text-[12px] leading-5 text-white/[0.62] sm:text-[13px]">
-              Spring direkt in die Duftwelt, die zu deinem Moment passt. Jeder Einstieg filtert den Katalog sofort und lässt sich mit einem zweiten Klick wieder lösen.
-            </p>
-          </div>
-          <div className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[10.5px] font-medium text-white/[0.58]">
-            {fragrances.length} Düfte · 4 Welten
-          </div>
-        </div>
-
-        <div className="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-2 lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0">
-          {PROFILE_DISCOVERY.map((card) => {
-            const active = profile === card.value;
-
-            return (
-              <button
-                key={card.value}
-                type="button"
-                onClick={() =>
-                  selectProfile(active ? "all" : card.value, !active)
-                }
-                className={`group min-w-[224px] snap-start rounded-2xl border p-4 text-left transition duration-200 lg:min-w-0 ${
-                  active
-                    ? "border-[#d5a84f]/70 bg-[#d5a84f]/[0.12] shadow-[0_14px_34px_-22px_rgba(213,168,79,0.9)]"
-                    : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.07]"
-                }`}
-                aria-pressed={active}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <span className="text-[17px] font-semibold tracking-[-0.02em] text-white">
-                    {card.label}
-                  </span>
-                  <span
-                    className={`rounded-full border px-2 py-1 text-[9.5px] font-semibold ${
-                      active
-                        ? "border-[#d5a84f]/[0.35] bg-[#d5a84f]/[0.12] text-[#f1d493]"
-                        : "border-white/10 bg-black/[0.15] text-white/[0.55]"
-                    }`}
-                  >
-                    {profileCounts[card.value]} Düfte
-                  </span>
-                </div>
-                <div className="mt-5 text-[12px] font-semibold text-white/[0.78]">
-                  {card.mood}
-                </div>
-                <div className="mt-1 text-[11px] leading-4 text-white/[0.48]">
-                  {card.notes}
-                </div>
-                <div
-                  className={`mt-4 flex items-center justify-between border-t pt-3 text-[10.5px] font-semibold uppercase tracking-[0.08em] ${
-                    active
-                      ? "border-[#d5a84f]/[0.24] text-[#f1d493]"
-                      : "border-white/[0.08] text-white/[0.48] group-hover:text-white/[0.68]"
-                  }`}
-                >
-                  <span>{active ? "Profil aktiv" : "Entdecken"}</span>
-                  <span aria-hidden="true">
-                    {active ? "✓" : "→"}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-
-        <div className="mt-5 border-t border-white/[0.08] pt-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/[0.45]">
-                Duft-DNA
-              </div>
-              <div className="mt-1 text-[12px] font-semibold text-white/[0.74]">
-                Beliebte Akkorde im aktuellen Katalog
-              </div>
-            </div>
-            <div className="flex max-w-full gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-end sm:overflow-visible">
-              {accordDiscovery.map(({ accord, count, label }) => {
-                const active =
-                  normalize(search) === normalize(label);
-
-                return (
-                  <button
-                    key={accord}
-                    type="button"
-                    onClick={() =>
-                      setSearch(active ? "" : label)
-                    }
-                    className={`shrink-0 rounded-full border px-3 py-2 text-[10.5px] font-semibold transition ${
-                      active
-                        ? "border-[#d5a84f]/65 bg-[#d5a84f]/[0.14] text-[#f1d493]"
-                        : "border-white/10 bg-white/[0.04] text-white/[0.58] hover:border-white/20 hover:bg-white/[0.07] hover:text-white/[0.78]"
-                    }`}
-                    aria-pressed={active}
-                    aria-label={`${label}: ${count} Düfte`}
-                  >
-                    {label}
-                    <span className="ml-1.5 text-white/[0.36]">
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section
         ref={filterSectionRef}
         className="mt-4 rounded-2xl scroll-mt-3 border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
@@ -1081,7 +978,7 @@ export default function FragranceCatalogBrowser({
               </div>
             </div>
 
-            <label className="block min-w-[150px]">
+            {fragrances.some(item => item.community.rating_10 != null) ? <label className="block min-w-[150px]">
               <span className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.07em] text-(--ink-soft)">
                 Bewertung
               </span>
@@ -1097,7 +994,7 @@ export default function FragranceCatalogBrowser({
                 <option value="8.3">ab 8,3/10</option>
                 <option value="8.5">ab 8,5/10</option>
               </select>
-            </label>
+            </label> : null}
           </div>
         </div>
 
@@ -1221,31 +1118,6 @@ export default function FragranceCatalogBrowser({
         <ManualShareLink url={manualUrl} />
       </section>
 
-      {compareSelection.length === 0 ? (
-        <div className="sticky bottom-3 z-20 mt-4 md:hidden">
-          <div className="mx-auto flex max-w-sm items-center gap-2 rounded-2xl border border-(--line) bg-(--card)/95 p-2 shadow-[0_18px_48px_-24px_rgba(20,18,16,0.45)] backdrop-blur">
-            <button
-              type="button"
-              onClick={openMobileFilters}
-              className="flex min-w-0 flex-1 items-center justify-between rounded-xl bg-(--ink) px-3 py-2.5 text-left text-[11.5px] font-semibold text-(--surface)"
-              aria-label="Katalogfilter öffnen"
-            >
-              <span className="truncate">
-                Filter{activeFilterCount ? ` · ${activeFilterCount}` : ""}
-              </span>
-              <span className="ml-2 truncate text-(--surface)/70">
-                {optionLabel(SORT_OPTIONS, sort)}
-              </span>
-            </button>
-            <span
-              className="shrink-0 rounded-xl border border-(--line) bg-(--surface) px-3 py-2.5 text-[11px] font-semibold text-(--ink)"
-              aria-live="polite"
-            >
-              {filtered.length} Treffer
-            </span>
-          </div>
-        </div>
-      ) : null}
 
       {profile !== "all" ? (
         <div className="mt-5 flex items-baseline justify-between gap-3">
@@ -1317,16 +1189,46 @@ export default function FragranceCatalogBrowser({
         </aside>
       ) : null}
 
+      <details className="dufynd-brand-directory">
+        <summary>Marken A–Z <span>· {brands.length} Marken entdecken</span></summary>
+        <nav aria-label="Marken A–Z">
+          {brands.map((name) => (
+            <button key={name} type="button" aria-pressed={brand === name}
+              onClick={() => { setBrand(brand === name ? "all" : name); }}>
+              {name}<span>{fragrances.filter((item) => item.brand === name).length}</span>
+            </button>
+          ))}
+        </nav>
+      </details>
+
       {filtered.length ? (
         <>
+          {!hasChanges && featuredOriginalCount > 0 ? (
+            <div
+              className="dufynd-catalog-originals-note mt-4"
+              aria-label="Originalaufnahmen zuerst"
+            >
+              <div>
+                <p>
+                  <strong>{featuredOriginalCount} Originalaufnahmen zuerst.</strong>{" "}
+                  Illustrationen sind gekennzeichnet.
+                </p>
+              </div>
+              <AcquisitionInternalLink
+                href="/bildnachweise"
+                className="dufynd-catalog-photo-evidence"
+              >
+                Bildnachweise ansehen <span aria-hidden>↗</span>
+              </AcquisitionInternalLink>
+            </div>
+          ) : null}
           <section
             className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
             aria-label="Passende Düfte"
           >
             {visibleFragrances.map((fragrance) => {
               const visual =
-                fragrance.presentation_visual ||
-                fragrance.preferred_visual;
+                originalPhotoFor(fragrance);
               const isProductTruth =
                 isVerifiedProductTruthVisual(visual);
               const dominantProfile =
@@ -1336,6 +1238,7 @@ export default function FragranceCatalogBrowser({
               <article
                 key={fragrance.product_id}
                 className="dufynd-catalog-card overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
+                data-original-photo={isProductTruth ? "true" : undefined}
                 data-dufynd-catalog-theme={
                   dominantProfile?.key || "balanced"
                 }
@@ -1378,16 +1281,32 @@ export default function FragranceCatalogBrowser({
                         className="dufynd-catalog-card-visual h-full w-full"
                       />
                     ) : (
-                      <div className="relative z-[2] grid h-full place-items-center text-[11px] font-semibold tracking-[0.16em] text-white/65">
-                        DUFYND
+                      <div
+                        className="dufynd-catalog-photo-pending h-full w-full"
+                        data-dufynd-visual-state="missing"
+                        data-dufynd-image-kind="pending-source"
+                        role="img"
+                        aria-label={`${fragrance.brand} ${fragrance.name}: Noch kein freigegebenes Original-Produktfoto`}
+                      >
+                        <span className="dufynd-catalog-photo-pending-eyebrow">
+                          DUFYND / DUFTARCHIV
+                        </span>
+                        <div className="dufynd-catalog-photo-pending-identity">
+                          <span>{fragrance.brand}</span>
+                          <strong>{fragrance.name}</strong>
+                          <small>{fragrance.concentration} · {fragrance.volume_ml} ml</small>
+                        </div>
+                        <span className="dufynd-catalog-photo-pending-caption">
+                          Originalfoto in Prüfung
+                        </span>
                       </div>
                     )}
-                    {dominantProfile ? (
-                      <div className="dufynd-catalog-card-signature">
-                        <span>{dominantProfile.label}</span>
-                        <strong>{dominantProfile.value}/10</strong>
-                      </div>
+                    {isProductTruth ? (
+                      <span className="dufynd-catalog-original-photo-badge">
+                        Originalfoto
+                      </span>
                     ) : null}
+
                   </div>
 
                   <div className="dufynd-catalog-card-body p-4 pb-3">
@@ -1427,49 +1346,6 @@ export default function FragranceCatalogBrowser({
                             {accordLabel(accord)}
                           </span>
                         ))}
-                    </div>
-
-                    <div
-                      className="dufynd-catalog-card-dna mt-4 rounded-xl border border-(--line) bg-(--surface)/70 px-3 py-2.5"
-                      aria-label="Duft-DNA"
-                    >
-                      <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="text-[9.5px] font-semibold uppercase tracking-[0.08em] text-(--ink-soft)">
-                          Duft-DNA
-                        </span>
-                        <span className="text-[9.5px] text-(--ink-soft)">
-                          Profil 0–10
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {SCENT_DNA_PROFILES.map(({ key, label }) => {
-                          const value = scentDnaScore(
-                            fragrance,
-                            key,
-                          );
-
-                          return (
-                            <div key={key} className="min-w-0">
-                              <div className="h-1.5 overflow-hidden rounded-full bg-(--well)">
-                                <div
-                                  className="h-full rounded-full bg-(--accent)"
-                                  style={{
-                                    width: `${value * 10}%`,
-                                  }}
-                                />
-                              </div>
-                              <div className="mt-1 flex items-center justify-between gap-1">
-                                <span className="truncate text-[8.5px] text-(--ink-soft)">
-                                  {label}
-                                </span>
-                                <span className="text-[8.5px] font-semibold text-(--ink)">
-                                  {value}
-                                </span>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
                     </div>
 
                     <div className="dufynd-catalog-card-cta mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
@@ -1625,6 +1501,154 @@ export default function FragranceCatalogBrowser({
           </div>
         </section>
       )}
+      {compareSelection.length === 0 ? (
+        <div className="sticky bottom-3 z-20 mt-4 md:hidden">
+          <div className="mx-auto flex max-w-sm items-center gap-2 rounded-2xl border border-(--line) bg-(--card)/95 p-2 shadow-[0_18px_48px_-24px_rgba(20,18,16,0.45)] backdrop-blur">
+            <button
+              type="button"
+              onClick={openMobileFilters}
+              className="flex min-w-0 flex-1 items-center justify-between rounded-xl bg-(--ink) px-3 py-2.5 text-left text-[11.5px] font-semibold text-(--surface)"
+              aria-label="Katalogfilter öffnen"
+            >
+              <span className="truncate">
+                Filter{activeFilterCount ? ` · ${activeFilterCount}` : ""}
+              </span>
+              <span className="ml-2 truncate text-(--surface)/70">
+                {optionLabel(SORT_OPTIONS, sort)}
+              </span>
+            </button>
+            <span
+              className="shrink-0 rounded-xl border border-(--line) bg-(--surface) px-3 py-2.5 text-[11px] font-semibold text-(--ink)"
+              aria-live="polite"
+            >
+              {filtered.length} Treffer
+            </span>
+          </div>
+        </div>
+      ) : null}
+
+      <section
+        className="dufynd-profile-discovery mt-7 overflow-hidden rounded-[26px] border border-white/10 p-4 text-white shadow-[0_26px_70px_-38px_rgba(23,21,19,0.9)] sm:p-5"
+        style={{
+          background:
+            "radial-gradient(circle at 16% 0%, rgba(184, 137, 52, 0.28), transparent 32%), radial-gradient(circle at 86% 100%, rgba(92, 74, 52, 0.18), transparent 34%), linear-gradient(135deg, #161618 0%, #0a0b0d 72%)",
+        }}
+        aria-label="Duftgefühl entdecken"
+      >
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <div className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-white/[0.55]">
+              Discovery
+            </div>
+            <h2 className="mt-1.5 text-[21px] font-semibold tracking-[-0.025em] sm:text-[24px]">
+              Nach Duftgefühl entdecken
+            </h2>
+            <p className="mt-2 max-w-2xl text-[12px] leading-5 text-white/[0.62] sm:text-[13px]">
+              Wähle einen Charakter für deine Suche. Du kannst ihn jederzeit wechseln.
+            </p>
+          </div>
+          <div className="shrink-0 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-[10.5px] font-medium text-white/[0.58]">
+            {fragrances.length} Düfte · 4 Welten
+          </div>
+        </div>
+
+        <div className="dufynd-profile-options mt-5 grid grid-cols-2 gap-2 lg:grid-cols-4">
+          {PROFILE_DISCOVERY.map((card) => {
+            const active = profile === card.value;
+
+            return (
+              <button
+                key={card.value}
+                type="button"
+                onClick={() =>
+                  selectProfile(active ? "all" : card.value, !active)
+                }
+                className={`group min-w-0 rounded-2xl border p-4 text-left transition duration-200 lg:min-w-0 ${
+                  active
+                    ? "border-[#d5a84f]/70 bg-[#d5a84f]/[0.12] shadow-[0_14px_34px_-22px_rgba(213,168,79,0.9)]"
+                    : "border-white/10 bg-white/[0.045] hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.07]"
+                }`}
+                aria-pressed={active}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <span className="text-[17px] font-semibold tracking-[-0.02em] text-white">
+                    {card.label}
+                  </span>
+                  <span
+                    className={`rounded-full border px-2 py-1 text-[9.5px] font-semibold ${
+                      active
+                        ? "border-[#d5a84f]/[0.35] bg-[#d5a84f]/[0.12] text-[#f1d493]"
+                        : "border-white/10 bg-black/[0.15] text-white/[0.55]"
+                    }`}
+                  >
+                    {profileCounts[card.value]} Düfte
+                  </span>
+                </div>
+                <div className="mt-5 text-[12px] font-semibold text-white/[0.78]">
+                  {card.mood}
+                </div>
+                <div className="mt-1 text-[11px] leading-4 text-white/[0.48]">
+                  {card.notes}
+                </div>
+                <div
+                  className={`mt-4 flex items-center justify-between border-t pt-3 text-[10.5px] font-semibold uppercase tracking-[0.08em] ${
+                    active
+                      ? "border-[#d5a84f]/[0.24] text-[#f1d493]"
+                      : "border-white/[0.08] text-white/[0.48] group-hover:text-white/[0.68]"
+                  }`}
+                >
+                  <span>{active ? "Profil aktiv" : "Entdecken"}</span>
+                  <span aria-hidden="true">
+                    {active ? "✓" : "→"}
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-5 border-t border-white/[0.08] pt-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/[0.45]">
+                Duft-DNA
+              </div>
+              <div className="mt-1 text-[12px] font-semibold text-white/[0.74]">
+                Beliebte Akkorde im aktuellen Katalog
+              </div>
+            </div>
+            <div className="flex max-w-full gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-end sm:overflow-visible">
+              {accordDiscovery.map(({ accord, count, label }) => {
+                const active =
+                  normalize(search) === normalize(label);
+
+                return (
+                  <button
+                    key={accord}
+                    type="button"
+                    onClick={() =>
+                      setSearch(active ? "" : label)
+                    }
+                    className={`shrink-0 rounded-full border px-3 py-2 text-[10.5px] font-semibold transition ${
+                      active
+                        ? "border-[#d5a84f]/65 bg-[#d5a84f]/[0.14] text-[#f1d493]"
+                        : "border-white/10 bg-white/[0.04] text-white/[0.58] hover:border-white/20 hover:bg-white/[0.07] hover:text-white/[0.78]"
+                    }`}
+                    aria-pressed={active}
+                    aria-label={`${label}: ${count} Düfte`}
+                  >
+                    {label}
+                    <span className="ml-1.5 text-white/[0.36]">
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
     </>
   );
 }

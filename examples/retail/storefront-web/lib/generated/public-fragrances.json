@@ -1,0 +1,3164 @@
+{
+  "products": [
+    {
+      "product_id": "SC-LV-IMAGINATION-100",
+      "brand": "Louis Vuitton",
+      "name": "Imagination",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2021,
+      "notes": {
+        "key": [
+          "Ambrox",
+          "Black Tea from China",
+          "Tunisian Neroli",
+          "Sicilian Cedar",
+          "Calabrian Bergamot",
+          "Nigerian Ginger",
+          "Ceylon Cinnamon"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/louis-vuitton-imagination-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-ARABIYAT-MARWA-EDP-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+          "relationship_type": "inspired",
+          "confidence": "medium"
+        },
+        {
+          "related_product_id": "SC-BUJAIRAMI-HECTIC-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 300,
+        "market_price_eur": 300,
+        "price_per_ml_eur": 3,
+        "german_availability": "limited_direct",
+        "price_source_count": 1,
+        "price_checked_at": "2026-09-07"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fresh",
+          "citrus",
+          "aquatic",
+          "green",
+          "spicy"
+        ],
+        "scores": {
+          "freshness": 10,
+          "sweetness": 2,
+          "woodiness": 2,
+          "spiciness": 5
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "lv-imagination"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+      "brand": "Arabiyat Prestige",
+      "name": "Marwa",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2025,
+      "notes": {
+        "top": [
+          "Bergamot",
+          "Petit Grain",
+          "Ginger"
+        ],
+        "heart": [
+          "Geranium",
+          "Tea",
+          "Incense"
+        ],
+        "base": [
+          "Guaiac Wood",
+          "Ambroxan",
+          "Musk"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/arabiyat-marwa-edp-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-LV-IMAGINATION-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 31.49,
+        "price_per_ml_eur": 0.3149,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fresh",
+          "citrus",
+          "aquatic",
+          "sweet",
+          "synthetic"
+        ],
+        "scores": {
+          "freshness": 10,
+          "sweetness": 6,
+          "woodiness": 3,
+          "spiciness": 3
+        },
+        "score_confidence": "medium_high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "inspired",
+        "cluster_id": "lv-imagination"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+      "brand": "Arabiyat Prestige",
+      "name": "Marwa Extrait",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 60,
+      "release_year": 2026,
+      "notes": {
+        "top": [
+          "Calabrian Bergamot",
+          "Sicilian Orange",
+          "Lemon"
+        ],
+        "heart": [
+          "Ceylon Cinnamon",
+          "Nigerian Ginger",
+          "Tunisian Neroli"
+        ],
+        "base": [
+          "Ambroxan",
+          "Chinese Black Tea",
+          "Guaiac Wood",
+          "Incense"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/arabiyat-prestige-marwa-extrait-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "60ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-LV-IMAGINATION-100",
+          "relationship_type": "inspired",
+          "confidence": "medium"
+        }
+      ],
+      "market": {
+        "market_price_eur": 59.38,
+        "price_per_ml_eur": 0.9897,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fresh",
+          "spicy",
+          "citrus",
+          "oriental",
+          "fruity"
+        ],
+        "scores": {
+          "freshness": 9,
+          "sweetness": 3,
+          "woodiness": 4,
+          "spiciness": 7
+        },
+        "score_confidence": "medium"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "inspired",
+        "cluster_id": "lv-imagination"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-BUJAIRAMI-HECTIC-100",
+      "brand": "Bujairami",
+      "name": "Hectic",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "release_year": 2024,
+      "notes": {
+        "top": [
+          "Calabrian Bergamot",
+          "Sicilian Orange",
+          "Citron"
+        ],
+        "heart": [
+          "Nigerian Ginger",
+          "Ceylon Cinnamon",
+          "Tunisian Neroli"
+        ],
+        "base": [
+          "Chinese Black Tea",
+          "Guaiac Wood",
+          "Ambroxan",
+          "Incense"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/bujairami-hectic-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-LV-IMAGINATION-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 57.99,
+        "price_per_ml_eur": 0.5799,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "citrus",
+          "fresh",
+          "spicy",
+          "aquatic",
+          "fruity"
+        ],
+        "scores": {
+          "freshness": 10,
+          "sweetness": 2,
+          "woodiness": 3,
+          "spiciness": 8
+        },
+        "score_confidence": "medium_high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "inspired",
+        "cluster_id": "lv-imagination"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Aventus",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2010,
+      "notes": {
+        "key": [
+          "Calabrian Bergamot",
+          "Pineapple Accord",
+          "Birch",
+          "Dry Woods"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/creed-aventus-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-ARMAF-CDNIM-EDP-200",
+          "relationship_type": "clone",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-MONTBLANC-EXPLORER-100",
+          "relationship_type": "alternative",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 330,
+        "market_price_eur": 330,
+        "price_per_ml_eur": 3.3,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fresh",
+          "fruity",
+          "citrus",
+          "woody",
+          "smoky"
+        ],
+        "scores": {
+          "freshness": 10,
+          "sweetness": 3,
+          "woodiness": 7,
+          "spiciness": 2
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "creed-aventus"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Absolu Aventus",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2023,
+      "notes": {
+        "key": [
+          "Calabrian Bergamot",
+          "Pineapple Accord",
+          "Cardamom",
+          "Labdanum"
+        ],
+        "supporting": [
+          "Grapefruit",
+          "Haitian Vetiver",
+          "Ginger",
+          "Cinnamon"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/creed-absolu-aventus-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 380,
+        "market_price_eur": 380,
+        "price_per_ml_eur": 3.8,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fruity",
+          "fresh",
+          "citrus",
+          "spicy",
+          "woody"
+        ],
+        "scores": {
+          "freshness": 8,
+          "sweetness": 4,
+          "woodiness": 7,
+          "spiciness": 8
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "benchmark",
+        "cluster_id": "creed-aventus-absolu"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+      "brand": "Afnan Perfumes",
+      "name": "Supremacy Collector's Edition",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2024,
+      "notes": {
+        "top": [
+          "Pineapple",
+          "Bergamot",
+          "Apple",
+          "White Floral"
+        ],
+        "heart": [
+          "Orange Blossom",
+          "Birch",
+          "Amber"
+        ],
+        "base": [
+          "Oak Moss",
+          "Musk",
+          "Ambergris"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/afnan-supremacy-collectors-edition-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 54.5,
+        "market_price_eur": 54.5,
+        "price_per_ml_eur": 0.545,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fruity",
+          "fresh",
+          "citrus",
+          "woody",
+          "sweet"
+        ],
+        "scores": {
+          "freshness": 9,
+          "sweetness": 5,
+          "woodiness": 7,
+          "spiciness": 2
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "inspired",
+        "cluster_id": "creed-aventus-absolu"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+      "brand": "Maison Asrar",
+      "name": "Vanguard",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2025,
+      "notes": {
+        "top": [
+          "Apple",
+          "Bergamot",
+          "Blackcurrant",
+          "Grapefruit",
+          "Pink Pepper",
+          "Pineapple"
+        ],
+        "heart": [
+          "Carnation",
+          "Jasmine",
+          "Lily of the Valley"
+        ],
+        "base": [
+          "Ambergris",
+          "Cashmere",
+          "Cedarwood",
+          "Leather",
+          "Moss",
+          "Musk"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/maison-asrar-vanguard-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 47.79,
+        "price_per_ml_eur": 0.4779,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fruity",
+          "fresh",
+          "woody",
+          "citrus",
+          "smoky"
+        ],
+        "scores": {
+          "freshness": 8,
+          "sweetness": 4,
+          "woodiness": 7,
+          "spiciness": 6
+        },
+        "score_confidence": "medium_high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "inspired",
+        "cluster_id": "creed-aventus-absolu"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-ARMAF-CDNIM-EDP-200",
+      "brand": "Armaf",
+      "name": "Club de Nuit Intense Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 200,
+      "release_year": null,
+      "notes": {
+        "top": [
+          "Lemon",
+          "Pineapple",
+          "Bergamot",
+          "Blackcurrant",
+          "Apple"
+        ],
+        "heart": [
+          "Birch",
+          "Jasmine",
+          "Rose"
+        ],
+        "base": [
+          "Amber",
+          "Musk",
+          "Patchouli",
+          "Vanilla"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/armaf-club-de-nuit-intense-man-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "200ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-CREED-AVENTUS-100",
+          "relationship_type": "clone",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 42.79,
+        "price_per_ml_eur": 0.21395,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "citrus",
+          "smoky",
+          "fresh",
+          "fruity",
+          "woody"
+        ],
+        "scores": {
+          "freshness": 9,
+          "sweetness": 4,
+          "woodiness": 6,
+          "spiciness": 2
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "clone",
+        "cluster_id": "creed-aventus"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "brand": "Montblanc",
+      "name": "Explorer",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2019,
+      "notes": {
+        "top": [
+          "Bergamot",
+          "Pink Pepper",
+          "Clary Sage"
+        ],
+        "heart": [
+          "Patchouli",
+          "Mahonia",
+          "Ambrofix"
+        ],
+        "base": [
+          "Vetiver",
+          "Leather",
+          "Cedarwood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/montblanc-explorer-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-CREED-AVENTUS-100",
+          "relationship_type": "alternative",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 105,
+        "market_price_eur": 51.94,
+        "price_per_ml_eur": 0.5194,
+        "german_availability": "very_high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-08"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fresh",
+          "citrus",
+          "woody",
+          "fruity",
+          "synthetic"
+        ],
+        "scores": {
+          "freshness": 9,
+          "sweetness": 3,
+          "woodiness": 7,
+          "spiciness": 4
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "alternative",
+        "cluster_id": "creed-aventus"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "brand": "Parfums de Marly",
+      "name": "Layton",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "release_year": 2016,
+      "notes": {
+        "top": [
+          "Apple",
+          "Bergamot",
+          "Cardamom"
+        ],
+        "heart": [
+          "Lavender",
+          "Violet",
+          "Geranium"
+        ],
+        "base": [
+          "Patchouli",
+          "Vanilla",
+          "Guaiac Wood",
+          "Praline"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/pdm-layton-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "125ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+          "relationship_type": "clone",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 290,
+        "market_price_eur": 219.26,
+        "price_per_ml_eur": 1.75408,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "fruity",
+          "woody",
+          "oriental"
+        ],
+        "scores": {
+          "freshness": 4,
+          "sweetness": 9,
+          "woodiness": 6,
+          "spiciness": 8
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "pdm-layton"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+      "brand": "Al Haramain",
+      "name": "Détour Noir",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": null,
+      "notes": {
+        "top": [
+          "Apple",
+          "Lavender",
+          "Violet",
+          "Jasmine"
+        ],
+        "heart": [
+          "Vanilla",
+          "Patchouli",
+          "Mandarin Orange",
+          "Bergamot"
+        ],
+        "base": [
+          "Cardamom",
+          "Geranium",
+          "Sandalwood",
+          "Pepper",
+          "Guaiac Wood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/al-haramain-detour-noir-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-PDM-LAYTON-125",
+          "relationship_type": "clone",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 19.95,
+        "price_per_ml_eur": 0.1995,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "fruity",
+          "woody",
+          "synthetic"
+        ],
+        "scores": {
+          "freshness": 4,
+          "sweetness": 9,
+          "woodiness": 6,
+          "spiciness": 8
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "clone",
+        "cluster_id": "pdm-layton"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+      "brand": "Orientica",
+      "name": "Royal Bleu",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 80,
+      "release_year": null,
+      "notes": {
+        "top": [
+          "Bergamot",
+          "Lavender",
+          "Mandarin",
+          "Pepper",
+          "Green Apple"
+        ],
+        "heart": [
+          "Violet",
+          "Jasmine",
+          "Geranium",
+          "Cardamom"
+        ],
+        "base": [
+          "Patchouli",
+          "Sandalwood",
+          "Vanilla",
+          "Musk",
+          "Guaiac Wood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/orientica-royal-bleu-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "80ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-PDM-LAYTON-125",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 69.95,
+        "price_per_ml_eur": 0.874375,
+        "german_availability": "medium",
+        "price_source_count": 1,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "oriental",
+          "woody",
+          "fruity"
+        ],
+        "scores": {
+          "freshness": 4,
+          "sweetness": 9,
+          "woodiness": 6,
+          "spiciness": 8
+        },
+        "score_confidence": "medium_high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "inspired",
+        "cluster_id": "pdm-layton"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "brand": "Parfums de Marly",
+      "name": "Althaïr",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "release_year": 2023,
+      "notes": {
+        "top": [
+          "Bergamot",
+          "Mandarin",
+          "Elemi"
+        ],
+        "heart": [
+          "Orange Blossom",
+          "Cinnamon",
+          "Cardamom"
+        ],
+        "base": [
+          "Bourbon Vanilla",
+          "Guaiac Wood",
+          "Praline"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/pdm-althair-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "125ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+          "relationship_type": "clone",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 290,
+        "market_price_eur": 239.99,
+        "price_per_ml_eur": 1.91992,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "creamy",
+          "spicy",
+          "woody"
+        ],
+        "scores": {
+          "freshness": 3,
+          "sweetness": 10,
+          "woodiness": 5,
+          "spiciness": 6
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "pdm-althair"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+      "brand": "French Avenue",
+      "name": "Liquid Brun",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2024,
+      "notes": {
+        "top": [
+          "Cinnamon",
+          "Bergamot",
+          "Cardamom",
+          "Orange Blossom"
+        ],
+        "heart": [
+          "Bourbon Vanilla",
+          "Elemi"
+        ],
+        "base": [
+          "Musk",
+          "Praline",
+          "Ambroxan",
+          "Guaiac Wood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/liquid-brun-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-PDM-ALTHAIR-125",
+          "relationship_type": "clone",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 24.7,
+        "price_per_ml_eur": 0.247,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "creamy",
+          "spicy",
+          "oriental"
+        ],
+        "scores": {
+          "freshness": 3,
+          "sweetness": 10,
+          "woodiness": 3,
+          "spiciness": 6
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "clone",
+        "cluster_id": "pdm-althair"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-BVLGARI-TYGAR-125",
+      "brand": "Bvlgari",
+      "name": "Le Gemme Tygar",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "release_year": 2016,
+      "notes": {
+        "key": [
+          "Grapefruit",
+          "Ambergris"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/bvlgari-tygar-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "125ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-SOSPIRO-VIBRATO-100",
+          "relationship_type": "alternative",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-AFNAN-TURATHI-BLUE-90",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-MAISON-ASRAR-REGENT-100",
+          "relationship_type": "inspired",
+          "confidence": "medium_high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 389,
+        "market_price_eur": 311.2,
+        "price_per_ml_eur": 2.4896,
+        "german_availability": "high",
+        "price_source_count": 2,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "citrus",
+          "fresh",
+          "woody",
+          "spicy",
+          "fruity"
+        ],
+        "scores": {
+          "freshness": 10,
+          "sweetness": 2,
+          "woodiness": 7,
+          "spiciness": 6
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "benchmark",
+        "cluster_id": "tygar-vibrato"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-SOSPIRO-VIBRATO-100",
+      "brand": "Sospiro",
+      "name": "Vibrato",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2022,
+      "notes": {
+        "top": [
+          "Grapefruit",
+          "Bergamot",
+          "Mandarin",
+          "Ginger",
+          "Rosemary"
+        ],
+        "heart": [
+          "Magnolia",
+          "Damask Rose",
+          "Light Woods"
+        ],
+        "base": [
+          "Vetiver",
+          "Patchouli",
+          "Indian Sandalwood",
+          "Musk",
+          "Crystal Amber",
+          "Tonka Bean"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "cutout",
+          "url": "/products/sospiro-vibrato-100-cutout-production.webp",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "verified",
+          "variant": "100ml",
+          "approval_basis": "explicit_user_visual_approval_2026-09-29"
+        },
+        {
+          "role": "editorial",
+          "url": "/products/pilot/sospiro-vibrato-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-BVLGARI-TYGAR-125",
+          "relationship_type": "alternative",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-AFNAN-TURATHI-BLUE-90",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-MAISON-ASRAR-REGENT-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 229.99,
+        "price_per_ml_eur": 2.2999,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "citrus",
+          "fresh",
+          "fruity",
+          "woody",
+          "floral"
+        ],
+        "scores": {
+          "freshness": 10,
+          "sweetness": 3,
+          "woodiness": 6,
+          "spiciness": 3
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "benchmark",
+        "cluster_id": "tygar-vibrato"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+      "brand": "Afnan Perfumes",
+      "name": "Turathi Blue",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "release_year": null,
+      "notes": {
+        "top": [
+          "Mandarin",
+          "Bergamot"
+        ],
+        "heart": [
+          "Amber",
+          "Woody Notes"
+        ],
+        "base": [
+          "Musk",
+          "Spices",
+          "Patchouli"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/afnan-turathi-blue-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "90ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-BVLGARI-TYGAR-125",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-SOSPIRO-VIBRATO-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 30.31,
+        "price_per_ml_eur": 0.33678,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "citrus",
+          "fresh",
+          "fruity",
+          "woody",
+          "aquatic"
+        ],
+        "scores": {
+          "freshness": 10,
+          "sweetness": 3,
+          "woodiness": 6,
+          "spiciness": 4
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "inspired",
+        "cluster_id": "tygar-vibrato"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-REGENT-100",
+      "brand": "Maison Asrar",
+      "name": "Regent",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2026,
+      "notes": {
+        "top": [
+          "Bergamot",
+          "Grapefruit",
+          "Ginger",
+          "Mandarin"
+        ],
+        "heart": [
+          "Orris Root",
+          "Jasmine",
+          "Orange Blossom"
+        ],
+        "base": [
+          "Amber",
+          "Musk",
+          "Patchouli",
+          "Sandalwood",
+          "Tonka Bean",
+          "Cedarwood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/maison-asrar-regent-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-BVLGARI-TYGAR-125",
+          "relationship_type": "inspired",
+          "confidence": "medium_high"
+        },
+        {
+          "related_product_id": "SC-SOSPIRO-VIBRATO-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 43.99,
+        "price_per_ml_eur": 0.4399,
+        "german_availability": "medium",
+        "price_source_count": 1,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "citrus",
+          "fresh",
+          "floral",
+          "woody",
+          "fruity"
+        ],
+        "scores": {
+          "freshness": 10,
+          "sweetness": 3,
+          "woodiness": 6,
+          "spiciness": 4
+        },
+        "score_confidence": "medium_high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "inspired",
+        "cluster_id": "tygar-vibrato"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "brand": "Giorgio Armani",
+      "name": "Stronger With You Intensely",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2018,
+      "notes": {
+        "top": [
+          "Chestnut",
+          "Pink Pepper"
+        ],
+        "heart": [
+          "Lavender",
+          "Sage"
+        ],
+        "base": [
+          "Vanilla",
+          "Amberwood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "cutout",
+          "url": "/products/armani-swy-intensely-100-cutout-production.webp",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "verified",
+          "variant": "100ml",
+          "approval_basis": "explicit_user_visual_approval_2026-09-29"
+        },
+        {
+          "role": "editorial",
+          "url": "/products/pilot/armani-swy-intensely-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 66.04,
+        "price_per_ml_eur": 0.6604,
+        "german_availability": "very_high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "spicy",
+          "oriental",
+          "woody"
+        ],
+        "scores": {
+          "freshness": 2,
+          "sweetness": 10,
+          "woodiness": 5,
+          "spiciness": 7
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "armani-swy-intensely"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "brand": "Xerjoff",
+      "name": "Naxos",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2015,
+      "notes": {
+        "top": [
+          "Lavender",
+          "Bergamot",
+          "Omani Frankincense",
+          "Lemon"
+        ],
+        "heart": [
+          "Honey",
+          "Jasmine Sambac",
+          "Cashmere",
+          "Cinnamon"
+        ],
+        "base": [
+          "Tobacco",
+          "Tonka Bean",
+          "Vanilla"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "cutout",
+          "url": "/products/naxos-cutout-production.webp",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "verified",
+          "variant": "100ml"
+        },
+        {
+          "role": "editorial",
+          "url": "/products/naxos-bottle-free-backdrop.webp",
+          "provenance": "openai_image_generation_20260925",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "bottle_free_backdrop"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-NUSUK-ATEEQ-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        },
+        {
+          "related_product_id": "SC-RAYHAAN-ITALIA-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 245,
+        "market_price_eur": 148.45,
+        "price_per_ml_eur": 1.4845,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-24"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "gourmand",
+          "creamy",
+          "citrus"
+        ],
+        "scores": {
+          "freshness": 6,
+          "sweetness": 10,
+          "woodiness": 2,
+          "spiciness": 8
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "benchmark",
+        "cluster_id": "xerjoff-naxos"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-NUSUK-ATEEQ-100",
+      "brand": "Nusuk",
+      "name": "Ateeq",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "release_year": 2025,
+      "notes": {
+        "top": [
+          "Honey",
+          "Amber",
+          "Cinnamon",
+          "Grapefruit",
+          "Lime"
+        ],
+        "heart": [
+          "Tobacco",
+          "Lavender",
+          "Jasmine"
+        ],
+        "base": [
+          "Tonka Bean",
+          "Vanilla Orchid",
+          "Coumarin",
+          "Musk",
+          "Cedarwood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/nusuk-ateeq-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-XERJOFF-NAXOS-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 28.85,
+        "price_per_ml_eur": 0.2885,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "gourmand",
+          "creamy",
+          "oriental"
+        ],
+        "scores": {
+          "freshness": 4,
+          "sweetness": 10,
+          "woodiness": 3,
+          "spiciness": 8
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "inspired",
+        "cluster_id": "xerjoff-naxos"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-RAYHAAN-ITALIA-100",
+      "brand": "Rayhaan",
+      "name": "Italia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2025,
+      "notes": {
+        "top": [
+          "Lavender",
+          "Bergamot",
+          "Lemon"
+        ],
+        "heart": [
+          "Honey",
+          "Cashmeran",
+          "Jasmine Sambac",
+          "Cinnamon"
+        ],
+        "base": [
+          "Tonka Bean",
+          "Tobacco",
+          "Vanilla"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/rayhaan-italia-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-XERJOFF-NAXOS-100",
+          "relationship_type": "inspired",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 29.89,
+        "price_per_ml_eur": 0.2989,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "creamy",
+          "citrus",
+          "gourmand"
+        ],
+        "scores": {
+          "freshness": 6,
+          "sweetness": 10,
+          "woodiness": 3,
+          "spiciness": 8
+        },
+        "score_confidence": "medium_high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "inspired",
+        "cluster_id": "xerjoff-naxos"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-DIOR-HOMME-INTENSE-100",
+      "brand": "Dior",
+      "name": "Dior Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2011,
+      "notes": {
+        "key": [
+          "Iris",
+          "Ambrette Seed",
+          "Woody Notes"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/dior-homme-intense-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+          "relationship_type": "clone",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "official_price_eur": 148,
+        "market_price_eur": 95,
+        "price_per_ml_eur": 0.95,
+        "german_availability": "very_high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "powdery",
+          "sweet",
+          "woody",
+          "spicy",
+          "creamy"
+        ],
+        "scores": {
+          "freshness": 2,
+          "sweetness": 8,
+          "woodiness": 7,
+          "spiciness": 6
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "dior-homme-intense"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+      "brand": "Al Wataniah",
+      "name": "Kayaan Classic",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": null,
+      "notes": {
+        "top": [
+          "Pale Iris",
+          "Italian Orange"
+        ],
+        "heart": [
+          "Leather",
+          "Rose"
+        ],
+        "base": [
+          "Ambrette",
+          "Cedar",
+          "Sandalwood",
+          "Oud"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/kayaan-classic-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [
+        {
+          "related_product_id": "SC-DIOR-HOMME-INTENSE-100",
+          "relationship_type": "clone",
+          "confidence": "high"
+        }
+      ],
+      "market": {
+        "market_price_eur": 19.5,
+        "price_per_ml_eur": 0.195,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "powdery",
+          "sweet",
+          "woody",
+          "floral",
+          "creamy"
+        ],
+        "scores": {
+          "freshness": 2,
+          "sweetness": 8,
+          "woodiness": 7,
+          "spiciness": 2
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "unisex"
+        ],
+        "role": "clone",
+        "cluster_id": "dior-homme-intense"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "brand": "Valentino",
+      "name": "Uomo Born In Roma Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2023,
+      "notes": {
+        "top": [
+          "Vanilla",
+          "Ginger"
+        ],
+        "heart": [
+          "Provençal Lavender",
+          "Nutmeg"
+        ],
+        "base": [
+          "Haitian Vetiver"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 66,
+        "price_per_ml_eur": 0.66,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "synthetic",
+          "fresh",
+          "woody",
+          "fruity"
+        ],
+        "scores": {
+          "freshness": 5,
+          "sweetness": 8,
+          "woodiness": 5,
+          "spiciness": 5
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "valentino-born-in-roma-intense"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
+      "brand": "Clive Christian",
+      "name": "Jump Up and Kiss Me Hedonistic",
+      "concentration": "Parfum",
+      "volume_ml": 50,
+      "release_year": 2017,
+      "notes": {
+        "top": [
+          "Black Cherry",
+          "Clary Sage",
+          "Bergamot",
+          "Grapefruit",
+          "Maté",
+          "Neroli"
+        ],
+        "heart": [
+          "Absinthe Wormwood",
+          "Iris",
+          "Opium",
+          "Cocoa Leaf",
+          "Jasmine",
+          "Papyrus",
+          "Tobacco"
+        ],
+        "base": [
+          "Amber",
+          "Leather",
+          "Labdanum",
+          "Tonka Bean",
+          "Vanilla"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/clive-christian-hedonistic-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "50ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 365,
+        "price_per_ml_eur": 7.3,
+        "german_availability": "medium",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "fruity",
+          "spicy",
+          "woody",
+          "floral"
+        ],
+        "scores": {
+          "freshness": 2,
+          "sweetness": 8,
+          "woodiness": 6,
+          "spiciness": 7
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "clive-christian-hedonistic"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+      "brand": "Chanel",
+      "name": "Bleu de Chanel",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2014,
+      "notes": {
+        "top": [
+          "Mint",
+          "Grapefruit",
+          "Pink Pepper",
+          "Lemon",
+          "Coriander",
+          "Aldehydes"
+        ],
+        "heart": [
+          "Nutmeg",
+          "Ginger",
+          "Jasmine",
+          "Melon"
+        ],
+        "base": [
+          "Sandalwood",
+          "Vetiver",
+          "Incense",
+          "Patchouli",
+          "Cedar",
+          "Labdanum",
+          "Ambergris"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/bleu-de-chanel-edp-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 80.99,
+        "price_per_ml_eur": 0.8099,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fresh",
+          "citrus",
+          "woody",
+          "spicy",
+          "aquatic"
+        ],
+        "scores": {
+          "freshness": 8,
+          "sweetness": 3,
+          "woodiness": 7,
+          "spiciness": 5
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "bleu-de-chanel-edp"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-EDP-100",
+      "brand": "Dior",
+      "name": "Sauvage",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2018,
+      "notes": {
+        "top": [
+          "Bergamot",
+          "Mandarin",
+          "Citrus"
+        ],
+        "heart": [
+          "Sandalwood",
+          "Cedar",
+          "Vanilla"
+        ],
+        "base": [
+          "Tonka Bean",
+          "Bergamot",
+          "Ambroxan",
+          "Vanilla"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/dior-sauvage-edp-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 82.8,
+        "price_per_ml_eur": 0.828,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fresh",
+          "spicy",
+          "synthetic",
+          "citrus",
+          "woody"
+        ],
+        "scores": {
+          "freshness": 8,
+          "sweetness": 4,
+          "woodiness": 6,
+          "spiciness": 7
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "dior-sauvage-edp"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "brand": "Prada",
+      "name": "L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "release_year": 2016,
+      "notes": {
+        "top": [
+          "Pepper",
+          "Neroli"
+        ],
+        "heart": [
+          "Iris",
+          "Violet",
+          "Geranium",
+          "Amber"
+        ],
+        "base": [
+          "Patchouli",
+          "Cedar"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "cutout",
+          "url": "/products/prada-lhomme-100-cutout-production.webp",
+          "provenance": "dufynd_generated",
+          "fidelity_status": "verified",
+          "variant": "100ml",
+          "approval_basis": "explicit_user_visual_approval_2026-09-29"
+        },
+        {
+          "role": "editorial",
+          "url": "/products/pilot/prada-lhomme-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 74.62,
+        "price_per_ml_eur": 0.7462,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "powdery",
+          "fresh",
+          "floral",
+          "sweet",
+          "creamy"
+        ],
+        "scores": {
+          "freshness": 7,
+          "sweetness": 4,
+          "woodiness": 5,
+          "spiciness": 3
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": "benchmark",
+        "cluster_id": "prada-lhomme"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "brand": "Essential Parfums",
+      "name": "Bois Impérial",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "release_year": 2020,
+      "notes": {
+        "top": [
+          "Thai Basil",
+          "Timut Pepper"
+        ],
+        "heart": [
+          "Haitian Vetiver"
+        ],
+        "base": [
+          "Georgywood",
+          "Akigalawood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/bois-imperial-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 90.9,
+        "price_per_ml_eur": 0.909,
+        "german_availability": "high",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "fresh",
+          "woody",
+          "synthetic",
+          "spicy",
+          "green"
+        ],
+        "scores": {
+          "freshness": 8,
+          "sweetness": 1,
+          "woodiness": 9,
+          "spiciness": 7
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "women",
+          "unisex"
+        ],
+        "role": "benchmark",
+        "cluster_id": "bois-imperial"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
+      "brand": "Al Ambra",
+      "name": "Dubai Musk",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 50,
+      "release_year": null,
+      "notes": {
+        "top": [
+          "White Magnolia",
+          "Bergamot",
+          "Indian Sandalwood",
+          "Mandarin Orange",
+          "Blackcurrant"
+        ],
+        "heart": [
+          "White Musk"
+        ],
+        "base": [
+          "Pink Musk",
+          "Indian Sandalwood"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/pilot/al-ambra-dubai-musk-editorial.webp",
+          "provenance": "legacy_catalog",
+          "fidelity_status": "editorial_only",
+          "variant": "50ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 77,
+        "price_per_ml_eur": 1.54,
+        "german_availability": "medium",
+        "price_source_count": 3,
+        "price_checked_at": "2026-09-10"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "creamy",
+          "fresh",
+          "sweet",
+          "citrus",
+          "floral"
+        ],
+        "scores": {
+          "freshness": 7,
+          "sweetness": 5,
+          "woodiness": 4,
+          "spiciness": 1
+        },
+        "score_confidence": "high"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men",
+          "women",
+          "unisex"
+        ],
+        "role": "benchmark",
+        "cluster_id": "al-ambra-dubai-musk"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-WIDIAN-LONDON-EXTRAIT-50",
+      "brand": "Widian",
+      "name": "London",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 50,
+      "release_year": 2018,
+      "notes": {
+        "top": [
+          "Oud",
+          "Cypress",
+          "Violet"
+        ],
+        "heart": [
+          "Raspberry",
+          "Lily of the Valley"
+        ],
+        "base": [
+          "Leather",
+          "Musk",
+          "Amber",
+          "Vanilla"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/widian-london-editorial-user-higgsfield.webp",
+          "provenance": "user_higgsfield_video_20260925",
+          "fidelity_status": "editorial_only",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true,
+        "blockers": [
+          "identity_concentration_review_required"
+        ]
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 270,
+        "price_per_ml_eur": 5.4,
+        "german_availability": "high",
+        "price_source_count": 4,
+        "price_checked_at": "2026-09-18"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "leathery",
+          "fruity",
+          "sweet",
+          "oriental",
+          "woody"
+        ],
+        "scores": {
+          "freshness": 2,
+          "sweetness": 7,
+          "woodiness": 7,
+          "spiciness": 4
+        },
+        "score_confidence": "medium"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "unisex"
+        ],
+        "role": "benchmark",
+        "cluster_id": "widian-london"
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "key": [
+          "iris",
+          "pear",
+          "orange blossom",
+          "jasmine",
+          "vanilla accord",
+          "patchouli"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+          "provenance": "licensed",
+          "fidelity_status": "verified",
+          "variant": "100ml",
+          "license_name": "CC BY-SA 3.0",
+          "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+          "attribution_text": "Open Beauty Facts contributors",
+          "share_alike_required": true
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 89,
+        "price_per_ml_eur": 0.89,
+        "price_source_count": 1,
+        "price_checked_at": "2026-09-27"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "floral",
+          "fruity",
+          "gourmand",
+          "powdery"
+        ],
+        "scores": {
+          "freshness": 4,
+          "sweetness": 10,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "score_confidence": "medium"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "brand": "Rabanne",
+      "name": "1 Million",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "notes": {
+        "key": [
+          "mint",
+          "mandarin",
+          "rose",
+          "cinnamon",
+          "amber",
+          "leather"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "editorial",
+          "url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+          "provenance": "dufynd_user_supplied_contentmaster_20260929",
+          "fidelity_status": "editorial_only",
+          "variant": "100ml",
+          "composition": "product_scene"
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 67.95,
+        "price_per_ml_eur": 0.6795,
+        "price_source_count": 2,
+        "price_checked_at": "2026-09-27"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "spicy",
+          "oriental",
+          "synthetic",
+          "fruity"
+        ],
+        "scores": {
+          "freshness": 4,
+          "sweetness": 8,
+          "woodiness": 4,
+          "spiciness": 6
+        },
+        "score_confidence": "medium"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "men"
+        ],
+        "role": null,
+        "cluster_id": null
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "notes": {
+        "key": [
+          "lychee",
+          "rhubarb",
+          "bergamot",
+          "Turkish rose",
+          "peony",
+          "musk",
+          "vanilla",
+          "cashmeran"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+          "provenance": "merchant_feed",
+          "fidelity_status": "verified",
+          "variant": "75ml",
+          "reviewed_at": "2026-10-01T09:49:00+00:00",
+          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+          "rights_checked_at": "2026-09-28",
+          "exact_variant_verified": true
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 285,
+        "price_per_ml_eur": 3.8,
+        "price_source_count": 1,
+        "price_checked_at": "2026-10-01"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "floral",
+          "fruity",
+          "sweet",
+          "fresh",
+          "creamy"
+        ],
+        "scores": {
+          "freshness": 8,
+          "sweetness": 8,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "score_confidence": "medium"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "notes": {
+        "key": [
+          "French lavender",
+          "Moroccan orange blossom",
+          "vanilla"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+          "provenance": "merchant_feed",
+          "fidelity_status": "verified",
+          "variant": "90ml",
+          "reviewed_at": "2026-10-01T09:49:00+00:00",
+          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+          "rights_checked_at": "2026-09-28",
+          "exact_variant_verified": true
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 132,
+        "price_per_ml_eur": 1.4667,
+        "price_source_count": 1,
+        "price_checked_at": "2026-10-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "floral",
+          "sweet",
+          "fresh",
+          "creamy",
+          "citrus"
+        ],
+        "scores": {
+          "freshness": 9,
+          "sweetness": 7,
+          "woodiness": 2,
+          "spiciness": 2
+        },
+        "score_confidence": "medium"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "notes": {
+        "key": [
+          "orange blossom",
+          "pink pepper",
+          "coffee",
+          "jasmine",
+          "vanilla",
+          "patchouli",
+          "cedar"
+        ]
+      },
+      "visuals": [
+        {
+          "role": "primary",
+          "url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+          "provenance": "merchant_feed",
+          "fidelity_status": "verified",
+          "variant": "90ml",
+          "reviewed_at": "2026-10-01T09:49:00+00:00",
+          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+          "rights_checked_at": "2026-09-28",
+          "exact_variant_verified": true
+        }
+      ],
+      "validation": {
+        "catalog_ready": true
+      },
+      "relationships": [],
+      "market": {
+        "market_price_eur": 113,
+        "price_per_ml_eur": 1.2556,
+        "price_source_count": 1,
+        "price_checked_at": "2026-10-09"
+      },
+      "fragrance_profile": {
+        "community_accords": [
+          "sweet",
+          "gourmand",
+          "floral",
+          "oriental",
+          "spicy"
+        ],
+        "scores": {
+          "freshness": 3,
+          "sweetness": 9,
+          "woodiness": 4,
+          "spiciness": 6
+        },
+        "score_confidence": "medium"
+      },
+      "classification": {
+        "scentai_target_groups": [
+          "women"
+        ],
+        "role": null,
+        "cluster_id": null
+      },
+      "community": {
+        "source": "",
+        "rating_10": null,
+        "rating_count": 0,
+        "longevity_10": null,
+        "projection_10": null,
+        "provisional": false
+      }
+    }
+  ]
+}

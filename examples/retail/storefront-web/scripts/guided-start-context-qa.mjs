@@ -38,7 +38,7 @@ export async function verifyGuidedStartContext(browser, baseUrl) {
         assert.equal(url.searchParams.get("src"), "tiktok");
         assert.equal(url.searchParams.get("cmp"), "guided_qa");
         assert.equal(url.searchParams.get("content"), "video_1");
-        assert.equal(url.searchParams.get("sid"), "private_session");
+        assert.equal(url.searchParams.get("sid"), null, "incoming shared sid must not survive privacy initialization");
         assert.equal(url.searchParams.get("extra"), "preserve");
         assert.equal(url.hash, "#advisor");
         assert.equal(await page.evaluate(() => history.state.qaContext), "preserve");

@@ -1,0 +1,18 @@
+.offer {min-width:0; overflow-wrap:anywhere}
+.offer>div {flex:1; min-width:min(100%,180px)}
+.focusedOffer {padding:20px;background:#f8f6ee;border-color:#c8b78d;gap:18px}
+.total {font-variant-numeric:tabular-nums;line-height:1.2;letter-spacing:-.035em;font-weight:650}
+.focusedOffer .total {font-size:32px;margin-top:6px}
+.breakdown {margin-top:12px;padding-top:10px;border-top:1px solid var(--line-strong);font-size:13px;line-height:1.7;color:var(--ink-soft);max-width:300px}
+.breakdown>div {display:flex;justify-content:space-between;gap:20px}
+.breakdown dd {font-variant-numeric:tabular-nums;color:var(--ink);white-space:nowrap}
+.merchantAction {min-height:48px;flex-shrink:0}
+.merchantAction:focus-visible,.ranking summary:focus-visible {outline:3px solid var(--ink);outline-offset:3px}
+.purchaseGuide {margin-top:12px;font-size:13px;line-height:1.6;color:var(--ink-soft)}
+.disclosure {margin-top:16px;font-size:13px;line-height:1.65;color:var(--ink-soft)}
+.disclosure>p+p {margin-top:8px}
+.disclosure strong {color:var(--ink);font-weight:600}
+.ranking {margin-top:12px;border-top:1px solid var(--line);padding-top:4px}
+.ranking summary {padding:10px 0;min-height:44px;cursor:pointer;font-weight:600;color:var(--ink)}
+.ranking p {margin-top:4px}
+@media(max-width:600px){.focusedOffer {padding:16px}.offer>div {width:100%;min-width:0}.breakdown {max-width:none}.merchantAction {width:100%}}

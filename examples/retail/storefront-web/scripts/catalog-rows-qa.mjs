@@ -1,0 +1,53 @@
+/** Actual first-two-row captures; no affiliate navigation or external writes. */
+import {chromium} from 'playwright';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import assert from 'node:assert/strict';
+const base=process.env.QA_BASE_URL||'http://127.0.0.1:3013';
+const out=process.env.QA_OUTPUT||'/tmp/dufynd-catalog-rows';mkdirSync(out,{recursive:true});
+const browser=await chromium.launch();const report=[];
+try{for(const width of [320,390,768,1440]){
+ const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
+ await page.route('**/api/**',r=>r.fulfill({json:{ok:true,session_id:'local-qa'}}));
+ await page.goto(base+'/duft');await page.evaluate(()=>document.fonts.ready);
+ const cards=page.locator('.dufynd-catalog-card');await cards.first().waitFor();
+ // The default discovery order must lead with licensed exact-variant photos;
+ // editorial-only studies remain accessible without impersonating product shots.
+ const originalPositions=await cards.evaluateAll(xs=>xs.flatMap((node,index)=>
+   node.getAttribute('data-original-photo')==='true'?[index]:[]));
+ assert.ok(originalPositions.length>=3,'default discovery needs its verified original-photo lead');
+ assert.deepEqual(originalPositions,originalPositions.map((_,index)=>index),
+   'verified originals must precede the editorial-only study cards');
+ assert.ok(await page.locator('[aria-label="Originalaufnahmen zuerst"] a[href*="bildnachweise"]').count(),
+   'license/source evidence must be accessible from the catalog');
+ // All catalog cards, including future pagination/filter states using this
+ // renderer, must never show unlicensed product-scene artwork.
+ const productStages=await cards.evaluateAll(xs=>xs.map(node=>({
+   approved:node.getAttribute('data-original-photo')==='true',
+   original:!!node.querySelector('.dufynd-product-stage'),
+   unavailable:!!node.querySelector('[data-dufynd-visual-state="unavailable"]'),
+   pending:!!node.querySelector('.dufynd-catalog-photo-pending'),
+   artwork:!!node.querySelector('[data-scent-artwork], .dufynd-editorial-depth-stage')
+ })));
+ assert.ok(productStages.some(x=>x.pending),'unlicensed product entries must stay discoverable without spoofed bottles');
+ assert.ok(productStages.every(x=>!x.artwork),'scenic illustration may not appear as a product photo');
+ assert.ok(productStages.every(x=>x.approved ? (x.original || x.unavailable) : x.pending),
+   'only registered originals may use the photo stage; every other card needs a candid studio pending state');
+ const honestCaptions=await cards.locator('.dufynd-catalog-photo-pending-caption').allTextContents();
+ assert.ok(honestCaptions.every(t=>t.includes('Originalfoto in Prüfung')),
+   'photo holds must be clearly labeled');
+ const prematurePhotoBadges=await cards.evaluateAll(xs=>xs.filter(card=>{
+   const loading=card.querySelector('[data-dufynd-photo-state="loading"]');
+   const badge=card.querySelector('.dufynd-catalog-original-photo-badge');
+   return loading && badge && getComputedStyle(badge).display!=='none';
+ }).length);
+ assert.equal(prematurePhotoBadges,0,'image-loading placeholders must not claim a visible original photo');
+ const boxes=await cards.evaluateAll(xs=>xs.map(x=>{const r=x.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}}));
+ const tops=[...new Set(boxes.map(b=>Math.round(b.y)))].sort((a,b)=>a-b).slice(0,2);
+ const first=boxes.filter(b=>tops.includes(Math.round(b.y)));
+ assert.ok(first.length>=2);assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+ const bottom=Math.ceil(Math.max(...first.map(b=>b.y+b.height)));
+ const png=await page.screenshot({path:`${out}/catalog-${width}-two-rows.png`,fullPage:true,clip:{x:0,y:0,width,height:bottom+24}});
+ assert.equal(png.readUInt32BE(16),width);assert.equal(png.readUInt32BE(20),bottom+24,'Capture must include both rows, not only the viewport');
+ report.push({width,rows:2,cards:first.length,status:'passed',height:bottom+24});await page.close();
+}}finally{await browser.close();}
+writeFileSync(`${out}/catalog-rows-qa.json`,JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));

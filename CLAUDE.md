@@ -30,6 +30,11 @@ adds pytest and ruff); `scripts/install.sh` runs it.
 - Do not mass-rename legacy identifiers without a coordinated data, deployment, analytics, and affiliate-routing migration. New user-facing identifiers should use DUFYND; compatibility code may continue to read legacy names.
 - For internal DUFYND business/creative/affiliate operations, load the durable Jarvis context through `scripts/dufynd_jarvis_bridge.py` and follow `examples/retail/data/dufynd_jarvis_runbook.md`. Do not inject this internal context into the customer-facing shopping advisor.
 
+- DUFYND storefront discovery uses `DiscoveryIntro` for approved original-photo entry points and `FragranceNoteSculpture` / `noteSculptureRenderer` for opt-in abstract note interaction. Publication pilots use `releasePilots` and `ScentArtwork`; see `docs/dufynd-discovery-release.md`. Public bundled catalogue data is generated without third-party community metrics before each build. Staging discovery facts live in `dufynd_discovery_qualification.json`; they never authorize publication or merchant offers.
+
+- Review waves use `ScentStudy` for original vector scent worlds and `brandIdentity` for stable display aliases. `prepare_dufynd_review_wave` binds only new manifest entries to evidence; changed evidence requires a fresh review. Responsive wave QA iterates every manifest entry, independently of affiliate availability.
+- Qualified pages share `QualifiedProductPage`; `release-gate.mjs` binds owner authorization to exact facts, render source and four-width browser evidence before `released-profiles.json` can enter public routes. `brands` derives `/marken` and brand pages exclusively from the public projection. See `docs/dufynd-core-scale-release.md` for the approval-only release procedure.
+
 ## Design rules
 
 - One model owns the conversation; a rule goes in a tool description, the prompt, or a skill by how often it applies.

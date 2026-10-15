@@ -1,0 +1,449 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-12T08:01:21.952094+00:00",
+  "repo_head_observed": "a067f241e983e3310843ef339aabc523b283fb53",
+  "scope": "Six exact merchant routes only; existing images and tracking evidence reused",
+  "perfumetrader": {
+    "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+    "merchant_id": "perfumetrader",
+    "merchant_product_id": "16978322",
+    "gtin": "3349666007921",
+    "volume_ml": 100,
+    "concentration": "Eau de Toilette",
+    "page_source": {
+      "key": "perfumetrader",
+      "url": "https://www.perfumetrader.de/de/paco-rabanne-1-million-eau-de-toilette-100-ml",
+      "final_url": "https://www.perfumetrader.de/de/paco-rabanne-1-million-eau-de-toilette-100-ml",
+      "status": 200,
+      "sha256": "fb2e1802cac75f80604d3e14f779edb5a97d4c654f65ff3fe22b0bf1bf2a074a",
+      "checked_at": "2026-10-12T08:01:13.660823+00:00"
+    },
+    "price_eur": 71.9,
+    "shipping_cost_eur": 4.99,
+    "total_price_eur": 76.89,
+    "shipping_source": {
+      "url": "https://www.perfumetrader.de/de/versandbedingungen",
+      "sha256": "b98d6f740f8b6d189c918cb4fad1a826489fe98afb96b6d5362c2e52374a09a9",
+      "checked_at": "2026-10-12T08:05:02.639305+00:00",
+      "de_standard_shipping_eur": 4.99
+    },
+    "availability": "merchant_declares_InStock",
+    "merchant_displayed_stock_qty": 2,
+    "exact_initial_variant": true,
+    "best_price_claim_allowed": false,
+    "affiliate": {
+      "publisher_id": "3099222",
+      "advertiser_id": "11672",
+      "existing_offer_id": "perfumetrader-rabanne-1-million-edt-100",
+      "programme_approval": "inherited approved evidence",
+      "redirect_verified_at": "2026-10-10T11:30:38Z",
+      "redirect_evidence_key": "ops.first_money_affiliate_truth_20261010",
+      "dynamic_clickref4_event_id_binding": "implemented and already verified; no repeated probe",
+      "network_receipt_verified": false,
+      "current_network_transaction_access": false,
+      "new_clickouts_or_redirect_probes": 0
+    },
+    "runtime_purchase_evidence": {
+      "enabled": true,
+      "last_verified_at": "2026-10-10T19:56:00.217168+00:00",
+      "max_age_hours": 72,
+      "expires_at": "2026-10-13T19:56:00.217168+00:00",
+      "fresh_at_this_observation": true,
+      "runtime_evidence_mutated": false
+    },
+    "status": "EXISTING_TECHNICAL_ROUTE_AVAILABLE_FULL_RELEASE_HOLD",
+    "narrowest_blocker": "Independent Awin reporting access / existing click receipt and current transactions+commission evidence unavailable",
+    "new_public_release_ready": false,
+    "top_parfuemerie_photo_allowed_on_this_route": false
+  },
+  "top_parfuemerie": [
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_id": "top-parfuemerie",
+      "merchant_product_id": "924719",
+      "merchant_variant_id": "30659",
+      "gtin": "3770010614630",
+      "gtin_basis": "Inherited exact-variant evidence; no new separate feed GTIN field claimed",
+      "volume_ml": 100,
+      "concentration": "Eau de Parfum",
+      "page_source": {
+        "key": "924719",
+        "url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+        "final_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+        "status": 200,
+        "sha256": "1f3c8a736123791d1c02e218223648490454bbfdbdc0bf0878003aac52bbdae6",
+        "checked_at": "2026-10-12T08:01:12.143948+00:00"
+      },
+      "offer_observation": {
+        "price_eur": 91.95,
+        "currency_basis": "merchant currencyFormat euro symbol",
+        "orderable_in_config": true,
+        "merchant_reported_qty": 21,
+        "immediately_ready_qty": 18,
+        "checkout_or_cart_test_performed": false,
+        "shipping_cost_eur": null,
+        "total_price_eur": null,
+        "expires_at": "2026-10-15T08:01:12.143948+00:00"
+      },
+      "landing": {
+        "url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+        "default_sku": "924719",
+        "default_size": "100 ml",
+        "exact_untracked_initial_variant": true,
+        "tracked_initial_variant_verified": false
+      },
+      "image_binding": {
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
+        "sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+        "current_variant_gallery_filename_matches": true,
+        "bytes_reused_from_previous_verified_phase": true,
+        "owner_visual_approved": true,
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "merchant_permission_key": "affiliate.evidence.top_parfuemerie.20261006",
+        "source_run_id": 38173126339,
+        "source_artifact_id": 11715220608,
+        "allowed_context": "DUFYND affiliate publisher placement marketing top Parfuemerie and leading only to its exact product; unchanged image",
+        "other_merchant_use_allowed": false,
+        "public_registry_write_authorized": false
+      },
+      "affiliate": {
+        "publisher_id": "3099222",
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "programme_approval": "inherited approved evidence",
+        "exact_sku_publisher_bound_feed_link_available": false,
+        "tracking_verified": false,
+        "network_receipt_verified": false
+      },
+      "status": "HOLD",
+      "blockers": [
+        "current_exact_sku_publisher_bound_awin_link_unavailable",
+        "tracked_initial_exact_variant_unverified",
+        "independent_awin_receipt_and_transaction_access_unavailable",
+        "public_merchant_bound_placement_and_release_not_authorized"
+      ]
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant_id": "top-parfuemerie",
+      "merchant_product_id": "707368",
+      "merchant_variant_id": "15571",
+      "gtin": "3349666007921",
+      "gtin_basis": "Inherited exact-variant evidence; no new separate feed GTIN field claimed",
+      "volume_ml": 100,
+      "concentration": "Eau de Toilette",
+      "page_source": {
+        "key": "707368",
+        "url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+        "final_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+        "status": 200,
+        "sha256": "899621e26d5f48435c6653be43bf418d4eadb9dac4e8756dcb4b23cb35e55110",
+        "checked_at": "2026-10-12T08:01:12.564399+00:00"
+      },
+      "offer_observation": {
+        "price_eur": 102.95,
+        "currency_basis": "merchant currencyFormat euro symbol",
+        "orderable_in_config": true,
+        "merchant_reported_qty": 1,
+        "immediately_ready_qty": 0,
+        "checkout_or_cart_test_performed": false,
+        "shipping_cost_eur": null,
+        "total_price_eur": null,
+        "expires_at": "2026-10-15T08:01:12.564399+00:00"
+      },
+      "landing": {
+        "url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+        "default_sku": "707367",
+        "default_size": "50 ml",
+        "exact_untracked_initial_variant": false,
+        "tracked_initial_variant_verified": false
+      },
+      "image_binding": {
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
+        "sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+        "current_variant_gallery_filename_matches": true,
+        "bytes_reused_from_previous_verified_phase": true,
+        "owner_visual_approved": true,
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "merchant_permission_key": "affiliate.evidence.top_parfuemerie.20261006",
+        "source_run_id": 38173126339,
+        "source_artifact_id": 11715220608,
+        "allowed_context": "DUFYND affiliate publisher placement marketing top Parfuemerie and leading only to its exact product; unchanged image",
+        "other_merchant_use_allowed": false,
+        "public_registry_write_authorized": false
+      },
+      "affiliate": {
+        "publisher_id": "3099222",
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "programme_approval": "inherited approved evidence",
+        "exact_sku_publisher_bound_feed_link_available": false,
+        "tracking_verified": false,
+        "network_receipt_verified": false
+      },
+      "status": "HOLD",
+      "blockers": [
+        "current_exact_sku_publisher_bound_awin_link_unavailable",
+        "tracked_initial_exact_variant_unverified",
+        "independent_awin_receipt_and_transaction_access_unavailable",
+        "public_merchant_bound_placement_and_release_not_authorized",
+        "generic_landing_defaults_to_other_size"
+      ]
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "merchant_id": "top-parfuemerie",
+      "merchant_product_id": "849484",
+      "merchant_variant_id": "3205",
+      "gtin": "3614272225718",
+      "gtin_basis": "Inherited exact-variant evidence; no new separate feed GTIN field claimed",
+      "volume_ml": 100,
+      "concentration": "Eau de Parfum",
+      "page_source": {
+        "key": "849484",
+        "url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
+        "final_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
+        "status": 200,
+        "sha256": "cde1bafb57ef0e106095a99f2942e3a999d15aa22a5a6a833e0a09cc16246a93",
+        "checked_at": "2026-10-12T08:01:21.784767+00:00"
+      },
+      "offer_observation": {
+        "price_eur": 107.95,
+        "currency_basis": "merchant currencyFormat euro symbol",
+        "orderable_in_config": true,
+        "merchant_reported_qty": 3,
+        "immediately_ready_qty": 1,
+        "checkout_or_cart_test_performed": false,
+        "shipping_cost_eur": null,
+        "total_price_eur": null,
+        "expires_at": "2026-10-15T08:01:21.784767+00:00"
+      },
+      "landing": {
+        "url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
+        "default_sku": "849486",
+        "default_size": "30 ml",
+        "exact_untracked_initial_variant": false,
+        "tracked_initial_variant_verified": false
+      },
+      "image_binding": {
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+        "sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+        "current_variant_gallery_filename_matches": true,
+        "bytes_reused_from_previous_verified_phase": true,
+        "owner_visual_approved": true,
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "merchant_permission_key": "affiliate.evidence.top_parfuemerie.20261006",
+        "source_run_id": 38173126339,
+        "source_artifact_id": 11715220608,
+        "allowed_context": "DUFYND affiliate publisher placement marketing top Parfuemerie and leading only to its exact product; unchanged image",
+        "other_merchant_use_allowed": false,
+        "public_registry_write_authorized": false
+      },
+      "affiliate": {
+        "publisher_id": "3099222",
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "programme_approval": "inherited approved evidence",
+        "exact_sku_publisher_bound_feed_link_available": false,
+        "tracking_verified": false,
+        "network_receipt_verified": false
+      },
+      "status": "HOLD",
+      "blockers": [
+        "current_exact_sku_publisher_bound_awin_link_unavailable",
+        "tracked_initial_exact_variant_unverified",
+        "independent_awin_receipt_and_transaction_access_unavailable",
+        "public_merchant_bound_placement_and_release_not_authorized",
+        "generic_landing_defaults_to_other_size"
+      ]
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "merchant_id": "top-parfuemerie",
+      "merchant_product_id": "812773",
+      "merchant_variant_id": "12674",
+      "gtin": "3700578502322",
+      "gtin_basis": "Inherited exact-variant evidence; no new separate feed GTIN field claimed",
+      "volume_ml": 125,
+      "concentration": "Eau de Parfum",
+      "page_source": {
+        "key": "812773",
+        "url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
+        "final_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
+        "status": 200,
+        "sha256": "22fc06db80c919dc604aa7acc675c80b946d8174b0857b02519ba6748614fb04",
+        "checked_at": "2026-10-12T08:01:21.942631+00:00"
+      },
+      "offer_observation": {
+        "price_eur": 290,
+        "currency_basis": "merchant currencyFormat euro symbol",
+        "orderable_in_config": true,
+        "merchant_reported_qty": 3,
+        "immediately_ready_qty": 1,
+        "checkout_or_cart_test_performed": false,
+        "shipping_cost_eur": null,
+        "total_price_eur": null,
+        "expires_at": "2026-10-15T08:01:21.942631+00:00"
+      },
+      "landing": {
+        "url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
+        "default_sku": "812774",
+        "default_size": "75 ml",
+        "exact_untracked_initial_variant": false,
+        "tracked_initial_variant_verified": false
+      },
+      "image_binding": {
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
+        "sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+        "current_variant_gallery_filename_matches": true,
+        "bytes_reused_from_previous_verified_phase": true,
+        "owner_visual_approved": true,
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "merchant_permission_key": "affiliate.evidence.top_parfuemerie.20261006",
+        "source_run_id": 38173126339,
+        "source_artifact_id": 11715220608,
+        "allowed_context": "DUFYND affiliate publisher placement marketing top Parfuemerie and leading only to its exact product; unchanged image",
+        "other_merchant_use_allowed": false,
+        "public_registry_write_authorized": false
+      },
+      "affiliate": {
+        "publisher_id": "3099222",
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "programme_approval": "inherited approved evidence",
+        "exact_sku_publisher_bound_feed_link_available": false,
+        "tracking_verified": false,
+        "network_receipt_verified": false
+      },
+      "status": "HOLD",
+      "blockers": [
+        "current_exact_sku_publisher_bound_awin_link_unavailable",
+        "tracked_initial_exact_variant_unverified",
+        "independent_awin_receipt_and_transaction_access_unavailable",
+        "public_merchant_bound_placement_and_release_not_authorized",
+        "generic_landing_defaults_to_other_size"
+      ]
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "merchant_id": "top-parfuemerie",
+      "merchant_product_id": "897029",
+      "merchant_variant_id": "23323",
+      "gtin": "3614273790826",
+      "gtin_basis": "Inherited exact-variant evidence; no new separate feed GTIN field claimed",
+      "volume_ml": 100,
+      "concentration": "Eau de Parfum",
+      "page_source": {
+        "key": "897029",
+        "url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
+        "final_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
+        "status": 200,
+        "sha256": "8ad161df6f84821924312695c4f692bc67ec6b23f1cec47d2f54eefdf8728e54",
+        "checked_at": "2026-10-12T08:01:21.952094+00:00"
+      },
+      "offer_observation": {
+        "price_eur": 129.95,
+        "currency_basis": "merchant currencyFormat euro symbol",
+        "orderable_in_config": true,
+        "merchant_reported_qty": 3,
+        "immediately_ready_qty": 1,
+        "checkout_or_cart_test_performed": false,
+        "shipping_cost_eur": null,
+        "total_price_eur": null,
+        "expires_at": "2026-10-15T08:01:21.952094+00:00"
+      },
+      "landing": {
+        "url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
+        "default_sku": "897028",
+        "default_size": "50 ml",
+        "exact_untracked_initial_variant": false,
+        "tracked_initial_variant_verified": false
+      },
+      "image_binding": {
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
+        "sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+        "current_variant_gallery_filename_matches": true,
+        "bytes_reused_from_previous_verified_phase": true,
+        "owner_visual_approved": true,
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "merchant_permission_key": "affiliate.evidence.top_parfuemerie.20261006",
+        "source_run_id": 38173126339,
+        "source_artifact_id": 11715220608,
+        "allowed_context": "DUFYND affiliate publisher placement marketing top Parfuemerie and leading only to its exact product; unchanged image",
+        "other_merchant_use_allowed": false,
+        "public_registry_write_authorized": false
+      },
+      "affiliate": {
+        "publisher_id": "3099222",
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "programme_approval": "inherited approved evidence",
+        "exact_sku_publisher_bound_feed_link_available": false,
+        "tracking_verified": false,
+        "network_receipt_verified": false
+      },
+      "status": "HOLD",
+      "blockers": [
+        "current_exact_sku_publisher_bound_awin_link_unavailable",
+        "tracked_initial_exact_variant_unverified",
+        "independent_awin_receipt_and_transaction_access_unavailable",
+        "public_merchant_bound_placement_and_release_not_authorized",
+        "generic_landing_defaults_to_other_size"
+      ]
+    }
+  ],
+  "closed_this_pass": [
+    "fresh exact Perfumetrader SKU/GTIN/EDT100 price stock and DE shipping confirmed",
+    "five top exact-SKU prices and orderability flags independently recovered from current merchant page configs",
+    "Bois Imperial direct initial landing confirms SKU924719 and100ml",
+    "all five existing image filenames bound to exact current merchant variant gallery; no new image approval"
+  ],
+  "not_claimed": [
+    "independently verified human visitor",
+    "network-confirmed transaction",
+    "confirmed commission",
+    "fresh affiliate redirect verification",
+    "public release authorization"
+  ],
+  "feed_access_hold": {
+    "basis": "inherited checkpoint and current explicit owner instruction",
+    "manual_dispatch_available": false,
+    "reason": "workflow absent from default branch in existing checkpoint; regular recipient rotation is restricted to scentai-mvp, which must remain untouched; no trigger or secret changes permitted",
+    "metadata_refresh_result": "one workflow-runs GET rejected by connector URL allowlist; no retry or alternative access attempted",
+    "new_feed_execution": false,
+    "existing_sanitized_photo_artifact_contains_tracking_urls": false
+  },
+  "first_money_report": "examples/retail/data/dufynd_first_money_observation_20261012.json",
+  "next_evidence_request": {
+    "priority": "Perfumetrader first",
+    "publisher_id": "3099222",
+    "advertiser_id": "11672",
+    "window_from": "2026-10-01",
+    "window_through": "2026-10-12",
+    "required": "Original authorized Awin transaction/commission export, all statuses, with date range/timezone, publisher/advertiser, transaction ID/date, ClickRef1-6, sale amount/currency and commission/status; use existing Oct10 QA reference only to reconcile a network receipt, never count it as customer revenue",
+    "no_new_probe_or_test_purchase": true,
+    "credentials_in_chat_required": false,
+    "empty_report_means": "No transactions in its explicit covered window only; does not independently prove click receipt or global zero revenue"
+  },
+  "owner_release_proposal": {
+    "state": "HOLD_NOT_READY_FOR_GO",
+    "first_candidate": "Perfumetrader 1 Million EDT100 existing exact route; no top photo transfer",
+    "after_evidence_passes": "Separate exact release authorization for reviewed PR774 commit and intended public placement/deployment; offer/routing activation only if included explicitly",
+    "merge_authorized": false,
+    "deploy_authorized": false,
+    "offer_activation_authorized": false
+  },
+  "safety": {
+    "additional_cost_eur": 0,
+    "new_merchant_clickouts": 0,
+    "test_purchases": 0,
+    "contacts": 0,
+    "feed_credentials_read": false,
+    "protected_workflow_changed": false,
+    "main_changed": false,
+    "scentai_mvp_changed": false,
+    "pr775_changed": false,
+    "production_image_register_changed": false,
+    "photos_or_previews_regenerated": false
+  }
+}

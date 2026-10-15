@@ -161,6 +161,9 @@ const routes = [
 ];
 
 const uniqueRoutes = [...new Set(routes)];
+const released=JSON.parse(fs.readFileSync(path.join(storefrontRoot,'lib/generated/released-profiles.json'),'utf8')).profiles;
+for(const p of released.filter(p=>p.indexing_approved)) uniqueRoutes.push(p.seo.public_path);
+if(new Set(uniqueRoutes).size!==uniqueRoutes.length)throw Error('Duplicate release sitemap route');
 
 const sitemap = [
   '<?xml version="1.0" encoding="UTF-8"?>',

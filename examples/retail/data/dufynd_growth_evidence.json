@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-11",
+  "purpose": "Supplemental manufacturer facts for the next bounded batch. Not imported by the storefront and never an approval. Existing 28 review facts remain unchanged.",
+  "facts_only": true,
+  "community_data_included": false,
+  "publication_authorized": false,
+  "products": [
+    {
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "brand": "Jean Paul Gaultier", "name": "Le Male Le Parfum", "concentration": "Eau de Parfum Intense", "volume_ml": 125,
+      "source_url": "https://www.jeanpaulgaultier.com/uk/en/p/range-le-male/le-male-le-parfum-eau-de-parfum-intense-000000000065156533",
+      "manufacturer_reference": "000000000065156533",
+      "variant_evidence": "Official product heading states Eau de Parfum Intense; size selector explicitly includes 125 ml. Reference is a manufacturer page reference, not a verified GTIN.",
+      "notes": {"top": ["cardamom"], "heart": ["lavender", "iris"], "base": ["vanilla"]},
+      "summary_de": "Kardamom eröffnet den Duft. Lavendel und Iris bilden das Herz, Vanille die Basis.",
+      "caveat": "Legacy research candidate abbreviates concentration to Eau de Parfum; exact staging already correctly says Eau de Parfum Intense. Do not create a second product.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "brand": "Viktor & Rolf", "name": "Spicebomb Extreme", "concentration": "Eau de Parfum", "volume_ml": 90,
+      "source_url": "https://www.viktor-rolf.com/products/spicebomb-extreme-eau-de-parfum-90ml",
+      "notes_source_url": "https://us.viktor-rolf.com/fragrance/spicebomb-extreme-eau-de-parfum-3614270659706.html",
+      "manufacturer_reference": "spicebomb-extreme-eau-de-parfum-90ml",
+      "variant_evidence": "Official product title explicitly identifies Eau de Parfum 90ml; US page also selects 90 ml.",
+      "notes": {"key": ["lavender", "cinnamon", "saffron", "tobacco", "vanilla", "bourbon"]},
+      "summary_de": "Lavendel und Gewürznoten treffen auf Tabak, Bourbon und Vanille.",
+      "caveat": "Use only the manufacturer's Key Notes list. Its separate note graphics use a different selection; no unified complete pyramid is inferred.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "brand": "Amouage", "name": "Guidance 46", "concentration": "Extrait de Parfum", "volume_ml": 100,
+      "source_url": "https://amouage.com/products/new-guidance-46",
+      "manufacturer_reference": "new-guidance-46",
+      "variant_evidence": "Official page identifies Guidance 46 Exceptional Extrait and 100ml. Manufacturer designation Extrait corresponds to the staged Extrait de Parfum; not Guidance Eau de Parfum.",
+      "notes": {"top": ["pear", "frankincense", "hazelnut", "rose water", "pink pepper", "bitter almond"], "heart": ["saffron", "rose", "sambac jasmine", "osmanthus"], "base": ["cistus", "sandalwood", "akigalawood", "ambergris", "vanilla", "ambrette", "georgywood", "cypriol"]},
+      "summary_de": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "brand": "Chloé", "name": "Chloé", "concentration": "Eau de Parfum", "volume_ml": 100,
+      "source_url": "https://www.chloe.com/en-gb/p/fragrances/eau-de-parfum/CHCA50133819.html",
+      "manufacturer_reference": "CHCA50133819",
+      "variant_evidence": "Title and Product Details identify Eau de Parfum 100 ml and item code CHCA50133819. The separately mentioned 150 ml refill is not this variant.",
+      "notes": {"top": ["peony"], "heart": ["rose petals", "magnolia"], "base": ["cedar", "ambergris"]},
+      "summary_de": "Pfingstrose eröffnet das florale Profil. Rosenblätter und Magnolie treffen auf Zeder und Ambra.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "brand": "Parfums de Marly", "name": "Valaya Exclusif", "concentration": "Eau de Parfum", "volume_ml": 75,
+      "source_url": "https://parfums-de-marly.com/es/products/valaya-exclusif",
+      "manufacturer_reference": "valaya-exclusif",
+      "variant_evidence": "Official page title identifies Eau de Parfum 75 ml; selected product size is 75ml. Distinct from Valaya and the hair perfume.",
+      "notes": {"top": ["almond", "bergamot", "mandarin"], "heart": ["orange blossom", "white flowers", "powdery facets"], "base": ["akigalawood", "sandalwood", "ambroxan", "vanilla"]},
+      "summary_de": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "brand": "Yves Saint Laurent", "name": "MYSLF Le Parfum", "concentration": "Parfum", "volume_ml": 100,
+      "source_url": "https://www.yslbeauty.com/int/fragrance/masculine-fragrance/myslf/myslf-le-parfum/3614274114645.html",
+      "manufacturer_reference": "3614274114645",
+      "variant_evidence": "Official MYSLF Le Parfum page selects 100 ml. Numeric URL reference remains manufacturer_reference, not verified GTIN; not MYSLF Eau de Parfum.",
+      "notes": {"top": ["black pepper"], "heart": ["orange blossom absolute"], "base": ["woods", "bourbon vanilla"]},
+      "summary_de": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "brand": "Dior", "name": "Sauvage Elixir", "concentration": "Elixir", "volume_ml": 100,
+      "source_url": "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html",
+      "manufacturer_reference": "Y0996460",
+      "variant_evidence": "Official Sauvage Elixir page includes 100 ml. Preserve the manufacturer's Elixir designation, do not reinterpret it as a percentage or Eau de Parfum.",
+      "notes": {"key": ["grapefruit", "cinnamon", "nutmeg", "cardamom", "lavender", "licorice", "vetiver", "patchouli", "amber accord"]},
+      "summary_de": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "brand": "Initio Parfums Privés", "name": "Side Effect", "concentration": "Eau de Parfum", "volume_ml": 90,
+      "source_url": "https://us.initioparfums.com/products/side-effect",
+      "manufacturer_reference": "side-effect",
+      "variant_evidence": "Official heading states EAU DE PARFUM with 90ML product option. Hair perfume and travel bundle are separately linked, not this variant.",
+      "notes": {"key": ["cinnamon", "rum", "tobacco", "saffron", "sandalwood", "hedione"]},
+      "summary_de": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten.",
+      "caveat": "Main Notes section used verbatim as factual note names; no performance or attraction claims from marketing copy adopted.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "brand": "Yves Saint Laurent", "name": "La Nuit de L'Homme", "concentration": "Eau de Toilette", "volume_ml": 100,
+      "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/426YSL.html",
+      "manufacturer_reference": "426YSL",
+      "variant_evidence": "Official Eau de Toilette page selects 100 ml. Not the separately listed Eau de Parfum or Le Parfum.",
+      "notes": {"top": ["bergamot"], "heart": ["cedar", "lavender"], "base": ["vetiver"]},
+      "summary_de": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis.",
+      "caveat": "Only the dedicated Olfaktion description supplies this pyramid; unrelated Bleu Electrique SEO keywords and ingredient-list allergens are not treated as notes.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "brand": "Giorgio Armani", "name": "Acqua di Giò Profondo", "concentration": "Parfum", "volume_ml": 100,
+      "source_url": "https://www.armanibeauty.it/fragranze/fragranze-da-uomo/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html",
+      "manufacturer_reference": "ww-00854-arm",
+      "variant_evidence": "Official Profondo Parfum page offers 100 ml; not Profondo Eau de Parfum. Volume selector explicitly distinguishes 30/50/100/200 ml.",
+      "notes": {"top": ["marine notes", "bergamot"], "heart": ["immortelle"], "base": ["cistus absolute", "patchouli"]},
+      "summary_de": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli.",
+      "caveat": "Uses the three labeled note headings for Profondo Parfum only, not the adjacent comparison cards for other Acqua di Giò variants.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "brand": "Giorgio Armani", "name": "Sì", "concentration": "Eau de Parfum", "volume_ml": 100,
+      "source_url": "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/AP35200.html",
+      "manufacturer_reference": "AP35200",
+      "variant_evidence": "Official Sì Eau de Parfum selector offers 100 ml separately from Refill 100ml. Neither Intense nor Passione.",
+      "notes": {"top": ["blackcurrant nectar"], "heart": ["modern chypre accord"], "base": ["musk-white wood accord"]},
+      "summary_de": "Schwarzer Johannisbeernektar führt zu einem modernen Chypre-Akkord. Ein Moschus-Weißholz-Akkord bildet die Basis.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "brand": "Afnan Perfumes", "name": "9 PM Pour Femme", "concentration": "Eau de Parfum", "volume_ml": 100,
+      "source_url": "https://afnan.com/products/9-pm-pour-femme",
+      "manufacturer_reference": "9-pm-pour-femme",
+      "variant_evidence": "Official 9 PM Pour Femme page states Type Eau De Perfum and Volume 100 ML. Spelling normalized to Eau de Parfum; distinct from the men's 9PM.",
+      "notes": {"top": ["raspberry", "apple", "violet", "orange"], "heart": ["rose", "peony", "iris", "jasmine"], "base": ["cedar", "cypress", "pine", "amber"]},
+      "summary_de": "Fruchtige Noten von Himbeere, Apfel und Orange treffen auf Veilchen und ein florales Herz. Zeder, Zypresse, Kiefer und Ambra bilden die Basis.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "brand": "Dior", "name": "J’adore", "concentration": "Eau de Parfum", "volume_ml": 100,
+      "source_url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+      "manufacturer_reference": "Y0998031",
+      "variant_evidence": "Official J’adore Eau de Parfum page explicitly states Inhalt 100 ml. New bottle collar is described; no assumption that older bottle images match this presentation.",
+      "notes": {"key": ["ylang-ylang", "damask rose", "jasmine grandiflorum", "sambac jasmine"]},
+      "summary_de": "Ylang-Ylang und Damaszener-Rose verbinden sich mit großblütigem und arabischem Jasmin zu einem floralen Profil.",
+      "status": "facts_qualified"
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100", "status": "HOLD",
+      "source_url": "https://lattafa.com/product/angham/",
+      "reason": "Official page confirms 100 ML and notes, but extracted text does not state concentration. Description mentions jasmine absent from its note pyramid. Need explicit Eau de Parfum evidence and a scoped note policy before qualification."
+    },
+    {
+      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125", "status": "HOLD",
+      "source_url": "https://www.jeanpaulgaultier.com/uk/en/p/range-le-male/le-male-le-parfum-eau-de-parfum-intense-000000000065156533",
+      "reason": "Current official comparison lists Le Male Pride 2026 EDT 125 ml; that is not proof of the staged Fleur du Mâle (2026) identity. Do not conflate names or reuse older discontinued product evidence."
+    },
+    {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100", "status": "HOLD",
+      "source_url": "https://www.sephora.de/p/yum-boujee-marshmallow--81---eau-de-parfum-intense-733612.html",
+      "reason": "Retail search confirms the target 100 ml EDP Intense, but no original manufacturer page was verified in this batch. Retailer listing alone is not the requested original manufacturer evidence."
+    },
+    {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100", "status": "HOLD",
+      "reason": "Specific 2025 edition identity remains unverified in this batch. Do not silently map an undated current The One Eau de Parfum page to an edition-specific staged record."
+    }
+  ]
+}

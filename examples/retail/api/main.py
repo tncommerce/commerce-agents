@@ -12,8 +12,6 @@ user, so what a shopper asks the store to remember, or to forget, survives a res
 
 from __future__ import annotations
 
-from uuid import uuid4
-
 from fastapi import BackgroundTasks, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -33,7 +31,6 @@ from .agent_config import build_shopping_config
 from .analytics import (
     AnalyticsEventRequest,
     FirstPartyAnalyticsTracker,
-    sanitize_attribution_identifier,
 )
 from .clickout_recovery import clickout_exception_handler
 from .jarvis_owner_auth import create_control_room_router
@@ -47,7 +44,6 @@ from .merchant_offers import (
 from .merchant_partners import (
     MerchantPartnerStore,
     customer_partner_payload,
-    partner_clickout_url,
 )
 from .mock_retail import DATA_DIR, MockRetail
 
@@ -135,6 +131,7 @@ async def merchant_partner_clickout(
     content: str | None = None,
     sid: str | None = None,
     qa: bool = False,
+    measurement: str | None = None,
 ) -> RedirectResponse:
     partner = partner_store.eligible(partner_key)
     if partner is None or partner.affiliate_url is None:
@@ -143,29 +140,13 @@ async def merchant_partner_clickout(
             detail="Merchant partner not available",
         )
 
-    acquisition_source = sanitize_attribution_identifier(src)
-    campaign_id = sanitize_attribution_identifier(cmp)
-    content_id = sanitize_attribution_identifier(content)
-    analytics_session_id = sanitize_attribution_identifier(sid) or f"partner-clickout-{uuid4()}"
-    background_tasks.add_task(
-        analytics_tracker.record,
-        session_id=analytics_session_id,
-        event="merchant_clickout",
-        internal_qa=qa,
-        source=partner.merchant_id,
-        acquisition_source=acquisition_source,
-        campaign_id=campaign_id,
-        content_id=content_id,
-        surface="merchant_discovery",
-    )
-
-    target = partner_clickout_url(
-        partner,
-        clickref="qa_internal" if qa else content_id or campaign_id or acquisition_source,
-    )
+    # Redirect URLs are copyable/replayable and cannot prove that a browser's
+    # optional measurement choice is still current. Keep navigation functional
+    # but never create DUFYND analytics or dynamic click references from this GET.
     return RedirectResponse(
-        url=target or partner.affiliate_url,
+        url=partner.affiliate_url,
         status_code=302,
+        headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
     )
 
 
@@ -191,7 +172,12 @@ async def product_offers(product_id: str) -> dict:
 async def analytics_event(
     request: AnalyticsEventRequest,
     record: host.CurrentSession,
+    measurement: str | None = None,
 ) -> dict:
+    # A missing, invalid, denied or QA-only signal never permits telemetry.
+    if measurement != "granted-v1":
+        return {"ok": True, "recorded": False, "storage": "disabled"}
+
     # Scope the client retry key to its stable funnel identity. A renewed API
     # transport session must not turn a lost response into a second event.
     from uuid import NAMESPACE_URL, uuid5
@@ -207,6 +193,7 @@ async def analytics_event(
         event=request.event,
         internal_qa=request.internal_qa,
         product_id=request.product_id,
+        offer_id=request.offer_id,
         source=request.source,
         acquisition_source=request.acquisition_source,
         campaign_id=request.campaign_id,
@@ -229,6 +216,7 @@ async def merchant_clickout(
     content: str | None = None,
     sid: str | None = None,
     qa: bool = False,
+    measurement: str | None = None,
 ) -> RedirectResponse:
     offer = offer_store.eligible_offer(offer_id)
     if offer is None or not _live_dufynd_offer_product(offer.product_id):
@@ -238,42 +226,14 @@ async def merchant_clickout(
     if target is None:
         raise HTTPException(status_code=404, detail="Offer not available")
 
-    acquisition_source = sanitize_attribution_identifier(src)
-    campaign_id = sanitize_attribution_identifier(cmp)
-    content_id = sanitize_attribution_identifier(content)
-    analytics_session_id = sanitize_attribution_identifier(sid)
-
-    click_id = clickout_tracker.record(
-        offer,
-        acquisition_source=acquisition_source,
-        campaign_id=campaign_id,
-        content_id=content_id,
-        session_id=analytics_session_id,
-        internal_qa=qa,
+    # A copied GET cannot demonstrate current optional consent. The affiliate
+    # destination remains available, while DUFYND measurement is emitted by the
+    # live browser click handler through the consent-gated analytics POST.
+    return RedirectResponse(
+        url=target,
+        status_code=302,
+        headers={"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"},
     )
-    analytics_session_id = analytics_session_id or f"offer-clickout-{click_id}"
-    network_refs = [
-        "qa_internal" if qa else content_id,
-        campaign_id,
-        acquisition_source,
-        analytics_session_id,
-    ]
-    target = offer_clickout_target(offer, clickrefs=network_refs, click_id=click_id) or target
-    background_tasks.add_task(
-        analytics_tracker.record,
-        session_id=analytics_session_id,
-        event="merchant_clickout",
-        internal_qa=qa,
-        product_id=offer.product_id,
-        source=offer.merchant_id,
-        acquisition_source=acquisition_source,
-        campaign_id=campaign_id,
-        content_id=content_id,
-        surface="merchant_offer",
-        event_id=click_id,
-        offer_id=offer.offer_id,
-    )
-    return RedirectResponse(url=target, status_code=302)
 
 
 @app.post("/api/cart/add")

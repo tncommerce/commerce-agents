@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-DETAIL_PAGE = Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx")
+DETAIL_PAGE = Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx")
 
 
 def test_product_schema_is_conservative_and_product_truth_gated() -> None:
@@ -15,7 +15,7 @@ def test_product_schema_is_conservative_and_product_truth_gated() -> None:
     assert 'name: "Füllmenge"' in source
 
     assert "productTruthIsVerified && productTruthVisual?.url" in source
-    assert "const productTruthVisual = fragrance.preferred_visual;" in source
+    assert "const productTruthVisual = originalPhotoFor(fragrance);" in source
     assert "verifiedProductImage" in source
     assert "{ image: [verifiedProductImage] }" in source
 
@@ -30,6 +30,6 @@ def test_product_pages_override_social_metadata() -> None:
 
     assert "twitter: {" in source
     assert '"summary_large_image"' in source
-    assert "isVerifiedProductTruthVisual(fragrance.preferred_visual)" in source
+    assert "const shareImage = originalPhotoFor(fragrance)?.url || null;" in source
     assert "images: shareImage ? [shareImage] : undefined" in source
     assert 'card: shareImage ? "summary_large_image" : "summary"' in source

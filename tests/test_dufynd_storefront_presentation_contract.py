@@ -14,31 +14,43 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     product_tile = _read("components/ProductTile.tsx")
     catalog_browser = _read("components/FragranceCatalogBrowser.tsx")
     discovery_page = _read("app/duft/page.tsx")
-    detail_page = _read("app/duft/[slug]/page.tsx")
+    detail_page = _read("components/FragranceDetailPage.tsx")
     acquisition = _read("components/AcquisitionLanding.tsx")
     library_hub = _read("components/FragranceLibraryHub.tsx")
     home_view = _read("components/views/HomeView.tsx")
 
     assert "presentation_visual: FragranceVisualAsset | null" in catalog_lib
     assert 'composition === "product_scene"' in catalog_lib
-    assert "fragrance?.presentation_visual" in product_tile
-    assert "fragrance.presentation_visual" in catalog_browser
-    assert "fragrance.presentation_visual" in discovery_page
-    assert "item.fragrance.presentation_visual" in detail_page
+    assert "originalPhotoFor(fragrance)" in product_tile
+    assert "originalPhotoFor(fragrance)" in catalog_browser
+    assert "dufynd-catalog-photo-pending" in catalog_browser
+    assert "<ScentArtwork" not in catalog_browser
+    assert "Originalfoto in Prüfung" in catalog_browser
+    assert "<DiscoveryIntro catalog />" in discovery_page
+    intro = _read("components/DiscoveryIntro.tsx")
+    assert "fragrance?.presentation_visual || fragrance?.preferred_visual" in intro
+    assert "isVerifiedProductTruthVisual(visual)" in intro
+    assert "originalPhotoFor(item.fragrance)" in detail_page
     assert "fragrance.presentation_visual" in acquisition
-    assert "fragrance.presentation_visual" in library_hub
-    assert "fragrance?.presentation_visual?.url" in home_view
+    assert "originalPhotoFor(fragrance)" in library_hub
+    assert "fragrance.presentation_visual" not in library_hub
+    assert "<AtelierSelection />" in home_view
+    assert "originalPhotoFor(p)" in _read("components/AtelierSelection.tsx")
 
 
 def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> None:
-    detail_page = _read("app/duft/[slug]/page.tsx")
+    detail_page = _read("components/FragranceDetailPage.tsx")
 
-    assert "fragrance.presentation_visual || productTruthVisual" in detail_page
-    assert "const productTruthVisual = fragrance.preferred_visual;" in detail_page
+    assert "fragrance.presentation_visual || productTruthVisual" not in detail_page
+    assert "const productTruthVisual = originalPhotoFor(fragrance);" in detail_page
     assert "productTruthIsVerified && productTruthVisual?.url" in detail_page
     assert "? productTruthVisual.url.startsWith" in detail_page
     assert "${SITE_URL}${productTruthVisual.url}" in detail_page
-    assert "cutoutUrl={productTruthVisual.url}" in detail_page
+    assert "cutoutUrl={heroVisual?.url}" in detail_page
+    notes = _read("components/FragranceExplodedNotes.tsx")
+    assert "FragranceVisual" not in notes
+    assert "data-dufynd-exploded-note" in notes
+    assert "<FragranceNotesOverview notes={fragrance.notes} />" in detail_page
     assert "verifiedProductImage" in detail_page
 
 

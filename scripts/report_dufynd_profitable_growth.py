@@ -264,6 +264,11 @@ def main() -> int:
     parser.add_argument(
         "--input", type=Path, help="Offline projected event array; coverage remains unknown"
     )
+    parser.add_argument(
+        "--network-manifest",
+        type=Path,
+        help="Optional authorized offline CSV reconciliation; no network login",
+    )
     parser.add_argument("--days", type=int, choices=range(1, 31), default=7)
     parser.add_argument("--end", help="UTC/timezone-aware exclusive window end")
     parser.add_argument("--max-events", type=int, default=10_000)
@@ -292,19 +297,16 @@ def main() -> int:
                 end=end,
                 max_events=args.max_events,
             )
-        print(
-            json.dumps(
-                build_report(
-                    rows,
-                    start=start,
-                    end=end,
-                    complete=complete,
-                    minimum_sample=args.minimum_sample,
-                ),
-                ensure_ascii=False,
-                indent=2,
-            )
+        report = build_report(
+            rows, start=start, end=end, complete=complete, minimum_sample=args.minimum_sample
         )
+        if args.network_manifest:
+            from scripts.dufynd_network_reconciliation import reconcile_manifest
+
+            # Separate network transaction-date windows from the click-cohort window.
+            # Do not overwrite visitor KPIs with QA, unmatched or incomplete revenue.
+            report["network_reconciliation"] = reconcile_manifest(args.network_manifest)
+        print(json.dumps(report, ensure_ascii=False, indent=2))
     except (OSError, ValueError, httpx.HTTPError):
         parser.error("Growth evidence unavailable; no metrics fabricated")
     return 0

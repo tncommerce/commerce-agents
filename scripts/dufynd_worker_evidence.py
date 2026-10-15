@@ -15,19 +15,19 @@ MAX_TEXT_BYTES = 500
 ATTRIBUTION = (
     "examples/retail/storefront-web/lib/analytics.ts",
     "examples/retail/storefront-web/components/AcquisitionLanding.tsx",
-    "examples/retail/storefront-web/app/duft/[slug]/page.tsx",
+    "examples/retail/storefront-web/components/FragranceDetailPage.tsx",
     "examples/retail/storefront-web/app/vergleich/[pair]/page.tsx",
+    "examples/retail/api/tests/test_clickout_analytics_correlation.py",
+    "examples/retail/storefront-web/lib/acquisitionEntry.ts",
+    "examples/retail/storefront-web/components/FragranceOffers.tsx",
+    "examples/retail/api/main.py",
+    "examples/retail/api/merchant_offers.py",
     "examples/retail/api/merchant_partners.py",
     "examples/retail/storefront-web/components/AcquisitionAnalytics.tsx",
-    "examples/retail/storefront-web/lib/acquisitionEntry.ts",
     "examples/retail/storefront-web/components/AcquisitionInternalLink.tsx",
     "examples/retail/storefront-web/components/ComparisonAnalytics.tsx",
-    "examples/retail/storefront-web/components/FragranceOffers.tsx",
     "examples/retail/storefront-web/lib/api.ts",
-    "examples/retail/api/main.py",
     "examples/retail/api/analytics.py",
-    "examples/retail/api/merchant_offers.py",
-    "examples/retail/api/tests/test_clickout_analytics_correlation.py",
     "examples/retail/storefront-web/scripts/test-analytics-session-ownership.mjs",
     "examples/retail/storefront-web/scripts/home-navigation-attribution-qa.mjs",
     "examples/retail/storefront-web/scripts/guided-link-attribution-qa.mjs",
@@ -74,17 +74,20 @@ def profile_for(task: dict) -> str:
 CODE_WINDOWS = {
     "examples/retail/data/scentai_launch_attribution.md": [("## Interpretation guardrails", 0, 5)],
     "examples/retail/api/tests/test_clickout_analytics_correlation.py": [
-        ('sid=" session-partner', 6, 2),
-        ('"campaign_id": "launch_01"', 6, 2),
-        ('sid=" session-offer', 6, 2),
-        ('"session_id": "session-offer', 2, 9),
+        ("test_live_consent_analytics_post_correlates_offer_and_acquisition", 1, 7),
+        ('analytics_session_id="measurement-session', 1, 7),
+        ('offer_id="qa-offer"', 1, 4),
+        ('campaign_id="launch_02"', 1, 4),
     ],
+    # Dense consent-aware code needs smaller, explicit windows, not a larger
+    # context allowance. Include permission/withdrawal alongside attribution.
     ATTRIBUTION[0]: [
-        ("export function captureAcquisitionEntry", 0, 12),
-        ("export function rememberAcquisitionAttribution", 0, 33),
-        ("export function appendAcquisitionAttribution", 0, 36),
-        ("export async function ensureAnalyticsSession", 0, 34),
-        ("window.sessionStorage.getItem", 2, 8),
+        ("export function captureAcquisitionEntry", 0, 8),
+        ("export function rememberAcquisitionAttribution", 0, 12),
+        ("export function appendAcquisitionAttribution", 0, 24),
+        ("export async function ensureAnalyticsSession", 0, 22),
+        ("window.sessionStorage.getItem", 1, 3),
+        ("function clearOptionalState", 0, 5),
     ],
     "examples/retail/storefront-web/components/AcquisitionAnalytics.tsx": [
         ("const attribution = captureAcquisitionEntry", 0, 13)
@@ -98,7 +101,7 @@ CODE_WINDOWS = {
     "examples/retail/storefront-web/components/AcquisitionLanding.tsx": [
         ("<AcquisitionAnalytics", 0, 12)
     ],
-    "examples/retail/storefront-web/app/duft/[slug]/page.tsx": [
+    "examples/retail/storefront-web/components/FragranceDetailPage.tsx": [
         ("<AcquisitionAnalytics", 0, 4),
         ("<FragranceOffers", 0, 9),
         ("<AcquisitionInternalLink", 0, 6),
@@ -112,17 +115,17 @@ CODE_WINDOWS = {
     ],
     "examples/retail/storefront-web/components/FragranceOffers.tsx": [
         ("ensureAnalyticsSession().finally", 2, 10),
-        ("href={appendAcquisitionAttribution", 2, 11),
+        ("href={appendAcquisitionAttribution", 2, 4),
+        ('trackAnalyticsEvent("merchant_clickout"', 1, 8),
     ],
     "examples/retail/storefront-web/lib/api.ts": [
         ("export async function initializeAnalyticsSession", 0, 20),
         ("export function merchantClickoutUrl", 0, 5),
     ],
     "examples/retail/api/main.py": [
-        ("async def merchant_clickout(", 1, 44),
-        ("return RedirectResponse(url=target", 0, 0),
-        ("async def analytics_event(", 1, 17),
-        ("target = partner_clickout_url(", 0, 11),
+        ("async def merchant_partner_clickout(", 1, 27),
+        ("async def analytics_event(", 1, 30),
+        ("async def merchant_clickout(", 1, 28),
     ],
     "examples/retail/api/merchant_offers.py": [
         ("def offer_clickout_target(", 0, 7),

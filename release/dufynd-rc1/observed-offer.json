@@ -1,0 +1,30 @@
+{
+  "kind": "recorded_public_api_observation_not_current_quote",
+  "source_url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100",
+  "observed_at": "2026-10-12T10:49:11.297Z",
+  "original_sha256": "a073700b4983e0e133e985555f6d053e7742ee930583b284da2603bb1540a4f7",
+  "body": {
+    "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+    "best_offer_id": "perfumetrader-rabanne-1-million-edt-100",
+    "offers": [
+      {
+        "offer_id": "perfumetrader-rabanne-1-million-edt-100",
+        "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+        "merchant_id": "perfumetrader",
+        "merchant_name": "Perfumetrader",
+        "merchant_product_id": "16978322",
+        "price": 71.9,
+        "currency": "EUR",
+        "shipping_cost": 4.99,
+        "shipping_label": "4,99 € DHL Standardversand innerhalb Deutschlands",
+        "total_price": 76.89,
+        "in_stock": true,
+        "variant_label": "100 ml · Eau de Toilette",
+        "clickout_path": "/api/clickout/perfumetrader-rabanne-1-million-edt-100",
+        "affiliate_link": true,
+        "last_updated_at": "2026-10-10T19:56:00.217168+00:00"
+      }
+    ],
+    "affiliate_disclosure": "Bei Käufen über Partnerlinks kann DUFYND eine Provision erhalten. Für dich ändert sich der Preis dadurch nicht."
+  }
+}

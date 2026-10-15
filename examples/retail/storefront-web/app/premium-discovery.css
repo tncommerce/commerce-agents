@@ -1,0 +1,1019 @@
+/* Review-only discovery pass. Product assets and rights gates are unchanged. */
+.dufynd-catalog-page {
+  background: #f7f8f4;
+}
+.dufynd-catalog-header {
+  background: #fffefa;
+}
+.dufynd-profile-discovery {
+  background: #eef2ed !important;
+  color: #263d30;
+  border-color: #d8e0d5;
+  box-shadow: none;
+}
+.dufynd-profile-discovery [class*="text-white"] {
+  color: #526457;
+}
+.dufynd-profile-discovery h2 {
+  color: #263d30;
+}
+.dufynd-profile-options button {
+  padding: 14px;
+  background: #fffef9;
+  border-color: #d9e0d5;
+}
+.dufynd-profile-options button[aria-pressed="true"] {
+  border-color: #496d52;
+  background: #e0ebdd;
+  box-shadow: 0 0 0 1px #496d52;
+}
+.dufynd-profile-options button > div:first-child {
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.dufynd-profile-options button > div:first-child > span:first-child {
+  color: #263d30;
+  font-size: 16px;
+}
+.dufynd-profile-options button > div:first-child > span:last-child {
+  background: #eef2e9;
+  border-color: #d3ddce;
+  color: #465940;
+  font-size: 10px;
+}
+.dufynd-profile-options button > div:nth-child(2) {
+  margin-top: 12px;
+  color: #344c3a;
+}
+.dufynd-profile-options button > div:last-child {
+  color: #3d6046;
+  border-color: #d9e0d5;
+  font-size: 10px;
+}
+.dufynd-profile-discovery > div:last-child {
+  border-color: #d8e0d5;
+}
+.dufynd-profile-discovery > div:last-child button {
+  border-color: #cbd6c7;
+  color: #3c5540;
+  background: #fffef9;
+  font-size: 11px;
+}
+.dufynd-profile-discovery > div:last-child button[aria-pressed="true"] {
+  background: #dce8d8;
+}
+.dufynd-catalog-page [aria-label="Passende Düfte"] {
+  gap: 20px;
+}
+.dufynd-catalog-card {
+  border-color: #dde2d8;
+  background: #fffefa;
+  box-shadow: 0 5px 18px -14px #31442e66;
+}
+.dufynd-catalog-card-body h2 {
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+.dufynd-catalog-card-body > div:first-child {
+  font-size: 11px;
+}
+.dufynd-catalog-card-body > div:nth-child(3),
+.dufynd-catalog-card-accord {
+  font-size: 11px;
+}
+.dufynd-catalog-card-dna {
+  background: #f3f5ef;
+  border-color: #e1e6db;
+}
+.dufynd-catalog-card-dna [class*="text-"] {
+  font-size: 10px;
+}
+.dufynd-catalog-card-cta {
+  color: #355c40;
+  font-size: 12px;
+}
+.dufynd-catalog-card-actions button {
+  min-height: 40px;
+  font-size: 11px;
+}
+.dufynd-catalog-card-stage {
+  height: 220px;
+}
+.dufynd-detail-page {
+  background: #f7f8f4;
+}
+.dufynd-detail-page nav[aria-label="Breadcrumb"] {
+  color: #59665c;
+}
+.dufynd-detail-page nav[aria-label="Breadcrumb"] > span:last-child {
+  color: #293c30;
+}
+.dufynd-detail-page .dufynd-fragrance-hero {
+  background: #eff2eb;
+  border-color: #d8dfd3;
+  box-shadow: 0 16px 40px -30px #32483255;
+}
+.dufynd-detail-page .dufynd-fragrance-panel-section {
+  --ink: #23392d;
+  --ink-soft: #526454;
+  --surface: #f5f6ef;
+  --well: #e8ede1;
+  --line: #d5ddce;
+  --accent-ink: #355d40;
+  background: #fffef9;
+  color: var(--ink);
+  border-color: #d8dfd3;
+  backdrop-filter: none;
+  box-shadow: none;
+}
+.dufynd-detail-page .dufynd-fragrance-hero-atmosphere,
+.dufynd-detail-page .dufynd-fragrance-hero-orbit,
+.dufynd-detail-page .dufynd-fragrance-scene-beam,
+.dufynd-detail-page .dufynd-fragrance-scene-mist,
+.dufynd-detail-page .dufynd-fragrance-scene-particles {
+  display: none;
+}
+.dufynd-detail-page .dufynd-fragrance-identity p {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.dufynd-detail-page .dufynd-fragrance-stage-kicker {
+  display: none;
+}
+@media (max-width: 639px) {
+  .dufynd-detail-page .dufynd-fragrance-identity {
+    order: 0;
+    margin: 0;
+    border-radius: 0;
+    padding: 20px;
+  }
+  .dufynd-detail-page .dufynd-fragrance-stage-shell {
+    min-height: clamp(220px, 62vw, 258px);
+  }
+  .dufynd-detail-page .dufynd-fragrance-hero-copy {
+    margin: 0;
+    border-radius: 0;
+    padding: 20px;
+  }
+  .dufynd-detail-page .dufynd-fragrance-hero {
+    border-radius: 22px;
+  }
+  .dufynd-profile-discovery {
+    padding: 14px;
+    border-radius: 20px;
+  }
+  .dufynd-profile-options button {
+    padding: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-profile-options button {
+    transition: none;
+    transform: none;
+  }
+}
+
+/* Existing approved photographs get the same neutral studio treatment on detail pages. */
+.dufynd-fragrance-hero[data-dufynd-studio-photo] .dufynd-product-stage {
+  background: #f6f5ef !important;
+}
+.dufynd-fragrance-hero[data-dufynd-studio-photo]
+  .dufynd-product-stage[data-dufynd-image-matte="white"] {
+  background: #fff !important;
+}
+.dufynd-fragrance-hero[data-dufynd-studio-photo]
+  :is(.dufynd-product-light, .dufynd-product-sheen) {
+  display: none;
+}
+.dufynd-fragrance-hero[data-dufynd-studio-photo] .dufynd-product-stage::before,
+.dufynd-fragrance-hero[data-dufynd-studio-photo] .dufynd-product-stage::after {
+  display: none;
+}
+@media (max-width: 767px) {
+  .dufynd-profile-discovery > div:first-child p {
+    display: none;
+  }
+  .dufynd-profile-discovery
+    > div:first-child
+    > div:first-child
+    > div:first-child {
+    display: none;
+  }
+  .dufynd-profile-options button > div:nth-child(2),
+  .dufynd-profile-options button > div:nth-child(3),
+  .dufynd-profile-options button > div:last-child {
+    display: none;
+  }
+  .dufynd-profile-options {
+    margin-top: 14px;
+  }
+  .dufynd-profile-discovery h2 {
+    font-size: 20px;
+  }
+}
+
+.dufynd-fragrance-hero[data-dufynd-studio-photo]
+  .dufynd-fragrance-stage-shell::after {
+  display: none;
+}
+.dufynd-fragrance-hero[data-dufynd-studio-photo]
+  .dufynd-fragrance-stage-reflection {
+  display: none;
+}
+.dufynd-fragrance-hero[data-dufynd-studio-photo] .dufynd-product-image {
+  filter: drop-shadow(0 8px 10px #24351e1a);
+}
+.dufynd-fragrance-hero[data-dufynd-studio-photo]
+  .dufynd-product-stage[data-dufynd-image-matte="white"]
+  .dufynd-product-image {
+  filter: none;
+}
+.dufynd-fragrance-hero[data-dufynd-studio-photo] .dufynd-product-shadow {
+  opacity: 0.16;
+}
+
+/* Recovery: warmer paper, stronger hierarchy, intact source photographs. */
+.dufynd-catalog-page,.dufynd-detail-page {background:#f6f4ee}
+.dufynd-catalog-card {border-color:#dedbd2;border-radius:18px;background:#fffefa;box-shadow:0 10px 25px -22px #344033}
+.dufynd-catalog-card-stage {height:260px;border-bottom:1px solid #e3e0d8}
+.dufynd-catalog-card[data-original-photo] .dufynd-product-stage {background:#fff!important}
+.dufynd-catalog-card[data-original-photo] .dufynd-product-object {inset:6% 8% 8%!important}
+.dufynd-catalog-card-body {padding:20px 20px 12px}
+.dufynd-catalog-card-body h2 {font-family:Georgia,serif;font-size:24px;font-weight:400;letter-spacing:-.03em}
+.dufynd-catalog-card-stage .dufynd-catalog-card-signature {background:#fffef9ed;color:#344536;border:1px solid #d7ddcf;backdrop-filter:none}
+.dufynd-profile-discovery {background:#e9ede5!important;border-color:#d2d9cc}
+.dufynd-detail-page .dufynd-fragrance-hero {background:#f5f1e8;border-color:#dcd8ce}
+.dufynd-detail-page .dufynd-exploded-stage {height:auto;min-height:0;padding:0;display:none;transition:none}
+.dufynd-detail-page .dufynd-exploded-stage[data-expanded="true"] {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:20px;min-height:0;height:auto}
+.dufynd-detail-page .dufynd-exploded-note {position:static;width:auto;max-width:none;opacity:1;transform:none;transition:none;min-height:70px;padding:14px;box-shadow:none}
+.dufynd-detail-page .dufynd-exploded-note span {font-size:12px;line-height:1.5;white-space:normal}
+.dufynd-brand-directory {margin:18px 0;border-block:1px solid #d8dcd1;padding:4px 0;color:#344439}
+.dufynd-brand-directory summary {padding:15px 4px;cursor:pointer;font-size:14px;font-weight:600}
+.dufynd-brand-directory nav {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:4px 0 18px}
+.dufynd-brand-directory button {display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;min-height:46px;border:1px solid #dadfd4;border-radius:8px;background:#fffefa;padding:10px 12px;font-size:13px}
+.dufynd-brand-directory button span {color:#64705e;font-size:12px}
+.dufynd-brand-directory button[aria-pressed="true"] {background:#e0e8dc;border-color:#5b7254}
+.dufynd-brand-directory button:focus-visible {outline:3px solid #755048;outline-offset:2px}
+@media(max-width:767px){
+ .dufynd-catalog-card-stage {height:260px}
+ .dufynd-catalog-card-body h2 {font-size:25px}
+ .dufynd-brand-directory nav {grid-template-columns:repeat(2,minmax(0,1fr))}
+ .dufynd-detail-page .dufynd-exploded-stage[data-expanded="true"] {grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:14px}
+ .dufynd-detail-page .dufynd-exploded-note {padding:10px;min-height:68px}
+}
+
+.dufynd-brand-directory {margin:12px 0}
+.dufynd-brand-directory summary {padding:10px 4px;min-height:44px}
+@media(max-width:767px){
+ .dufynd-catalog-page section[aria-label="Duftkatalog filtern"] > div:first-child {grid-template-columns:minmax(0,1fr) auto;align-items:end}
+ .dufynd-catalog-page section[aria-label="Duftkatalog filtern"] > div:first-child > button {min-width:78px;gap:14px}
+}
+
+
+/* Mobile polish: keep filtering accessible without covering a product card. */
+.dufynd-catalog-page .sticky.bottom-3.z-20.mt-4 {
+  position: static;
+  isolation: isolate;
+}
+.dufynd-catalog-page .sticky.bottom-3.z-20.mt-4 > div {
+  border-color: #d5d3ca;
+  background: #fdfbf5;
+  box-shadow: 0 12px 28px -24px rgba(33, 38, 30, 0.5);
+}
+.dufynd-catalog-page .sticky.bottom-3.z-20.mt-4 button {
+  min-height: 44px;
+}
+@media (max-width: 767px) {
+  .dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-stage {
+    height: 216px;
+  }
+  .dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage {
+    height: 258px;
+  }
+  .dufynd-catalog-card-cta {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    font-size: 13px;
+  }
+  .dufynd-catalog-card-actions button {
+    min-height: 44px;
+  }
+}
+
+/* Correct contrast on pale breadcrumb and the dark Delina hero. */
+.dufynd-detail-page nav[aria-label="Breadcrumb"] {
+  color: #4e534f !important;
+}
+.dufynd-detail-page nav[aria-label="Breadcrumb"] > span:last-child {
+  color: #222b24 !important;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-identity .rounded-full {
+  color: #44323d;
+  background: #f8f2f5;
+  border-color: #c3afb9;
+  font-weight: 600;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-copy :is(button, a[href^="/vergleich"], a[href="#alternativen"]) {
+  min-height: 44px;
+  color: #33232e !important;
+  background: #fff8fb !important;
+  border: 1px solid #c9b7c2 !important;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-copy button[aria-pressed="true"] {
+  background: #e7d5de !important;
+  border-color: #94687f !important;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-copy :is(button, a):focus-visible {
+  outline: 3px solid #d9b6c7;
+  outline-offset: 2px;
+}
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] #dufynd-hero-offer-cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 46px;
+}
+
+/* Tracking links may be emitted as absolute URLs: style every secondary hero link. */
+.dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-hero-copy a:not(#dufynd-hero-offer-cta) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  text-align: center;
+  color: #33232e !important;
+  background: #fff8fb !important;
+  border: 1px solid #c9b7c2 !important;
+}
+
+
+/* Original-first catalog: style evidence, not imagined packshots. */
+.dufynd-catalog-originals-note {display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0 16px;padding:8px 0;color:var(--ink-soft);font-size:11px;line-height:1.6}
+.dufynd-catalog-photo-evidence {display:inline-flex;align-items:center;min-height:44px;gap:12px;font-weight:600;color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px}
+.dufynd-catalog-photo-evidence:focus-visible {outline:2px solid var(--accent-ink);outline-offset:3px}
+.dufynd-catalog-originals-intro {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 24px;
+  align-items: center;
+  justify-content: space-between;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 25px 28px;
+  border: 1px solid #355143;
+  border-radius: 18px;
+  color: #fffef8;
+  background:
+    radial-gradient(ellipse at 91% 0%, rgb(217 198 154 / 0.18), transparent 42%),
+    linear-gradient(115deg, #192f29, #294439 73%, #33473b);
+  box-shadow: 0 18px 35px -29px #10231b;
+}
+.dufynd-catalog-originals-intro > div {
+  max-width: 585px;
+  min-width: 0;
+}
+.dufynd-catalog-originals-eyebrow {
+  margin: 0 0 9px;
+  color: #e6d0a8;
+  font-size: 10px;
+  letter-spacing: .19em;
+  font-weight: 750;
+}
+.dufynd-catalog-originals-intro h2 {
+  margin: 0;
+  font: 400 clamp(22px, 2.5vw, 32px)/1.2 Georgia, serif;
+  letter-spacing: -.025em;
+  color: #fffef8;
+}
+.dufynd-catalog-originals-intro p:not(.dufynd-catalog-originals-eyebrow) {
+  max-width: 520px;
+  margin: 9px 0 0;
+  color: #d5e1d7;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.dufynd-catalog-originals-evidence {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 14px;
+  border: 1px solid #b9cab8;
+  border-radius: 10px;
+  color: #fffef8;
+  font-size: 12px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.dufynd-catalog-originals-evidence:hover {
+  border-color: #fff;
+  background: rgb(255 255 255 / .1);
+}
+.dufynd-catalog-originals-evidence:focus-visible {
+  outline: 3px solid #f5dcb6;
+  outline-offset: 3px;
+}
+.dufynd-catalog-card[data-original-photo="true"] {
+  border-color: #c8c7b9;
+  background: #fffdf8;
+  box-shadow: 0 14px 28px -22px rgb(30 44 34 / .33);
+}
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage {
+  min-height: 270px;
+  height: 270px;
+  background: #fff;
+}
+.dufynd-catalog-card-stage {
+  position: relative;
+}
+.dufynd-catalog-original-photo-badge {
+  position: absolute;
+  z-index: 7;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid #cbd4c6;
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: rgb(255 254 250 / .97);
+  color: #244737;
+  font-size: 10px;
+  letter-spacing: .045em;
+  font-weight: 750;
+  box-shadow: 0 4px 14px -10px #21392c;
+}
+.dufynd-catalog-card-stage:has([data-dufynd-visual-state="unavailable"])
+  .dufynd-catalog-original-photo-badge,
+.dufynd-catalog-card-stage:has([data-dufynd-visual-state="missing"])
+  .dufynd-catalog-original-photo-badge {
+  display: none;
+}
+@media (max-width: 767px) {
+  .dufynd-catalog-originals-intro {
+    padding: 22px 19px;
+    border-radius: 15px;
+  }
+  .dufynd-catalog-originals-intro h2 {
+    font-size: 25px;
+  }
+  .dufynd-catalog-originals-intro p:not(.dufynd-catalog-originals-eyebrow) {
+    font-size: 12px;
+  }
+  .dufynd-catalog-originals-evidence {
+    width: 100%;
+    justify-content: space-between;
+  }
+  .dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage {
+    height: 286px;
+    min-height: 286px;
+  }
+}
+
+
+/* Loading phase for exact source photographs, never a simulated bottle. */
+.dufynd-product-stage[data-variant="card"][data-dufynd-photo-state="loading"] {
+  background: #f4f3ee !important;
+}
+.dufynd-photo-loading-indicator {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  padding: 20px;
+  color: #657268;
+  background:
+    radial-gradient(ellipse at 50% 39%, #fff 0%, #f6f6f1 56%, #e9eee7 100%);
+}
+.dufynd-photo-loading-indicator span {
+  color: #7c8477;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: .16em;
+}
+.dufynd-photo-loading-indicator strong {
+  max-width: 220px;
+  font-size: 13px;
+  line-height: 1.6;
+  font-weight: 550;
+}
+.dufynd-photo-loading-indicator i {
+  display: block;
+  width: 64px;
+  height: 3px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #d8dfd5, #789a83, #d8dfd5);
+  background-size: 200% 100%;
+  animation: dufynd-original-loading 1.6s ease-in-out infinite;
+}
+.dufynd-product-stage[data-dufynd-photo-state="loading"] .dufynd-product-object {
+  opacity: 0;
+}
+.dufynd-catalog-card-stage:has([data-dufynd-photo-state="loading"])
+  .dufynd-catalog-original-photo-badge {
+  display: none;
+}
+@keyframes dufynd-original-loading {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dufynd-photo-loading-indicator i { animation: none; }
+}
+
+
+/* Owner requirement 2026-10-11: product cards share the studio-photo language.
+   Unlicensed scenes are NOT used as fake product shots; unresolved SKUs get a
+   source-honest studio identity plate, never a generated bottle. */
+.dufynd-catalog-card-stage,
+.dufynd-library-card-stage,
+.dufynd-comparison-product-card {
+  background: #fffefa;
+}
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage {
+  background: #fff !important;
+}
+.dufynd-catalog-photo-pending {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 18px 20px 14px;
+  background: radial-gradient(ellipse at 50% 40%, #ffffff 0%, #fdfcf9 65%, #f4f2ec 100%);
+  border: 1px solid #eeece5;
+  color: #333e36;
+}
+.dufynd-catalog-photo-pending::after {
+  content: "";
+  position: absolute;
+  inset-inline: 17%;
+  bottom: 12%;
+  border-bottom: 1px solid #e5e2d9;
+  z-index: -1;
+}
+.dufynd-catalog-photo-pending-eyebrow,
+.dufynd-catalog-photo-pending-caption {
+  font-size: 9px;
+  letter-spacing: .15em;
+  font-weight: 700;
+  color: #66756a;
+  text-transform: uppercase;
+}
+.dufynd-catalog-photo-pending-identity {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 8px;
+  text-align: center;
+}
+.dufynd-catalog-photo-pending-identity span {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  color: #63766b;
+  text-transform: uppercase;
+}
+.dufynd-catalog-photo-pending-identity strong {
+  max-width: 100%;
+  font: 400 clamp(21px, 2vw, 29px)/1.12 Georgia, serif;
+  letter-spacing: -.025em;
+  color: #24392f;
+  overflow-wrap: anywhere;
+}
+.dufynd-catalog-photo-pending-identity small {
+  font-size: 10px;
+  color: #697269;
+  line-height: 1.45;
+}
+.dufynd-catalog-photo-pending-caption {
+  align-self: end;
+  font-size: 9px;
+  color: #637368;
+  letter-spacing: .075em;
+}
+.dufynd-library-card-visual[data-dufynd-visual-state="missing"],
+.dufynd-comparison-product-visual[data-dufynd-visual-state="missing"] {
+  background: #fbfaf6 !important;
+  color: #334a3c;
+  border: 1px solid #e7e5df;
+}
+.dufynd-library-card-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-atmosphere,
+.dufynd-comparison-product-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-atmosphere {
+  display: none;
+}
+.dufynd-library-card-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-copy,
+.dufynd-comparison-product-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-copy {
+  padding: 18px;
+  text-align: center;
+}
+.dufynd-library-card-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-copy strong,
+.dufynd-comparison-product-visual[data-dufynd-visual-state="missing"] .dufynd-neutral-visual-copy strong {
+  font: 400 20px/1.2 Georgia, serif;
+  color: #344b3e;
+}
+@media (max-width: 767px) {
+  .dufynd-catalog-photo-pending { padding: 13px 14px 11px; }
+  .dufynd-catalog-photo-pending-identity { padding: 12px 6px; }
+  .dufynd-catalog-photo-pending-identity strong { font-size: 23px; }
+}
+
+/* DUFYND fragrance detail V5 - same commercial design grammar across every SKU.
+   These are presentation changes, not an assertion of image rights or note facts. */
+.dufynd-detail-page .dufynd-fragrance-journey {
+  isolation: auto;
+  margin-top: 8px;
+}
+.dufynd-detail-page .dufynd-fragrance-journey::before,
+.dufynd-detail-page .dufynd-fragrance-journey-axis,
+.dufynd-detail-page .dufynd-fragrance-chapter-index,
+.dufynd-detail-page .dufynd-fragrance-chapter--profile::after {
+  display: none !important;
+}
+.dufynd-detail-page .dufynd-fragrance-chapter--offers,
+.dufynd-detail-page .dufynd-fragrance-chapter--notes,
+.dufynd-detail-page .dufynd-fragrance-chapter--profile,
+.dufynd-detail-page .dufynd-fragrance-chapter--gallery {
+  padding-left: 0 !important;
+}
+.dufynd-detail-page .dufynd-fragrance-chapter--profile {
+  display: block;
+}
+.dufynd-detail-page .dufynd-fragrance-hero,
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] {
+  border: 1px solid #dddcd4 !important;
+  background: #f7f6f1 !important;
+  color: #293b30;
+  box-shadow: 0 22px 48px -40px #35483d70 !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-fragrance-panel-section,
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-panel-section {
+  --ink: #263e30 !important;
+  --ink-soft: #54675b !important;
+  --surface: #fffefa !important;
+  --well: #eeefe9 !important;
+  --line: #d9ded5 !important;
+  --accent-ink: #365747 !important;
+  --accent-strong: #345943 !important;
+  background: #fffefa !important;
+  color: #263e30 !important;
+  border-color: #e1e1d7 !important;
+  backdrop-filter: none !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-fragrance-stage-shell,
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-shell {
+  background: #fff !important;
+  border: 0;
+  isolation: isolate;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"],
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-stage[data-variant="hero"] {
+  background: #fff !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]::before,
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-stage[data-variant="hero"]::after,
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-light,
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-sheen,
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-shadow,
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-fragrance-hero-orbit,
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-fragrance-hero-atmosphere {
+  display: none !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-object,
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-object {
+  inset: 9% 17% !important;
+  transform: none !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-image,
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-image {
+  object-fit: contain !important;
+  object-position: center !important;
+  max-height: 100% !important;
+  filter: none !important;
+  transform: none !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-neutral-visual-stage {
+  color: #314639 !important;
+  background: radial-gradient(ellipse at 50% 45%, #fff 0%, #f8f7f1 62%, #efeee7 100%) !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-neutral-visual-atmosphere {
+  display: none !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-neutral-visual-brand,
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-neutral-visual-copy strong,
+.dufynd-detail-page .dufynd-fragrance-hero .dufynd-neutral-visual-copy em {
+  color: #415c4a !important;
+}
+.dufynd-detail-source-hold {
+  position: absolute;
+  z-index: 8;
+  right: 13px;
+  bottom: 12px;
+  left: 13px;
+  margin: 0;
+  padding: 8px 10px;
+  border: 1px solid #e5e5dd;
+  border-radius: 9px;
+  background: #fffefaeb;
+  color: #435a48;
+  font-size: 10px;
+  line-height: 1.5;
+  text-align: center;
+}
+.dufynd-detail-page .dufynd-fragrance-hero-copy :is(a,button):focus-visible {
+  outline: 3px solid #aec5b6;
+  outline-offset: 2px;
+}
+.dufynd-notes-overview {
+  overflow: hidden;
+  border: 1px solid #dce1d7;
+  border-radius: 20px;
+  background: #fffefa;
+  box-shadow: 0 16px 34px -30px #3f4d3e66;
+}
+.dufynd-notes-overview-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px 28px;
+  padding: 24px 27px 21px;
+  border-bottom: 1px solid #e3e7de;
+  background: linear-gradient(105deg, #f3f4ef 0%, #fffefa 90%);
+}
+.dufynd-notes-overview-eyebrow {
+  margin: 0 0 8px;
+  color: #4f715c;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: .16em;
+}
+.dufynd-notes-overview-header h2 {
+  margin: 0;
+  color: #253e30;
+  font: 400 clamp(24px, 2.5vw, 33px)/1.17 Georgia, serif;
+  letter-spacing: -.028em;
+}
+.dufynd-notes-overview-header > p {
+  max-width: 390px;
+  margin: 0;
+  color: #59695d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.dufynd-notes-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  padding: 16px;
+}
+.dufynd-notes-overview[data-dufynd-note-layout="key-notes"] .dufynd-notes-groups {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.dufynd-notes-group {
+  min-width: 0;
+  min-height: 160px;
+  padding: 20px;
+  border: 1px solid #e1e5dc;
+  border-radius: 13px;
+  background: #f9faf6;
+}
+.dufynd-notes-group-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+.dufynd-notes-index {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  border-radius: 8px;
+  color: #eaf2eb;
+  background: #315946;
+  font-size: 10px;
+  font-weight: 750;
+}
+.dufynd-notes-group h3 {
+  margin: 0;
+  color: #274332;
+  font-size: 15px;
+  font-weight: 750;
+  letter-spacing: -.015em;
+}
+.dufynd-notes-group-heading p {
+  margin: 4px 0 0;
+  color: #758075;
+  font-size: 10px;
+}
+.dufynd-notes-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 7px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.dufynd-notes-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 8px 10px;
+  border: 1px solid #d8e1d4;
+  border-radius: 9px;
+  color: #2d4c3a;
+  background: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+.dufynd-notes-chip:hover {background: #eff6ed; border-color: #a6bea9;}
+.dufynd-notes-chip:focus-visible {outline: 2px solid #396e4e; outline-offset: 2px;}
+.dufynd-notes-chip > span:last-child {color: #7e9081; font-size: 12px;}
+.dufynd-notes-unavailable {
+  padding: 15px 1px;
+  color: #7c837a;
+  font-size: 11px;
+  font-style: italic;
+}
+.dufynd-notes-supplementary {
+  margin: 0 16px 16px;
+  padding: 15px 20px 19px;
+  border: 1px solid #e6e9e1;
+  border-radius: 12px;
+}
+.dufynd-notes-supplementary h3 {
+  margin: 0;
+  color: #425f4b;
+  font-size: 12px;
+  font-weight: 750;
+}
+.dufynd-notes-empty {
+  margin: 0;
+  padding: 24px;
+  color: #556458;
+  font-size: 13px;
+}
+.dufynd-notes-method {
+  margin: 0;
+  padding: 11px 26px 15px;
+  border-top: 1px solid #ebede6;
+  color: #657366;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.dufynd-detail-page .dufynd-fragrance-profile-card {
+  min-height: 0;
+  border: 1px solid #dce1d7;
+  border-radius: 20px;
+  padding: 24px;
+  background: #fffefa;
+  box-shadow: 0 16px 34px -30px #3f4d3e66;
+}
+.dufynd-fragrance-advanced {
+  overflow: hidden;
+  border: 1px solid #dce1d7;
+  border-radius: 18px;
+  background: #fffefa;
+}
+.dufynd-fragrance-advanced > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 19px 24px;
+  min-height: 68px;
+  cursor: pointer;
+  list-style: none;
+  color: #334b3b;
+}
+.dufynd-fragrance-advanced > summary::-webkit-details-marker {display:none;}
+.dufynd-fragrance-advanced > summary strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 750;
+}
+.dufynd-fragrance-advanced > summary small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: #718073;
+  line-height: 1.6;
+}
+.dufynd-fragrance-advanced > summary > span:last-child {
+  font-size: 24px;
+  font-weight: 300;
+}
+.dufynd-fragrance-advanced[open] > summary > span:last-child {
+  transform: rotate(45deg);
+}
+.dufynd-fragrance-advanced > summary:focus-visible {outline: 3px solid #9ec0a8;outline-offset:-3px;}
+.dufynd-fragrance-advanced-body {
+  display: grid;
+  gap: 15px;
+  padding: 0 18px 20px;
+}
+.dufynd-fragrance-advanced-body .dufynd-journey-exploded {
+  margin-top: 0;
+}
+.dufynd-detail-page #alternativen .dufynd-neutral-visual-stage,
+.dufynd-detail-page #alternativen .dufynd-product-stage {
+  background: #fffefa !important;
+}
+@media (max-width: 767px) {
+  /* Merchant originals use their own full-bitmap stage; do not clip them to the public mobile cap. */
+  .dufynd-detail-page .dufynd-fragrance-hero:not([data-merchant-photo-review]) .dufynd-fragrance-stage-shell {min-height: clamp(220px, 62vw, 258px) !important;max-height: clamp(220px, 62vw, 258px) !important;}
+  .dufynd-detail-page .dufynd-fragrance-hero .dufynd-product-object,
+  .dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-object {inset: 4% 12% 7% !important;}
+  .dufynd-notes-overview-header {padding: 21px 18px 19px;}
+  .dufynd-notes-overview-header h2 {font-size: 26px;}
+  .dufynd-notes-groups,
+  .dufynd-notes-overview[data-dufynd-note-layout="key-notes"] .dufynd-notes-groups {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    padding: 12px;
+  }
+  .dufynd-notes-group {min-height: 0;padding: 15px 16px;}
+  .dufynd-notes-group-heading {gap: 10px;}
+  .dufynd-notes-chips {margin-top: 12px;}
+  .dufynd-notes-supplementary {margin: 0 12px 12px;padding: 13px 16px;}
+  .dufynd-notes-method {padding: 12px 18px;}
+  .dufynd-detail-page .dufynd-fragrance-profile-card {padding: 19px 17px;}
+  .dufynd-fragrance-advanced > summary {padding: 17px 18px;}
+  .dufynd-fragrance-advanced-body {padding: 0 12px 15px;}
+}
+
+/* A rights hold is a short notice, not a full-sized empty product photograph.
+   Registered public originals and private merchant reviews retain their stages. */
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-hero-grid {
+  min-height: 0;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell {
+  display: flex;
+  align-items: center;
+  min-height: 48px !important;
+  max-height: none !important;
+  padding: 0 20px;
+  background: #fffefa !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-neutral-visual-stage {
+  background: transparent !important;
+  animation: none !important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-neutral-visual-copy,
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-neutral-visual-stage::after,
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell::before,
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell::after {
+  display: none;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-detail-source-hold {
+  position: relative;
+  inset: auto;
+  width: 100%;
+  font-size: 11px;
+  text-align: left;
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell {
+    padding-inline: 42px;
+  }
+}
+@media (min-width: 1024px) {
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-hero-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-identity {
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+    padding: 32px 32px 16px;
+    border-radius: 0;
+  }
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-stage-shell {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 0 32px 28px;
+  }
+  .dufynd-detail-page .dufynd-fragrance-hero[data-dufynd-photo-hold] .dufynd-fragrance-hero-copy {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
+    padding: 32px;
+    border-radius: 0;
+    border-left: 1px solid #e1e1d7;
+    box-shadow: none;
+  }
+}

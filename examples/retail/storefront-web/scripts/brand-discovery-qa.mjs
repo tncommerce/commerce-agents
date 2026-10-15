@@ -2,11 +2,11 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 
 // Adapted from PR #774 brand-pages-qa; only local static export may be exercised.
-export async function verifyBrandDiscovery(browser, baseUrl, outputDir) {
+export async function verifyBrandDiscovery(browser, baseUrl, outputDir, widths = [320, 390, 768, 1440]) {
   const origin = new URL(baseUrl).origin;
   assert.ok(['127.0.0.1', 'localhost', '[::1]'].includes(new URL(baseUrl).hostname), 'local QA only');
   const checks = [];
-  for (const width of [390, 1440]) {
+  for (const width of widths) {
     const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     await context.route('**/*', async route => {
       const request = route.request(), url = new URL(request.url());
@@ -31,8 +31,10 @@ export async function verifyBrandDiscovery(browser, baseUrl, outputDir) {
       assert.match(await page.locator('meta[name=robots]').getAttribute('content'), /noindex/);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       await page.getByRole('searchbox').fill('CHANEL');
+      await page.waitForFunction(() => document.querySelectorAll('[data-brand-slug]').length === 1);
       assert.equal(await page.locator('[data-brand-slug]').count(), 1);
       await page.getByRole('searchbox').fill('no-such-brand-fixture');
+      await page.waitForFunction(() => document.querySelectorAll('[data-brand-slug]').length === 0);
       assert.equal(await page.locator('[data-brand-slug]').count(), 0);
       await page.getByRole('searchbox').fill('');
       const products = new Set();

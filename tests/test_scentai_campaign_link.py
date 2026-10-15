@@ -63,3 +63,43 @@ def test_campaign_link_requires_public_https_origin() -> None:
             campaign_id="launch01",
             content_id="video_01",
         )
+
+
+@pytest.mark.parametrize("suffix", ["/duft", "/duft/", "?src=old", "#old"])
+def test_campaign_link_rejects_non_origin_base(suffix: str) -> None:
+    with pytest.raises(ValueError, match="origin"):
+        build_campaign_url(
+            base_url="https://dufynd.de" + suffix,
+            landing_path="/duft/rabanne-1-million",
+            channel="tiktok",
+            campaign_id="check",
+            content_id="check",
+        )
+
+
+@pytest.mark.parametrize("base", ["https://dufynd.de", " https://dufynd.de/ "])
+@pytest.mark.parametrize(
+    "landing,channel,campaign,content",
+    [
+        ("/duft", "tiktok", "tt_bio_launch_20261011", "profile_bio"),
+        (
+            "/duft/rabanne-1-million",
+            "youtube",
+            "yt_1million_v8DlVXi-Fj8_p1",
+            "one_million_example61_01",
+        ),
+    ],
+)
+def test_observed_profile_targets_round_trip_offline(
+    base: str, landing: str, channel: str, campaign: str, content: str
+) -> None:
+    assert (
+        build_campaign_url(
+            base_url=base,
+            landing_path=landing,
+            channel=channel,
+            campaign_id=campaign,
+            content_id=content,
+        )
+        == f"https://dufynd.de{landing}?src={channel}&cmp={campaign}&content={content}"
+    )

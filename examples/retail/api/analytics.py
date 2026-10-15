@@ -84,6 +84,11 @@ class AnalyticsEventRequest(BaseModel):
         max_length=80,
         pattern=r"^[A-Za-z0-9._:-]+$",
     )
+    offer_id: str | None = Field(
+        default=None,
+        max_length=120,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
     source: str | None = Field(
         default=None,
         max_length=80,
@@ -128,8 +133,10 @@ class AnalyticsEventRequest(BaseModel):
 class FirstPartyAnalyticsTracker:
     """Privacy-minimized first-party product analytics for the MVP.
 
-    Production can persist to Supabase through its server-side REST API. Local
-    development and temporary outages fall back to an append-only JSONL file.
+    Production persists to Supabase through its server-side REST API. A configured
+    Supabase outage fails closed for optional measurement: the event is dropped
+    rather than copied into a second server-side store. Local development with no
+    Supabase configuration can still use the append-only JSONL file.
 
     Prompt text, IP addresses, user-agent strings, email addresses and customer
     names are intentionally never written to the analytics store.
@@ -248,7 +255,14 @@ class FirstPartyAnalyticsTracker:
             now=now,
         )
 
-        if self.supabase_url and self.supabase_service_role_key:
+        configured = bool(self.supabase_url) and bool(self.supabase_service_role_key)
+        partially_configured = bool(self.supabase_url) != bool(self.supabase_service_role_key)
+        if partially_configured:
+            # Never turn a production-style configuration error into a hidden
+            # second analytics store on the application filesystem.
+            return row["event_id"], "disabled"
+
+        if configured:
             try:
                 async with httpx.AsyncClient(timeout=5.0) as client:
                     response = await client.post(
@@ -270,10 +284,9 @@ class FirstPartyAnalyticsTracker:
                     response.raise_for_status()
                 return row["event_id"], "supabase"
             except httpx.HTTPError:
-                # Analytics must never break the shopping experience. A local
-                # fallback keeps the event available for short-term diagnosis.
-                self._record_local(row)
-                return row["event_id"], "local_fallback"
+                # Optional measurement fails closed. Shopping and clickout
+                # navigation continue without persisting a duplicate local copy.
+                return row["event_id"], "dropped"
 
         self._record_local(row)
         return row["event_id"], "local"

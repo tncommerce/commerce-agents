@@ -27,7 +27,7 @@ export default function DatenschutzPage() {
           </AcquisitionInternalLink>
 
           <h1 className="mt-5 text-3xl font-semibold tracking-[-0.03em]">Datenschutzerklärung</h1>
-          <p className="mt-2 text-[13px] text-(--ink-soft)">Stand: September 2026</p>
+          <p className="mt-2 text-[13px] text-(--ink-soft)">Stand: 15. Oktober 2026</p>
 
           <div className="mt-6 space-y-7 text-[15px] leading-7 text-(--ink-2)">
             <section>
@@ -114,10 +114,12 @@ export default function DatenschutzPage() {
                 Für die technische Durchführung einer Beratung erzeugt DUFYND eine zufällige Sitzungs-ID.
                 Sie ist kein Kundenkonto und keine dauerhafte werbliche Nutzerkennung. Der Gesprächsverlauf
                 kann für die Dauer dieser technischen Sitzung im Serverprozess vorgehalten werden. Für die
-                zusammenhängende, pseudonymisierte Nutzungsstatistik verwendet DUFYND keine separate
-                Analyse-Kennung im localStorage oder sessionStorage. Analyseereignisse werden serverseitig
-                über einen verkürzten Einweg-Hash der jeweils laufenden technischen Sitzung zusammengeführt.
-                Die technische Beratungs-Sitzungs-ID wird nicht dauerhaft im Browser abgelegt. Eine
+                zusammenhängende, pseudonymisierte Nutzungsstatistik speichert DUFYND eine zufällige
+                Analyse-Sitzungskennung im Sitzungsspeicher des Browsers (sessionStorage). Sie verbindet
+                Seitenaufrufe, Produktansichten und Händlerweiterleitungen innerhalb einer Browser-Tab-Sitzung,
+                auch wenn eine neue technische Beratungssitzung entsteht. Die Analysekennung dient nicht
+                dazu, eine Beratungssitzung wiederherzustellen. Für das Analyseprotokoll wird die Kennung
+                serverseitig in einen verkürzten Einweg-Hash umgewandelt. Eine
                 serverseitige dauerhafte persönliche Duft-Memory-Funktion ist im aktuellen MVP deaktiviert.
               </p>
               <p className="mt-2">
@@ -140,8 +142,9 @@ export default function DatenschutzPage() {
             <section>
               <h2 className="font-semibold text-(--ink)">5. Nutzungsstatistik und Händlerlinks</h2>
               <p className="mt-1">
-                Für die interne Produktverbesserung erfasst DUFYND im MVP eigene Nutzungsereignisse,
-                zum Beispiel Seitenaufruf, Start einer Beratung, angezeigte Empfehlungen, Öffnen einer
+                Nur wenn du „Analyse erlauben“ ausgewählt hast, erfasst DUFYND im MVP für die interne
+                Produktverbesserung eigene Nutzungsereignisse, zum Beispiel Seitenaufruf, Start einer
+                Beratung, angezeigte Empfehlungen, Öffnen einer
                 Produktansicht, Duftvergleiche, Katalogsuchen, Änderungen an Merkliste oder Sammlung und
                 Händler-Clickouts. Bei Merkliste- und Sammlungsereignissen wird nur die betroffene Produkt-ID
                 zusammen mit dem Ereignistyp gespeichert, nicht der vollständige lokale Listeninhalt. Bei
@@ -151,13 +154,16 @@ export default function DatenschutzPage() {
                 verworfen. Zusätzlich können Produkt-ID, Vergleichsprodukt, Empfehlungsposition und die
                 jeweilige DUFYND-Oberfläche gespeichert werden. Beratungstexte, Namen, E-Mail-Adressen,
                 IP-Adressen oder Browser-Fingerprints werden nicht in den Analyse-Datensatz geschrieben.
-                Die technische Sitzungs-ID wird vor der Speicherung in einen verkürzten Einweg-Hash
-                umgewandelt, damit Ereignisse innerhalb einer Sitzung zusammengefasst werden können, ohne
-                die ursprüngliche Sitzungs-ID im Analyseprotokoll zu speichern.
+                Die Analyse-Sitzungskennung, ersatzweise die laufende technische Sitzungs-ID, wird vor der
+                Speicherung in einen verkürzten Einweg-Hash umgewandelt. Die ursprüngliche Kennung wird
+                nicht im Analyseprotokoll gespeichert. Vorhandene Herkunfts-, Kampagnen- und Inhaltsangaben
+                aus Einstiegslinks werden im sessionStorage aufbewahrt und mit Nutzungsereignissen verknüpft.
+                Interne Links und DUFYND-Händlerweiterleitungen können diese Angaben sowie die
+                Analyse-Sitzungskennung als URL-Parameter enthalten.
               </p>
               <p className="mt-2">
                 Die pseudonymisierten Analyseereignisse werden für die interne Auswertung in der von DUFYND
-                eingesetzten Supabase-Datenbankinfrastruktur gespeichert. Anbieter ist Supabase, Inc. Nach den
+                eingesetzten Supabase-Datenbankinfrastruktur gespeichert. Anbieter ist Supabase Nach den
                 veröffentlichten Datenschutzinformationen verarbeitet Supabase Kundendaten im Rahmen des
                 Dienstes grundsätzlich als Auftragsverarbeiter. Weitere Informationen findest du in der{" "}
                 <a
@@ -168,9 +174,15 @@ export default function DatenschutzPage() {
                 >
                   Datenschutzerklärung von Supabase
                 </a>
-                . Zusätzlich protokolliert DUFYND beim Öffnen eines Händlerlinks einen Clickout-Datensatz mit
-                Zeitpunkt, Angebot, Produkt, Händler, Netzwerk und der Information, ob ein Partnerlink verwendet
-                wurde. Der eigentliche Kauf findet beim Händler statt. Auf dessen Website gelten anschließend
+                . Ein Händler-Clickout ist dabei lediglich ein optionales Analyseereignis und wird
+                nur bei aktuell erteilter Analyse-Zustimmung vom Browser an DUFYND gesendet. Die eigentlichen
+                DUFYND-Weiterleitungsrouten zeichnen ihren GET-Aufruf nicht zusätzlich als Analyseereignis auf.
+                Eine kopierte Weiterleitungs-URL ist deshalb kein Zustimmungsnachweis. Herkunfts-, Kampagnen-
+                und Analyse-Sitzungsparameter einer DUFYND-Weiterleitungs-URL werden vom Redirect nicht als
+                dynamische Trackingreferenz an Händler oder Partnernetzwerke übernommen. Ist die konfigurierte
+                Analysedatenbank nicht erreichbar, wird das optionale Analyseereignis verworfen; Suche,
+                Beratung und Händlerweiterleitung bleiben funktionsfähig.
+                Der eigentliche Kauf findet beim Händler statt. Auf dessen Website gelten anschließend
                 die dortigen Datenschutz- und Trackingregeln. Partnerlinks werden bei DUFYND entsprechend
                 gekennzeichnet.
               </p>
@@ -181,8 +193,11 @@ export default function DatenschutzPage() {
               <p className="mt-1">
                 DUFYND setzt derzeit keine Google-Analytics-, Meta-Pixel- oder vergleichbaren externen
                 Werbetracker ein und verwendet für die oben beschriebene interne Nutzungsstatistik keine
-                dauerhafte werbliche Nutzerkennung. Für die interne Nutzungsstatistik wird auch keine
-                separate Analyse-Kennung im localStorage oder sessionStorage gespeichert. Für die optionale
+                dauerhafte werbliche Nutzerkennung. Die in Abschnitt 4 und 5 beschriebenen Analyse- und
+                Herkunftsangaben werden im sessionStorage gespeichert, nicht im localStorage. Dieser
+                Sitzungsspeicher gilt für den jeweiligen Browser-Tab und wird üblicherweise beim Schließen
+                des Tabs gelöscht; eine Sitzungswiederherstellung durch den Browser kann ihn wiederherstellen.
+                Für die optionale
                 Merkliste und Duftsammlung wird funktionaler localStorage genutzt, damit deine ausdrücklich
                 gespeicherte Auswahl auf demselben Gerät erhalten bleibt.
                 Dieser lokale Speicher dient nicht der werblichen Nachverfolgung. Sollten später zusätzliche
@@ -195,12 +210,12 @@ export default function DatenschutzPage() {
               <h2 className="font-semibold text-(--ink)">7. Rechtsgrundlagen</h2>
               <p className="mt-1">
                 Soweit die Verarbeitung erforderlich ist, um die von dir angeforderte DUFYND-Beratung
-                bereitzustellen, erfolgt sie auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO. Technische
-                Sicherheits-, Betriebs- und Missbrauchsschutzmaßnahmen sowie die datensparsame interne
-                Auswertung pseudonymisierter Nutzungsereignisse und Händler-Clickouts stützen wir, soweit
-                personenbezogene Daten betroffen sind und kein vorrangiges Einwilligungserfordernis besteht,
-                auf unser berechtigtes Interesse an einem sicheren, funktionsfähigen und wirtschaftlich
-                betreibbaren Dienst gemäß Art. 6 Abs. 1 lit. f DSGVO.
+                bereitzustellen, erfolgt sie auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO. Die optionale
+                DUFYND-Nutzungsstatistik einschließlich Händler-Clickout-Ereignissen wird nur nach deiner
+                Einwilligung verarbeitet (Art. 6 Abs. 1 lit. a DSGVO); du kannst diese Einwilligung jederzeit
+                für die Zukunft widerrufen. Technische Sicherheits-, Betriebs- und Missbrauchsschutzmaßnahmen
+                stützen wir, soweit personenbezogene Daten betroffen sind, auf unser berechtigtes Interesse an
+                einem sicheren und funktionsfähigen Dienst gemäß Art. 6 Abs. 1 lit. f DSGVO.
               </p>
             </section>
 
@@ -221,11 +236,16 @@ export default function DatenschutzPage() {
               <h2 className="font-semibold text-(--ink)">9. Speicherdauer</h2>
               <p className="mt-1">
                 Personenbezogene Daten werden nur so lange gespeichert, wie dies für den jeweiligen Zweck
-                erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen. Technische Sitzungsdaten
-                des MVP sind nicht als dauerhaftes Kundenkonto ausgelegt. Lokal gespeicherte Merkliste- und
-                Sammlungsdaten bleiben grundsätzlich im Browser erhalten, bis du sie in DUFYND löschst oder
-                die Browser-/Websitedaten entfernst. Für Daten, die von externen Dienstleistern verarbeitet
-                werden, gelten zusätzlich deren dokumentierte Aufbewahrungsfristen.
+                erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen. Die lokale Entscheidung
+                für oder gegen die optionale Analyse wird höchstens 180 Tage gespeichert und danach erneut
+                abgefragt. In einem täglichen Löschlauf werden optionale Besucher-Analyseereignisse
+                entfernt, sobald sie älter als 90 Tage sind; interne QA- und nicht als Besuchertraffic
+                klassifizierte Analyseereignisse, sobald sie älter als 30 Tage sind. Technische Sitzungsdaten
+                des MVP sind nicht als dauerhaftes Kundenkonto ausgelegt.
+                Lokal gespeicherte Merkliste- und Sammlungsdaten bleiben grundsätzlich im Browser erhalten,
+                bis du sie in DUFYND löschst oder die Browser-/Websitedaten entfernst. Für Daten, die von
+                externen Dienstleistern verarbeitet werden, gelten zusätzlich deren dokumentierte
+                Aufbewahrungsfristen.
               </p>
             </section>
 

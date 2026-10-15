@@ -1,25 +1,21 @@
-"""Keep DUFYND catalog cards visually scannable with real scent-profile data."""
+"""Cards describe scents without unsupported numerical quality claims."""
 
 from pathlib import Path
 
-CATALOG_BROWSER = Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx")
+ROOT = Path("examples/retail/storefront-web")
 
 
-def test_catalog_cards_surface_four_axis_scent_dna() -> None:
-    source = CATALOG_BROWSER.read_text(encoding="utf-8")
-
-    assert "const SCENT_DNA_PROFILES" in source
-    assert '{ key: "freshness", label: "Frisch" }' in source
-    assert '{ key: "sweetness", label: "Süß" }' in source
-    assert '{ key: "woodiness", label: "Holzig" }' in source
-    assert '{ key: "spiciness", label: "Würzig" }' in source
-    assert 'aria-label="Duft-DNA"' in source
-    assert "SCENT_DNA_PROFILES.map" in source
+def test_cards_preserve_qualitative_discovery_without_numeric_dna():
+    source = (ROOT / "components/FragranceCatalogBrowser.tsx").read_text()
+    assert "accordLabel(accord)" in source
+    assert "Profil 0–10" not in source
+    assert 'className="dufynd-catalog-card-signature"' not in source
 
 
-def test_catalog_card_scent_dna_is_clamped_to_visual_scale() -> None:
-    source = CATALOG_BROWSER.read_text(encoding="utf-8")
-
-    assert "Math.min(10, fragrance.scores[profile] ?? 0)" in source
-    assert "width: `${value * 10}%`" in source
-    assert "Profil 0–10" in source
+def test_illustrations_are_explicitly_separate_from_original_photography():
+    source = (ROOT / "components/ScentStudy.tsx").read_text()
+    assert "Duftillustration · kein Produktfoto" in source
+    assert "<img" not in source
+    model = (ROOT / "lib/fragranceCatalog.ts").read_text()
+    assert "a.url === v.url" in model
+    assert "a.volume_ml === fragrance.volume_ml" in model

@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
 export async function verifyConversionSearch(browser, baseUrl, outputDir) {
@@ -6,12 +7,13 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
     const context=await browser.newContext({viewport:{width,height:900}});
     const events=[];
     await context.route('**/api/session',r=>r.fulfill({json:{session_id:'qa-conversion-search-session'}}));
-    await context.route('**/api/analytics/events',async r=>{const event=r.request().postDataJSON();events.push(event);if(event.event==='catalog_search') await new Promise(resolve=>setTimeout(resolve,150));return r.fulfill({json:{ok:true}}).catch(()=>{});});
+    await context.route((url) => url.pathname === '/api/analytics/events',async r=>{const event=r.request().postDataJSON();events.push(event);if(event.event==='catalog_search') await new Promise(resolve=>setTimeout(resolve,150));return r.fulfill({json:{ok:true}}).catch(()=>{});});
     await context.route('**/api/clickout/**',r=>{throw new Error('Conversion QA must never trigger a clickout');});
     await context.route('**/api/merchant-offers/**',r=>r.fulfill({json:{offers:[],best_offer_id:null}}));
     const page=await context.newPage();
     try {
       await page.goto(`${baseUrl}/?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'networkidle'});
+      await chooseMeasurement(page, 'granted');
       await page.locator('#dufynd-home-search').fill('YSL Libre EDP 90ml');
       await page.getByRole('search',{name:'DUFYND Duftkatalog durchsuchen'}).getByRole('button',{name:'Suchen',exact:true}).click();
       await page.getByRole('heading',{name:'Libre',exact:true}).waitFor();
@@ -41,11 +43,15 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.ok(events.some(e=>e.event==='product_open'&&e.product_id==='SC-YSL-LIBRE-EDP-90'), 'product_open survives delayed search receipt and navigation');
       assert.ok(events.every(e=>e.internal_qa===true));
       if(width===390) {
-        await page.goto(`${baseUrl}/start?qa=1`,{waitUntil:'networkidle'});
-        await context.route('**/api/analytics/events',()=>{});
-        await page.getByLabel('Duft oder Marke suchen',{exact:true}).fill('PDM Delina 75ml');
+        // A previous delayed receipt may still be outstanding. Full network
+        // quiet is not a readiness condition; the visible search control is.
+        await page.goto(`${baseUrl}/start?qa=1`,{waitUntil:'load'});
+        const stalledSearch=page.getByLabel('Duft oder Marke suchen',{exact:true});
+        await stalledSearch.waitFor({state:'visible'});
+        await context.route((url) => url.pathname === '/api/analytics/events',()=>{});
+        await stalledSearch.fill('PDM Delina 75ml');
         const started=Date.now();
-        await page.getByLabel('Duft oder Marke suchen',{exact:true}).press('Enter');
+        await stalledSearch.press('Enter');
         await page.waitForURL('**/duft/parfums-de-marly-delina**',{waitUntil:'domcontentloaded',timeout:5000});
         assert.ok(Date.now()-started<4000,'stalled analytics must not block navigation');
       }

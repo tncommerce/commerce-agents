@@ -1,0 +1,4458 @@
+{
+  "schema_version": 1,
+  "status": "DEVELOPMENT_ONLY_NO_RELEASE_AUTHORITY",
+  "checked_at": "2026-10-11",
+  "counting_policy": "Exact SKU union by stable ID plus strict normalized variant; unresolved research names remain separate. Additional-stage counts exclude existing public profiles. Published is repository projection, not a newly performed production crawl. Indexed is unknown, never inferred.",
+  "counts": {
+    "canonical": 38,
+    "staging": 50,
+    "canonical_staging_overlap": 5,
+    "exact_sku_union": 83,
+    "legacy_research_rows": 54,
+    "legacy_matched": 37,
+    "research_only_names": 17,
+    "existing_public": 37,
+    "existing_review_pages": 41,
+    "existing_owner_candidate_wave": 40,
+    "newly_facts_qualified": 13,
+    "additional_stages": {
+      "research_staged": 45,
+      "facts_qualified": 41,
+      "variant_checked": 40,
+      "visual_ready": 40,
+      "browser_QA": 40,
+      "owner_review": 41,
+      "owner_approved": 0,
+      "published": 0,
+      "indexed": null
+    }
+  },
+  "milestones": [
+    {
+      "target": 50,
+      "current_public": 37,
+      "public_delta": 13,
+      "possible_after_existing_owner_wave": 77,
+      "extra_complete_pages_needed_beyond_wave": 0,
+      "publication_authorized": false
+    },
+    {
+      "target": 75,
+      "current_public": 37,
+      "public_delta": 38,
+      "possible_after_existing_owner_wave": 77,
+      "extra_complete_pages_needed_beyond_wave": 0,
+      "publication_authorized": false
+    },
+    {
+      "target": 100,
+      "current_public": 37,
+      "public_delta": 63,
+      "possible_after_existing_owner_wave": 77,
+      "extra_complete_pages_needed_beyond_wave": 23,
+      "publication_authorized": false
+    },
+    {
+      "target": 101,
+      "current_public": 37,
+      "public_delta": 64,
+      "possible_after_existing_owner_wave": 77,
+      "extra_complete_pages_needed_beyond_wave": 24,
+      "publication_authorized": false
+    }
+  ],
+  "next_page_batch": {
+    "product_ids": [],
+    "count": 0,
+    "stage": "FACTS_QUALIFIED_VARIANT_CHECKED_NOT_RENDERED",
+    "next": "Promote source facts through existing qualified review pipeline, supply distinct editorial compositions, rebuild and bind fresh four-width QA. Do not add a release authorization."
+  },
+  "products": [
+    {
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "brand": "Afnan Perfumes",
+      "name": "9 PM Pour Femme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "afnan perfumes|9 pm pour femme|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+        "brand": "Afnan Perfumes",
+        "name": "9 PM Pour Femme",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "9-pm-pour-femme",
+          "source_url": "https://afnan.com/products/9-pm-pour-femme",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "raspberry",
+            "apple",
+            "violet",
+            "orange"
+          ],
+          "heart": [
+            "rose",
+            "peony",
+            "iris",
+            "jasmine"
+          ],
+          "base": [
+            "cedar",
+            "cypress",
+            "pine",
+            "amber"
+          ]
+        },
+        "notes_source": {
+          "url": "https://afnan.com/products/9-pm-pour-femme",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Fruchtige Noten von Himbeere, Apfel und Orange treffen auf Veilchen und ein florales Herz. Zeder, Zypresse, Kiefer und Ambra bilden die Basis.",
+        "variant_evidence_note": "Official 9 PM Pour Femme page states Type Eau De Perfum and Volume 100 ML. Spelling normalized to Eau de Parfum; distinct from the men's 9PM.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "a9e74bbabeaf03e3860610c0a6d61c0a09dd5e48b00d5aff6d16830f4437a0a5"
+    },
+    {
+      "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+      "brand": "Afnan Perfumes",
+      "name": "Supremacy Collector's Edition",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "afnan perfumes|supremacy collector s edition|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+      "brand": "Afnan Perfumes",
+      "name": "Turathi Blue",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "variant_key": "afnan perfumes|turathi blue|eau de parfum|90",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
+      "brand": "Al Ambra",
+      "name": "Dubai Musk",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 50,
+      "variant_key": "al ambra|dubai musk|extrait de parfum|50",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+      "brand": "Al Haramain",
+      "name": "Détour Noir",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "al haramain|detour noir|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+      "brand": "Al Wataniah",
+      "name": "Kayaan Classic",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "al wataniah|kayaan classic|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "brand": "Amouage",
+      "name": "Guidance 46",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "variant_key": "amouage|guidance 46|extrait de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "AMOUAGE-GUIDANCE-46",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+        "brand": "Amouage",
+        "name": "Guidance 46",
+        "concentration": "Extrait de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "new-guidance-46",
+          "source_url": "https://amouage.com/products/new-guidance-46",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "pear",
+            "frankincense",
+            "hazelnut",
+            "rose water",
+            "pink pepper",
+            "bitter almond"
+          ],
+          "heart": [
+            "saffron",
+            "rose",
+            "sambac jasmine",
+            "osmanthus"
+          ],
+          "base": [
+            "cistus",
+            "sandalwood",
+            "akigalawood",
+            "ambergris",
+            "vanilla",
+            "ambrette",
+            "georgywood",
+            "cypriol"
+          ]
+        },
+        "notes_source": {
+          "url": "https://amouage.com/products/new-guidance-46",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis.",
+        "variant_evidence_note": "Official page identifies Guidance 46 Exceptional Extrait and 100ml. Manufacturer designation Extrait corresponds to the staged Extrait de Parfum; not Guidance Eau de Parfum.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "ae5862fb4abe4803bc937d36bfe22d3056704e95b602f48cd4d034506167052a"
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "brand": "Amouage",
+      "name": "Reflection Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "amouage|reflection man|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "AMOUAGE-REFLECTION-MAN-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+        "brand": "Amouage",
+        "name": "Reflection Man",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "reflection-man-100ml",
+          "source_url": "https://amouage.com/products/reflection-man-100ml",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "rosemary",
+            "red pepper berries",
+            "bitter orange leaves"
+          ],
+          "heart": [
+            "neroli",
+            "orris",
+            "jasmine",
+            "ylang-ylang"
+          ],
+          "base": [
+            "vetiver",
+            "patchouli",
+            "sandalwood",
+            "cedarwood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://amouage.com/products/reflection-man-100ml",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer handle identifies the 100 ml single bottle. Official gift-set contents separately confirm 100 ml Reflection Man Eau de Parfum. Not Reflection 45; gift-set SKU, price and photos are not imported.",
+        "concentration_source_url": "https://amouage.com/en-ch/products/reflection-man-gift-set"
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "431f23df1a7ab51adf9b0e40c970a36ec9962740bac04ed2ddf3c364fb09a2ae"
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+      "brand": "Arabiyat Prestige",
+      "name": "Marwa",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "arabiyat prestige|marwa|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+      "brand": "Arabiyat Prestige",
+      "name": "Marwa Extrait",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 60,
+      "variant_key": "arabiyat prestige|marwa extrait|extrait de parfum|60",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-ARMAF-CDNIM-EDP-200",
+      "brand": "Armaf",
+      "name": "Club de Nuit Intense Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 200,
+      "variant_key": "armaf|club de nuit intense man|eau de parfum|200",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "brand": "Giorgio Armani",
+      "name": "Acqua di Giò Profondo",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "variant_key": "giorgio armani|acqua di gio profondo|parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+        "brand": "Giorgio Armani",
+        "name": "Acqua di Giò Profondo",
+        "concentration": "Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "ww-00854-arm",
+          "source_url": "https://www.armanibeauty.it/fragranze/fragranze-da-uomo/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "marine notes",
+            "bergamot"
+          ],
+          "heart": [
+            "immortelle"
+          ],
+          "base": [
+            "cistus absolute",
+            "patchouli"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.armanibeauty.it/fragranze/fragranze-da-uomo/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli.",
+        "variant_evidence_note": "Official Profondo Parfum page offers 100 ml; not Profondo Eau de Parfum. Volume selector explicitly distinguishes 30/50/100/200 ml. Uses the three labeled note headings for Profondo Parfum only, not the adjacent comparison cards for other Acqua di Giò variants.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "e96cab285d6e97dab95f0f2f3414618823e5067102ac7ad587895616519be7b7"
+    },
+    {
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "brand": "Giorgio Armani",
+      "name": "Sì",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "giorgio armani|si|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "ARMANI-SI-EDP",
+          "method": "exact_brand_name_concentration",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-ARMANI-SI-EDP-100",
+        "brand": "Giorgio Armani",
+        "name": "Sì",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "AP35200",
+          "source_url": "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/AP35200.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "blackcurrant nectar"
+          ],
+          "heart": [
+            "modern chypre accord"
+          ],
+          "base": [
+            "musk-white wood accord"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.armanibeauty.de/dufte/damenduft/si/si-eau-de-parfum/AP35200.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Schwarzer Johannisbeernektar führt zu einem modernen Chypre-Akkord. Ein Moschus-Weißholz-Akkord bildet die Basis.",
+        "variant_evidence_note": "Official Sì Eau de Parfum selector offers 100 ml separately from Refill 100ml. Neither Intense nor Passione.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "6bd70f637481a3e2a8e53433a90a86b2dcfcb82e43d557017f9490c6d6a76ae0"
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "brand": "Giorgio Armani",
+      "name": "Stronger With You Intensely",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "giorgio armani|stronger with you intensely|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-BUJAIRAMI-HECTIC-100",
+      "brand": "Bujairami",
+      "name": "Hectic",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "variant_key": "bujairami|hectic|extrait de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "burberry|goddess|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "BURBERRY-GODDESS-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+        "brand": "Burberry",
+        "name": "Goddess",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "40835981",
+          "source_url": "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "vanilla trio",
+            "lavender"
+          ]
+        },
+        "notes_source": {
+          "url": "https://de.burberry.com/burberry-goddess-eau-de-parfum-for-women-100-ml-p40835981",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Drei Vanille-Komponenten werden von aromatischem Lavendel ergänzt.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Original 100 ml Eau de Parfum, not Goddess Parfum or EDP Intense."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "58227bd1036dea95c02c705eb3a59bc635f1ff5953f280e34ad831777dc7c428"
+    },
+    {
+      "product_id": "SC-BVLGARI-TYGAR-125",
+      "brand": "Bvlgari",
+      "name": "Le Gemme Tygar",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "variant_key": "bvlgari|le gemme tygar|eau de parfum|125",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "brand": "Calvin Klein",
+      "name": "Euphoria",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "calvin klein|euphoria|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+        "brand": "Calvin Klein",
+        "name": "Euphoria",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-10",
+        "identity": {
+          "kind": "gtin",
+          "value": "0088300162505",
+          "source_url": "https://www.news-parfums.com/en/calvin-klein/390-calvin-klein-euphoria-eau-de-parfum-0088300162512.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "pomegranate"
+          ],
+          "heart": [
+            "lotus",
+            "orchid"
+          ],
+          "base": [
+            "violet",
+            "amber",
+            "mahogany",
+            "musk"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.notino.de/calvin-klein/euphoria-eau-de-parfum-fur-damen/",
+          "kind": "retailer_product_facts"
+        },
+        "summary_de": "Granatapfel im Auftakt, Lotos und Orchidee im Herzen; die Basis umfasst Veilchen, Amber, Mahagoni und Moschus.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "6e3e533bf1f51d1ab43c431a1f11fc89f077d09d3472cac3cd64dfa78865316c"
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "brand": "Carolina Herrera",
+      "name": "Good Girl",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 80,
+      "variant_key": "carolina herrera|good girl|eau de parfum|80",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "CAROLINA-HERRERA-GOOD-GIRL-EDP",
+          "method": "exact_brand_name_concentration",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+        "brand": "Carolina Herrera",
+        "name": "Good Girl",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 80,
+        "checked_at": "2026-10-10",
+        "identity": {
+          "kind": "gtin",
+          "value": "8411061026342",
+          "source_url": "https://www.perfumetrader.de/de/carolina-herrera-good-girl-eau-de-parfum-80-ml",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "jasmine",
+            "tuberose",
+            "almond",
+            "tonka bean",
+            "coffee",
+            "cocoa"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.carolinaherrera.com/ww/en/p-fragrance/good-girl-eau-de-parfum?sku=000000000065176159",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Jasmin und Tuberose verbinden sich mit Tonkabohne und Kakao. Mandel und Kaffee ergänzen das Profil.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "9f87be56ae2fb198b57562094a0e0568fa6788f1e0fa58924329dbdcabe15bd6"
+    },
+    {
+      "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+      "brand": "Chanel",
+      "name": "Bleu de Chanel",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "chanel|bleu de chanel|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "brand": "CHANEL",
+      "name": "COCO MADEMOISELLE",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "chanel|coco mademoiselle|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+        "brand": "CHANEL",
+        "name": "COCO MADEMOISELLE",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-10",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "116520",
+          "source_url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "orange"
+          ],
+          "heart": [
+            "jasmine",
+            "rose"
+          ],
+          "base": [
+            "patchouli",
+            "vetiver"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.chanel.com/de/parfum/p/116520/coco-mademoiselle-eau-de-parfum-zerstaeuber/",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Orange eröffnet die Komposition; Jasmin und Rose führen zu Patschuli und Vetiver.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "8e4a0c95df4afef578dd51a6cd8edf4c0d7325bb268d8b1d9265ec793b2d9b65"
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "brand": "Chloé",
+      "name": "Chloé",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "chloe|chloe|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "CHLOE-CHLOE-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-CHLOE-CHLOE-EDP-100",
+        "brand": "Chloé",
+        "name": "Chloé",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "CHCA50133819",
+          "source_url": "https://www.chloe.com/en-gb/p/fragrances/eau-de-parfum/CHCA50133819.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "peony"
+          ],
+          "heart": [
+            "rose petals",
+            "magnolia"
+          ],
+          "base": [
+            "cedar",
+            "ambergris"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.chloe.com/en-gb/p/fragrances/eau-de-parfum/CHCA50133819.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Pfingstrose eröffnet das florale Profil. Rosenblätter und Magnolie treffen auf Zeder und Ambra.",
+        "variant_evidence_note": "Title and Product Details identify Eau de Parfum 100 ml and item code CHCA50133819. The separately mentioned 150 ml refill is not this variant.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "1eecd41948c73f7692dbb07e4b884be8e4631376f32a6c87786a468c9330939f"
+    },
+    {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "brand": "Chloé",
+      "name": "Nomade",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "variant_key": "chloe|nomade|eau de parfum|75",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-CHLOE-NOMADE-EDP-75",
+        "brand": "Chloé",
+        "name": "Nomade",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 75,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "CHCA64994090",
+          "source_url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "mirabelle"
+          ],
+          "heart": [
+            "freesia"
+          ],
+          "base": [
+            "oakmoss"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.chloe.com/de-de/p/fragrances/eau-de-parfum/CHCA64994090.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Mirabelle eröffnet den Duft, gefolgt von Freesie und Eichenmoos.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "6b5246a7e23bcde16bc2897a4e88b533b05e169b1310b971466cf31e795f8816"
+    },
+    {
+      "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
+      "brand": "Clive Christian",
+      "name": "Jump Up and Kiss Me Hedonistic",
+      "concentration": "Parfum",
+      "volume_ml": 50,
+      "variant_key": "clive christian|jump up and kiss me hedonistic|parfum|50",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Absolu Aventus",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "creed|absolu aventus|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Aventus",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "creed|aventus|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-DIOR-HOMME-INTENSE-100",
+      "brand": "Dior",
+      "name": "Dior Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "dior|dior homme intense|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "variant_key": "dior|hypnotic poison|eau de toilette|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "DIOR-HYPNOTIC-POISON-EDT",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+        "brand": "Dior",
+        "name": "Hypnotic Poison",
+        "concentration": "Eau de Toilette",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "Y0063401",
+          "source_url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "bitter almond",
+            "jasmine sambac",
+            "vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.dior.com/de_de/beauty/products/hypnotic-poison-eau-de-toilette-Y0063401.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Bittermandel, arabischer Jasmin und Vanille prägen das Duftprofil.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer family reference; selected product explicitly states Inhalt: 100 ml. Eau de Toilette, not Eau de Parfum; no GTIN inferred."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "59df6761bf5ee80466662ced76093140dc8ce49be9a9406d39c701ccf8ebe3e2"
+    },
+    {
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "brand": "Dior",
+      "name": "J’adore",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "dior|j adore|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-DIOR-JADORE-EDP-100",
+        "brand": "Dior",
+        "name": "J’adore",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "Y0998031",
+          "source_url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "ylang-ylang",
+            "damask rose",
+            "jasmine grandiflorum",
+            "sambac jasmine"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.dior.com/de_de/beauty/products/j%E2%80%99adore-eau-de-parfum-Y0998031.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Ylang-Ylang und Damaszener-Rose verbinden sich mit großblütigem und arabischem Jasmin zu einem floralen Profil.",
+        "variant_evidence_note": "Official J’adore Eau de Parfum page explicitly states Inhalt 100 ml. New bottle collar is described; no assumption that older bottle images match this presentation.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "a2c1fd7f0795075cab0c726615a4a49ae42e387bf891ec26ffebf97934b78494"
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-EDP-100",
+      "brand": "Dior",
+      "name": "Sauvage",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "dior|sauvage|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "brand": "Dior",
+      "name": "Sauvage Elixir",
+      "concentration": "Elixir",
+      "volume_ml": 100,
+      "variant_key": "dior|sauvage elixir|elixir|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "DIOR-SAUVAGE-ELIXIR",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+        "brand": "Dior",
+        "name": "Sauvage Elixir",
+        "concentration": "Elixir",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "Y0996460",
+          "source_url": "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "grapefruit",
+            "cinnamon",
+            "nutmeg",
+            "cardamom",
+            "lavender",
+            "licorice",
+            "vetiver",
+            "patchouli",
+            "amber accord"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter.",
+        "variant_evidence_note": "Official Sauvage Elixir page includes 100 ml. Preserve the manufacturer's Elixir designation, do not reinterpret it as a percentage or Eau de Parfum.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "4be77d36740969995606ac268fea849c4911a9aab8b5de7b685187ff650eeb09"
+    },
+    {
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "brand": "Dolce & Gabbana",
+      "name": "The One for Men (2025)",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "dolce gabbana|the one for men 2025|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": "Specific 2025 edition identity remains unverified in this batch. Do not silently map an undated current The One Eau de Parfum page to an edition-specific staged record.",
+      "remaining_gates": [
+        "SOURCE_HOLD"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "brand": "Essential Parfums",
+      "name": "Bois Impérial",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "essential parfums|bois imperial|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+      "brand": "French Avenue",
+      "name": "Liquid Brun",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "french avenue|liquid brun|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "brand": "Gucci",
+      "name": "Flora Gorgeous Gardenia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "gucci|flora gorgeous gardenia|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "GUCCI-FLORA-GORGEOUS-GARDENIA-EDP",
+          "method": "exact_brand_name_concentration",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+        "brand": "Gucci",
+        "name": "Flora Gorgeous Gardenia",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "667343 99999 0099",
+          "source_url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "floral accord",
+            "Italian mandarin",
+            "red berries"
+          ],
+          "heart": [
+            "white gardenia",
+            "jasmine absolute",
+            "frangipani"
+          ],
+          "base": [
+            "patchouli",
+            "brown sugar"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.gucci.com/de/de/pr/beauty/fragrances/fragrances-for-women/gucci-flora-gorgeous-gardenia-100ml-eau-de-parfum-p-667343999990099",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Gardenie, Jasmin und Frangipani bilden das florale Herz; Patschuli und brauner Zucker ergänzen die Basis.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "d0c025d2e2a5cec04cfaa66439bf307b6a8f380c8ace1a85337684179ff1d09c"
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "brand": "Guerlain",
+      "name": "Mon Guerlain",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "guerlain|mon guerlain|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "GUERLAIN-MON-GUERLAIN-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+        "brand": "Guerlain",
+        "name": "Mon Guerlain",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "G013140",
+          "source_url": "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "lavender",
+            "jasmine sambac",
+            "sandalwood",
+            "Tahitian vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.guerlain.com/de/de-de/p/mon-guerlain-eau-de-parfum-G013140.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Lavendel und Jasmin verbinden sich mit Sandelholz und Tahiti-Vanille.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer page selects 100 ml spray; not the 30 ml G013139 reference."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "df9bf85e4c6bac4d2ec73c986921a7b7a690724a2685d328e94336b46f29bba1"
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled Absolu",
+      "concentration": "Parfum Intense",
+      "volume_ml": 100,
+      "variant_key": "hugo boss|boss bottled absolu|parfum intense|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "HUGO-BOSS-BOTTLED-ABSOLU",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+        "brand": "Hugo Boss",
+        "name": "BOSS Bottled Absolu",
+        "concentration": "Parfum Intense",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "58139181",
+          "source_url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "leather accord",
+            "patchouli",
+            "myrrh",
+            "cedar",
+            "amber",
+            "davana"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "100 ml and Parfum Intense stated in manufacturer title and style 58139181; generic bullet also says Eau de Parfum. Product-specific title retained; no concentration percentage or GTIN inferred."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "VARIANT_SOURCE_CONFLICT",
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "47301483597574ef759b4cb5bcee467fab64d5f24a9eb7b8290f0cd42f410985"
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "variant_key": "hugo boss|boss bottled|eau de toilette|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "HUGO-BOSS-BOTTLED-EDT",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+        "brand": "Hugo Boss",
+        "name": "BOSS Bottled",
+        "concentration": "Eau de Toilette",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "58000026",
+          "source_url": "https://www.hugoboss.com/boss-bottled-eau-de-toilette-100ml/hbeu58000026_999.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "geranium",
+            "clove",
+            "sandalwood",
+            "cedar",
+            "vetiver"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.hugoboss.com/de/boss-bottled-eau-de-toilette-gift-set/hbeu58130252_999.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "100 ml Eau de Toilette, not the Bottled Eau de Parfum or Absolu. Official EDT gift-set description corroborates the same fragrance notes; the identity source separately establishes the 100 ml single bottle."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "76772d55038fb05aed57c5b2497c796484f3a67e0d1d55c6b66b981b0d6cab59"
+    },
+    {
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "brand": "Initio Parfums Privés",
+      "name": "Side Effect",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "variant_key": "initio parfums prives|side effect|eau de parfum|90",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "INITIO-SIDE-EFFECT-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+        "brand": "Initio Parfums Privés",
+        "name": "Side Effect",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "side-effect",
+          "source_url": "https://us.initioparfums.com/products/side-effect",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "cinnamon",
+            "rum",
+            "tobacco",
+            "saffron",
+            "sandalwood",
+            "hedione"
+          ]
+        },
+        "notes_source": {
+          "url": "https://us.initioparfums.com/products/side-effect",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten.",
+        "variant_evidence_note": "Official heading states EAU DE PARFUM with 90ML product option. Hair perfume and travel bundle are separately linked, not this variant. Main Notes section used verbatim as factual note names; no performance or attraction claims from marketing copy adopted.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "5856cda4e1522875721071a9a76df208a17fb5522c0567795a9ce36b2d40b2b9"
+    },
+    {
+      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Fleur du Mâle (2026)",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 125,
+      "variant_key": "jean paul gaultier|fleur du male 2026|eau de toilette|125",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "JPG-FLEUR-DU-MALE-2026",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": "Current official comparison lists Le Male Pride 2026 EDT 125 ml; that is not proof of the staged Fleur du Mâle (2026) identity. Do not conflate names or reuse older discontinued product evidence.",
+      "remaining_gates": [
+        "SOURCE_HOLD"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Elixir",
+      "concentration": "Parfum",
+      "volume_ml": 125,
+      "variant_key": "jean paul gaultier|le male elixir|parfum|125",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "JPG-LE-MALE-ELIXIR",
+          "method": "exact_brand_name_concentration",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+        "brand": "Jean Paul Gaultier",
+        "name": "Le Male Elixir",
+        "concentration": "Parfum",
+        "volume_ml": 125,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "000000000065189084",
+          "source_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "mint",
+            "lavender",
+            "tonka bean",
+            "benzoin"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer lists Parfum in 125 ml; distinct from Le Male Le Parfum and Elixir Absolu. Reference is product-family reference, not asserted GTIN."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "f5a220c33de8642258230981c27319a7ec19cdcb088e7e8457dd0d172deea6f8"
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Le Parfum",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 125,
+      "variant_key": "jean paul gaultier|le male le parfum|eau de parfum intense|125",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "JPG-LE-MALE-LE-PARFUM",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": true
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+        "brand": "Jean Paul Gaultier",
+        "name": "Le Male Le Parfum",
+        "concentration": "Eau de Parfum Intense",
+        "volume_ml": 125,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "000000000065156533",
+          "source_url": "https://www.jeanpaulgaultier.com/uk/en/p/range-le-male/le-male-le-parfum-eau-de-parfum-intense-000000000065156533",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "cardamom"
+          ],
+          "heart": [
+            "lavender",
+            "iris"
+          ],
+          "base": [
+            "vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.jeanpaulgaultier.com/uk/en/p/range-le-male/le-male-le-parfum-eau-de-parfum-intense-000000000065156533",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Kardamom eröffnet den Duft. Lavendel und Iris bilden das Herz, Vanille die Basis.",
+        "variant_evidence_note": "Official product heading states Eau de Parfum Intense; size selector explicitly includes 125 ml. Reference is a manufacturer page reference, not a verified GTIN. Legacy research candidate abbreviates concentration to Eau de Parfum; exact staging already correctly says Eau de Parfum Intense. Do not create a second product.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "44d080d7f8ec75a92c3a7f5db78eafe53f07f8f55c03d2dfb032c33a2c1d4c58"
+    },
+    {
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "brand": "Kayali",
+      "name": "Yum Boujee Marshmallow | 81",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 100,
+      "variant_key": "kayali|yum boujee marshmallow 81|eau de parfum intense|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "KAYALI-YUM-BOUJEE-MARSHMALLOW-81",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": "Retail search confirms the target 100 ml EDP Intense, but no original manufacturer page was verified in this batch. Retailer listing alone is not the requested original manufacturer evidence.",
+      "remaining_gates": [
+        "SOURCE_HOLD"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "brand": "Lancôme",
+      "name": "La Vie est Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "lancome|la vie est belle|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "LANCOME-LA-VIE-EST-BELLE-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": null,
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "brand": "Lattafa",
+      "name": "Angham",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "lattafa|angham|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "LATTAFA-ANGHAM-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": "Official page confirms 100 ML and notes, but extracted text does not state concentration. Description mentions jasmine absent from its note pyramid. Need explicit Eau de Parfum evidence and a scoped note policy before qualification.",
+      "remaining_gates": [
+        "SOURCE_HOLD"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "brand": "Lattafa",
+      "name": "Eclaire",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "lattafa|eclaire|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "LATTAFA-ECLAIRE-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+        "brand": "Lattafa",
+        "name": "Eclaire",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "gtin",
+          "value": "6290362340638",
+          "source_url": "https://www.dm.de/p/d/3061570/lattafa-eclaire-eau-de-parfum",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "caramel",
+            "milk",
+            "sugar"
+          ],
+          "heart": [
+            "white flowers",
+            "honey"
+          ],
+          "base": [
+            "vanilla",
+            "praline",
+            "musk"
+          ]
+        },
+        "notes_source": {
+          "url": "https://lattafa.com/product/eclaire/",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Karamell, Milch und Zucker führen zu weißen Blüten und Honig. Vanille, Praline und Moschus bilden die Basis.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "2260d92bd4fa39f3180047b5805dc7551f16befa70ec3bdd1c184da280c9b301"
+    },
+    {
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "brand": "Lattafa",
+      "name": "Khamrah",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "lattafa|khamrah|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "LATTAFA-KHAMRAH-EDP",
+          "method": "exact_brand_name_concentration",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+        "brand": "Lattafa",
+        "name": "Khamrah",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "gtin",
+          "value": "6291108737194",
+          "source_url": "https://www.dm.de/p/d/2970208/lattafa-khamrah-eau-de-parfum",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "cinnamon",
+            "nutmeg",
+            "bergamot",
+            "dates",
+            "praline",
+            "tuberose",
+            "vanilla",
+            "tonka bean",
+            "benzoin",
+            "myrrh",
+            "Akigalawood",
+            "amber wood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://lattafa.com/product/khamrah/",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Only manufacturer notes shared by its two descriptions retained; lily-of-the-valley versus Mahonial terminology is not silently reconciled. Original Khamrah, not Qahwa or Dukhan."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "e241274ea36967d2dd5c657be9f41a335d55d17659339b13fb1e7b22c96b644f"
+    },
+    {
+      "product_id": "SC-LV-IMAGINATION-100",
+      "brand": "Louis Vuitton",
+      "name": "Imagination",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "louis vuitton|imagination|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-REGENT-100",
+      "brand": "Maison Asrar",
+      "name": "Regent",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "maison asrar|regent|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+      "brand": "Maison Asrar",
+      "name": "Vanguard",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "maison asrar|vanguard|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "brand": "Maison Margiela",
+      "name": "REPLICA By the Fireplace",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "variant_key": "maison margiela|replica by the fireplace|eau de toilette|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+        "brand": "Maison Margiela",
+        "name": "REPLICA By the Fireplace",
+        "concentration": "Eau de Toilette",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "MM005",
+          "source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "pink pepper",
+            "orange blossom",
+            "clove"
+          ],
+          "heart": [
+            "chestnut accord",
+            "guaiac wood",
+            "cade oil"
+          ],
+          "base": [
+            "vanilla accord",
+            "Peru balsam",
+            "cashmeran"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer page lists EDT and the 3.4 oz / 100 ml bottle separately from Refill 100 ml. MM005 is a product-family reference, not a GTIN."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "9bb113f85e93e969a2ff807ecddaf907c8f47ac44d67f73cce6efed4914dfac9"
+    },
+    {
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "brand": "Maison Francis Kurkdjian",
+      "name": "Baccarat Rouge 540",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 70,
+      "variant_key": "maison francis kurkdjian|baccarat rouge 540|eau de parfum|70",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+        "brand": "Maison Francis Kurkdjian",
+        "name": "Baccarat Rouge 540",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 70,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "10223021",
+          "source_url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "jasmine flowers",
+            "saffron",
+            "ambergris accord",
+            "dry woody notes",
+            "ethyl maltol"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "70 ml Eau de parfum; not Extrait de parfum."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "cac3d82f181dfd5ba5fcead4b1fcc8a00b6bfec9ff5cade70fb6b5dcb7af3332"
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "brand": "Montblanc",
+      "name": "Explorer",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "montblanc|explorer|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "brand": "Mugler",
+      "name": "Alien",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "variant_key": "mugler|alien|eau de parfum|90",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-MUGLER-ALIEN-EDP-90",
+        "brand": "Mugler",
+        "name": "Alien",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "M010401002",
+          "source_url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html?dwvar_M010401002_size=90ml+refillable",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "jasmine sambac",
+            "cashmeran",
+            "white amber"
+          ]
+        },
+        "notes_source": {
+          "url": "https://de.mugler.com/de/duft/damendufte/alien/alien-eau-de-parfum/M010401002.html?dwvar_M010401002_size=90ml+refillable",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Jasmin, Cashmeran und weißer Amber prägen das Duftprofil.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Explicit 90 ml refillable bottle selector, not 100 ml refill. Prior merchant GTIN observations remain unpromoted."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "39887bdfabd8dad4869272d8201dd2bbcef44001a71465795d917980f029802f"
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "brand": "Narciso Rodriguez",
+      "name": "for her PURE MUSC",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "narciso rodriguez|for her pure musc|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "NARCISO-RODRIGUEZ-FOR-HER-PURE-MUSC",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+        "brand": "Narciso Rodriguez",
+        "name": "for her PURE MUSC",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "for-her-PURE-MUSC",
+          "source_url": "https://www.narcisorodriguezparfums.com/es/narciso-rodriguez-for-her-pure-musc/for-her-PURE-MUSC.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "orange blossom",
+            "jasmine",
+            "musk",
+            "cashmere wood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.narcisorodriguezparfums.com/es/narciso-rodriguez-for-her-pure-musc/for-her-PURE-MUSC.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Orangenblüte und Jasmin umgeben einen Moschusakkord mit Kaschmirholz.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "volume_source_url": "https://www.thefragranceshop.co.uk/narciso-rodriguez/pure-musc/eau-de-parfum-spray/p/45475",
+        "variant_evidence_note": "Manufacturer confirms original PURE MUSC EDP and notes. The Fragrance Shop product 45475 separately corroborates the 100 ml bottle. Manufacturer handle is not a GTIN; not PURE MUSC BLANC Intense."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "dc09c85763739fb577c1f52e954560d7b240dae1529bd0229b416e14aacb6ca8"
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "brand": "Nishane",
+      "name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "variant_key": "nishane|ani|extrait de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "NISHANE-ANI-EXTRAIT",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+        "brand": "Nishane",
+        "name": "Ani",
+        "concentration": "Extrait de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "ani",
+          "source_url": "https://nishane.com/product/ani/",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "bergamot",
+            "green notes",
+            "blue ginger",
+            "pink pepper"
+          ],
+          "heart": [
+            "blackcurrant",
+            "Turkish rose",
+            "cardamom"
+          ],
+          "base": [
+            "patchouli",
+            "cedarwood",
+            "vanilla",
+            "benzoin",
+            "ambergris",
+            "musk",
+            "sandalwood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://nishane.com/product/ani/",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer product handle; Extrait de Parfum and 100 ml explicitly listed. ANI, not ANI X. No GTIN inferred."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "048fe9660669d5ce36a08633a22a69cae99db688732b4a6aa62c7c98fb943368"
+    },
+    {
+      "product_id": "SC-NUSUK-ATEEQ-100",
+      "brand": "Nusuk",
+      "name": "Ateeq",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "variant_key": "nusuk|ateeq|extrait de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+      "brand": "Orientica",
+      "name": "Royal Bleu",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 80,
+      "variant_key": "orientica|royal bleu|eau de parfum|80",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "brand": "Parfums de Marly",
+      "name": "Althaïr",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "variant_key": "parfums de marly|althair|eau de parfum|125",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "variant_key": "parfums de marly|delina|eau de parfum|75",
+      "in_canonical": true,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "PDM-DELINA-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": null,
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "brand": "Parfums de Marly",
+      "name": "Herod",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "variant_key": "parfums de marly|herod|eau de parfum|125",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "PDM-HEROD-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-PDM-HEROD-EDP-125",
+        "brand": "Parfums de Marly",
+        "name": "Herod",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 125,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "herod",
+          "source_url": "https://us.parfums-de-marly.com/products/herod",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "cinnamon",
+            "pepper"
+          ],
+          "heart": [
+            "tobacco leaf",
+            "incense",
+            "cistus",
+            "osmanthus"
+          ],
+          "base": [
+            "vanilla",
+            "musk",
+            "cedarwood"
+          ]
+        },
+        "notes_source": {
+          "url": "https://us.parfums-de-marly.com/products/herod",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer product handle; page title specifies Eau de Parfum and size selector lists 125 ml. Not a GTIN; no merchant availability inferred."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "d6f3a528a62d13d07c2f3f3625b3029e0697a181d212e2aecb222ca4814d1611"
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "brand": "Parfums de Marly",
+      "name": "Layton",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "variant_key": "parfums de marly|layton|eau de parfum|125",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Valaya Exclusif",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "variant_key": "parfums de marly|valaya exclusif|eau de parfum|75",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "PDM-VALAYA-EXCLUSIF",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+        "brand": "Parfums de Marly",
+        "name": "Valaya Exclusif",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 75,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "valaya-exclusif",
+          "source_url": "https://parfums-de-marly.com/es/products/valaya-exclusif",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "almond",
+            "bergamot",
+            "mandarin"
+          ],
+          "heart": [
+            "orange blossom",
+            "white flowers",
+            "powdery facets"
+          ],
+          "base": [
+            "akigalawood",
+            "sandalwood",
+            "ambroxan",
+            "vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://parfums-de-marly.com/es/products/valaya-exclusif",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille.",
+        "variant_evidence_note": "Official page title identifies Eau de Parfum 75 ml; selected product size is 75ml. Distinct from Valaya and the hair perfume.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "fb4158c2cb3cf568c96103137960d37cb5e4d31f3f9272ebaea0898edca97517"
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "brand": "Prada",
+      "name": "L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "variant_key": "prada|l homme|eau de toilette|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "brand": "Prada",
+      "name": "L'Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "prada|l homme intense|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "PRADA-LHOMME-INTENSE-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+        "brand": "Prada",
+        "name": "L'Homme Intense",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "2A1252_2HC1_F0Z99_P_ML100",
+          "source_url": "https://www.prada.com/de/de/p/lhomme-prada-intense-edp-100-ml/2A1252_2HC1_F0Z99_P_ML100",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "amber",
+            "patchouli",
+            "iris",
+            "sandalwood",
+            "roasted tonka bean"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.prada.com/de/de/p/lhomme-prada-intense-edp-100-ml/2A1252_2HC1_F0Z99_P_ML100",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "2e7342c46c56922ad8a720ffcc3733bd509c21e5997a8b964df5dca89f7990aa"
+    },
+    {
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "brand": "Prada",
+      "name": "Paradigme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "prada|paradigme|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "PRADA-PARADIGME-EDP",
+          "method": "exact_brand_name_concentration",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-PRADA-PARADIGME-EDP-100",
+        "brand": "Prada",
+        "name": "Paradigme",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "2A1451_2H0Q_F0Z99_P_ML100",
+          "source_url": "https://www.prada.com/de/de/p/paradigme-edp-100-ml/2A1451_2H0Q_F0Z99_P_ML100",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "Calabrian bergamot"
+          ],
+          "heart": [
+            "Bourbon geranium"
+          ],
+          "base": [
+            "amber woods"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.prada.com/de/de/p/paradigme-edp-100-ml/2A1451_2H0Q_F0Z99_P_ML100",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer product code and title explicitly identify EDP 100 ml."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "670371ecdd97f2bfb26724ee6bc880315258ed4486226a09fea30c35853621e5"
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "variant_key": "prada|paradoxe|eau de parfum|90",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "PRADA-PARADOXE-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-PRADA-PARADOXE-EDP-90",
+        "brand": "Prada",
+        "name": "Paradoxe",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "1A1351_2HDZ_F0Z99_P_ML090",
+          "source_url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "Calabrian bergamot",
+            "mandarin",
+            "pear accord"
+          ],
+          "heart": [
+            "neroli",
+            "orange blossom",
+            "jasmine sambac"
+          ],
+          "base": [
+            "amber accord",
+            "benzoin",
+            "Bourbon vanilla",
+            "white musk accord"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.prada.com/de/de/p/paradoxe-edp-90ml/1A1351_2HDZ_F0Z99_P_ML090",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Bergamotte, Mandarine und Birne treffen auf Neroli und weiße Blüten. Amber, Benzoe, Vanille und Moschus bilden die Basis.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer product code explicitly identifies EDP 90 ml; not the 100 ml refill or Intense variant."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "licensed_commons_photo_exact_90ml_unproven",
+      "affiliate_required": false,
+      "evidence_sha256": "6d8c1ace427974ef975643cd63050e60d92a1e6e67cf35a9cfc739261db63e4b"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "brand": "Rabanne",
+      "name": "1 Million",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "variant_key": "rabanne|1 million|eau de toilette|100",
+      "in_canonical": true,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-RAYHAAN-ITALIA-100",
+      "brand": "Rayhaan",
+      "name": "Italia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "rayhaan|italia|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-SOSPIRO-VIBRATO-100",
+      "brand": "Sospiro",
+      "name": "Vibrato",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "sospiro|vibrato|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "brand": "Tom Ford",
+      "name": "Ombré Leather",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "tom ford|ombre leather|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "TOM-FORD-OMBRE-LEATHER-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+        "brand": "Tom Ford",
+        "name": "Ombré Leather",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "ombre-leather-eau-de-parfum",
+          "source_url": "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "black leather accord",
+            "cardamom",
+            "jasmine sambac",
+            "patchouli",
+            "white moss",
+            "amber"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Official EDP page lists a 100 ml bottle. Product handle is not a GTIN; Parfum, Reserve and Eau de Toilette are separate variants."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "df706e0457fa730922224568ea3fef62d05a4cbc7943a143c43e411a85e493bb"
+    },
+    {
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "brand": "Tom Ford",
+      "name": "Oud Wood",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "tom ford|oud wood|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+        "brand": "Tom Ford",
+        "name": "Oud Wood",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "oud-wood-eau-de-parfum",
+          "source_url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "cardamom",
+            "pink pepper",
+            "patchouli",
+            "amber",
+            "oud",
+            "tonka bean"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Official EDP page lists the 100 ml size; the manufacturer handle is not a GTIN. Oud Wood Parfum remains a separate variant."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "0c66adf8eeac28d63b6b7f2324f5c8de234b7e7abd8be151d58bcfa01dca8e5b"
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "brand": "Valentino",
+      "name": "Uomo Born In Roma Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "valentino|uomo born in roma intense|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "brand": "Valentino",
+      "name": "Born In Roma Donna",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "valentino|born in roma donna|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+        "brand": "Valentino",
+        "name": "Born In Roma Donna",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "MPL00468",
+          "source_url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html?dwvar_MPL00468_size=100",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "Italian bergamot"
+          ],
+          "heart": [
+            "jasmine grandiflorum",
+            "jasmine sambac",
+            "jasmine tea"
+          ],
+          "base": [
+            "bourbon vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.valentino-beauty.de/de_DE/dufte/damendufte/born-in-roma-donna/born-in-roma-donna/MPL00468.html?dwvar_MPL00468_size=100",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Bergamotte führt zu einer Jasmin-Trilogie; Bourbon-Vanille prägt die Basis.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false,
+        "variant_evidence_note": "Manufacturer family reference with explicit 100 ml variant selector; no GTIN inferred."
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "81e0a9227afec539f747882def6b588ae4dbd286dc77b2bdf71e931c2ad5a9f6"
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "brand": "Versace",
+      "name": "Eros Pour Homme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "versace|eros pour homme|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "VERSACE-EROS-EDP",
+          "method": "exact_brand_name_concentration",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-VERSACE-EROS-EDP-100",
+        "brand": "Versace",
+        "name": "Eros Pour Homme",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-10",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "R740110-R100MLS",
+          "source_url": "https://www.versace.com/gb/en/eros-edp-100-ml/R740110-R100MLS.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "Italian lemon",
+            "mandarin",
+            "mint oil",
+            "candied apple"
+          ],
+          "heart": [
+            "geranium",
+            "clary sage",
+            "AmberMax"
+          ],
+          "base": [
+            "Atlas cedar",
+            "Virginia cedar",
+            "vetiver",
+            "patchouli",
+            "sandalwood",
+            "vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.versace.com/gb/en/eros-edp-100-ml/R740110-R100MLS.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "f2b12798090809b1ba69e55ef92c5452cdfb42eb67c1ec41a48fd58a070ff892"
+    },
+    {
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "brand": "Viktor & Rolf",
+      "name": "Spicebomb Extreme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "variant_key": "viktor rolf|spicebomb extreme|eau de parfum|90",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "VIKTOR-ROLF-SPICEBOMB-EXTREME",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+        "brand": "Viktor & Rolf",
+        "name": "Spicebomb Extreme",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "spicebomb-extreme-eau-de-parfum-90ml",
+          "source_url": "https://www.viktor-rolf.com/products/spicebomb-extreme-eau-de-parfum-90ml",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "lavender",
+            "cinnamon",
+            "saffron",
+            "tobacco",
+            "vanilla",
+            "bourbon"
+          ]
+        },
+        "notes_source": {
+          "url": "https://us.viktor-rolf.com/fragrance/spicebomb-extreme-eau-de-parfum-3614270659706.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Lavendel und Gewürznoten treffen auf Tabak, Bourbon und Vanille.",
+        "variant_evidence_note": "Official product title explicitly identifies Eau de Parfum 90ml; US page also selects 90 ml. Use only the manufacturer's Key Notes list. Its separate note graphics use a different selection; no unified complete pyramid is inferred.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "2f8eaf539b276664e2f5c409ad212e171bf67880eb6834a5bb2cf75acb1a3bc2"
+    },
+    {
+      "product_id": "SC-WIDIAN-LONDON-EXTRAIT-50",
+      "brand": "Widian",
+      "name": "London",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 50,
+      "variant_key": "widian|london|extrait de parfum|50",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [
+        "FACTS_QUALIFIED",
+        "VARIANT_CHECKED",
+        "VISUAL_READY",
+        "FUNCTIONAL_QA",
+        "OWNER_REVIEW",
+        "PUBLIC_RELEASE"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "brand": "Xerjoff",
+      "name": "Naxos",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "xerjoff|naxos|eau de parfum|100",
+      "in_canonical": true,
+      "in_staging": false,
+      "legacy_candidates": [],
+      "stages": {
+        "research_staged": false,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "variant_key": "yves saint laurent|black opium|eau de parfum|90",
+      "in_canonical": true,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "YSL-BLACK-OPIUM-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": null,
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "brand": "Yves Saint Laurent",
+      "name": "La Nuit de L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "variant_key": "yves saint laurent|la nuit de l homme|eau de toilette|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "YSL-LA-NUIT-DE-LHOMME-EDT",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+        "brand": "Yves Saint Laurent",
+        "name": "La Nuit de L'Homme",
+        "concentration": "Eau de Toilette",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "426YSL",
+          "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/426YSL.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "bergamot"
+          ],
+          "heart": [
+            "cedar",
+            "lavender"
+          ],
+          "base": [
+            "vetiver"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/426YSL.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis.",
+        "variant_evidence_note": "Official Eau de Toilette page selects 100 ml. Not the separately listed Eau de Parfum or Le Parfum. Only the dedicated Olfaktion description supplies this pyramid; unrelated Bleu Electrique SEO keywords and ingredient-list allergens are not treated as notes.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "27520f50f9edec185c6c6c3c888322b86fe43828309ff52fd2411002ba9a658f"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "brand": "Yves Saint Laurent",
+      "name": "Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "variant_key": "yves saint laurent|libre|eau de parfum|90",
+      "in_canonical": true,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "YSL-LIBRE-EDP",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": false,
+        "variant_checked": false,
+        "visual_ready": false,
+        "browser_QA": false,
+        "owner_review": false,
+        "owner_approved": false,
+        "published": true,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": null,
+      "source_hold": null,
+      "remaining_gates": [],
+      "original_photo_hold": null,
+      "affiliate_required": false,
+      "evidence_sha256": null
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "brand": "Yves Saint Laurent",
+      "name": "MYSLF Le Parfum",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "variant_key": "yves saint laurent|myslf le parfum|parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "YSL-MYSLF-LE-PARFUM",
+          "method": "existing_candidate_id",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+        "brand": "Yves Saint Laurent",
+        "name": "MYSLF Le Parfum",
+        "concentration": "Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-11",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "3614274114645",
+          "source_url": "https://www.yslbeauty.com/int/fragrance/masculine-fragrance/myslf/myslf-le-parfum/3614274114645.html",
+          "verified": true
+        },
+        "notes": {
+          "top": [
+            "black pepper"
+          ],
+          "heart": [
+            "orange blossom absolute"
+          ],
+          "base": [
+            "woods",
+            "bourbon vanilla"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.yslbeauty.com/int/fragrance/masculine-fragrance/myslf/myslf-le-parfum/3614274114645.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang.",
+        "variant_evidence_note": "Official MYSLF Le Parfum page selects 100 ml. Numeric URL reference remains manufacturer_reference, not verified GTIN; not MYSLF Eau de Parfum.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "4036d78f3024b2bd760f508f0c67aceabb284cbeb3f6c37bee577e912e484ddd"
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "brand": "Yves Saint Laurent",
+      "name": "Y",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "variant_key": "yves saint laurent|y|eau de parfum|100",
+      "in_canonical": false,
+      "in_staging": true,
+      "legacy_candidates": [
+        {
+          "candidate_id": "YSL-Y-EDP",
+          "method": "exact_brand_name_concentration",
+          "metadata_discrepancy": false
+        }
+      ],
+      "stages": {
+        "research_staged": true,
+        "facts_qualified": true,
+        "variant_checked": true,
+        "visual_ready": true,
+        "browser_QA": true,
+        "owner_review": true,
+        "owner_approved": false,
+        "published": false,
+        "indexed": null,
+        "indexing_approved": false
+      },
+      "source_evidence": {
+        "product_id": "SC-YSL-Y-EDP-100",
+        "brand": "Yves Saint Laurent",
+        "name": "Y",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "checked_at": "2026-10-10",
+        "identity": {
+          "kind": "manufacturer_reference",
+          "value": "3614272050358",
+          "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/3614272050358.html",
+          "verified": true
+        },
+        "notes": {
+          "key": [
+            "sage essence",
+            "geranium absolute",
+            "woody accord",
+            "tonka bean"
+          ]
+        },
+        "notes_source": {
+          "url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/y/y-eau-de-parfum/3614272050358.html",
+          "kind": "manufacturer_product_facts"
+        },
+        "summary_de": "Salbei und Geranium treffen auf einen Holzakkord und Tonkabohne.",
+        "facts_only": true,
+        "community_data_included": false,
+        "image_rights_status": "HOLD",
+        "publication_authorized": false
+      },
+      "source_hold": null,
+      "remaining_gates": [
+        "OWNER_REVIEW"
+      ],
+      "original_photo_hold": "no_approved_asset_specific_license_and_exact_variant_pair",
+      "affiliate_required": false,
+      "evidence_sha256": "876ebbf15cadd472d596a9042feb262f57b8fe6bfbb6353c93520dce17a6d8bc"
+    }
+  ],
+  "research_only": [
+    {
+      "candidate_id": "YSL-MYSLF-EDP",
+      "brand": "Yves Saint Laurent",
+      "name": "MYSLF",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "JPG-LE-BEAU-LE-PARFUM",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Beau Le Parfum",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "JPG-LE-BEAU-PARADISE-GARDEN",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Beau Paradise Garden",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "ARMANI-ACQUA-DI-GIO-EDT",
+      "brand": "Giorgio Armani",
+      "name": "Acqua di Giò",
+      "concentration": "Eau de Toilette",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "GISADA-AMBASSADOR-MEN",
+      "brand": "Gisada",
+      "name": "Ambassador Men",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "HERMES-TERRE-DHERMES-EAU-GIVREE",
+      "brand": "Hermès",
+      "name": "Terre d'Hermès Eau Givrée",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "ZADIG-VOLTAIRE-THIS-IS-HER",
+      "brand": "Zadig & Voltaire",
+      "name": "This Is Her!",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "JPG-LA-BELLE-EDP",
+      "brand": "Jean Paul Gaultier",
+      "name": "La Belle",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "PDM-VALAYA-EDP",
+      "brand": "Parfums de Marly",
+      "name": "Valaya",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "BDK-GRIS-CHARNEL-EDP",
+      "brand": "BDK Parfums",
+      "name": "Gris Charnel",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "MONTALE-ARABIANS-TONKA-EDP",
+      "brand": "Montale",
+      "name": "Arabians Tonka",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "LATTAFA-YARA-EDP",
+      "brand": "Lattafa",
+      "name": "Yara",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "LATTAFA-PRIDE-ART-OF-ARABIA-I-EDP",
+      "brand": "Lattafa",
+      "name": "Pride Art of Arabia I",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "AFNAN-9PM-EDP",
+      "brand": "Afnan Perfumes",
+      "name": "9PM",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "RASASI-HAWAS-FOR-HIM-EDP",
+      "brand": "Rasasi",
+      "name": "Hawas for Him",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "PDM-DELINA-EXCLUSIF",
+      "brand": "Parfums de Marly",
+      "name": "Delina Exclusif",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [],
+      "reason": "Exact volume and manufacturer variant not verified; not counted as an exact SKU."
+    },
+    {
+      "candidate_id": "DOLCE-GABBANA-THE-ONE-MEN-EDP",
+      "brand": "Dolce & Gabbana",
+      "name": "The One for Men",
+      "concentration": "Eau de Parfum",
+      "volume_ml": null,
+      "state": "RESEARCH_ONLY",
+      "possible_existing_ids": [
+        "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100"
+      ],
+      "reason": "Legacy key points to a differently named edition; resolve identity before counting any additional product."
+    }
+  ],
+  "batch": {
+    "input_sha256": "ad1dcfcde61cfc31d9127897c5776ad5f50b98a3fa212438696dc4169a2081b1",
+    "selected": [
+      "SC-WIDIAN-LONDON-EXTRAIT-50",
+      "YSL-MYSLF-EDP",
+      "JPG-LE-BEAU-LE-PARFUM",
+      "JPG-LE-BEAU-PARADISE-GARDEN",
+      "ARMANI-ACQUA-DI-GIO-EDT",
+      "GISADA-AMBASSADOR-MEN",
+      "HERMES-TERRE-DHERMES-EAU-GIVREE",
+      "ZADIG-VOLTAIRE-THIS-IS-HER",
+      "JPG-LA-BELLE-EDP",
+      "PDM-VALAYA-EDP",
+      "BDK-GRIS-CHARNEL-EDP",
+      "MONTALE-ARABIANS-TONKA-EDP",
+      "LATTAFA-YARA-EDP",
+      "LATTAFA-PRIDE-ART-OF-ARABIA-I-EDP",
+      "AFNAN-9PM-EDP",
+      "RASASI-HAWAS-FOR-HIM-EDP",
+      "PDM-DELINA-EXCLUSIF",
+      "DOLCE-GABBANA-THE-ONE-MEN-EDP"
+    ],
+    "remaining": [],
+    "completed": [],
+    "limit": 24,
+    "publication_authorized": false
+  }
+}

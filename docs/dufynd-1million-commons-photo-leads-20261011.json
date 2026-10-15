@@ -1,0 +1,76 @@
+{
+  "schema": "dufynd_public_original_photo_external_review_v1",
+  "date_local": "2026-10-11",
+  "scope": "Public 1 Million EDT 100ml photo candidate research only",
+  "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+  "gtin": "3349666007921",
+  "status": "SOURCE_RESEARCH_HOLD_NOT_APPROVED",
+  "approved_original_images_added": 0,
+  "license_overrides_existing_feed_rights": false,
+  "auto_registration": false,
+  "auto_image_replacement": false,
+  "owner_visual_go": false,
+  "public_release_go": false,
+  "merchant_offer_activation": false,
+  "context": {
+    "known_affiliate_ready_merchant": "perfumetrader",
+    "mapped_sku": "16978322",
+    "image_feed_not_established": true,
+    "note": "This is a separate Creative Commons photo research path, not an Awin asset or merchant offer."
+  },
+  "candidates": [
+    {
+      "source_page": "https://commons.wikimedia.org/wiki/File:2023_Woda_toaletowa_Paco_Rabanne_1_Million.jpg",
+      "title": "2023 Woda toaletowa Paco Rabanne 1 Million.jpg",
+      "copyright_holder_author": "Jacek Halicki",
+      "reported_license": "CC BY-SA 4.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "reported_dimensions": {
+        "width": 3172,
+        "height": 4362
+      },
+      "capture_date": "2023-04-15",
+      "evidence_status": "COMMONS_FILE_PAGE_AUTHOR_AND_LICENSE_VERIFIED",
+      "reported_visual_identity": "Paco Rabanne 1 Million Eau de Toilette",
+      "exact_volume_ml": null,
+      "exact_100ml_identity_verified": false,
+      "premium_studio_quality_approved": false,
+      "notes": [
+        "Wikimedia Commons file marked Quality Image, but that is not DUFYND 9.5/10 owner assessment.",
+        "100 ml size is not documented on the file page; do not assume exact package/size.",
+        "Attribution, licensed derivative notices, share-alike and trademark/packaging review remain required."
+      ]
+    },
+    {
+      "source_page": "https://commons.wikimedia.org/wiki/File:1_Million_PL.JPG",
+      "title": "1 Million PL.JPG",
+      "copyright_holder_author": "Beemwej",
+      "reported_license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "reported_dimensions": {
+        "width": 1424,
+        "height": 2144
+      },
+      "capture_date": "2011-12-19",
+      "evidence_status": "COMMONS_FILE_PAGE_AUTHOR_LICENSE_AND_100ML_DESCRIPTION_VERIFIED",
+      "reported_visual_identity": "Paco Rabanne 1 Million 100ml",
+      "exact_volume_ml": 100,
+      "exact_100ml_identity_verified": false,
+      "premium_studio_quality_approved": false,
+      "notes": [
+        "The uploader's 100 ml description is a lead, not independent exact-variant proof from image bytes or GTIN.",
+        "Older real-life photograph, not confirmed neutral high-end packshot.",
+        "Attribution, licensed derivative notices, share-alike and trademark/packaging review remain required."
+      ]
+    }
+  ],
+  "manual_gates": [
+    "inspect actual source image bytes for authentic 1 Million EDT and 100 ml variant",
+    "reject Parfum, Lucky, EDT 50/200 ml and other editions",
+    "compare original and current package labels; brand refresh may differ",
+    "confirm production-safe attribution placement and CC BY-SA conditions",
+    "review crop/layout without misrepresenting original as contemporary merchant photo",
+    "owner visual score >=9.5/10",
+    "separate development branch implementation and publication approvals"
+  ]
+}

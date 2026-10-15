@@ -1,4 +1,6 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { verifyBrandDiscovery } from "./brand-discovery-qa.mjs";
+import { verifyNoteSculpture } from "./note-sculpture-qa.mjs";
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
 import { verifyAcquisitionEntry } from "./acquisition-entry-qa.mjs";
 import { verifyFontLayout } from "./font-layout-qa.mjs";
@@ -7,9 +9,12 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
+import { verifyWowExperience } from "./wow-experience-qa.mjs";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
+import { verifySite13Funnel } from "./site13-funnel-qa.mjs";
+import { verifySocialProductEntry, verifyFirstMoneyLandingStates } from "./social-product-entry-qa.mjs";
 import { verifyPublicShareLinks } from "./public-share-qa.mjs";
 import { verifyLibraryClearRecovery } from "./library-clear-qa.mjs";
 import { verifyLibrarySaveRecovery } from "./library-save-qa.mjs";
@@ -146,18 +151,31 @@ function verifiedProductTruthVisual(product) {
   });
 }
 
+const approvedOriginalPhotos = JSON.parse(
+  await readFile(
+    new URL("../lib/generated/original-photos.json", import.meta.url),
+    "utf-8",
+  ),
+);
+const approvedImages = new Map(
+  approvedOriginalPhotos.map((image) => [image.product_id, image]),
+);
 const verifiedTruthByRoute = new Map(
   sourceCatalog.products
-    .filter(
-      (product) =>
-        String(product?.product_id || "").startsWith("SC-") &&
-        !hasValidationBlockers(product),
+    .filter((product) =>
+      String(product?.product_id || "").startsWith("SC-") &&
+      !hasValidationBlockers(product)
     )
     .map((product) => {
       const route = `/duft/${slugifyFragrance(
         `${String(product?.brand || "").trim()} ${String(product?.name || "").trim()}`,
       )}`;
-      return [route, verifiedProductTruthVisual(product)];
+      const asset = verifiedProductTruthVisual(product);
+      const licensed = approvedImages.get(product.product_id);
+      const valid = asset && licensed &&
+        asset.url === licensed.url &&
+        Number(product.volume_ml) === Number(licensed.volume_ml);
+      return [route, valid ? asset : null];
     })
     .filter(([, visual]) => Boolean(visual)),
 );
@@ -170,7 +188,7 @@ const viewports = [
 ];
 
 const coreRoutes = [
-  { name: "home", route: "/", marker: "Finde den Duft, der wirklich zu dir passt." },
+  { name: "home", route: "/", marker: "Finde den Duft," },
   {
     name: "social-start",
     route: "/start",
@@ -259,7 +277,8 @@ const naxosPremiumMotifs = {
 
 await mkdir(outputDir, { recursive: true });
 
-const browser = await chromium.launch({ headless: true });
+// Exercise the opt-in shader on CI software GPUs; production keeps its performance gate.
+const browser = await chromium.launch({ headless: true, args: ["--enable-unsafe-swiftshader"] });
 const report = {
   generated_at: new Date().toISOString(),
   base_url: baseUrl,
@@ -269,10 +288,24 @@ const report = {
 
 try {
   try {
+    const results = await verifyWowExperience(browser, baseUrl, outputDir);
+    report.checks.push({ label: "wow22-experience", status: "passed", results });
+  } catch (error) { report.failures.push({ label: "wow22-experience", message: String(error) }); }
+  try {
     report.checks.push(...await verifyBrandDiscovery(browser, baseUrl, outputDir));
-  } catch (error) {
-    report.failures.push({ label: "brand-discovery", message: String(error) });
-  }
+  } catch (error) { report.failures.push({ label: "brand-discovery", message: String(error) }); }
+  try {
+    const measurements = await verifySocialProductEntry(browser, baseUrl, outputDir);
+    report.checks.push({ label: "social-product-entry", status: "passed", cases: measurements.length, measurements });
+  } catch (error) { report.failures.push({ label: "social-product-entry", message: String(error) }); }
+  try {
+    const result = await verifyFirstMoneyLandingStates(browser, baseUrl, outputDir);
+    report.checks.push({ label: "first-money-landing-states", status: "passed", ...result });
+  } catch (error) { report.failures.push({ label: "first-money-landing-states", message: String(error) }); }
+  try {
+    const cases = await verifyNoteSculpture(browser, baseUrl, outputDir);
+    report.checks.push({ label: "note-sculpture", status: "passed", cases });
+  } catch (error) { report.failures.push({ label: "note-sculpture", message: String(error) }); }
   try {
     const cases = await verifyFontLayout(browser, baseUrl);
     report.checks.push({ label: "font-layout", status: "passed", cases });
@@ -298,6 +331,8 @@ try {
     report.failures.push({ label: "catalog-recovery", message: String(error) });
   }
   try {
+    const site13 = await verifySite13Funnel(browser, baseUrl);
+    report.checks.push({ label: "site13-storage-and-mobile-funnel", status: "passed", cases: site13.length });
     const cases = await verifyFirstMoneyFunnel(browser, baseUrl);
     report.checks.push({ label: "first-money-funnel-attribution", status: "passed", cases });
   } catch (error) {
@@ -639,11 +674,11 @@ try {
             (
               layout.stage_top == null ||
               layout.title_top == null ||
-              layout.stage_top >= layout.title_top
+              layout.title_top >= layout.stage_top
             )
           ) {
             throw new Error(
-              "mobile fragrance detail no longer presents the product stage before identity copy",
+              "mobile fragrance detail must show identity before the product stage",
             );
           }
           if (
@@ -654,6 +689,21 @@ try {
           }
           if (layout.cutout_clipped) {
             throw new Error("verified bottle cutout extends beyond its hero stage");
+          }
+          const overview = page.locator("#duftnoten.dufynd-notes-overview");
+          if ((await overview.count()) !== 1) {
+            throw new Error("every fragrance requires one consistent visible notes overview");
+          }
+          if ((await page.locator(".dufynd-fragrance-notes-card").count()) !== 0) {
+            throw new Error("duplicated legacy mobile/desktop notes disclosure survived");
+          }
+          const noteFormat = await overview.getAttribute("data-dufynd-note-layout");
+          if (!["pyramid", "key-notes"].includes(noteFormat)) {
+            throw new Error("notes were not classified into a source-accurate display");
+          }
+          const advanced = page.locator("details.dufynd-fragrance-advanced");
+          if ((await advanced.count()) !== 1 || await advanced.getAttribute("open") !== null) {
+            throw new Error("advanced note visualization must not interrupt the main page");
           }
           const journey = await page.locator(".dufynd-fragrance-journey").count();
           if (journey !== 1) {
@@ -834,229 +884,59 @@ try {
         }
 
         if (target.name === "naxos") {
-          if (viewport.width < 1024) {
-            const notesDetails = page
-              .locator("details")
-              .filter({ hasText: "Duftnoten" })
-              .first();
-            if (await notesDetails.isVisible()) {
-              const isOpen = await notesDetails.evaluate(
-                (element) => element.hasAttribute("open"),
-              );
-              if (!isOpen) {
-                await notesDetails.locator("summary").click();
-              }
-            }
+          // The identity record is not a commercial image licence. A truthful
+          // blank studio stage is required until an exact asset is approved.
+          const hero = page.locator(".dufynd-fragrance-hero");
+          if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
+            throw new Error("unlicensed Naxos hero did not use an honest image hold");
           }
-
-          const verifiedCutout = page.locator(
-            'img[src="/products/naxos-cutout-production.webp"]',
-          );
-          if ((await verifiedCutout.count()) < 1) {
-            throw new Error("Naxos verified cutout is missing");
+          if ((await hero.locator('img.dufynd-product-image, .dufynd-editorial-depth-stage').count()) !== 0) {
+            throw new Error("Naxos hero exposed an unlicensed original or editorial bottle");
           }
-
-          const text = await page.locator("body").innerText();
-          const missingNotes = naxosGermanNotes.filter(
-            (note) => !text.includes(note),
-          );
+          const overview = page.locator("#duftnoten.dufynd-notes-overview");
+          if ((await overview.count()) !== 1) {
+            throw new Error("Naxos must render exactly one canonical notes overview");
+          }
+          const text = await overview.innerText();
+          const missingNotes = naxosGermanNotes.filter((note) => !text.includes(note));
           if (missingNotes.length) {
-            throw new Error(
-              `Naxos German note labels missing: ${missingNotes.join(", ")}`,
-            );
+            throw new Error(`Naxos note labels missing: ${missingNotes.join(", ")}`);
           }
-
-          const notesMissingIcons = await page.evaluate((expectedNotes) => {
-            const noteChips = Array.from(
-              document.querySelectorAll("span, a"),
-            );
-            return expectedNotes.filter(
-              (note) =>
-                !noteChips.some(
-                  (chip) =>
-                    chip.textContent?.replace("→", "").trim() === note &&
-                    Boolean(chip.querySelector("svg")),
-                ),
-            );
-          }, naxosGermanNotes);
-          if (notesMissingIcons.length) {
-            throw new Error(
-              `Naxos note icons missing in rendered layout: ${notesMissingIcons.join(", ")}`,
-            );
-          }
-
-          const missingPremiumMotifs = await page.evaluate(
-            (expectedMotifs) =>
-              Object.values(expectedMotifs).filter(
-                (motif) =>
-                  !document.querySelector(
-                    `svg[data-dufynd-note-motif="${motif}"]`,
-                  ),
-              ),
+          const missingMotifs = await page.evaluate(
+            (expected) => Object.values(expected).filter((motif) =>
+              !document.querySelector(`svg[data-dufynd-note-motif="${motif}"]`),
+            ),
             naxosPremiumMotifs,
           );
-          if (missingPremiumMotifs.length) {
-            throw new Error(
-              `Naxos premium note motifs missing: ${missingPremiumMotifs.join(", ")}`,
-            );
+          if (missingMotifs.length) {
+            throw new Error(`Naxos note icons missing: ${missingMotifs.join(", ")}`);
           }
-
-          if ((await page.locator("model-viewer").count()) > 0) {
-            throw new Error(
-              "Naxos exposed a true 3D viewer without a verified model_3d asset",
-            );
+          if ((await page.locator(".dufynd-journey-gallery").count()) !== 0) {
+            throw new Error("unlicensed Naxos extra bottle gallery should be hidden");
           }
-
-          const disclosure = text.includes(
-            "Bild: stilisierte DUFYND-Inszenierung",
-          );
-          if (disclosure) {
-            throw new Error(
-              "Naxos verified truth hero is incorrectly disclosed as editorial",
-            );
+          if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) !== 0) {
+            throw new Error("unlicensed Naxos should not expose advanced verified-only visual claims");
           }
-
-          const expectedGalleryText = [
-            "Weitere Ansichten",
-            "Freisteller",
-            "DUFYND Inszenierung",
-            "Verifiziert",
-            "Redaktionell",
-          ];
-          const normalizedGalleryText = text.toLocaleLowerCase("de-DE");
-          const missingGalleryText = expectedGalleryText.filter(
-            (label) =>
-              !normalizedGalleryText.includes(
-                label.toLocaleLowerCase("de-DE"),
-              ),
-          );
-          if (missingGalleryText.length) {
-            throw new Error(
-              `Naxos multi-visual gallery is incomplete: ${missingGalleryText.join(", ")}`,
-            );
-          }
-
-          const backdropAsset = page.locator(
-            'img[src="/products/naxos-bottle-free-backdrop.webp"]',
-          );
-          if ((await backdropAsset.count()) < 1) {
-            throw new Error("Naxos bottle-free editorial backdrop is missing");
-          }
-
-          const legacyEditorial = page.locator(
-            'img[src="/products/pilot/xerjoff-naxos-editorial.png"]',
-          );
-          if ((await legacyEditorial.count()) > 0) {
-            throw new Error(
-              "Naxos legacy bottle-containing editorial is still rendered",
-            );
-          }
-
-          const explodedSection = page.locator(
-            '[aria-labelledby="dufynd-exploded-heading"]',
-          );
-          if ((await explodedSection.count()) !== 1) {
-            throw new Error(
-              "Naxos verified product is missing the exploded-notes view",
-            );
-          }
-
-          const explodedStageCollapsed = explodedSection.locator(
-            '#dufynd-exploded-stage[data-expanded="false"][aria-hidden="true"]',
-          );
-          if ((await explodedStageCollapsed.count()) !== 1) {
-            throw new Error(
-              "Naxos collapsed exploded-notes stage is not hidden from assistive technology",
-            );
-          }
-          if (viewport.width <= 480) {
-            const collapsedHeight = await explodedStageCollapsed.evaluate(
-              (element) => element.getBoundingClientRect().height,
-            );
-            if (collapsedHeight > 330) {
-              throw new Error(
-                `Naxos collapsed exploded-notes stage is too tall on mobile: ${collapsedHeight}px`,
-              );
-            }
-          }
-
-          const explodedButton = explodedSection.locator(
-            'button[aria-controls="dufynd-exploded-stage"]',
-          );
-          if ((await explodedButton.innerText()).trim() !== "Duftaufbau entfalten") {
-            throw new Error("Naxos exploded-notes toggle has an unexpected collapsed label");
-          }
-          if ((await explodedButton.getAttribute("aria-expanded")) !== "false") {
-            throw new Error(
-              "Naxos exploded-notes toggle does not expose collapsed state",
-            );
-          }
-          await explodedButton.click();
-          if ((await explodedButton.getAttribute("aria-expanded")) !== "true") {
-            throw new Error(
-              "Naxos exploded-notes toggle does not expose expanded state",
-            );
-          }
-
-          const explodedStage = explodedSection.locator(
-            '#dufynd-exploded-stage[data-expanded="true"]:not([aria-hidden="true"])',
-          );
-          if ((await explodedStage.count()) !== 1) {
-            throw new Error(
-              "Naxos exploded-notes interaction did not enter expanded state",
-            );
-          }
-          if (viewport.width <= 480) {
-            // The mobile min-height expands over 420 ms. Wait for the rendered
-            // state rather than sampling two frames into the transition.
-            await page.waitForFunction(
-              () =>
-                (document.querySelector("#dufynd-exploded-stage")?.getBoundingClientRect()
-                  .height ?? 0) >= 430,
-              null,
-              { timeout: 2000 },
-            );
-            const expandedHeight = await explodedStage.evaluate(
-              (element) => element.getBoundingClientRect().height,
-            );
-            if (expandedHeight < 430) {
-              throw new Error(
-                `Naxos expanded exploded-notes stage is too short on mobile: ${expandedHeight}px`,
-              );
-            }
-          }
-
-          const explodedNotes = explodedSection.locator(
-            "[data-dufynd-exploded-note]",
-          );
-          if ((await explodedNotes.count()) < 6) {
-            throw new Error(
-              "Naxos exploded-notes view has insufficient note layers",
-            );
+          const advanced = page.locator("details.dufynd-fragrance-advanced");
+          if ((await advanced.count()) !== 1 || await advanced.getAttribute("open") !== null) {
+            throw new Error("optional Naxos 3D notes studio is not collapsed by default");
           }
         }
 
-        if (
-          [
-            "absolu-aventus",
-            "bois-imperial",
-          ].includes(target.name)
-        ) {
-          const text = await page.locator("body").innerText();
-          if (!text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
-            throw new Error(
-              "unverified P0 visual is missing editorial disclosure",
-            );
+        if (["absolu-aventus", "bois-imperial"].includes(target.name)) {
+          const hero = page.locator(".dufynd-fragrance-hero");
+          if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
+            throw new Error("unapproved product hero failed the source-honest studio fallback");
           }
-
-          if (
-            (await page.locator(
-              '[aria-labelledby="dufynd-exploded-heading"]',
-            ).count()) > 0
-          ) {
-            throw new Error(
-              "unverified product exposed the verified-only exploded-notes view",
-            );
+          const text = await hero.innerText();
+          if (!text.includes("Originalfoto in Prüfung")) {
+            throw new Error("unapproved detail hero omitted exact-original rights hold");
+          }
+          if (text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
+            throw new Error("unapproved detail still presents an editorial bottle scene");
+          }
+          if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) > 0) {
+            throw new Error("unapproved bottle claims were exposed through the advanced 3D notes");
           }
         }
 
@@ -1100,13 +980,13 @@ try {
               "catalog is missing the immersive discovery hero",
             );
           }
-          const discoveryBottles = page.locator(
-            ".dufynd-catalog-discovery-bottle",
-          );
-          if ((await discoveryBottles.count()) !== 3) {
-            throw new Error(
-              `catalog discovery hero expected 3 fragrance spotlights, got ${await discoveryBottles.count()}`,
-            );
+          const heroBounds = await discoveryHero.boundingBox();
+          const searchBounds = await page.getByRole("searchbox").boundingBox();
+          if (!heroBounds || heroBounds.height > 350 || !searchBounds || searchBounds.y > 800) {
+            throw new Error("catalog search must remain accessible without an oversized photo hero");
+          }
+          if ((await page.locator(".dufynd-brand-directory summary").count()) !== 1) {
+            throw new Error("catalog is missing its accessible brand directory");
           }
           if (
             (await page.locator('a[href="#dufynd-katalog"]').count()) !== 1
@@ -1158,13 +1038,23 @@ try {
             );
           }
 
-          const naxosCardTruth = page.locator(
-            'a[href*="/duft/xerjoff-naxos"] img[src="/products/naxos-cutout-production.webp"]',
+          const heldCutout = page.locator(
+            '.dufynd-catalog-card img[src="/products/naxos-cutout-production.webp"]',
           );
-          if ((await naxosCardTruth.count()) < 1) {
-            throw new Error(
-              "catalog does not prioritize the Naxos verified cutout",
-            );
+          const illustrations = page.locator('.dufynd-catalog-card [data-scent-artwork]');
+          const sourceHolds = page.locator('.dufynd-catalog-card .dufynd-catalog-photo-pending');
+          if ((await heldCutout.count()) !== 0 || (await illustrations.count()) !== 0 || (await sourceHolds.count()) < 1) {
+            throw new Error("catalog must use registered originals or honest neutral studio source holds");
+          }
+          for (const hold of await sourceHolds.all()) {
+            // innerText omits labels in progressively collapsed/offscreen cards.
+            // Check the actual caption node's text independently of visibility,
+            // while responsive visibility and image provenance are tested above.
+            const caption = hold.locator(".dufynd-catalog-photo-pending-caption");
+            const copy = (await caption.textContent())?.trim() || "";
+            if ((await caption.count()) !== 1 || copy !== "Originalfoto in Prüfung") {
+              throw new Error("neutral studio image hold is missing its source-review disclosure");
+            }
           }
         }
 
@@ -1339,22 +1229,21 @@ try {
           }
 
           const spotlightTruth = page.locator(
-            'a.dufynd-hero-product img[src="/products/naxos-cutout-production.webp"]',
+            'a[data-dufynd-original-card] img[src="https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png"]',
           );
           if ((await spotlightTruth.count()) < 1) {
             throw new Error(
-              "homepage spotlight does not prioritize the Naxos verified cutout",
+              "homepage spotlight must use the approved original Libre 90 ml photo",
             );
           }
           const spotlightHref = await spotlightTruth.first().evaluate((image) => image.closest("a")?.href);
-          if (!spotlightHref || new URL(spotlightHref, baseUrl).pathname !== "/duft/xerjoff-naxos") {
-            throw new Error("homepage spotlight does not open Naxos");
+          if (!spotlightHref || new URL(spotlightHref, baseUrl).pathname !== "/duft/yves-saint-laurent-libre") {
+            throw new Error("homepage spotlight does not open Libre");
           }
 
           if ([390, 1440].includes(viewport.width)) {
             const productControl = page
-              .locator('[role="button"]:visible')
-              .filter({ hasText: "Details" })
+              .locator('a[data-dufynd-original-card]:visible')
               .first();
             if ((await productControl.count()) !== 1) {
               throw new Error(
@@ -1363,7 +1252,7 @@ try {
             }
 
             await productControl.focus();
-            await page.keyboard.press("Space");
+            await page.keyboard.press("Enter");
             await page.waitForURL(
               (current) => current.pathname.startsWith("/duft/"),
               { timeout: 5_000 },
@@ -1438,16 +1327,15 @@ try {
     await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).fill("Naxos");
     await sharePage.getByRole("button", { name: "Herren", exact: true }).click();
     await sharePage.getByRole("combobox", { name: "Marke" }).selectOption("Xerjoff");
-    await sharePage.getByRole("combobox", { name: "Bewertung" }).selectOption("8");
-    await sharePage.getByRole("combobox", { name: "Sortierung" }).selectOption("rating");
+    if (await sharePage.getByRole("combobox", { name: "Bewertung" }).count()) throw new Error("Unlicensed community rating filter is exposed");
+    await sharePage.getByRole("combobox", { name: "Sortierung" }).selectOption("brand");
     await sharePage.waitForFunction(() => {
       const url = new URL(window.location.href);
       return url.searchParams.get("q") === "Naxos" &&
         url.searchParams.get("profil") === "freshness" &&
         url.searchParams.get("zielgruppe") === "men" &&
         url.searchParams.get("marke") === "Xerjoff" &&
-        url.searchParams.get("bewertung") === "8" &&
-        url.searchParams.get("sort") === "rating" &&
+        url.searchParams.get("sort") === "brand" &&
         url.searchParams.get("utm_source") === "qa";
     });
     await sharePage.reload({ waitUntil: "networkidle" });
@@ -1455,8 +1343,7 @@ try {
         (await freshProfile.getAttribute("aria-pressed")) !== "true" ||
         (await sharePage.getByRole("button", { name: "Herren", exact: true }).getAttribute("aria-pressed")) !== "true" ||
         (await sharePage.getByRole("combobox", { name: "Marke" }).inputValue()) !== "Xerjoff" ||
-        (await sharePage.getByRole("combobox", { name: "Bewertung" }).inputValue()) !== "8" ||
-        (await sharePage.getByRole("combobox", { name: "Sortierung" }).inputValue()) !== "rating" ||
+        (await sharePage.getByRole("combobox", { name: "Sortierung" }).inputValue()) !== "brand" ||
         (await sharePage.getByRole("button", { name: "Filterlink kopieren" }).count()) !== 1) {
       throw new Error("catalog did not restore the shared filters and sort order");
     }
@@ -1687,14 +1574,17 @@ try {
   try {
     const imageFailurePage = await imageFailureContext.newPage();
     let failPrimaryImage = true;
-    let failBackdropImage = false;
-    await imageFailurePage.route("**/products/naxos-cutout-production.webp", (route) =>
-      failPrimaryImage ? route.abort("failed") : route.continue(),
+    const licensedUrl = "**/media/catalog/product/8/2/825869_3700578501998_051.png";
+    const tinyPng = Buffer.from(
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jv1sAAAAASUVORK5CYII=",
+      "base64",
     );
-    await imageFailurePage.route("**/products/naxos-bottle-free-backdrop.webp", (route) =>
-      failBackdropImage ? route.abort("failed") : route.continue(),
+    await imageFailurePage.route(licensedUrl, (route) =>
+      failPrimaryImage
+        ? route.abort("failed")
+        : route.fulfill({ contentType: "image/png", body: tinyPng }),
     );
-    const response = await imageFailurePage.goto(baseUrl + "/duft/xerjoff-naxos", {
+    const response = await imageFailurePage.goto(baseUrl + "/duft/parfums-de-marly-delina", {
       waitUntil: "domcontentloaded", timeout: 45_000,
     });
     if (!response?.ok()) throw new Error("image failure QA did not load");
@@ -1703,10 +1593,10 @@ try {
     await fallback.waitFor({ state: "visible", timeout: 10_000 });
     if (
       !(await fallback.innerText()).includes("Produktbild derzeit nicht verfügbar") ||
-      !(await fallback.innerText()).includes("Naxos") ||
-      (await hero.locator("img").count()) !== 0
+      !(await fallback.innerText()).includes("Delina") ||
+      (await hero.locator("img.dufynd-product-image").count()) !== 0
     ) {
-      throw new Error("failed product image did not preserve identity in a neutral fallback");
+      throw new Error("failed licensed original did not preserve identity in a neutral fallback");
     }
     if ((await imageFailurePage.locator("#angebote").count()) !== 1) {
       throw new Error("image failure removed the merchant offer section");
@@ -1722,21 +1612,12 @@ try {
     if ((await fallback.count()) !== 0) {
       throw new Error("successful image retry retained its error fallback");
     }
-    failBackdropImage = true;
-    await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
-    await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
-    await imageFailurePage.waitForFunction(() => {
-      const hero = document.querySelector(".dufynd-fragrance-hero");
-      const image = hero?.querySelector("img.dufynd-product-image");
-      return image?.complete && image.naturalWidth > 0 &&
-        !hero.querySelector("img.dufynd-product-backdrop");
-    }, undefined, { timeout: 10_000 });
-    if ((await fallback.count()) !== 0) {
-      throw new Error("decorative backdrop failure hid the valid product image");
+    if ((await hero.locator("img.dufynd-product-backdrop").count()) !== 0) {
+      throw new Error("premium studio hero reintroduced an unapproved decorative backdrop");
     }
     report.checks.push({ label: "product-image-error-fallback", status: "passed" });
     report.checks.push({ label: "product-image-error-recovery", status: "passed" });
-    report.checks.push({ label: "decorative-image-error-isolation", status: "passed" });
+    report.checks.push({ label: "product-studio-background-source-isolation", status: "passed" });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     report.failures.push({ label: "product-image-error-fallback", message });
@@ -1764,8 +1645,7 @@ try {
       });
     });
 
-    await merchantOfferTimeoutPage.route(
-      "**/api/analytics/events",
+    await merchantOfferTimeoutPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         await route.fulfill({
           status: 200,
@@ -1840,6 +1720,8 @@ try {
           String(response?.status() ?? "no response"),
       );
     }
+
+    await chooseMeasurement(merchantOfferTimeoutPage, "denied");
 
     await merchantOfferTimeoutPage
       .getByText("Händlerangebote werden geprüft …", { exact: true })
@@ -1937,7 +1819,7 @@ try {
       }
       await route.abort("failed");
     });
-    await sessionTimeoutPage.route("**/api/analytics/events", (route) =>
+    await sessionTimeoutPage.route((url) => url.pathname === "/api/analytics/events", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
     );
     await sessionTimeoutPage.route("**/api/merchant-offers/**", (route) =>
@@ -1965,6 +1847,7 @@ try {
       { waitUntil: "domcontentloaded", timeout: 45_000 },
     );
     if (!response?.ok()) throw new Error("session timeout QA did not load");
+    await chooseMeasurement(sessionTimeoutPage, "granted");
     const offers = sessionTimeoutPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 5_000 });
     await offers.locator("[data-clickout-preparing]").waitFor({
@@ -1974,13 +1857,16 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 12_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await clickout.getAttribute("href"));
+    const measurementSid = failOpenUrl.searchParams.get("sid");
     if (
-      failOpenUrl.searchParams.has("sid") ||
+      !/^[0-9a-f-]{36}$/i.test(measurementSid || "") ||
+      measurementSid === recoveredSessionId ||
+      failOpenUrl.searchParams.get("measurement") !== "granted-v1" ||
       failOpenUrl.searchParams.get("src") !== "tiktok" ||
       failOpenUrl.searchParams.get("cmp") !== "qa_session_timeout" ||
       failOpenUrl.searchParams.get("content") !== "qa_session_timeout_content"
     ) {
-      throw new Error("session timeout fail-open installed a stale session or lost attribution");
+      throw new Error("session timeout fail-open lost independent measurement or acquisition context");
     }
     if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
       throw new Error("stalled session kept a loaded merchant offer blocked");
@@ -1990,7 +1876,8 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
     const recoveredUrl = new URL(await clickout.getAttribute("href"));
     if (
-      recoveredUrl.searchParams.get("sid") !== recoveredSessionId ||
+      recoveredUrl.searchParams.get("sid") !== measurementSid ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_session_timeout"
     ) {
       throw new Error("session recovery did not restore first-party correlation");
@@ -2012,6 +1899,27 @@ try {
   });
   try {
     const attributionPage = await attributionClickoutContext.newPage();
+    const merchantClickEvents = [];
+    await attributionPage.route("**/api/session", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ session_id: "qa-live-click-functional-session-123456789" }),
+      });
+    });
+    await attributionPage.route((url) => url.pathname === "/api/analytics/events", async (route) => {
+      try {
+        const payload = route.request().postDataJSON();
+        if (payload?.event === "merchant_clickout") merchantClickEvents.push(payload);
+      } catch {
+        // A malformed analytics request will fail the assertions below.
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true }),
+      });
+    });
     await attributionPage.route(
       "**/api/merchant-offers/**",
       async (route) => {
@@ -2057,6 +1965,7 @@ try {
       );
     }
 
+    await chooseMeasurement(attributionPage, "granted");
     const offers = attributionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
@@ -2088,8 +1997,38 @@ try {
       throw new Error("merchant clickout no longer opens in a separate browsing context");
     }
 
+    await clickout.evaluate((node) => {
+      node.addEventListener("click", (event) => event.preventDefault(), {
+        capture: true,
+        once: true,
+      });
+    });
+    await clickout.click();
+    for (let attempt = 0; attempt < 100 && merchantClickEvents.length === 0; attempt += 1) {
+      await attributionPage.waitForTimeout(25);
+    }
+    if (merchantClickEvents.length !== 1) {
+      throw new Error("live-consent merchant click did not emit exactly one browser analytics event");
+    }
+    const merchantClick = merchantClickEvents[0];
+    if (
+      merchantClick.product_id !== "SC-RABANNE-1-MILLION-EDT-100" ||
+      merchantClick.offer_id !== "qa-attribution-offer" ||
+      merchantClick.source !== "qa-merchant" ||
+      merchantClick.surface !== "merchant_offer" ||
+      merchantClick.acquisition_source !== "tiktok" ||
+      merchantClick.campaign_id !== "qa_campaign" ||
+      merchantClick.content_id !== "qa_content"
+    ) {
+      throw new Error("live-consent merchant click analytics lost offer or acquisition context");
+    }
+
     report.checks.push({
       label: "merchant-clickout-attribution-link",
+      status: "passed",
+    });
+    report.checks.push({
+      label: "merchant-clickout-live-consent-event",
       status: "passed",
     });
   } catch (error) {
@@ -2127,8 +2066,7 @@ try {
       });
     });
 
-    await offerImpressionPage.route(
-      "**/api/analytics/events",
+    await offerImpressionPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         try {
           const payload = route.request().postDataJSON();
@@ -2192,6 +2130,7 @@ try {
       );
     }
 
+    await chooseMeasurement(offerImpressionPage, "granted");
     const offers = offerImpressionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
     await offers.scrollIntoViewIfNeeded();
@@ -2304,6 +2243,8 @@ try {
       );
     }
 
+    await chooseMeasurement(acquisitionNavigationPage, "granted");
+
     await acquisitionNavigationPage
       .getByRole("link", { name: "Katalog entdecken", exact: true })
       .click();
@@ -2394,8 +2335,7 @@ try {
       });
     });
 
-    await clickoutSessionPage.route(
-      "**/api/analytics/events",
+    await clickoutSessionPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         await route.fulfill({
           status: 200,
@@ -2451,6 +2391,7 @@ try {
       );
     }
 
+    await chooseMeasurement(clickoutSessionPage, "granted");
     const offers = clickoutSessionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
@@ -2468,17 +2409,14 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
 
     await clickoutSessionPage.waitForFunction(
-      ({ selector, sessionId }) => {
+      (selector) => {
         const link = document.querySelector(selector);
         if (!(link instanceof HTMLAnchorElement)) return false;
         const url = new URL(link.href);
-        return url.searchParams.get("sid") === sessionId;
+        return /^[0-9a-f-]{36}$/i.test(url.searchParams.get("sid") || "") &&
+          url.searchParams.get("measurement") === "granted-v1";
       },
-      {
-        selector:
-          '[data-merchant-offers] a[href*="/api/clickout/"]',
-        sessionId: expectedSessionId,
-      },
+      '[data-merchant-offers] a[href*="/api/clickout/"]',
       { timeout: 10_000 },
     );
 
@@ -2494,7 +2432,9 @@ try {
       clickoutUrl.searchParams.get("src") !== "tiktok" ||
       clickoutUrl.searchParams.get("cmp") !== "qa_sid_campaign" ||
       clickoutUrl.searchParams.get("content") !== "qa_sid_content" ||
-      clickoutUrl.searchParams.get("sid") !== expectedSessionId
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("sid") === expectedSessionId ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant clickout did not correlate acquisition and analytics session context",
@@ -2574,6 +2514,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerSessionPage, "granted");
     const discovery = partnerSessionPage.getByRole("region", {
       name: "Partnerhändler entdecken",
     });
@@ -2608,7 +2549,9 @@ try {
       clickoutUrl.searchParams.get("src") !== "instagram" ||
       clickoutUrl.searchParams.get("cmp") !== "qa_partner_campaign" ||
       clickoutUrl.searchParams.get("content") !== "qa_partner_content" ||
-      clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("sid") === expectedPartnerSessionId ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant discovery clickout did not correlate acquisition and storefront session context",
@@ -2686,6 +2629,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerSessionFailurePage, "granted");
     const discovery = partnerSessionFailurePage.getByRole("region", {
       name: "Partnerhändler entdecken",
     });
@@ -2721,7 +2665,8 @@ try {
       clickoutUrl.searchParams.get("cmp") !== "qa_partner_failure" ||
       clickoutUrl.searchParams.get("content") !==
         "qa_partner_failure_content" ||
-      clickoutUrl.searchParams.has("sid")
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant discovery session-failure fallback lost attribution or emitted an invalid sid",
@@ -2952,6 +2897,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerTimeoutRecoveryPage, "granted");
     const loading = partnerTimeoutRecoveryPage.locator(
       "[data-merchant-discovery-loading]",
     );
@@ -2988,8 +2934,11 @@ try {
       name: /QA Partner Timeout Recovery öffnen/,
     });
     const recoveredUrl = new URL(await recoveredPartner.getAttribute("href"));
+    const partnerMeasurementSid = recoveredUrl.searchParams.get("sid");
     if (
-      recoveredUrl.searchParams.get("sid") !== "qa-partner-timeout-recovery-session-1234567890" ||
+      !/^[0-9a-f-]{36}$/i.test(partnerMeasurementSid || "") ||
+      partnerMeasurementSid === "qa-partner-timeout-recovery-session-1234567890" ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("src") !== "instagram" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_partner_timeout_recovery"
     ) {
@@ -3072,7 +3021,7 @@ try {
       }
       await route.abort("failed");
     });
-    await homeSessionTimeoutPage.route("**/api/analytics/events", (route) =>
+    await homeSessionTimeoutPage.route((url) => url.pathname === "/api/analytics/events", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
     );
     await homeSessionTimeoutPage.route("**/api/merchant-partners", (route) =>
@@ -3094,6 +3043,7 @@ try {
       { waitUntil: "domcontentloaded", timeout: 45_000 },
     );
     if (!response?.ok()) throw new Error("homepage session timeout QA did not load");
+    await chooseMeasurement(homeSessionTimeoutPage, "granted");
     await homeSessionTimeoutPage.locator("[data-partner-clickout-preparing]").waitFor({
       state: "visible", timeout: 5_000,
     });
@@ -3103,8 +3053,11 @@ try {
     await partnerLink.waitFor({ state: "visible", timeout: 12_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await partnerLink.getAttribute("href"));
+    const homeMeasurementSid = failOpenUrl.searchParams.get("sid");
     if (
-      failOpenUrl.searchParams.has("sid") ||
+      !/^[0-9a-f-]{36}$/i.test(homeMeasurementSid || "") ||
+      homeMeasurementSid === recoveredHomeSessionId ||
+      failOpenUrl.searchParams.get("measurement") !== "granted-v1" ||
       failOpenUrl.searchParams.get("src") !== "instagram" ||
       failOpenUrl.searchParams.get("cmp") !== "qa_home_session_timeout" ||
       failOpenUrl.searchParams.get("content") !== "qa_home_session_content" ||
@@ -3117,7 +3070,8 @@ try {
     await partnerLink.waitFor({ state: "visible", timeout: 10_000 });
     const recoveredUrl = new URL(await partnerLink.getAttribute("href"));
     if (
-      recoveredUrl.searchParams.get("sid") !== recoveredHomeSessionId ||
+      recoveredUrl.searchParams.get("sid") !== homeMeasurementSid ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_home_session_timeout"
     ) {
       throw new Error("homepage session recovery lost first-party correlation");
@@ -3151,6 +3105,15 @@ try {
           String(response?.status() ?? "no response"),
       );
     }
+
+    await chooseMeasurement(productDetailAttributionPage, "granted");
+
+    // SITE-13 keeps secondary purchase-page actions in a native disclosure.
+    // Expand it like a visitor before inspecting its visible comparison link.
+    await productDetailAttributionPage
+      .locator("details > summary")
+      .filter({ hasText: "Merken, teilen & vergleichen" })
+      .click();
 
     const candidates = [
       productDetailAttributionPage.getByRole("link", { name: "Düfte" }),
@@ -3199,6 +3162,7 @@ try {
       { waitUntil: "networkidle" },
     );
     if (!response?.ok()) throw new Error("free comparison did not load");
+    await chooseMeasurement(comparisonPage, "granted");
     await comparisonPage.getByRole("combobox", { name: "Duft 1" })
       .selectOption("SC-XERJOFF-NAXOS-100");
     await comparisonPage.getByRole("combobox", { name: "Duft 2" })
@@ -3311,6 +3275,7 @@ try {
       );
     }
 
+    await chooseMeasurement(comparisonDetailPage, "granted");
     const detailProductHref = await comparisonDetailPage
       .locator('[data-dufynd-comparison-side="left"] a')
       .first()

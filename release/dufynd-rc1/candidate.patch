@@ -1,0 +1,370 @@
+diff --git a/examples/retail/storefront-web/app/duft/[slug]/first-money.module.css b/examples/retail/storefront-web/app/duft/[slug]/first-money.module.css
+new file mode 100644
+index 00000000..6008f49a
+--- /dev/null
++++ b/examples/retail/storefront-web/app/duft/[slug]/first-money.module.css
+@@ -0,0 +1,60 @@
++/* RC1: applied only to the existing Rabanne EDT 100 ml route. */
++.landing { background: #f6f4ee; }
++.landing :global(.dufynd-fragrance-hero) {
++  border: 1px solid #dddcd4 !important;
++  background: #fffefa !important;
++  box-shadow: 0 22px 48px -40px #35483d70 !important;
++}
++.landing :global(.dufynd-fragrance-hero-grid) { min-height: 0; }
++.landing :global(.dufynd-fragrance-panel-section) {
++  --ink: #263e30 !important; --ink-soft: #54675b !important;
++  --surface: #fffefa !important; --well: #eeefe9 !important;
++  --line: #d9ded5 !important; --accent-ink: #365747 !important;
++  --accent-strong: #345943 !important;
++  background: #fffefa !important; color: #263e30 !important;
++  border-color: #e1e1d7 !important; backdrop-filter: none !important;
++}
++.landing :global(.dufynd-fragrance-identity),
++.landing :global(.dufynd-fragrance-hero-copy) { margin: 0; box-shadow: none; }
++.landing :global(.dufynd-fragrance-stage-shell) {
++  display: flex; align-items: center; min-height: 48px !important;
++  max-height: none !important; padding: 0 20px;
++  background: #fffefa !important; border: 0;
++}
++.photoHold {
++  position: relative; margin: 0; width: 100%; padding: 8px 10px;
++  border: 1px solid #e5e5dd; border-radius: 9px;
++  color: #435a48; font-size: 11px; line-height: 1.5;
++}
++.landing :global(.dufynd-fragrance-hero-atmosphere),
++.landing :global(.dufynd-fragrance-hero-orbit),
++.landing :global(.dufynd-fragrance-scene-beam),
++.landing :global(.dufynd-fragrance-scene-mist),
++.landing :global(.dufynd-fragrance-scene-particles),
++.landing :global(.dufynd-fragrance-stage-shell)::before,
++.landing :global(.dufynd-fragrance-stage-shell)::after,
++.landing :global(.dufynd-fragrance-journey)::before,
++.landing :global(.dufynd-fragrance-journey-axis),
++.landing :global(.dufynd-fragrance-chapter-index),
++.landing :global(.dufynd-fragrance-chapter--profile)::after { display: none !important; }
++.landing :global(.dufynd-fragrance-journey) { margin-top: 8px; isolation: auto; }
++.landing :global(.dufynd-fragrance-chapter) { padding-left: 0 !important; }
++.landing :global(.dufynd-fragrance-hero-copy) :is(a, button):focus-visible {
++  outline: 3px solid #aec5b6; outline-offset: 2px;
++}
++@media (min-width: 640px) and (max-width: 1023px) {
++  .landing :global(.dufynd-fragrance-stage-shell) { padding-inline: 28px; }
++}
++@media (min-width: 1024px) {
++  .landing :global(.dufynd-fragrance-hero-grid) { grid-template-columns: 1fr 1fr; }
++  .landing :global(.dufynd-fragrance-identity) {
++    grid-column: 1; grid-row: 1; padding: 32px 32px 16px; border-radius: 0;
++  }
++  .landing :global(.dufynd-fragrance-stage-shell) {
++    grid-column: 1; grid-row: 2; padding: 0 32px 28px;
++  }
++  .landing :global(.dufynd-fragrance-hero-copy) {
++    grid-column: 2; grid-row: 1 / span 2; padding: 32px;
++    border-radius: 0; border-left: 1px solid #e1e1d7;
++  }
++}
+diff --git a/examples/retail/storefront-web/app/duft/[slug]/page.tsx b/examples/retail/storefront-web/app/duft/[slug]/page.tsx
+index c29ebb02..a467f327 100644
+--- a/examples/retail/storefront-web/app/duft/[slug]/page.tsx
++++ b/examples/retail/storefront-web/app/duft/[slug]/page.tsx
+@@ -1,4 +1,5 @@
+ import type { Metadata } from "next";
++import styles from "./first-money.module.css";
+ import { notFound } from "next/navigation";
+ 
+ import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
+@@ -222,7 +223,7 @@ export async function generateMetadata({
+     `${fragrance.brand} ${fragrance.name} – ${fragrance.concentration} ${fragrance.volume_ml} ml`;
+   const description = descriptionFor(fragrance);
+   const canonical = `/duft/${fragrance.slug}`;
+-  const shareImage = isVerifiedProductTruthVisual(fragrance.preferred_visual)
++  const shareImage = fragrance.product_id !== "SC-RABANNE-1-MILLION-EDT-100" && isVerifiedProductTruthVisual(fragrance.preferred_visual)
+     ? fragrance.preferred_visual?.url
+     : null;
+ 
+@@ -256,14 +257,16 @@ export default async function FragrancePage({
+ 
+   if (!fragrance) notFound();
+ 
++  // This release has no authorized Rabanne photo. Keep all bottle surfaces closed.
++  const firstMoneyLanding = fragrance.product_id === "SC-RABANNE-1-MILLION-EDT-100";
+   const checkedAt = formatCheckedAt(
+     fragrance.market.checked_at,
+   );
+   const productTruthVisual = fragrance.preferred_visual;
+   const productTruthIsVerified =
+-    isVerifiedProductTruthVisual(productTruthVisual);
++    !firstMoneyLanding && isVerifiedProductTruthVisual(productTruthVisual);
+   const heroVisual =
+-    fragrance.presentation_visual || productTruthVisual;
++    firstMoneyLanding ? null : fragrance.presentation_visual || productTruthVisual;
+   const heroIsProductTruth =
+     isVerifiedProductTruthVisual(heroVisual);
+   const visualTheme = visualWorldFor(fragrance);
+@@ -303,7 +306,7 @@ export default async function FragrancePage({
+       .filter((asset) => asset.role !== "model_3d")
+       .map((asset) => asset.url),
+   ).size;
+-  const hasVisualGallery = visualGalleryAssetCount >= 2;
++  const hasVisualGallery = !firstMoneyLanding && visualGalleryAssetCount >= 2;
+   const noteCount = new Set(allNotes).size;
+   const canonicalUrl = `${SITE_URL}/duft/${fragrance.slug}`;
+   const breadcrumbStructuredData = {
+@@ -372,7 +375,7 @@ export default async function FragrancePage({
+   ).replaceAll("<", "\\u003c");
+ 
+   return (
+-    <main className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
++    <main data-first-money-landing={firstMoneyLanding || undefined} className={`${firstMoneyLanding ? styles.landing : ""} dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0`}>
+       <script
+         type="application/ld+json"
+         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
+@@ -438,6 +441,7 @@ export default async function FragrancePage({
+ 
+         <section
+           data-product-id={fragrance.product_id}
++          data-dufynd-photo-hold={firstMoneyLanding || undefined}
+           className={`dufynd-fragrance-hero dufynd-fragrance-hero--${visualTheme} relative overflow-hidden rounded-[30px] border border-(--line) bg-(--card) shadow-(--shadow)`}
+         >
+           <div
+@@ -491,13 +495,13 @@ export default async function FragrancePage({
+                   Duftcharakter: {fragrance.accords.slice(0, 3).map(accordLabel).join(" · ")}
+                 </p>
+               ) : null}
+-              {fragrance.market.reference_price_eur != null ? (
++              {!firstMoneyLanding && fragrance.market.reference_price_eur != null ? (
+                 <p className="mt-2 text-[11px] leading-4 text-(--ink-soft)">
+                   Preisreferenz {formatPrice(fragrance.market.reference_price_eur)}
+                   {checkedAt ? ` · Stand ${checkedAt}` : ""} · aktuelle Angebote separat prüfen
+                 </p>
+               ) : null}
+-              {fragrance.community.rating_10 != null ? (
++              {!firstMoneyLanding && fragrance.community.rating_10 != null ? (
+                 <p className="mt-2 text-[11px] leading-4 text-(--ink-soft)">
+                   Community {fragrance.community.rating_10.toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 })}/10
+                   {fragrance.community.rating_count
+@@ -512,6 +516,9 @@ export default async function FragrancePage({
+               ) : null}
+             </div>
+             <div className="dufynd-fragrance-stage-shell relative min-h-[304px] overflow-hidden sm:min-h-[380px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[560px]">
++              {firstMoneyLanding ? (
++                <p className={styles.photoHold}>Originalfoto in Prüfung · Duftprofil bleibt verfügbar</p>
++              ) : (<>
+               {fragrance.model_3d_url ? (
+                 <FragranceModel3D
+                   modelUrl={fragrance.model_3d_url}
+@@ -581,6 +588,7 @@ export default async function FragrancePage({
+                 <span>{fragrance.brand}</span>
+                 <strong>{fragrance.name}</strong>
+               </div>
++              </>)}
+             </div>
+ 
+             <div className="dufynd-fragrance-hero-copy dufynd-fragrance-panel-section dufynd-fragrance-panel-section--copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
+@@ -589,7 +597,7 @@ export default async function FragrancePage({
+                   id="dufynd-hero-offer-cta"
+                   productId={fragrance.product_id}
+                   source="hero_offer_cta"
+-                  className="rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]"
++                  className={`${firstMoneyLanding ? "inline-flex min-h-11 items-center justify-center " : ""}rounded-xl bg-(--accent-strong) px-3 py-2.5 text-center text-[12px] font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:px-4 sm:text-[13px]`}
+                 >
+                   Angebote prüfen
+                 </OfferSectionLink>
+@@ -620,6 +628,7 @@ export default async function FragrancePage({
+                 </AcquisitionInternalLink>
+               </div>
+ 
++              {!firstMoneyLanding && <>
+               <div className="mt-5 grid grid-cols-3 overflow-hidden rounded-2xl border border-(--line) bg-(--surface)">
+                 <div className="p-3 sm:p-4">
+                   <div className="text-[10.5px] text-(--ink-soft)">
+@@ -700,6 +709,7 @@ export default async function FragrancePage({
+                 <span aria-hidden>·</span>
+                 <span>Community-Werte, keine Laborwerte</span>
+               </div>
++              </>}
+ 
+               <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
+                 DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler.
+@@ -766,6 +776,7 @@ export default async function FragrancePage({
+               01
+             </span>
+             <FragranceOffers
++              focusedLanding={firstMoneyLanding}
+               productId={fragrance.product_id}
+               alternativesHref={related.length ? "#alternativen" : undefined}
+             />
+@@ -1102,7 +1113,7 @@ export default async function FragrancePage({
+           </div>
+         </section>
+ 
+-        <section className="mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[11px] leading-5 text-(--ink-soft)">
++        {!firstMoneyLanding && <section className="mt-5 rounded-2xl border border-(--line) bg-(--well)/45 p-4 text-[11px] leading-5 text-(--ink-soft)">
+           <strong className="text-(--ink)">
+             Preisreferenz:
+           </strong>{" "}
+@@ -1112,7 +1123,7 @@ export default async function FragrancePage({
+           {checkedAt ? ` · Stand ${checkedAt}` : ""}. Aktuelle
+           kaufbare Angebote werden darüber separat geprüft und können
+           von dieser Marktpreis-Referenz abweichen.
+-        </section>
++        </section>}
+ 
+         <footer className="mt-8 flex flex-wrap gap-x-4 gap-y-2 border-t border-(--line) py-6 text-[11px] text-(--ink-soft)">
+           <AcquisitionInternalLink href="/transparenz" className="hover:underline">
+diff --git a/examples/retail/storefront-web/components/FragranceOffers.tsx b/examples/retail/storefront-web/components/FragranceOffers.tsx
+index e5c5d557..282fe635 100644
+--- a/examples/retail/storefront-web/components/FragranceOffers.tsx
++++ b/examples/retail/storefront-web/components/FragranceOffers.tsx
+@@ -76,6 +76,7 @@ export default function FragranceOffers({
+   compact = false,
+   analyticsSurface = "fragrance_detail",
+   alternativesHref,
++  focusedLanding = false,
+ }: {
+   productId: string;
+   heading?: string;
+@@ -83,6 +84,8 @@ export default function FragranceOffers({
+   compact?: boolean;
+   analyticsSurface?: string;
+   alternativesHref?: string;
++  /** Compact commerce presentation for the existing first-money product page. */
++  focusedLanding?: boolean;
+ }) {
+   const [payload, setPayload] = useState<
+     MerchantOffersPayload | null | undefined
+@@ -191,6 +194,7 @@ export default function FragranceOffers({
+       <section
+         className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
+         aria-busy="true"
++        data-offer-state="loading"
+       >
+         <div className="text-[13px] font-semibold text-(--ink)">
+           Händlerangebote werden geprüft …
+@@ -201,9 +205,9 @@ export default function FragranceOffers({
+ 
+   if (loadError) {
+     return (
+-      <section className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
++      <section data-offer-state="error" className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
+         <h2 className="text-[17px] font-semibold text-(--ink)">
+-          {heading}
++          {focusedLanding ? "Angebote gerade nicht erreichbar" : heading}
+         </h2>
+         <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">
+           Die Händlerangebote konnten gerade nicht geladen werden.
+@@ -214,11 +218,11 @@ export default function FragranceOffers({
+           onClick={() =>
+             setReloadToken((value) => value + 1)
+           }
+-          className="mt-3 rounded-xl border border-(--line) bg-(--surface) px-3 py-2 text-[12px] font-semibold text-(--ink) transition hover:border-(--ink)"
++          className={`mt-3 rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold transition hover:border-(--ink) ${focusedLanding ? "min-h-11 bg-(--accent-strong) text-white" : "bg-(--surface) text-(--ink)"}`}
+         >
+           Angebote erneut prüfen
+         </button>
+-        <OfficialProductLink productId={productId} />
++        {!focusedLanding && <OfficialProductLink productId={productId} />}
+         <OfferRecoveryLinks alternativesHref={alternativesHref} />
+       </section>
+     );
+@@ -226,9 +230,9 @@ export default function FragranceOffers({
+ 
+   if (!payload || payload.offers.length === 0) {
+     return (
+-      <section className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
++      <section data-offer-state="empty" className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
+         <h2 className="text-[17px] font-semibold text-(--ink)">
+-          {heading}
++          {focusedLanding ? "Zurzeit kein aktuelles Angebot" : heading}
+         </h2>
+         <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">
+           Für diesen Duft ist aktuell kein ausreichend aktuelles,
+@@ -236,7 +240,7 @@ export default function FragranceOffers({
+           erst ein Angebot an, wenn Preis und Verfügbarkeit die
+           Aktualitätsprüfung bestehen.
+         </p>
+-        <OfficialProductLink productId={productId} />
++        {!focusedLanding && <OfficialProductLink productId={productId} />}
+         <OfferRecoveryLinks alternativesHref={alternativesHref} />
+       </section>
+     );
+@@ -253,6 +257,7 @@ export default function FragranceOffers({
+       ref={offerSectionRef}
+       className={`dufynd-journey-offers rounded-[24px] border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5 sm:p-6"} shadow-(--shadow)`}
+       data-merchant-offers
++      data-offer-state="available"
+     >
+       <div className="flex flex-wrap items-end justify-between gap-2">
+         <div>
+@@ -265,7 +270,9 @@ export default function FragranceOffers({
+             {partnerOfferCount ? ` ${partnerOfferCount} Partner${partnerOfferCount === 1 ? "angebot" : "angebote"}` : ""}
+             {partnerOfferCount && externalOfferCount ? " · " : ""}
+             {externalOfferCount ? ` ${externalOfferCount} weitere ${externalOfferCount === 1 ? "Option" : "Optionen"}` : ""}
+-            {" · "}Sortiert nach bekanntem Gesamtpreis und Aktualität. Bei Preisgleichheit und vergleichbarer Aktualität können Partnerlink und Provision entscheiden.
++            {focusedLanding && payload.offers.length === 1
++              ? " · Kauf direkt beim Händler."
++              : " · Sortiert nach bekanntem Gesamtpreis und Aktualität. Bei Preisgleichheit und vergleichbarer Aktualität können Partnerlink und Provision entscheiden."}
+           </p>
+         </div>
+       </div>
+@@ -275,6 +282,7 @@ export default function FragranceOffers({
+           const best = offer.offer_id === payload.best_offer_id;
+           const displayedPrice =
+             offer.total_price ?? offer.price;
++          const showPriceBreakdown = focusedLanding && offer.total_price != null && offer.shipping_cost != null;
+ 
+           return (
+             <div
+@@ -290,11 +298,12 @@ export default function FragranceOffers({
+                   <span className="font-semibold text-(--ink)">
+                     {offer.merchant_name}
+                   </span>
+-                  {best ? (
++                  {best && (!focusedLanding || payload.offers.length > 1) ? (
+                     <span className="rounded-full bg-(--ink) px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.08em] text-(--surface)">
+                       {offer.total_price != null
+                         ? "Bester Gesamtpreis"
+                         : "Beste verfügbare Option"}
++                      {focusedLanding ? " · hier gelistet" : ""}
+                     </span>
+                   ) : null}
+                   <span
+@@ -317,8 +326,13 @@ export default function FragranceOffers({
+                       offer.currency,
+                     )}
+                   </span>
+-                  {offer.shipping_label ? (
+-                    <span className="text-[11px] text-(--ok)">
++                  {focusedLanding && offer.total_price != null ? (
++                    <span data-offer-price-basis className="text-[11px] text-(--ink-soft)">
++                      Gesamtpreis inkl. Versand
++                    </span>
++                  ) : null}
++                  {!showPriceBreakdown && offer.shipping_label ? (
++                    <span className={`text-[11px] ${focusedLanding ? "text-(--ink-soft)" : "text-(--ok)"}`}>
+                       {offer.shipping_label}
+                     </span>
+                   ) : offer.total_price == null ? (
+@@ -333,6 +347,12 @@ export default function FragranceOffers({
+                   ) : null}
+                 </div>
+ 
++                {showPriceBreakdown ? (
++                  <p data-offer-breakdown className="mt-1 text-[11px] text-(--ink-soft)">
++                    Artikel {formatMoney(offer.price, offer.currency)} · {offer.shipping_label || `Versand ${formatMoney(offer.shipping_cost!, offer.currency)}`}
++                  </p>
++                ) : null}
++
+                 {formatUpdatedAt(offer.last_updated_at) ? (
+                   <div className="mt-1 text-[10.5px] text-(--ink-soft)">
+                     Preis & Bestand geprüft:{" "}
+@@ -354,7 +374,7 @@ export default function FragranceOffers({
+                       ? "sponsored noopener noreferrer"
+                       : "noopener noreferrer"
+                   }
+-                  className={`w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
++                  className={`${focusedLanding ? "inline-flex min-h-11 items-center justify-center " : ""}w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
+                     best
+                       ? "bg-(--accent-strong) shadow-sm hover:brightness-95"
+                       : "bg-(--ink) hover:opacity-90"

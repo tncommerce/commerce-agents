@@ -1,0 +1,140 @@
+.section {
+  margin: 24px 0;
+  padding: 28px;
+  border: 1px solid #d5ded0;
+  border-radius: 24px;
+  background: #f0f3eb;
+  color: #2d4434;
+}
+.heading p {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  color: #52664d;
+}
+.heading h2 {
+  margin: 8px 0;
+  font-size: 30px;
+  font-weight: 550;
+  letter-spacing: -0.04em;
+}
+.heading span {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #536550;
+}
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: center;
+  margin-top: 20px;
+}
+.stage {
+  min-width: 0;
+  border-radius: 16px;
+  background: #fafbf6;
+  overflow: hidden;
+}
+.canvas,
+.static {
+  display: block;
+  width: 100%;
+  height: 270px;
+  touch-action: pan-y;
+}
+.canvas {
+  cursor: grab;
+}
+.canvas:active {
+  cursor: grabbing;
+}
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px 16px;
+  min-height: 68px;
+}
+.controls button,
+.tabs button {
+  min-height: 44px;
+  border: 1px solid #bfceba;
+  border-radius: 8px;
+  background: #fffef8;
+  color: #365232;
+  padding: 9px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.controls span {
+  font-size: 11px;
+  color: #5f705a;
+}
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+.tabs button[aria-pressed="true"] {
+  background: #34583b;
+  border-color: #34583b;
+  color: #fff;
+}
+.tabs button:disabled {
+  opacity: 0.45;
+}
+.section button:focus-visible {
+  outline: 3px solid #557c4b;
+  outline-offset: 3px;
+}
+.detail h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+.detail p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #536550;
+  margin: 6px 0 14px;
+}
+.detail ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+.detail li {
+  background: #fffef9;
+  border: 1px solid #d7dfcf;
+  padding: 7px 11px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+.detail small {
+  display: block;
+  margin-top: 20px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: #61705c;
+}
+@media (max-width: 639px) {
+  .section {
+    padding: 20px;
+  }
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .heading h2 {
+    font-size: 26px;
+  }
+  .canvas,
+  .static {
+    height: 235px;
+  }
+}

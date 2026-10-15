@@ -5,8 +5,7 @@ from pathlib import Path
 CATALOG_ADAPTER = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts")
 
 SURFACES = [
-    Path("examples/retail/storefront-web/app/duft/[slug]/page.tsx"),
-    Path("examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"),
+    Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx"),
     Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx"),
     Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx"),
     Path("examples/retail/storefront-web/components/ProductTile.tsx"),
@@ -28,14 +27,48 @@ def test_preferred_visual_priority_is_product_truth_first() -> None:
     assert 'visual.role === "cutout"' in source
 
 
-def test_customer_facing_product_surfaces_use_preferred_visual() -> None:
-    missing = [
-        str(path) for path in SURFACES if "preferred_visual" not in path.read_text(encoding="utf-8")
+def test_customer_facing_image_cards_use_exact_original_registry() -> None:
+    # The owner requested a single neutral studio look, not unlicensed scene art.
+    photo_cards = [
+        Path("examples/retail/storefront-web/components/FragranceComparisonPicker.tsx"),
+        Path("examples/retail/storefront-web/components/FragranceLibraryHub.tsx"),
+        Path("examples/retail/storefront-web/app/vergleich/[pair]/page.tsx"),
     ]
-
-    assert not missing, "DUFYND surfaces bypassed the structured preferred visual: " + ", ".join(
-        missing
+    for path in photo_cards:
+        source = path.read_text(encoding="utf-8")
+        assert "originalPhotoFor(fragrance)" in source, str(path)
+        assert "fragrance.presentation_visual || productTruthVisual" not in source, str(path)
+    # Commerce hero and product-tile images must come from the exact original
+    # registry; homepage audience discovery remains distinct from product truth.
+    for path in (
+        Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx"),
+        Path("examples/retail/storefront-web/components/ProductTile.tsx"),
+    ):
+        assert "originalPhotoFor(fragrance)" in path.read_text(encoding="utf-8"), str(path)
+    home = Path("examples/retail/storefront-web/components/views/HomeView.tsx")
+    assert "<AtelierSelection />" in home.read_text(encoding="utf-8")
+    selection = Path("examples/retail/storefront-web/components/AtelierSelection.tsx").read_text(
+        encoding="utf-8"
     )
+    assert "originalPhotoFor(p)" in selection
+    assert "preferred_visual" not in selection
+    assert "ImageAttribution visual={visual}" in selection
+
+
+def test_catalog_requires_original_photo_or_honest_studio_source_hold() -> None:
+    source = Path(
+        "examples/retail/storefront-web/components/FragranceCatalogBrowser.tsx"
+    ).read_text(encoding="utf-8")
+
+    # The catalogue deliberately excludes editorial bottle scenes, even where
+    # the legacy preferred-visual resolver would have accepted them.
+    assert "originalPhotoFor(fragrance)" in source
+    assert "<ScentArtwork" not in source
+    assert "dufynd-catalog-photo-pending" in source
+    assert "Originalfoto in Prüfung" in source
+    assert 'data-dufynd-visual-state="missing"' in source
+    assert "fragrance.preferred_visual" not in source
+    assert "fragrance.presentation_visual" not in source
 
 
 def test_only_verified_primary_or_cutout_count_as_product_truth() -> None:
