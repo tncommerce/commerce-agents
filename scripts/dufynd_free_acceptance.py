@@ -65,7 +65,8 @@ STAGES = {
         (
             "async def merchant_clickout",
             "sanitize_attribution_identifier(sid)",
-            "RedirectResponse(url=target",
+            "RedirectResponse(",
+            "url=target,",
         ),
     ),
     "tracking_url": (
@@ -83,6 +84,14 @@ STAGES = {
     "tests": (
         "examples/retail/api/tests/test_clickout_analytics_correlation.py",
         ("sid", "campaign_id"),
+    ),
+    "client_consent": (
+        PREFIX + "lib/analytics.ts",
+        ("measurementAllowed()", "measurementStillAllowed(epoch)", "controller.abort()"),
+    ),
+    "server_consent": (
+        "examples/retail/api/main.py",
+        ('if measurement != "granted-v1":', '"recorded": False', '"storage": "disabled"'),
     ),
 }
 CONTENT_ESSENTIAL = {
@@ -229,8 +238,12 @@ def maker_fixture(task: dict, packet: dict) -> str:
     candidates = []
     if task["domain"] == "research":
         for _, (path, needles) in STAGES.items():
-            source = next(s for s in packet["repository_evidence"] if s["path"] == path)
+            source = next((s for s in packet["repository_evidence"] if s["path"] == path), None)
             quote = needles[0]
+            if source is None or quote not in source_text(source):
+                # Missing evidence stays incomplete: no invented citation and no
+                # StopIteration before the independent checker can reject it.
+                continue
             claims.append(
                 {
                     "kind": "verbatim_repository_fact",
