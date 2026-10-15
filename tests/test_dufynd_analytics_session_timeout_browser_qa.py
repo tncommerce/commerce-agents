@@ -30,7 +30,7 @@ def test_analytics_owned_session_has_bounded_wait_and_recovery_coverage() -> Non
     timeout_qa = timeout_qa.split("const attributionClickoutContext", 1)[0]
     assert "setTimeout(resolve, 8_500)" in timeout_qa
     assert 'const measurementSid = failOpenUrl.searchParams.get("sid")' in timeout_qa
-    assert 'measurementSid === recoveredSessionId' in timeout_qa
+    assert "measurementSid === recoveredSessionId" in timeout_qa
     assert 'failOpenUrl.searchParams.get("measurement") !== "granted-v1"' in timeout_qa
     assert "sessionRecoveryAllowed = true" in timeout_qa
     assert 'recoveredUrl.searchParams.get("sid") !== measurementSid' in timeout_qa
