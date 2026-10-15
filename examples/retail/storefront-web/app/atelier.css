@@ -448,3 +448,70 @@ main:has(.wow-home)+div textarea {font-size:16px}
     transform:none!important;transition:none!important;
   }
 }
+
+
+/* WOW24: a truth-first editorial identity for the single Rabanne EDT 100 ml
+   landing while the licensed exact original bottle photograph remains on HOLD.
+   This is a note index, NOT a rendered/flacon substitute or an intensity model. */
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-RABANNE-1-MILLION-EDT-100"][data-dufynd-photo-hold] .dufynd-fragrance-stage-shell{
+  display:block;min-height:184px!important;max-height:none!important;
+  padding:0!important;background:#213a31!important;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-RABANNE-1-MILLION-EDT-100"][data-dufynd-photo-hold] .dufynd-fragrance-stage-visual{
+  opacity:0;visibility:hidden;pointer-events:none;
+}
+.dufynd-scent-index{
+  isolation:isolate;position:relative;z-index:2;min-height:184px;overflow:hidden;
+  background:radial-gradient(circle at 81% 30%,#405f4f 0%,transparent 56%),
+    linear-gradient(112deg,#162d27 0%,#244638 100%);
+  padding:19px 22px 14px;display:flex;flex-direction:column;
+  color:#fff5df;
+}
+.dufynd-scent-index-aura{
+  position:absolute;z-index:-1;pointer-events:none;width:177px;height:177px;
+  border:1px solid #d2b98b6b;border-radius:50%;top:-45px;right:-25px;
+  box-shadow:0 0 0 24px #e6c68d0c,0 0 0 52px #e6c68d09,
+    inset 0 0 36px #c1bc9761;
+}
+.dufynd-scent-index-aura::after{
+  content:"";position:absolute;inset:21px;border:1px solid #e8d9af55;
+  border-radius:50%;transform:scaleX(.7) rotate(-24deg);
+}
+.dufynd-scent-index-top{
+  display:flex;align-items:start;justify-content:space-between;gap:10px;
+  text-transform:uppercase;letter-spacing:.13em;font-size:10px;
+  color:#e4d6b8;line-height:1.6;
+}
+.dufynd-scent-index-top span:last-child{
+  text-align:right;font-size:10px;letter-spacing:.06em;
+}
+.dufynd-scent-index h2{
+  font:400 clamp(19px,2.1vw,25px)/1.17 Georgia,'Times New Roman',serif;
+  margin:14px 0 12px;letter-spacing:-.025em;max-width:85%;
+}
+.dufynd-scent-index ul{
+  list-style:none;padding:0;margin:0;display:flex;gap:7px;flex-wrap:wrap;
+  position:relative;z-index:2;
+}
+.dufynd-scent-index li{
+  font:500 12px/1.35 system-ui,sans-serif;padding:6px 9px;
+  color:#fff8e8;border:1px solid #d8c7a86e;background:#f6e2bd10;
+  border-radius:2px;
+}
+.dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-RABANNE-1-MILLION-EDT-100"][data-dufynd-photo-hold] .dufynd-scent-index .dufynd-detail-source-hold{
+  position:relative;inset:auto;display:block;width:auto;max-width:none;
+  margin:15px 0 0;padding:8px 0 0;border:0;border-top:1px solid #e8d9af42;
+  background:transparent!important;border-radius:0;
+  text-align:left;color:#e1d9ca;font-size:11px;line-height:1.5;
+}
+@media(max-width:639px){
+  .dufynd-scent-index{padding:15px 18px 12px;min-height:170px}
+  .dufynd-scent-index h2{font-size:22px;margin:12px 0 11px;max-width:93%}
+  .dufynd-scent-index-top{font-size:9px}
+  .dufynd-scent-index li{font-size:11px;padding:5px 8px}
+  .dufynd-scent-index-aura{width:140px;height:140px;right:-23px;top:-25px}
+}
+@media(prefers-reduced-motion:reduce){
+  .dufynd-scent-index,.dufynd-scent-index-aura{animation:none!important;transition:none!important}
+}
+

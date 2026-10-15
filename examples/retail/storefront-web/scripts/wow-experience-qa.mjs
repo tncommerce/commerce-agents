@@ -156,6 +156,16 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await page.screenshot({path:`${outputDir}/wow22-${name}-${width}-full.png`,fullPage:true});
         }
         if(name==='rabanne') {
+          const heldNotes=page.locator('[data-dufynd-source-honest-notes="rabanne-edt-100"]');
+          assert.equal(await heldNotes.count(),1,'Rabanne EDT 100ml has a source-honest editorial note identity during photo hold');
+          assert.equal(await heldNotes.locator('img').count(),0,'Rabanne source-hold identity is not fake original photography');
+          assert.deepEqual(await heldNotes.locator('li').allTextContents(),
+            ['Minze','Mandarine','Rose','Zimt','Amber','Leder'],
+            'Rabanne editorial notes match exact documented variant, never invented bottle or concentration claims');
+          assert.match(await heldNotes.innerText(),/Originalfoto in Prüfung/);
+          const heldBounds=await heldNotes.boundingBox();
+          assert.ok(heldBounds&&heldBounds.width<=width&&heldBounds.height>=160,
+            'Source-honest Rabanne note stage remains legible within mobile and desktop viewports');
           const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:'2026-10-14T00:00:00Z'};
           let available=true;
           await page.route('**/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100',r=>r.fulfill({json:{product_id:offer.product_id,best_offer_id:available?offer.offer_id:null,offers:available?[offer]:[],affiliate_disclosure:'Isolated QA fixture'}}));
