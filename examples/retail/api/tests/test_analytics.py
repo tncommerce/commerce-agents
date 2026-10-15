@@ -276,6 +276,7 @@ def test_attribution_identifier_sanitizer() -> None:
     assert sanitize_attribution_identifier("launch campaign") is None
     assert sanitize_attribution_identifier("name@example.com") is None
 
+
 def test_unconfigured_local_development_can_use_jsonl(tmp_path: Path) -> None:
     path = tmp_path / "analytics.jsonl"
     tracker = FirstPartyAnalyticsTracker(
@@ -341,4 +342,3 @@ def test_configured_supabase_outage_drops_optional_event_without_local_copy(
 
     assert storage == "dropped"
     assert not path.exists()
-
