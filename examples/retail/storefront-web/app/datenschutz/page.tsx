@@ -238,9 +238,10 @@ export default function DatenschutzPage() {
                 Personenbezogene Daten werden nur so lange gespeichert, wie dies für den jeweiligen Zweck
                 erforderlich ist oder gesetzliche Aufbewahrungspflichten bestehen. Die lokale Entscheidung
                 für oder gegen die optionale Analyse wird höchstens 180 Tage gespeichert und danach erneut
-                abgefragt. Optionale Besucher-Analyseereignisse werden nach spätestens 90 Tagen gelöscht;
-                interne QA- und nicht als Besuchertraffic klassifizierte Analyseereignisse nach spätestens
-                30 Tagen. Technische Sitzungsdaten des MVP sind nicht als dauerhaftes Kundenkonto ausgelegt.
+                abgefragt. In einem täglichen Löschlauf werden optionale Besucher-Analyseereignisse
+                entfernt, sobald sie älter als 90 Tage sind; interne QA- und nicht als Besuchertraffic
+                klassifizierte Analyseereignisse, sobald sie älter als 30 Tage sind. Technische Sitzungsdaten
+                des MVP sind nicht als dauerhaftes Kundenkonto ausgelegt.
                 Lokal gespeicherte Merkliste- und Sammlungsdaten bleiben grundsätzlich im Browser erhalten,
                 bis du sie in DUFYND löschst oder die Browser-/Websitedaten entfernst. Für Daten, die von
                 externen Dienstleistern verarbeitet werden, gelten zusätzlich deren dokumentierte
