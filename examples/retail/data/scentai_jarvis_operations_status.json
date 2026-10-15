@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-10-09T13:19:11+00:00",
-  "source_fingerprint_sha256": "b6b4337c5208874ba40529c44fbc322beab669ce6dd933b7555a8e44533ecf45",
+  "source_fingerprint_sha256": "bd45cb35bff8f8f0d0479d9316e2bf23e4e1e3ecc4a96caf962e6f1656946e13",
   "system": "DUFYND",
   "control_plane": "commerce_jarvis",
   "policy_ref": "scentai_jarvis_operating_policy.json",
@@ -65,9 +65,9 @@
     "mapping_ready": 5,
     "image_identity_source_verified": 5,
     "approved_images": 4,
-    "current_purchase_destinations": 3,
-    "current_tracked_affiliate_offers": 3,
-    "promotion_ready": 3
+    "current_purchase_destinations": 0,
+    "current_tracked_affiliate_offers": 0,
+    "promotion_ready": 0
   },
   "pending_manual_approvals": [],
   "operating_note": "This control-plane status summarizes operational readiness. It does not authorize live writes, spending, outbound messages or affiliate activation."
