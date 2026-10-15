@@ -44,7 +44,6 @@ from .merchant_offers import (
 from .merchant_partners import (
     MerchantPartnerStore,
     customer_partner_payload,
-    partner_clickout_url,
 )
 from .mock_retail import DATA_DIR, MockRetail
 

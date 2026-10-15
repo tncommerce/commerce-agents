@@ -9,8 +9,6 @@ from __future__ import annotations
 import asyncio
 from datetime import UTC, datetime
 from types import SimpleNamespace
-from urllib.parse import parse_qs, urlparse
-from uuid import UUID
 
 import httpx
 import pytest
