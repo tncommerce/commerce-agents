@@ -380,6 +380,7 @@ jobs:
 
           pr_url="$(
             gh pr create \
+              --draft \
               --base scentai-mvp \
               --head "${worker_branch}" \
               --title "DUFYND: Jarvis validated safe patch" \
