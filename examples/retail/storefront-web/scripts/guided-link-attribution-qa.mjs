@@ -27,7 +27,7 @@ export async function verifyGuidedLinkAttribution(browser, baseUrl) {
         await page.route("**/api/products?**", (route) => route.fulfill({ json: { products: [] } }));
         await page.route("**/api/memory", (route) => route.fulfill({ json: { facts: [] } }));
         await page.route("**/api/merchant-partners", (route) => route.fulfill({ json: { partners: [] } }));
-        await page.route("**/api/analytics/events", (route) => {
+        await page.route((url) => url.pathname === "/api/analytics/events", (route) => {
           events.push(route.request().postDataJSON());
           return route.fulfill({ json: { ok: true } });
         });

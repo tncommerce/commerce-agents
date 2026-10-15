@@ -5,7 +5,7 @@ import {
   measurementChoice, setMeasurementChoice, subscribeMeasurement,
   type MeasurementChoice,
 } from "@/lib/measurementConsent";
-import { initializeMeasurementPrivacy, trackAnalyticsEvent } from "@/lib/analytics";
+import { initializeMeasurementPrivacy } from "@/lib/analytics";
 import styles from "./MeasurementPreferences.module.css";
 
 export default function MeasurementPreferences() {
@@ -19,12 +19,8 @@ export default function MeasurementPreferences() {
     return unsubscribe;
   }, []);
   const choose = (next: "granted" | "denied") => {
-    const previous = measurementChoice();
-    setMeasurementChoice(next); setEditing(false);
-    // Record only the now-consented current view, never replay events from before choice.
-    if (next === "granted" && previous !== "granted") {
-      void trackAnalyticsEvent("page_view", {source: "measurement_choice", surface: "privacy_preferences"});
-    }
+    setMeasurementChoice(next);
+    setEditing(false);
   };
   const visible = ready && (choice === "unknown" || editing);
   return (

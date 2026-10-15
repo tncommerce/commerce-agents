@@ -18,7 +18,7 @@ export async function verifyFooterNavigationAttribution(browser, baseUrl) {
           await page.route('**/api/session',r=>r.fulfill({json:{session_id:'qa-footer-navigation',name:'QA'}}));
           await page.route('**/api/products?**',r=>r.fulfill({json:{products:[]}}));
           await page.route('**/api/merchant-partners',r=>r.fulfill({json:{partners:[]}}));
-          await page.route('**/api/analytics/events',r=>{events.push(r.request().postDataJSON());return r.fulfill({json:{ok:true}})});
+          await page.route((url) => url.pathname === '/api/analytics/events',r=>{events.push(r.request().postDataJSON());return r.fulfill({json:{ok:true}})});
           await page.goto(`${baseUrl}/merkliste?src=newsletter&cmp=footer_qa&content=cta_1`);
           await chooseMeasurement(page, 'granted');
           for(let n=0;n<100&&!events.some(e=>e.event==='page_view');n++)await page.waitForTimeout(50);
@@ -52,7 +52,7 @@ export async function verifyFooterNavigationAttribution(browser, baseUrl) {
       const context=await browser.newContext({viewport:{width,height:900}}),page=await context.newPage();
       try {
         await page.route('**/api/session',r=>r.fulfill({json:{session_id:'qa-footer-invalid',name:'QA'}}));
-        await page.route('**/api/analytics/events',r=>r.fulfill({json:{ok:true}}));
+        await page.route((url) => url.pathname === '/api/analytics/events',r=>r.fulfill({json:{ok:true}}));
         await page.goto(`${baseUrl}/merkliste?${query}`);
         await chooseMeasurement(page, 'granted');
         await page.getByRole('link',{name:'← Zurück zu DUFYND',exact:true}).waitFor();

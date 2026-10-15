@@ -23,7 +23,7 @@ export async function verifyAcquisitionLandingNavigation(browser, baseUrl) {
               };
             });
             await page.route("**/api/session", (route) => route.fulfill({ json: { session_id: "qa-acquisition-landing", name: "QA Guest" } }));
-            await page.route("**/api/analytics/events", (route) => {
+            await page.route((url) => url.pathname === "/api/analytics/events", (route) => {
               events.push(route.request().postDataJSON());
               return route.fulfill({ json: { ok: true } });
             });

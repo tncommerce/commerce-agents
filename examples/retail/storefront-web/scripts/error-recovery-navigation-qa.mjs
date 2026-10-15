@@ -53,7 +53,7 @@ export async function verifyErrorRecoveryNavigationAttribution(browser, baseUrl)
           await page.route("**/api/merchant-partners", (route) =>
             route.fulfill({ json: { partners: [] } }),
           );
-          await page.route("**/api/analytics/events", (route) => {
+          await page.route((url) => url.pathname === "/api/analytics/events", (route) => {
             events.push(route.request().postDataJSON());
             return route.fulfill({ json: { ok: true } });
           });
