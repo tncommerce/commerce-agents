@@ -30,6 +30,12 @@ function render({offers=[fixture],focusedLanding=false,ready=true,error=false,lo
     if(id==='web-shared')return money;
     if(id==='@/lib/api')return {fetchMerchantOffers:()=>{throw Error('No API allowed')},merchantClickoutUrl:p=>p};
     if(id==='@/lib/analytics')return {appendAcquisitionAttribution:p=>p+'?src=qa&cmp=isolated&sid=qa-session',ensureAnalyticsSession:()=>{throw Error('No sessions allowed')},trackAnalyticsEvent:()=>{throw Error('No events allowed')}};
+    // This suite renders supplied presentation states with effects disabled.
+    // It must never invent consent or run the browser subscription during SSR.
+    if(id==='@/lib/measurementConsent')return {
+      measurementAllowed:()=>{throw Error('No consent reads in isolated SSR presentation')},
+      subscribeMeasurement:()=>{throw Error('No browser subscriptions in isolated SSR presentation')},
+    };
     if(id==='@/lib/officialProductPages')return {OFFICIAL_PRODUCT_PAGES:{}};
     if(id==='@/components/AcquisitionInternalLink')return {__esModule:true,default:({children,...props})=>require('react').createElement('a',props,children)};
     if(id.endsWith('.module.css'))return {__esModule:true,default:new Proxy({}, {get:(_,key)=>String(key)})};
