@@ -2012,7 +2012,7 @@ try {
     }
     const merchantClick = merchantClickEvents[0];
     if (
-      merchantClick.product_id !== "SC-QA-ATTRIBUTION" ||
+      merchantClick.product_id !== "SC-RABANNE-1-MILLION-EDT-100" ||
       merchantClick.offer_id !== "qa-attribution-offer" ||
       merchantClick.source !== "qa-merchant" ||
       merchantClick.surface !== "merchant_offer" ||
