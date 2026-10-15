@@ -12,6 +12,7 @@ import {
   ensureAnalyticsSession,
   trackAnalyticsEvent,
 } from "@/lib/analytics";
+import { measurementAllowed, subscribeMeasurement } from "@/lib/measurementConsent";
 import type { MerchantOffersPayload } from "@/lib/types";
 import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
@@ -98,40 +99,59 @@ export default function FragranceOffers({
   const offerSectionRef = useRef<HTMLElement | null>(null);
   const trackedOfferViewRef = useRef<string | null>(null);
 
+  // Consent can change after this product mounted. Observe that choice without
+  // re-fetching the functional offers or replaying pre-consent shopping actions.
   useEffect(() => {
     let active = true;
+    let attempt = 0;
+    const refreshMeasurement = () => {
+      const currentAttempt = ++attempt;
+      if (!measurementAllowed()) {
+        trackedDetailViewRef.current = null;
+        setClickoutSessionReady(true);
+        return;
+      }
 
-    setClickoutSessionReady(false);
-    void ensureAnalyticsSession().finally(() => {
-      if (active) setClickoutSessionReady(true);
-    });
-
-    const detailViewKey = `${productId}:${analyticsSurface}`;
-    if (
-      trackProductOpen &&
-      trackedDetailViewRef.current !== detailViewKey
-    ) {
-      trackedDetailViewRef.current = detailViewKey;
-      void trackAnalyticsEvent("fragrance_detail_view", {
-        product_id: productId,
-        source: "fragrance_detail_page",
-        surface: analyticsSurface,
+      setClickoutSessionReady(false);
+      void ensureAnalyticsSession().finally(() => {
+        if (active && currentAttempt === attempt && measurementAllowed()) {
+          setClickoutSessionReady(true);
+        }
       });
-    }
 
+      const detailViewKey = `${productId}:${analyticsSurface}`;
+      if (trackProductOpen && trackedDetailViewRef.current !== detailViewKey) {
+        trackedDetailViewRef.current = detailViewKey;
+        // Only the product that is currently mounted is measured after consent.
+        void trackAnalyticsEvent("fragrance_detail_view", {
+          product_id: productId,
+          source: "fragrance_detail_page",
+          surface: analyticsSurface,
+        });
+      }
+    };
+    const unsubscribe = subscribeMeasurement(refreshMeasurement);
+    refreshMeasurement();
+    return () => {
+      active = false;
+      attempt += 1;
+      unsubscribe();
+    };
+  }, [analyticsSurface, productId, reloadToken, trackProductOpen]);
+
+  useEffect(() => {
+    let active = true;
     setLoadError(false);
     setPayload(undefined);
 
     void fetchMerchantOffers(productId)
       .then((value) => {
         if (!active) return;
-
         if (value === null) {
           setLoadError(true);
           setPayload(null);
           return;
         }
-
         setPayload(value);
       })
       .catch(() => {
@@ -140,54 +160,56 @@ export default function FragranceOffers({
         setPayload(null);
       });
 
-    return () => {
-      active = false;
-    };
-  }, [
-    analyticsSurface,
-    productId,
-    reloadToken,
-    trackProductOpen,
-  ]);
+    return () => { active = false; };
+  }, [analyticsSurface, productId, reloadToken, trackProductOpen]);
 
   useEffect(() => {
     const section = offerSectionRef.current;
     if (!section || !payload || payload.offers.length === 0) return;
-
     const impressionKey = `${productId}:${analyticsSurface}`;
-    if (trackedOfferViewRef.current === impressionKey) return;
+    let observer: IntersectionObserver | null = null;
+    let observation = 0;
+    let active = true;
 
-    const trackImpression = () => {
+    const refreshImpression = () => {
+      const currentObservation = ++observation;
+      observer?.disconnect();
+      observer = null;
+      if (!measurementAllowed()) {
+        trackedOfferViewRef.current = null;
+        return;
+      }
       if (trackedOfferViewRef.current === impressionKey) return;
-      trackedOfferViewRef.current = impressionKey;
-      void trackAnalyticsEvent("offer_section_view", {
-        product_id: productId,
-        source: "merchant_offers",
-        surface: analyticsSurface,
-      });
-    };
-
-    if (typeof IntersectionObserver === "undefined") {
-      trackImpression();
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (
-          !entry?.isIntersecting ||
-          entry.intersectionRatio < 0.35
-        ) {
-          return;
-        }
+      const trackImpression = () => {
+        if (!active || currentObservation !== observation || !measurementAllowed() ||
+            trackedOfferViewRef.current === impressionKey) return;
+        trackedOfferViewRef.current = impressionKey;
+        void trackAnalyticsEvent("offer_section_view", {
+          product_id: productId,
+          source: "merchant_offers",
+          surface: analyticsSurface,
+        });
+      };
+      if (typeof IntersectionObserver === "undefined") {
         trackImpression();
-        observer.disconnect();
-      },
-      { threshold: [0.35] },
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
+        return;
+      }
+      observer = new IntersectionObserver(([entry]) => {
+        if (!active || currentObservation !== observation ||
+            !entry?.isIntersecting || entry.intersectionRatio < 0.35) return;
+        trackImpression();
+        observer?.disconnect();
+      }, { threshold: [0.35] });
+      observer.observe(section);
+    };
+    const unsubscribe = subscribeMeasurement(refreshImpression);
+    refreshImpression();
+    return () => {
+      active = false;
+      observation += 1;
+      observer?.disconnect();
+      unsubscribe();
+    };
   }, [analyticsSurface, payload, productId]);
 
   if (payload === undefined) {
@@ -216,9 +238,7 @@ export default function FragranceOffers({
         </p>
         <button
           type="button"
-          onClick={() =>
-            setReloadToken((value) => value + 1)
-          }
+          onClick={() => setReloadToken((value) => value + 1)}
           className={`mt-3 rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold transition hover:border-(--ink) ${focusedLanding ? "min-h-11 bg-(--accent-strong) text-white" : "bg-(--surface) text-(--ink)"}`}
         >
           Angebote erneut prüfen
@@ -247,11 +267,8 @@ export default function FragranceOffers({
     );
   }
 
-  const partnerOfferCount = payload.offers.filter(
-    (offer) => offer.affiliate_link,
-  ).length;
-  const externalOfferCount =
-    payload.offers.length - partnerOfferCount;
+  const partnerOfferCount = payload.offers.filter((offer) => offer.affiliate_link).length;
+  const externalOfferCount = payload.offers.length - partnerOfferCount;
 
   return (
     <section
@@ -262,9 +279,7 @@ export default function FragranceOffers({
     >
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-[17px] font-semibold text-(--ink)">
-            {heading}
-          </h2>
+          <h2 className="text-[17px] font-semibold text-(--ink)">{heading}</h2>
           <p className="mt-1 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">
             {payload.offers.length} verifizierte{" "}
             {payload.offers.length === 1 ? "Kaufoption" : "Kaufoptionen"} ·
@@ -281,14 +296,11 @@ export default function FragranceOffers({
       <p className={styles.purchaseGuide}>
         Angebote vergleichen, beim Händler kaufen. DUFYND verkauft selbst keine Produkte.
       </p>
-
       <div className="mt-4 space-y-2.5">
         {payload.offers.map((offer) => {
           const best = offer.offer_id === payload.best_offer_id;
-          const displayedPrice =
-            offer.total_price ?? offer.price;
+          const displayedPrice = offer.total_price ?? offer.price;
           const showPriceBreakdown = offer.total_price != null && offer.shipping_cost != null;
-
           return (
             <div
               key={offer.offer_id}
@@ -300,14 +312,10 @@ export default function FragranceOffers({
             >
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-semibold text-(--ink)">
-                    {offer.merchant_name}
-                  </span>
+                  <span className="font-semibold text-(--ink)">{offer.merchant_name}</span>
                   {best && payload.offers.length > 1 ? (
                     <span className="rounded-full bg-(--ink) px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-(--surface)">
-                      {offer.total_price != null
-                        ? "Bester Gesamtpreis"
-                        : "Beste verfügbare Option"}
+                      {offer.total_price != null ? "Bester Gesamtpreis" : "Beste verfügbare Option"}
                       {" · hier gelistet"}
                     </span>
                   ) : null}
@@ -318,22 +326,15 @@ export default function FragranceOffers({
                         : "border-(--line) bg-(--card) text-(--ink-soft)"
                     }`}
                   >
-                    {offer.affiliate_link
-                      ? "Werbung · Partnerlink"
-                      : "Weitere Kaufoption"}
+                    {offer.affiliate_link ? "Werbung · Partnerlink" : "Weitere Kaufoption"}
                   </span>
                 </div>
-
                 {offer.variant_label ? (
                   <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">{offer.variant_label}</p>
                 ) : null}
-
                 <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
                   <span className={`${styles.total} text-[24px] font-bold text-(--ink)`}>
-                    {formatMoney(
-                      displayedPrice,
-                      offer.currency,
-                    )}
+                    {formatMoney(displayedPrice, offer.currency)}
                   </span>
                   {offer.total_price != null ? (
                     <span data-offer-price-basis className="text-[13px] leading-5 text-(--ink-soft)">
@@ -341,49 +342,33 @@ export default function FragranceOffers({
                     </span>
                   ) : null}
                   {!showPriceBreakdown && offer.shipping_label ? (
-                    <span className="text-[13px] leading-5 text-(--ink-soft)">
-                      {offer.shipping_label}
-                    </span>
+                    <span className="text-[13px] leading-5 text-(--ink-soft)">{offer.shipping_label}</span>
                   ) : offer.total_price == null ? (
                     <span className="text-[13px] leading-5 text-(--ink-soft)">
                       Artikelpreis · Versand beim Händler prüfen
                     </span>
                   ) : null}
                 </div>
-
                 {showPriceBreakdown ? (
                   <dl data-offer-breakdown className={styles.breakdown}>
                     <div><dt>Artikel</dt><dd>{formatMoney(offer.price, offer.currency)}</dd></div>
                     <div><dt>Versand</dt><dd>{formatMoney(offer.shipping_cost!, offer.currency)}</dd></div>
                   </dl>
                 ) : null}
-
                 {formatUpdatedAt(offer.last_updated_at) ? (
                   <div className="mt-2 text-[12px] text-(--ink-soft)">
-                    Preis & Bestand geprüft:{" "}
-                    {formatUpdatedAt(offer.last_updated_at)}
+                    Preis & Bestand geprüft:{" "}{formatUpdatedAt(offer.last_updated_at)}
                   </div>
                 ) : null}
               </div>
-
               {clickoutSessionReady ? (
                 <a
-                  href={appendAcquisitionAttribution(
-                    merchantClickoutUrl(
-                      offer.clickout_path,
-                    ),
-                  )}
+                  href={appendAcquisitionAttribution(merchantClickoutUrl(offer.clickout_path))}
                   target="_blank"
                   title="Öffnet einen neuen Tab"
-                  rel={
-                    offer.affiliate_link
-                      ? "sponsored noopener noreferrer"
-                      : "noopener noreferrer"
-                  }
+                  rel={offer.affiliate_link ? "sponsored noopener noreferrer" : "noopener noreferrer"}
                   className={`${styles.merchantAction} inline-flex items-center justify-center w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
-                    best
-                      ? "bg-(--accent-strong) shadow-sm hover:brightness-95"
-                      : "bg-(--ink) hover:opacity-90"
+                    best ? "bg-(--accent-strong) shadow-sm hover:brightness-95" : "bg-(--ink) hover:opacity-90"
                   }`}
                 >
                   Bei {offer.merchant_name} ansehen <span aria-hidden="true" className="ml-2">↗</span>
@@ -392,9 +377,7 @@ export default function FragranceOffers({
                 <span
                   aria-disabled="true"
                   data-clickout-preparing
-                  className={`${styles.merchantAction} inline-flex items-center justify-center w-full cursor-wait rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white opacity-70 sm:w-auto ${
-                    best ? "bg-(--accent-strong)" : "bg-(--ink)"
-                  }`}
+                  className={`${styles.merchantAction} inline-flex items-center justify-center w-full cursor-wait rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white opacity-70 sm:w-auto ${best ? "bg-(--accent-strong)" : "bg-(--ink)"}`}
                 >
                   Link wird vorbereitet …
                 </span>
@@ -403,7 +386,6 @@ export default function FragranceOffers({
           );
         })}
       </div>
-
       <div className={styles.disclosure}>
         {partnerOfferCount ? (
           <p>
