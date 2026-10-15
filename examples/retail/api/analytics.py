@@ -84,6 +84,11 @@ class AnalyticsEventRequest(BaseModel):
         max_length=80,
         pattern=r"^[A-Za-z0-9._:-]+$",
     )
+    offer_id: str | None = Field(
+        default=None,
+        max_length=120,
+        pattern=r"^[A-Za-z0-9._:-]+$",
+    )
     source: str | None = Field(
         default=None,
         max_length=80,

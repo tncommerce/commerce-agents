@@ -179,10 +179,10 @@ async def run():
             sid="synthetic_session",
             measurement="granted-v1",
         )
-        assert out.status_code == 302 and "synthetic_ref=measured" in out.url
-        assert len(tasks.items) == 1
-        assert tasks.items[0][1]["campaign_id"] == "synthetic"
-        assert bool(records["clickouts"]) == (kind == "merchant_clickout")
+        assert out.status_code == 302
+        assert out.url == "https://affiliate.invalid/base?publisher=synthetic"
+        assert not tasks.items
+        assert not records["analytics"] and not records["clickouts"]
         cases += 1
     ctx, records = environment(APP_SOURCE)
     out = await ctx["analytics_event"](

@@ -20,6 +20,16 @@ def test_merchant_clickout_attribution_is_browser_covered() -> None:
     assert 'clickoutUrl.searchParams.get("cmp") !== "qa_campaign"' in source
     assert 'clickoutUrl.searchParams.get("content") !== "qa_content"' in source
     assert 'clickout.getAttribute("target")' in source
+    assert 'label: "merchant-clickout-live-consent-event"' in source
+    offers_source = FRAGRANCE_OFFERS.read_text(encoding="utf-8")
+    merchant_source = Path(
+        "examples/retail/storefront-web/components/MerchantDiscovery.tsx"
+    ).read_text(encoding="utf-8")
+    assert 'trackAnalyticsEvent("merchant_clickout"' in offers_source
+    assert "offer_id: offer.offer_id" in offers_source
+    assert 'surface: "merchant_offer"' in offers_source
+    assert 'trackAnalyticsEvent("merchant_clickout"' in merchant_source
+    assert 'surface: "merchant_discovery"' in merchant_source
 
 
 def test_offer_section_impression_is_distinct_and_browser_covered() -> None:

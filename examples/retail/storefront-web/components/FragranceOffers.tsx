@@ -367,6 +367,14 @@ export default function FragranceOffers({
                   target="_blank"
                   title="Öffnet einen neuen Tab"
                   rel={offer.affiliate_link ? "sponsored noopener noreferrer" : "noopener noreferrer"}
+                  onClick={() => {
+                    void trackAnalyticsEvent("merchant_clickout", {
+                      product_id: productId,
+                      offer_id: offer.offer_id,
+                      source: offer.merchant_id,
+                      surface: "merchant_offer",
+                    });
+                  }}
                   className={`${styles.merchantAction} inline-flex items-center justify-center w-full rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white transition sm:w-auto ${
                     best ? "bg-(--accent-strong) shadow-sm hover:brightness-95" : "bg-(--ink) hover:opacity-90"
                   }`}

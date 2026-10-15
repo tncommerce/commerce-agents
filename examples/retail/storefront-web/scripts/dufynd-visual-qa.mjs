@@ -1899,6 +1899,27 @@ try {
   });
   try {
     const attributionPage = await attributionClickoutContext.newPage();
+    const merchantClickEvents = [];
+    await attributionPage.route("**/api/session", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ session_id: "qa-live-click-functional-session-123456789" }),
+      });
+    });
+    await attributionPage.route((url) => url.pathname === "/api/analytics/events", async (route) => {
+      try {
+        const payload = route.request().postDataJSON();
+        if (payload?.event === "merchant_clickout") merchantClickEvents.push(payload);
+      } catch {
+        // A malformed analytics request will fail the assertions below.
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true }),
+      });
+    });
     await attributionPage.route(
       "**/api/merchant-offers/**",
       async (route) => {
@@ -1976,8 +1997,38 @@ try {
       throw new Error("merchant clickout no longer opens in a separate browsing context");
     }
 
+    await clickout.evaluate((node) => {
+      node.addEventListener("click", (event) => event.preventDefault(), {
+        capture: true,
+        once: true,
+      });
+    });
+    await clickout.click();
+    for (let attempt = 0; attempt < 100 && merchantClickEvents.length === 0; attempt += 1) {
+      await attributionPage.waitForTimeout(25);
+    }
+    if (merchantClickEvents.length !== 1) {
+      throw new Error("live-consent merchant click did not emit exactly one browser analytics event");
+    }
+    const merchantClick = merchantClickEvents[0];
+    if (
+      merchantClick.product_id !== "SC-QA-ATTRIBUTION" ||
+      merchantClick.offer_id !== "qa-attribution-offer" ||
+      merchantClick.source !== "qa-merchant" ||
+      merchantClick.surface !== "merchant_offer" ||
+      merchantClick.acquisition_source !== "tiktok" ||
+      merchantClick.campaign_id !== "qa_campaign" ||
+      merchantClick.content_id !== "qa_content"
+    ) {
+      throw new Error("live-consent merchant click analytics lost offer or acquisition context");
+    }
+
     report.checks.push({
       label: "merchant-clickout-attribution-link",
+      status: "passed",
+    });
+    report.checks.push({
+      label: "merchant-clickout-live-consent-event",
       status: "passed",
     });
   } catch (error) {

@@ -221,7 +221,7 @@ export type AnalyticsEventName =
   | "offer_section_view" | "comparison_start" | "wishlist_add" | "wishlist_remove"
   | "collection_add" | "collection_remove";
 type AnalyticsContext = {
-  product_id?: string; source?: string; search_term?: string; result_count?: number;
+  product_id?: string; offer_id?: string; source?: string; search_term?: string; result_count?: number;
   surface?: string; related_product_id?: string; item_position?: number;
 };
 async function postAnalyticsPayload(payload: Record<string, unknown>, epoch: number): Promise<boolean> {
@@ -243,7 +243,7 @@ async function sendAnalyticsEvent(event: AnalyticsEventName, context: AnalyticsC
   const attribution = captureAcquisitionEntry();
   const payload = {
     event_id: globalThis.crypto?.randomUUID?.(), event, internal_qa: isInternalQa(),
-    product_id: context.product_id, source: context.source, acquisition_source: attribution?.source,
+    product_id: context.product_id, offer_id: context.offer_id, source: context.source, acquisition_source: attribution?.source,
     campaign_id: attribution?.campaign_id, content_id: attribution?.content_id,
     search_term: context.search_term, result_count: context.result_count, surface: context.surface,
     related_product_id: context.related_product_id, item_position: context.item_position,

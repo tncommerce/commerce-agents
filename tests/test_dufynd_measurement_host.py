@@ -158,30 +158,20 @@ def test_http_redirect_without_permission_never_records(consent_host, path, meas
 
 
 @pytest.mark.parametrize("path", PATHS)
-def test_http_explicit_permission_keeps_both_redirects(consent_host, path):
+def test_http_copied_granted_redirect_is_never_measurement_evidence(consent_host, path):
     response = request(consent_host, "GET", path, params=context(GRANT))
     assert response.status_code == 302
     assert response.headers["cache-control"] == "no-store"
     assert response.headers["referrer-policy"] == "no-referrer"
-    assert len(consent_host.rows) == 1
-    row = consent_host.rows[0]
-    assert row["event"] == "merchant_clickout"
-    assert row["session_id"] == SID
-    assert row["internal_qa"] is True
-    assert row["acquisition_source"] == "instagram"
-    assert row["campaign_id"] == "qa_cmp"
-    assert row["content_id"] == "qa_content"
-    target = urlparse(response.headers["location"])
-    assert target.hostname == "www.awin1.com"
-    assert parse_qs(target.query)["clickref"] == ["qa_internal"]
-    if path == PATHS[0]:
-        assert len(consent_host.clicks) == 1
-        assert row["offer_id"] == OFFER
-        assert row["product_id"] == PID
-        assert parse_qs(target.query)["clickref4"] == [UUID(CLICK_ID).hex]
-    else:
-        assert consent_host.clicks == []
-        assert row["surface"] == "merchant_discovery"
+    expected = (
+        offer_clickout_target(consent_host.offer)
+        if path == PATHS[0]
+        else consent_host.partner.affiliate_url
+    )
+    assert response.headers["location"] == expected
+    assert consent_host.rows == []
+    assert consent_host.clicks == []
+    assert "set-cookie" not in response.headers
 
 
 @pytest.mark.parametrize("measurement", [None, "", "denied", "granted", "GRANTED-V1", "granted-v2"])
@@ -216,7 +206,11 @@ def test_http_grant_then_ungranted_request_keeps_gate(consent_host):
     assert denied.status_code == 200
     assert denied.json()["recorded"] is False
     assert len(consent_host.rows) == 1
-    # This is per-request gating, NOT revocation of a previously copied granted URL.
+    # Redirect GETs are independently fail-closed, so a copied granted URL cannot replay measurement.
+    replay = request(consent_host, "GET", PATHS[0], params=context(GRANT))
+    assert replay.status_code == 302
+    assert len(consent_host.rows) == 1
+    assert consent_host.clicks == []
 
 
 @pytest.mark.parametrize("path", PATHS)
