@@ -103,4 +103,49 @@ for(const apiBase of ['https://api.dufynd.test/api/','https://api.dufynd.test/se
  const f=fixture({apiBase:'%%%invalid'});
  assert.equal(f.append('https://other.test/api/clickout/offer1'),'https://other.test/api/clickout/offer1');cases++;
 }
+
+// The existing merchant-discovery route is distinct from product-offer clickouts.
+// Cover both route shapes without permitting arbitrary configured-API endpoints.
+for (const apiBase of ['https://api.dufynd.test/api', 'https://api.dufynd.test/service/api/']) {
+  const root=apiBase.replace(/\/$/,'');
+  for (const blockedStorage of [false,true]) for (const qa of [false,true]) {
+    for (const session of [SID,null]) for (const url of [
+      `${root}/merchant-partners/perfumetrader/clickout?existing=1#merchant`,
+      'https://dufynd.test/api/merchant-partners/perfumetrader/clickout',
+    ]) {
+      const f=fixture({apiBase,blockedStorage,qa});f.api.session=session;
+      const original=new URL(url),result=new URL(f.append(url));
+      assert.equal(result.origin,original.origin);assert.equal(result.pathname,original.pathname);
+      assert.equal(result.hash,original.hash);
+      for(const [key,value] of original.searchParams) assert.equal(result.searchParams.get(key),value);
+      for(const [key,value] of [['src','instagram'],['cmp','qa_cmp'],['content','qa_content'],['sid',session]]) {
+        assert.equal(result.searchParams.get(key),value,'Configured merchant-partner redirect preserves available attribution');
+      }
+      assert.equal(result.searchParams.get('qa'),qa?'1':null);
+      assert.equal(f.api.session,session);assert.equal(f.touched.network,0);cases++;
+    }
+  }
+  for(const path of [
+    '/merchant-partners', '/merchant-partners/', '/merchant-partners/perfumetrader',
+    '/merchant-partners//clickout','/merchant-partners/a/b/clickout',
+    '/merchant-partners/perfumetrader/clickout/extra','/merchant-partners/perfumetrader/clickout/',
+    '/merchant-partners/%2f/clickout','/merchant-partners/%5c/clickout',
+    '/merchant-partners/%00/clickout','/merchant-partners/%20/clickout',
+    '/merchant-partners/%zz/clickout', '/merchant-partners/%2E%2E/clickout',
+  ]) for(const origin of [root,'https://dufynd.test/api']) {
+    const f=fixture({apiBase,qa:true}),url=origin+path;
+    assert.equal(f.append(url),url,'Reject malformed/other merchant API endpoints');
+    assert.deepEqual(f.touched,{reads:0,writes:0,acquisition:0,network:0});cases++;
+  }
+}
+for (const url of [
+  'https://other.test/api/merchant-partners/perfumetrader/clickout',
+  'https://api.dufynd.test.evil.test/api/merchant-partners/perfumetrader/clickout',
+  'https://api.dufynd.test:444/api/merchant-partners/perfumetrader/clickout',
+  'http://api.dufynd.test/api/merchant-partners/perfumetrader/clickout',
+]) {
+  const f=fixture({qa:true});assert.equal(f.append(url),url);
+  assert.deepEqual(f.touched,{reads:0,writes:0,acquisition:0,network:0});cases++;
+}
+
 console.log(JSON.stringify({status:'PASS',cases,networkRequests:0,productionMutations:0,scope:'Compiled actual analytics.ts with in-memory browser/API fixtures; not full browser E2E'},null,2));

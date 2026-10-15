@@ -184,16 +184,19 @@ function acquisitionTarget(url: string): URL | null {
       return null;
     }
 
-    const isClickout = (prefix: string): boolean => {
-      if (!target.pathname.startsWith(prefix)) return false;
-      const offer = decodeURIComponent(target.pathname.slice(prefix.length));
+    const isClickout = (prefix: string, suffix = ""): boolean => {
+      if (!target.pathname.startsWith(prefix) || !target.pathname.endsWith(suffix)) return false;
+      const end = suffix ? -suffix.length : undefined;
+      const offer = decodeURIComponent(target.pathname.slice(prefix.length, end));
       return Boolean(offer) && offer !== "." && offer !== ".." &&
         !/[\\/\u0000-\u0020\u007f]/.test(offer);
     };
 
     if (target.origin === origin) {
       // Other API endpoints are not storefront navigation destinations.
-      return !/^\/api(?:\/|$)/.test(target.pathname) || isClickout("/api/clickout/")
+      return !/^\/api(?:\/|$)/.test(target.pathname) ||
+        isClickout("/api/clickout/") ||
+        isClickout("/api/merchant-partners/", "/clickout")
         ? target : null;
     }
 
@@ -202,8 +205,9 @@ function acquisitionTarget(url: string): URL | null {
     const apiRoot = new URL(api.base, origin);
     if (!/^https?:$/.test(apiRoot.protocol) || apiRoot.username || apiRoot.password ||
         target.origin !== apiRoot.origin) return null;
-    const prefix = `${apiRoot.pathname.replace(/\/$/, "")}/clickout/`;
-    return isClickout(prefix) ? target : null;
+    const root = apiRoot.pathname.replace(/\/$/, "");
+    return isClickout(`${root}/clickout/`) ||
+      isClickout(`${root}/merchant-partners/`, "/clickout") ? target : null;
   } catch {
     // Malformed URLs or configuration must not break navigation or leak data.
     return null;
