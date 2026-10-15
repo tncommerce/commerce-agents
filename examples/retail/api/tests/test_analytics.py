@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import asyncio
 from datetime import UTC, datetime
 from pathlib import Path
 
+import httpx
 import pytest
 from pydantic import ValidationError
 
@@ -273,3 +275,70 @@ def test_attribution_identifier_sanitizer() -> None:
     assert sanitize_attribution_identifier(" genesis_naxos_01 ") == "genesis_naxos_01"
     assert sanitize_attribution_identifier("launch campaign") is None
     assert sanitize_attribution_identifier("name@example.com") is None
+
+def test_unconfigured_local_development_can_use_jsonl(tmp_path: Path) -> None:
+    path = tmp_path / "analytics.jsonl"
+    tracker = FirstPartyAnalyticsTracker(
+        path,
+        supabase_url="",
+        supabase_service_role_key="",
+    )
+
+    _event_id, storage = asyncio.run(
+        tracker.record(session_id="local-session-1234567890", event="page_view")
+    )
+
+    assert storage == "local"
+    assert path.exists()
+
+
+@pytest.mark.parametrize(
+    ("url", "key"),
+    [
+        ("https://example.supabase.co", ""),
+        ("", "service-role-fixture"),
+    ],
+)
+def test_partial_supabase_configuration_fails_closed(
+    tmp_path: Path,
+    url: str,
+    key: str,
+) -> None:
+    path = tmp_path / "analytics.jsonl"
+    tracker = FirstPartyAnalyticsTracker(
+        path,
+        supabase_url=url,
+        supabase_service_role_key=key,
+    )
+
+    _event_id, storage = asyncio.run(
+        tracker.record(session_id="partial-session-1234567890", event="page_view")
+    )
+
+    assert storage == "disabled"
+    assert not path.exists()
+
+
+def test_configured_supabase_outage_drops_optional_event_without_local_copy(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    path = tmp_path / "analytics.jsonl"
+    tracker = FirstPartyAnalyticsTracker(
+        path,
+        supabase_url="https://example.supabase.co",
+        supabase_service_role_key="service-role-fixture",
+    )
+
+    async def fail_post(self, *args, **kwargs):
+        request = httpx.Request("POST", "https://example.supabase.co/rest/v1/events")
+        raise httpx.ConnectError("isolated outage", request=request)
+
+    monkeypatch.setattr(httpx.AsyncClient, "post", fail_post)
+    _event_id, storage = asyncio.run(
+        tracker.record(session_id="outage-session-1234567890", event="page_view")
+    )
+
+    assert storage == "dropped"
+    assert not path.exists()
+
