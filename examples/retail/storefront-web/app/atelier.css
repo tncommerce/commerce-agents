@@ -450,22 +450,50 @@ main:has(.wow-home)+div textarea {font-size:16px}
 }
 
 
-/* WOW24: a truth-first editorial identity for the single Rabanne EDT 100 ml
-   landing while the licensed exact original bottle photograph remains on HOLD.
-   This is a note index, NOT a rendered/flacon substitute or an intensity model. */
+/* WOW24: exact Rabanne EDT 100 ml notes as optional source-honest editorial
+   content. Collapsed by default: conversion stays first, licensed photo remains HOLD. */
 .dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-RABANNE-1-MILLION-EDT-100"][data-dufynd-photo-hold] .dufynd-fragrance-stage-shell{
-  display:block;min-height:184px!important;max-height:none!important;
+  display:block;min-height:52px!important;max-height:none!important;
   padding:0!important;background:#213a31!important;
 }
 .dufynd-detail-page .dufynd-fragrance-hero[data-product-id="SC-RABANNE-1-MILLION-EDT-100"][data-dufynd-photo-hold] .dufynd-fragrance-stage-visual{
   opacity:0;visibility:hidden;pointer-events:none;
 }
 .dufynd-scent-index{
-  isolation:isolate;position:relative;z-index:2;min-height:184px;overflow:hidden;
-  background:radial-gradient(circle at 81% 30%,#405f4f 0%,transparent 56%),
-    linear-gradient(112deg,#162d27 0%,#244638 100%);
-  padding:19px 22px 14px;display:flex;flex-direction:column;
+  isolation:isolate;position:relative;z-index:2;min-height:52px;
+  background:linear-gradient(110deg,#162d27,#234437);
   color:#fff5df;
+}
+.dufynd-scent-index-toggle{
+  position:relative;z-index:2;display:flex;align-items:center;
+  justify-content:space-between;gap:12px;min-height:52px;
+  padding:6px 18px;cursor:pointer;list-style:none;
+}
+.dufynd-scent-index-toggle::-webkit-details-marker{display:none}
+.dufynd-scent-index-toggle:focus-visible{outline:2px solid #f4d49c;outline-offset:-3px}
+.dufynd-scent-index-toggle-copy{min-width:0;display:block}
+.dufynd-scent-index-toggle-copy small{
+  display:block;color:#e5d9bb;font-size:10px;line-height:1.3;
+  letter-spacing:.06em;text-transform:uppercase;
+}
+.dufynd-scent-index-toggle-copy strong{
+  display:block;margin-top:2px;color:#fff9e6;
+  font-size:12px;line-height:1.35;font-weight:600;
+}
+.dufynd-scent-index-toggle-icon{
+  display:grid;flex:0 0 30px;place-items:center;
+  height:30px;border:1px solid #dfd5bc65;
+  color:#f8e5c4;font-size:20px;line-height:1;
+}
+.dufynd-scent-index[open] .dufynd-scent-index-toggle-icon{font-size:0}
+.dufynd-scent-index[open] .dufynd-scent-index-toggle-icon::after{
+  content:"−";font-size:20px;
+}
+.dufynd-scent-index-reveal{
+  position:relative;isolation:isolate;overflow:hidden;
+  padding:17px 20px 14px;border-top:1px solid #e8d9af42;
+  background:radial-gradient(circle at 81% 30%,#405f4f 0%,transparent 56%),
+  linear-gradient(112deg,#162d27 0%,#244638 100%);
 }
 .dufynd-scent-index-aura{
   position:absolute;z-index:-1;pointer-events:none;width:177px;height:177px;
@@ -482,9 +510,7 @@ main:has(.wow-home)+div textarea {font-size:16px}
   text-transform:uppercase;letter-spacing:.13em;font-size:10px;
   color:#e4d6b8;line-height:1.6;
 }
-.dufynd-scent-index-top span:last-child{
-  text-align:right;font-size:10px;letter-spacing:.06em;
-}
+.dufynd-scent-index-top span:last-child{text-align:right;letter-spacing:.06em}
 .dufynd-scent-index h2{
   font:400 clamp(19px,2.1vw,25px)/1.17 Georgia,'Times New Roman',serif;
   margin:14px 0 12px;letter-spacing:-.025em;max-width:85%;
@@ -505,7 +531,8 @@ main:has(.wow-home)+div textarea {font-size:16px}
   text-align:left;color:#e1d9ca;font-size:11px;line-height:1.5;
 }
 @media(max-width:639px){
-  .dufynd-scent-index{padding:15px 18px 12px;min-height:170px}
+  .dufynd-scent-index-toggle{padding:6px 15px}
+  .dufynd-scent-index-reveal{padding:15px 18px 12px}
   .dufynd-scent-index h2{font-size:22px;margin:12px 0 11px;max-width:93%}
   .dufynd-scent-index-top{font-size:9px}
   .dufynd-scent-index li{font-size:11px;padding:5px 8px}
@@ -514,4 +541,3 @@ main:has(.wow-home)+div textarea {font-size:16px}
 @media(prefers-reduced-motion:reduce){
   .dufynd-scent-index,.dufynd-scent-index-aura{animation:none!important;transition:none!important}
 }
-

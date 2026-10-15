@@ -163,9 +163,21 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
             ['Minze','Mandarine','Rose','Zimt','Amber','Leder'],
             'Rabanne editorial notes match exact documented variant, never invented bottle or concentration claims');
           assert.match(await heldNotes.innerText(),/Originalfoto in Prüfung/);
+          const summary=heldNotes.locator('summary');
           const heldBounds=await heldNotes.boundingBox();
-          assert.ok(heldBounds&&heldBounds.width<=width&&heldBounds.height>=160,
-            'Source-honest Rabanne note stage remains legible within mobile and desktop viewports');
+          assert.ok(heldBounds&&heldBounds.x>=0&&heldBounds.x+heldBounds.width<=width
+            &&heldBounds.height>=44&&heldBounds.height<=64,
+            'Collapsed honest Rabanne note teaser preserves compact first-money landing');
+          assert.equal(await heldNotes.locator('li').first().isVisible(),false,
+            'Additional editorial content does not displace the initial offers CTA');
+          await summary.focus();await page.keyboard.press('Enter');
+          await heldNotes.locator('li').first().waitFor({state:'visible'});
+          const expandedBounds=await heldNotes.boundingBox();
+          assert.ok(expandedBounds&&expandedBounds.height>=160,
+            'Expanded note study stays genuinely readable on demand');
+          await summary.click();
+          assert.equal(await heldNotes.locator('li').first().isVisible(),false,
+            'Closing note study restores compact purchase journey');
           const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:'2026-10-14T00:00:00Z'};
           let available=true;
           await page.route('**/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100',r=>r.fulfill({json:{product_id:offer.product_id,best_offer_id:available?offer.offer_id:null,offers:available?[offer]:[],affiliate_disclosure:'Isolated QA fixture'}}));
