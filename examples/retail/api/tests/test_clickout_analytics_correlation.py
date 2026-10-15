@@ -71,6 +71,7 @@ async def test_partner_clickout_correlates_session_and_acquisition(
     response = await main_module.merchant_partner_clickout(
         "qa-partner",
         tasks,
+        measurement="granted-v1",
         src=" tiktok ",
         cmp=" launch_01 ",
         content=" partner_card_01 ",
@@ -135,6 +136,7 @@ async def test_offer_clickout_correlates_session_and_acquisition(
     response = await main_module.merchant_clickout(
         "qa-offer",
         tasks,
+        measurement="granted-v1",
         src=" instagram ",
         cmp=" launch_02 ",
         content=" offer_card_02 ",
@@ -210,6 +212,7 @@ async def test_offer_clickout_forwards_attribution_into_awin_clickrefs(
     response = await main_module.merchant_clickout(
         "awin-offer",
         tasks,
+        measurement="granted-v1",
         src="youtube",
         cmp="campaign_01",
         content="content_01",
@@ -261,6 +264,7 @@ async def test_cj_sid_joins_durable_clickout_without_changing_destination(
     response = await main_module.merchant_clickout(
         offer.offer_id,
         tasks,
+        measurement="granted-v1",
         src="instagram",
         cmp="qa_campaign",
         content="qa_content",

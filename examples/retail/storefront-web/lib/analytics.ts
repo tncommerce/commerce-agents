@@ -100,7 +100,7 @@ function acquisitionTarget(url: string): URL | null {
   if (typeof window === "undefined") return null;
   try {
     const origin = window.location.origin;
-    const target = new URL(url, origin);
+    const target = new URL(url, window.location.href || origin);
     if (!/^https?:$/.test(target.protocol) || target.username || target.password) return null;
     const isClickout = (prefix: string, suffix = ""): boolean => {
       if (!target.pathname.startsWith(prefix) || !target.pathname.endsWith(suffix)) return false;
@@ -121,6 +121,9 @@ function stripOptionalFields(target: URL): void {
   for (const key of OPTIONAL_URL_FIELDS) target.searchParams.delete(key);
 }
 export function appendAcquisitionAttribution(url: string): string {
+  // A fragment is same-document navigation, not a new acquisition or clickout.
+  // Preserve its raw form and never turn it into a different page destination.
+  if (url.startsWith("#")) return url;
   const target = acquisitionTarget(url);
   if (!target) return url;
   if (!measurementAllowed()) { stripOptionalFields(target); return target.toString(); }
@@ -163,8 +166,14 @@ function clearOptionalState(): void {
   // React may retain a previously decorated href. Clean every permitted owned
   // destination now, and re-evaluate at native navigation in capture phase below.
   for (const anchor of document.querySelectorAll<HTMLAnchorElement>("a[href]")) {
-    const target = acquisitionTarget(anchor.href);
-    if (target) { stripOptionalFields(target); anchor.href = target.toString(); }
+    const raw = anchor.getAttribute?.("href") ?? anchor.href;
+    if (raw.startsWith("#")) continue;
+    const target = acquisitionTarget(raw);
+    if (target) {
+      const before = target.toString();
+      stripOptionalFields(target);
+      if (target.toString() !== before) anchor.href = target.toString();
+    }
   }
 }
 subscribeMeasurement(() => { if (!measurementAllowed()) clearOptionalState(); });
@@ -175,7 +184,10 @@ export function initializeMeasurementPrivacy(): void {
   cleanupInstalled = true;
   const prepare = (event: Event) => {
     const anchor = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[href]") : null;
-    if (anchor && acquisitionTarget(anchor.href)) anchor.href = appendAcquisitionAttribution(anchor.href);
+    const raw = anchor?.getAttribute("href");
+    if (anchor && raw && !raw.startsWith("#") && acquisitionTarget(raw)) {
+      anchor.href = appendAcquisitionAttribution(raw);
+    }
   };
   for (const event of ["pointerdown", "focusin", "click", "auxclick"]) document.addEventListener(event, prepare, true);
   window.addEventListener("pageshow", () => { if (!measurementAllowed()) clearOptionalState(); });

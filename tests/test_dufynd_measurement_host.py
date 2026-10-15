@@ -14,6 +14,7 @@ from uuid import UUID
 
 import httpx
 import pytest
+from fastapi.routing import APIRoute
 
 from retail.api import main
 from retail.api.merchant_offers import MerchantOffer, offer_clickout_target
@@ -88,8 +89,18 @@ def consent_host(monkeypatch):
     monkeypatch.setattr(
         main, "_live_dufynd_offer_product", lambda pid: pid == PID and available["product"]
     )
-    route = next(route for route in main.app.routes if route.path == "/api/analytics/events")
-    dependency = next(item.call for item in route.dependant.dependencies if item.name == "record")
+    # Included routers and static mounts are not API endpoints and need not have
+    # a .path or .dependant. Select only the actual directly registered endpoint.
+    routes = [
+        route
+        for route in main.app.routes
+        if isinstance(route, APIRoute) and route.path == "/api/analytics/events"
+    ]
+    assert len(routes) == 1
+    assert routes[0].endpoint is main.analytics_event
+    dependencies = [item.call for item in routes[0].dependant.dependencies if item.name == "record"]
+    assert len(dependencies) == 1
+    dependency = dependencies[0]
     old_overrides = main.app.dependency_overrides.copy()
     main.app.dependency_overrides[dependency] = lambda: SimpleNamespace(
         session_id="qa-functional-advisor-123456789"

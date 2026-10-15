@@ -103,7 +103,7 @@ export function measurementClient({
   if (choice !== 'unknown') consent.setMeasurementChoice(choice);
   const analytics = load('./analytics');
   return {
-    api, consent, ...analytics, requests, timers, touched, session, local, window,
+    api, consent, ...analytics, requests, timers, touched, session, local, window, document,
     get initializations() { return initializations; },
     dispatch(type, event = {}) { for (const fn of windowEvents.get(type) || []) fn(event); },
   };
