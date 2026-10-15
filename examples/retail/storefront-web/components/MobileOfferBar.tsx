@@ -20,6 +20,7 @@ export default function MobileOfferBar({
   useEffect(() => {
     const trigger = document.getElementById(triggerId);
     const offers = document.getElementById("angebote");
+    const preferences = document.querySelector("[data-measurement-choice]");
     if (!trigger) {
       setVisible(false);
       return;
@@ -36,7 +37,9 @@ export default function MobileOfferBar({
     };
     const syncFromBounds = () => {
       setVisible(
-        !inViewport(trigger) && !(offers && inViewport(offers)),
+        !inViewport(trigger) &&
+          !(offers && inViewport(offers)) &&
+          !(preferences && inViewport(preferences)),
       );
     };
 
@@ -52,10 +55,12 @@ export default function MobileOfferBar({
     }
 
     const observer = new IntersectionObserver(syncFromBounds, {
-      threshold: 0.01,
+      threshold: [0, 0.01],
     });
     observer.observe(trigger);
     if (offers) observer.observe(offers);
+    // Purchase shortcuts must never cover the choice or withdrawal controls.
+    if (preferences) observer.observe(preferences);
     return () => observer.disconnect();
   }, [triggerId]);
 

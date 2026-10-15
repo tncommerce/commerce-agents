@@ -18,14 +18,22 @@ def test_analytics_owned_session_has_bounded_wait_and_recovery_coverage() -> Non
     assert "headers: api.headers()" in request
     assert 'method: "POST"' in request
     assert "clearTimeout(timeoutId)" in request
-    assert "apiSessionPromise = initializeAnalyticsSession()" in analytics_source
-    assert "apiSessionPromise = null" in analytics_source
+    initializer = analytics_source.split("export async function ensureAnalyticsSession", 1)[1]
+    initializer = initializer.split("export type AnalyticsEventName", 1)[0]
+    assert "if (!measurementAllowed()) return null;" in initializer
+    assert "const pending = initializeAnalyticsSession().then(" in initializer
+    assert "if (!measurementStillAllowed(epoch)) return null;" in initializer
+    assert "if (apiSessionPromise === pending) apiSessionPromise = null;" in initializer
+    assert "apiSessionPromise = pending;" in initializer
 
     timeout_qa = qa_source.split("const analyticsSessionTimeoutContext", 1)[1]
     timeout_qa = timeout_qa.split("const attributionClickoutContext", 1)[0]
     assert "setTimeout(resolve, 8_500)" in timeout_qa
-    assert 'failOpenUrl.searchParams.has("sid")' in timeout_qa
+    assert 'const measurementSid = failOpenUrl.searchParams.get("sid")' in timeout_qa
+    assert "measurementSid === recoveredSessionId" in timeout_qa
+    assert 'failOpenUrl.searchParams.get("measurement") !== "granted-v1"' in timeout_qa
     assert "sessionRecoveryAllowed = true" in timeout_qa
-    assert 'recoveredUrl.searchParams.get("sid") !== recoveredSessionId' in timeout_qa
+    assert 'recoveredUrl.searchParams.get("sid") !== measurementSid' in timeout_qa
+    assert 'recoveredUrl.searchParams.get("measurement") !== "granted-v1"' in timeout_qa
     assert 'label: "analytics-session-request-timeout"' in timeout_qa
     assert 'label: "analytics-session-timeout-recovery"' in timeout_qa

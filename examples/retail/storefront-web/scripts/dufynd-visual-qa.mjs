@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { verifyBrandDiscovery } from "./brand-discovery-qa.mjs";
 import { verifyNoteSculpture } from "./note-sculpture-qa.mjs";
 import { verifyConversionSearch } from "./conversion-search-qa.mjs";
@@ -8,6 +9,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
+import { verifyWowExperience } from "./wow-experience-qa.mjs";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
@@ -285,6 +287,10 @@ const report = {
 };
 
 try {
+  try {
+    const results = await verifyWowExperience(browser, baseUrl, outputDir);
+    report.checks.push({ label: "wow22-experience", status: "passed", results });
+  } catch (error) { report.failures.push({ label: "wow22-experience", message: String(error) }); }
   try {
     report.checks.push(...await verifyBrandDiscovery(browser, baseUrl, outputDir));
   } catch (error) { report.failures.push({ label: "brand-discovery", message: String(error) }); }
@@ -1237,8 +1243,7 @@ try {
 
           if ([390, 1440].includes(viewport.width)) {
             const productControl = page
-              .locator('[role="button"]:visible')
-              .filter({ hasText: "Details" })
+              .locator('a[data-dufynd-original-card]:visible')
               .first();
             if ((await productControl.count()) !== 1) {
               throw new Error(
@@ -1247,7 +1252,7 @@ try {
             }
 
             await productControl.focus();
-            await page.keyboard.press("Space");
+            await page.keyboard.press("Enter");
             await page.waitForURL(
               (current) => current.pathname.startsWith("/duft/"),
               { timeout: 5_000 },
@@ -1640,8 +1645,7 @@ try {
       });
     });
 
-    await merchantOfferTimeoutPage.route(
-      "**/api/analytics/events",
+    await merchantOfferTimeoutPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         await route.fulfill({
           status: 200,
@@ -1716,6 +1720,8 @@ try {
           String(response?.status() ?? "no response"),
       );
     }
+
+    await chooseMeasurement(merchantOfferTimeoutPage, "denied");
 
     await merchantOfferTimeoutPage
       .getByText("Händlerangebote werden geprüft …", { exact: true })
@@ -1813,7 +1819,7 @@ try {
       }
       await route.abort("failed");
     });
-    await sessionTimeoutPage.route("**/api/analytics/events", (route) =>
+    await sessionTimeoutPage.route((url) => url.pathname === "/api/analytics/events", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
     );
     await sessionTimeoutPage.route("**/api/merchant-offers/**", (route) =>
@@ -1841,6 +1847,7 @@ try {
       { waitUntil: "domcontentloaded", timeout: 45_000 },
     );
     if (!response?.ok()) throw new Error("session timeout QA did not load");
+    await chooseMeasurement(sessionTimeoutPage, "granted");
     const offers = sessionTimeoutPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 5_000 });
     await offers.locator("[data-clickout-preparing]").waitFor({
@@ -1850,13 +1857,16 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 12_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await clickout.getAttribute("href"));
+    const measurementSid = failOpenUrl.searchParams.get("sid");
     if (
-      failOpenUrl.searchParams.has("sid") ||
+      !/^[0-9a-f-]{36}$/i.test(measurementSid || "") ||
+      measurementSid === recoveredSessionId ||
+      failOpenUrl.searchParams.get("measurement") !== "granted-v1" ||
       failOpenUrl.searchParams.get("src") !== "tiktok" ||
       failOpenUrl.searchParams.get("cmp") !== "qa_session_timeout" ||
       failOpenUrl.searchParams.get("content") !== "qa_session_timeout_content"
     ) {
-      throw new Error("session timeout fail-open installed a stale session or lost attribution");
+      throw new Error("session timeout fail-open lost independent measurement or acquisition context");
     }
     if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
       throw new Error("stalled session kept a loaded merchant offer blocked");
@@ -1866,7 +1876,8 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
     const recoveredUrl = new URL(await clickout.getAttribute("href"));
     if (
-      recoveredUrl.searchParams.get("sid") !== recoveredSessionId ||
+      recoveredUrl.searchParams.get("sid") !== measurementSid ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_session_timeout"
     ) {
       throw new Error("session recovery did not restore first-party correlation");
@@ -1888,6 +1899,27 @@ try {
   });
   try {
     const attributionPage = await attributionClickoutContext.newPage();
+    const merchantClickEvents = [];
+    await attributionPage.route("**/api/session", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ session_id: "qa-live-click-functional-session-123456789" }),
+      });
+    });
+    await attributionPage.route((url) => url.pathname === "/api/analytics/events", async (route) => {
+      try {
+        const payload = route.request().postDataJSON();
+        if (payload?.event === "merchant_clickout") merchantClickEvents.push(payload);
+      } catch {
+        // A malformed analytics request will fail the assertions below.
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ ok: true }),
+      });
+    });
     await attributionPage.route(
       "**/api/merchant-offers/**",
       async (route) => {
@@ -1933,6 +1965,7 @@ try {
       );
     }
 
+    await chooseMeasurement(attributionPage, "granted");
     const offers = attributionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
@@ -1964,8 +1997,38 @@ try {
       throw new Error("merchant clickout no longer opens in a separate browsing context");
     }
 
+    await clickout.evaluate((node) => {
+      node.addEventListener("click", (event) => event.preventDefault(), {
+        capture: true,
+        once: true,
+      });
+    });
+    await clickout.click();
+    for (let attempt = 0; attempt < 100 && merchantClickEvents.length === 0; attempt += 1) {
+      await attributionPage.waitForTimeout(25);
+    }
+    if (merchantClickEvents.length !== 1) {
+      throw new Error("live-consent merchant click did not emit exactly one browser analytics event");
+    }
+    const merchantClick = merchantClickEvents[0];
+    if (
+      merchantClick.product_id !== "SC-RABANNE-1-MILLION-EDT-100" ||
+      merchantClick.offer_id !== "qa-attribution-offer" ||
+      merchantClick.source !== "qa-merchant" ||
+      merchantClick.surface !== "merchant_offer" ||
+      merchantClick.acquisition_source !== "tiktok" ||
+      merchantClick.campaign_id !== "qa_campaign" ||
+      merchantClick.content_id !== "qa_content"
+    ) {
+      throw new Error("live-consent merchant click analytics lost offer or acquisition context");
+    }
+
     report.checks.push({
       label: "merchant-clickout-attribution-link",
+      status: "passed",
+    });
+    report.checks.push({
+      label: "merchant-clickout-live-consent-event",
       status: "passed",
     });
   } catch (error) {
@@ -2003,8 +2066,7 @@ try {
       });
     });
 
-    await offerImpressionPage.route(
-      "**/api/analytics/events",
+    await offerImpressionPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         try {
           const payload = route.request().postDataJSON();
@@ -2068,6 +2130,7 @@ try {
       );
     }
 
+    await chooseMeasurement(offerImpressionPage, "granted");
     const offers = offerImpressionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
     await offers.scrollIntoViewIfNeeded();
@@ -2180,6 +2243,8 @@ try {
       );
     }
 
+    await chooseMeasurement(acquisitionNavigationPage, "granted");
+
     await acquisitionNavigationPage
       .getByRole("link", { name: "Katalog entdecken", exact: true })
       .click();
@@ -2270,8 +2335,7 @@ try {
       });
     });
 
-    await clickoutSessionPage.route(
-      "**/api/analytics/events",
+    await clickoutSessionPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         await route.fulfill({
           status: 200,
@@ -2327,6 +2391,7 @@ try {
       );
     }
 
+    await chooseMeasurement(clickoutSessionPage, "granted");
     const offers = clickoutSessionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
@@ -2344,17 +2409,14 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
 
     await clickoutSessionPage.waitForFunction(
-      ({ selector, sessionId }) => {
+      (selector) => {
         const link = document.querySelector(selector);
         if (!(link instanceof HTMLAnchorElement)) return false;
         const url = new URL(link.href);
-        return url.searchParams.get("sid") === sessionId;
+        return /^[0-9a-f-]{36}$/i.test(url.searchParams.get("sid") || "") &&
+          url.searchParams.get("measurement") === "granted-v1";
       },
-      {
-        selector:
-          '[data-merchant-offers] a[href*="/api/clickout/"]',
-        sessionId: expectedSessionId,
-      },
+      '[data-merchant-offers] a[href*="/api/clickout/"]',
       { timeout: 10_000 },
     );
 
@@ -2370,7 +2432,9 @@ try {
       clickoutUrl.searchParams.get("src") !== "tiktok" ||
       clickoutUrl.searchParams.get("cmp") !== "qa_sid_campaign" ||
       clickoutUrl.searchParams.get("content") !== "qa_sid_content" ||
-      clickoutUrl.searchParams.get("sid") !== expectedSessionId
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("sid") === expectedSessionId ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant clickout did not correlate acquisition and analytics session context",
@@ -2450,6 +2514,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerSessionPage, "granted");
     const discovery = partnerSessionPage.getByRole("region", {
       name: "Partnerhändler entdecken",
     });
@@ -2484,7 +2549,9 @@ try {
       clickoutUrl.searchParams.get("src") !== "instagram" ||
       clickoutUrl.searchParams.get("cmp") !== "qa_partner_campaign" ||
       clickoutUrl.searchParams.get("content") !== "qa_partner_content" ||
-      clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("sid") === expectedPartnerSessionId ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant discovery clickout did not correlate acquisition and storefront session context",
@@ -2562,6 +2629,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerSessionFailurePage, "granted");
     const discovery = partnerSessionFailurePage.getByRole("region", {
       name: "Partnerhändler entdecken",
     });
@@ -2597,7 +2665,8 @@ try {
       clickoutUrl.searchParams.get("cmp") !== "qa_partner_failure" ||
       clickoutUrl.searchParams.get("content") !==
         "qa_partner_failure_content" ||
-      clickoutUrl.searchParams.has("sid")
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant discovery session-failure fallback lost attribution or emitted an invalid sid",
@@ -2828,6 +2897,7 @@ try {
       );
     }
 
+    await chooseMeasurement(partnerTimeoutRecoveryPage, "granted");
     const loading = partnerTimeoutRecoveryPage.locator(
       "[data-merchant-discovery-loading]",
     );
@@ -2864,8 +2934,11 @@ try {
       name: /QA Partner Timeout Recovery öffnen/,
     });
     const recoveredUrl = new URL(await recoveredPartner.getAttribute("href"));
+    const partnerMeasurementSid = recoveredUrl.searchParams.get("sid");
     if (
-      recoveredUrl.searchParams.get("sid") !== "qa-partner-timeout-recovery-session-1234567890" ||
+      !/^[0-9a-f-]{36}$/i.test(partnerMeasurementSid || "") ||
+      partnerMeasurementSid === "qa-partner-timeout-recovery-session-1234567890" ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("src") !== "instagram" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_partner_timeout_recovery"
     ) {
@@ -2948,7 +3021,7 @@ try {
       }
       await route.abort("failed");
     });
-    await homeSessionTimeoutPage.route("**/api/analytics/events", (route) =>
+    await homeSessionTimeoutPage.route((url) => url.pathname === "/api/analytics/events", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
     );
     await homeSessionTimeoutPage.route("**/api/merchant-partners", (route) =>
@@ -2970,6 +3043,7 @@ try {
       { waitUntil: "domcontentloaded", timeout: 45_000 },
     );
     if (!response?.ok()) throw new Error("homepage session timeout QA did not load");
+    await chooseMeasurement(homeSessionTimeoutPage, "granted");
     await homeSessionTimeoutPage.locator("[data-partner-clickout-preparing]").waitFor({
       state: "visible", timeout: 5_000,
     });
@@ -2979,8 +3053,11 @@ try {
     await partnerLink.waitFor({ state: "visible", timeout: 12_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await partnerLink.getAttribute("href"));
+    const homeMeasurementSid = failOpenUrl.searchParams.get("sid");
     if (
-      failOpenUrl.searchParams.has("sid") ||
+      !/^[0-9a-f-]{36}$/i.test(homeMeasurementSid || "") ||
+      homeMeasurementSid === recoveredHomeSessionId ||
+      failOpenUrl.searchParams.get("measurement") !== "granted-v1" ||
       failOpenUrl.searchParams.get("src") !== "instagram" ||
       failOpenUrl.searchParams.get("cmp") !== "qa_home_session_timeout" ||
       failOpenUrl.searchParams.get("content") !== "qa_home_session_content" ||
@@ -2993,7 +3070,8 @@ try {
     await partnerLink.waitFor({ state: "visible", timeout: 10_000 });
     const recoveredUrl = new URL(await partnerLink.getAttribute("href"));
     if (
-      recoveredUrl.searchParams.get("sid") !== recoveredHomeSessionId ||
+      recoveredUrl.searchParams.get("sid") !== homeMeasurementSid ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_home_session_timeout"
     ) {
       throw new Error("homepage session recovery lost first-party correlation");
@@ -3027,6 +3105,8 @@ try {
           String(response?.status() ?? "no response"),
       );
     }
+
+    await chooseMeasurement(productDetailAttributionPage, "granted");
 
     // SITE-13 keeps secondary purchase-page actions in a native disclosure.
     // Expand it like a visitor before inspecting its visible comparison link.
@@ -3082,6 +3162,7 @@ try {
       { waitUntil: "networkidle" },
     );
     if (!response?.ok()) throw new Error("free comparison did not load");
+    await chooseMeasurement(comparisonPage, "granted");
     await comparisonPage.getByRole("combobox", { name: "Duft 1" })
       .selectOption("SC-XERJOFF-NAXOS-100");
     await comparisonPage.getByRole("combobox", { name: "Duft 2" })
@@ -3194,6 +3275,7 @@ try {
       );
     }
 
+    await chooseMeasurement(comparisonDetailPage, "granted");
     const detailProductHref = await comparisonDetailPage
       .locator('[data-dufynd-comparison-side="left"] a')
       .first()

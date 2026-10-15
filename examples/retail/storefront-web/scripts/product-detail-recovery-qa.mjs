@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 // The showcase mounts the same advisor result component without a paid chat call.
@@ -38,6 +39,7 @@ export async function verifyProductDetailRecovery(browser, baseUrl) {
   try {
     const openFirst = async () => {
       await page.goto(`${baseUrl}/showcase`);
+      await chooseMeasurement(page, 'denied');
       await page.locator('[data-component="products"]')
         .getByRole("button", { name: /Details ansehen/ }).first().click();
     };
@@ -93,6 +95,7 @@ export async function verifySingleResponsiveProductDetail(browser, baseUrl) {
     });
     try {
       await page.goto(`${baseUrl}/showcase`);
+      await chooseMeasurement(page, 'denied');
       const products = page.locator('[data-component="products"]');
       if (width === 390) {
         await products.getByRole("button", { name: /Details ansehen/ }).first().click();
@@ -130,6 +133,7 @@ export async function verifyClosedProductDetailFocus(browser, baseUrl) {
     await page.route("**/api/products/AR-*", (route) => route.fulfill({ status: 503, body: "unavailable" }));
     try {
       await page.goto(`${baseUrl}/showcase`);
+      await chooseMeasurement(page, 'denied');
       const products = page.locator('[data-component="products"]');
       const opener = products.getByRole("button", { name: /Stacking Wooden/ }).first();
       const close = products.getByRole("button", { name: "Details schließen", exact: true });

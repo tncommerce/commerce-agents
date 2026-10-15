@@ -492,7 +492,36 @@ export default async function FragrancePage({
                 className="dufynd-fragrance-stage-visual absolute inset-0 h-full w-full"
                 priority
               />
-              {!heroIsProductTruth ? (
+              {!heroIsProductTruth && offerOnlyPricing ? (
+                <details
+                  className="dufynd-scent-index"
+                  data-dufynd-source-honest-notes="rabanne-edt-100"
+                >
+                  <summary className="dufynd-scent-index-toggle">
+                    <span className="dufynd-scent-index-toggle-copy">
+                      <small>DUFYND / Originalfoto in Prüfung</small>
+                      <strong>Sechs dokumentierte Duftnoten ansehen</strong>
+                    </span>
+                    <span aria-hidden="true" className="dufynd-scent-index-toggle-icon">+</span>
+                  </summary>
+                  <div className="dufynd-scent-index-reveal">
+                    <span className="dufynd-scent-index-aura" aria-hidden="true" />
+                    <div className="dufynd-scent-index-top">
+                      <span>DUFYND / Duftarchiv</span>
+                      <span>{fragrance.volume_ml} ml · {fragrance.concentration}</span>
+                    </div>
+                    <h2>Ein Duft. Sechs dokumentierte Noten.</h2>
+                    <ul aria-label="Dokumentierte Duftnoten">
+                      {fragrance.notes.key.slice(0, 6).map((note) => (
+                        <li key={note}>{noteLabel(note)}</li>
+                      ))}
+                    </ul>
+                    <p className="dufynd-detail-source-hold">
+                      Originalfoto in Prüfung · Keine Flakonabbildung
+                    </p>
+                  </div>
+                </details>
+              ) : !heroIsProductTruth ? (
                 <p className="dufynd-detail-source-hold">
                   Originalfoto in Prüfung · Duftprofil bleibt verfügbar
                 </p>

@@ -64,13 +64,18 @@ STAGES = {
         "examples/retail/api/main.py",
         (
             "async def merchant_clickout",
-            "sanitize_attribution_identifier(sid)",
-            "RedirectResponse(url=target",
+            "A copied GET cannot demonstrate current optional consent",
+            "RedirectResponse(",
+            "url=target,",
         ),
     ),
-    "tracking_url": (
-        "examples/retail/api/merchant_partners.py",
-        ("def partner_clickout_url", 'query.append(("clickref", clickref))', "urlencode(query)"),
+    "browser_clickout": (
+        PREFIX + "components/FragranceOffers.tsx",
+        (
+            'trackAnalyticsEvent("merchant_clickout"',
+            "offer_id: offer.offer_id",
+            'surface: "merchant_offer"',
+        ),
     ),
     "offer_target": (
         "examples/retail/api/merchant_offers.py",
@@ -78,11 +83,24 @@ STAGES = {
     ),
     "server_analytics": (
         "examples/retail/api/main.py",
-        ("analytics_tracker.record", 'event="merchant_clickout"', "async def analytics_event"),
+        ("async def analytics_event", "analytics_tracker.record", "offer_id=request.offer_id"),
     ),
     "tests": (
         "examples/retail/api/tests/test_clickout_analytics_correlation.py",
-        ("sid", "campaign_id"),
+        (
+            "test_live_consent_analytics_post_correlates_offer_and_acquisition",
+            "analytics_session_id=",
+            'offer_id="qa-offer"',
+            'campaign_id="launch_02"',
+        ),
+    ),
+    "client_consent": (
+        PREFIX + "lib/analytics.ts",
+        ("measurementAllowed()", "measurementStillAllowed(epoch)", "controller.abort()"),
+    ),
+    "server_consent": (
+        "examples/retail/api/main.py",
+        ('if measurement != "granted-v1":', '"recorded": False', '"storage": "disabled"'),
     ),
 }
 CONTENT_ESSENTIAL = {
@@ -229,8 +247,12 @@ def maker_fixture(task: dict, packet: dict) -> str:
     candidates = []
     if task["domain"] == "research":
         for _, (path, needles) in STAGES.items():
-            source = next(s for s in packet["repository_evidence"] if s["path"] == path)
+            source = next((s for s in packet["repository_evidence"] if s["path"] == path), None)
             quote = needles[0]
+            if source is None or quote not in source_text(source):
+                # Missing evidence stays incomplete: no invented citation and no
+                # StopIteration before the independent checker can reject it.
+                continue
             claims.append(
                 {
                     "kind": "verbatim_repository_fact",

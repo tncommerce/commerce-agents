@@ -2,9 +2,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import type { Metadata } from "next";
+import MeasurementPreferences from "@/components/MeasurementPreferences";
 import { Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import "./premium-discovery.css";
+import "./atelier.css";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 
 const instrumentSans = Instrument_Sans({
@@ -16,6 +18,7 @@ const instrumentSans = Instrument_Sans({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  referrer: "strict-origin",
   applicationName: "DUFYND",
   creator: "TNCommerce",
   publisher: "TNCommerce",
@@ -76,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         {children}
+        <MeasurementPreferences />
       </body>
     </html>
   );

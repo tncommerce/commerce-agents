@@ -14,9 +14,13 @@ def test_custom_product_controls_support_enter_and_space() -> None:
     assert source.count("activateOnKeyboard(event, openProduct)") == 2
 
 
-def test_dufynd_home_uses_both_keyboard_guarded_card_variants() -> None:
+def test_dufynd_home_uses_native_product_links() -> None:
     source = HOME_VIEW.read_text(encoding="utf-8")
-
-    assert "<ProductRow" in source
-    assert "<ProductTile" in source
-    assert source.count("onOpen={(item) =>") >= 2
+    selection = Path("examples/retail/storefront-web/components/AtelierSelection.tsx").read_text(
+        encoding="utf-8"
+    )
+    assert "<AtelierSelection />" in source
+    assert "<AcquisitionInternalLink data-dufynd-original-card" in selection
+    assert "href={`/duft/${p.slug}`}" in selection
+    # Native links use Enter, unlike the old custom role=button/Space controls.
+    # Actual focus, navigation and attribution are asserted in browser QA.

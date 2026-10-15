@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 import { trackAnalyticsEvent } from "@/lib/analytics";
+import { measurementAllowed, subscribeMeasurement } from "@/lib/measurementConsent";
 
 export default function ComparisonAnalytics({
   productId,
@@ -15,18 +16,27 @@ export default function ComparisonAnalytics({
   source?: string;
   surface?: string;
 }) {
-  const trackedRef = useRef(false);
+  const trackedRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (trackedRef.current) return;
-    trackedRef.current = true;
-
-    void trackAnalyticsEvent("comparison_start", {
-      product_id: productId,
-      related_product_id: relatedProductId,
-      source,
-      surface,
-    });
+    const key = `${productId}:${relatedProductId}:${source}:${surface}`;
+    const trackCurrentComparison = () => {
+      if (!measurementAllowed()) {
+        trackedRef.current = null;
+        return;
+      }
+      if (trackedRef.current === key) return;
+      trackedRef.current = key;
+      void trackAnalyticsEvent("comparison_start", {
+        product_id: productId,
+        related_product_id: relatedProductId,
+        source,
+        surface,
+      });
+    };
+    const unsubscribe = subscribeMeasurement(trackCurrentComparison);
+    trackCurrentComparison();
+    return unsubscribe;
   }, [productId, relatedProductId, source, surface]);
 
   return null;

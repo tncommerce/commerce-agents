@@ -20,6 +20,16 @@ def test_merchant_clickout_attribution_is_browser_covered() -> None:
     assert 'clickoutUrl.searchParams.get("cmp") !== "qa_campaign"' in source
     assert 'clickoutUrl.searchParams.get("content") !== "qa_content"' in source
     assert 'clickout.getAttribute("target")' in source
+    assert 'label: "merchant-clickout-live-consent-event"' in source
+    offers_source = FRAGRANCE_OFFERS.read_text(encoding="utf-8")
+    merchant_source = Path(
+        "examples/retail/storefront-web/components/MerchantDiscovery.tsx"
+    ).read_text(encoding="utf-8")
+    assert 'trackAnalyticsEvent("merchant_clickout"' in offers_source
+    assert "offer_id: offer.offer_id" in offers_source
+    assert 'surface: "merchant_offer"' in offers_source
+    assert 'trackAnalyticsEvent("merchant_clickout"' in merchant_source
+    assert 'surface: "merchant_discovery"' in merchant_source
 
 
 def test_offer_section_impression_is_distinct_and_browser_covered() -> None:
@@ -67,7 +77,9 @@ def test_clickout_waits_for_first_party_analytics_session() -> None:
     assert '"**/api/session"' in source
     assert "qa-clickout_session-1234567890" in source
     assert "setTimeout(resolve, 1200)" in source
-    assert 'clickoutUrl.searchParams.get("sid") !== expectedSessionId' in source
+    assert 'clickoutUrl.searchParams.get("sid") === expectedSessionId' in source
+    assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
+    assert '!/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "")' in source
     assert "merchant clickout did not correlate acquisition and analytics session context" in source
     assert (
         "merchant clickout became actionable before analytics session correlation completed"
@@ -99,7 +111,8 @@ def test_merchant_discovery_waits_for_storefront_session() -> None:
         "merchant discovery clickout became actionable before storefront session correlation completed"
         in source
     )
-    assert 'clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId' in source
+    assert 'clickoutUrl.searchParams.get("sid") === expectedPartnerSessionId' in source
+    assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
     assert "data-partner-clickout-preparing" in merchant_source
     assert "sessionSettled ? (" in merchant_source
     assert "<MerchantDiscovery sessionSettled={sessionSettled} />" in home_source
@@ -116,7 +129,8 @@ def test_merchant_discovery_fails_open_after_session_attempt_settles() -> None:
         "merchant discovery fail-open link became actionable before session initialization settled"
         in source
     )
-    assert 'clickoutUrl.searchParams.has("sid")' in source
+    assert '!/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "")' in source
+    assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
     assert "settled?: boolean" in session_source
     assert "settled: false" in session_source
     assert "settled: true" in session_source

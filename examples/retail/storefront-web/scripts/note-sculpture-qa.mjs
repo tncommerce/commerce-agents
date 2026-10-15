@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyNoteSculpture(browser, baseUrl, outputDir) {
@@ -47,6 +48,7 @@ export async function verifyNoteSculpture(browser, baseUrl, outputDir) {
     const page = await context.newPage();
     try {
       await page.goto(`${baseUrl}/duft/xerjoff-naxos?qa=1`);
+      await chooseMeasurement(page, "denied");
       const advanced = page.locator("details.dufynd-fragrance-advanced");
       await advanced.locator("summary").click();
       const studio = page.locator("[data-note-sculpture]");

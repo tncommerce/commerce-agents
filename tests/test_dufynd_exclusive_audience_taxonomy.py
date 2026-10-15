@@ -30,8 +30,8 @@ def test_homepage_uses_same_exclusive_audience_taxonomy() -> None:
     source = HOME.read_text(encoding="utf-8")
 
     assert "catalogAudienceFor(fragrance.target_groups)" in source
-    assert "fragranceMatchesAudience(fragrance, audience)" in source
-    assert "fragranceMatchesAudience(fragrance, audience.key)" in source
+    # Homepage now counts categories and links to the shared catalog filter.
+    assert "counts[audience] += 1" in source
     assert ".target_groups.includes(audience" not in source
 
 
