@@ -115,17 +115,17 @@ CODE_WINDOWS = {
     ],
     "examples/retail/storefront-web/components/FragranceOffers.tsx": [
         ("ensureAnalyticsSession().finally", 2, 10),
-        ("href={appendAcquisitionAttribution", 2, 11),
+        ("href={appendAcquisitionAttribution", 2, 4),
+        ('trackAnalyticsEvent("merchant_clickout"', 1, 8),
     ],
     "examples/retail/storefront-web/lib/api.ts": [
         ("export async function initializeAnalyticsSession", 0, 20),
         ("export function merchantClickoutUrl", 0, 5),
     ],
     "examples/retail/api/main.py": [
-        ("async def merchant_clickout(", 1, 44),
-        ("async def analytics_event(", 1, 25),
-        ("target = partner_clickout_url(", 0, 11),
-        ('event="merchant_clickout"', 2, 8),
+        ("async def merchant_partner_clickout(", 1, 27),
+        ("async def analytics_event(", 1, 30),
+        ("async def merchant_clickout(", 1, 28),
     ],
     "examples/retail/api/merchant_offers.py": [
         ("def offer_clickout_target(", 0, 7),

@@ -64,14 +64,18 @@ STAGES = {
         "examples/retail/api/main.py",
         (
             "async def merchant_clickout",
-            "sanitize_attribution_identifier(sid)",
+            "A copied GET cannot demonstrate current optional consent",
             "RedirectResponse(",
             "url=target,",
         ),
     ),
-    "tracking_url": (
-        "examples/retail/api/merchant_partners.py",
-        ("def partner_clickout_url", 'query.append(("clickref", clickref))', "urlencode(query)"),
+    "browser_clickout": (
+        PREFIX + "components/FragranceOffers.tsx",
+        (
+            'trackAnalyticsEvent("merchant_clickout"',
+            "offer_id: offer.offer_id",
+            'surface: "merchant_offer"',
+        ),
     ),
     "offer_target": (
         "examples/retail/api/merchant_offers.py",
@@ -79,7 +83,7 @@ STAGES = {
     ),
     "server_analytics": (
         "examples/retail/api/main.py",
-        ("analytics_tracker.record", 'event="merchant_clickout"', "async def analytics_event"),
+        ("async def analytics_event", "analytics_tracker.record", "offer_id=request.offer_id"),
     ),
     "tests": (
         "examples/retail/api/tests/test_clickout_analytics_correlation.py",

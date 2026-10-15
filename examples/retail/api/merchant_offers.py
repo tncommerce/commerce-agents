@@ -93,6 +93,8 @@ def offer_clickout_target(
 ) -> str | None:
     if _https_url(offer.affiliate_url):
         target = str(offer.affiliate_url).strip()
+        if clickrefs is None and click_id is None:
+            return target
         parsed = urlparse(target)
         hostname = str(parsed.hostname or "").casefold().rstrip(".")
         context = list(clickrefs or ())[:4]

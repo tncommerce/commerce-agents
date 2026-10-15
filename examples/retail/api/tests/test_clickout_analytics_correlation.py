@@ -1,15 +1,14 @@
 from __future__ import annotations
 
-import json
 from datetime import UTC, datetime
-from pathlib import Path
+from types import SimpleNamespace
 from urllib.parse import parse_qs, urlparse
 
 import pytest
 
 from retail.api import main as main_module
-from retail.api.analytics import FirstPartyAnalyticsTracker
-from retail.api.merchant_offers import MerchantClickoutTracker, MerchantOffer
+from retail.api.analytics import AnalyticsEventRequest
+from retail.api.merchant_offers import MerchantOffer
 from retail.api.merchant_partners import MerchantPartner
 
 
@@ -26,9 +25,7 @@ class StaticPartnerStore:
         self.partner = partner
 
     def eligible(self, partner_key: str) -> MerchantPartner | None:
-        if partner_key == self.partner.merchant_id:
-            return self.partner
-        return None
+        return self.partner if partner_key == self.partner.merchant_id else None
 
 
 class StaticOfferStore:
@@ -36,9 +33,7 @@ class StaticOfferStore:
         self.offer = offer
 
     def eligible_offer(self, offer_id: str) -> MerchantOffer | None:
-        if offer_id == self.offer.offer_id:
-            return self.offer
-        return None
+        return self.offer if offer_id == self.offer.offer_id else None
 
 
 class CapturingClickoutTracker:
@@ -50,8 +45,17 @@ class CapturingClickoutTracker:
         return "12345678-1234-4234-8234-123456789abc"
 
 
+class CapturingAnalyticsTracker:
+    def __init__(self) -> None:
+        self.calls: list[dict[str, object]] = []
+
+    async def record(self, **kwargs):
+        self.calls.append(kwargs)
+        return "12345678-1234-4234-8234-123456789abc", "test-memory"
+
+
 @pytest.mark.asyncio
-async def test_partner_clickout_correlates_session_and_acquisition(
+async def test_partner_copied_grant_redirect_is_measurement_free(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     partner = MerchantPartner(
@@ -61,11 +65,7 @@ async def test_partner_clickout_correlates_session_and_acquisition(
         affiliate_url="https://example.com/partner",
         last_verified_at=datetime(2026, 9, 30, 12, 0, tzinfo=UTC),
     )
-    monkeypatch.setattr(
-        main_module,
-        "partner_store",
-        StaticPartnerStore(partner),
-    )
+    monkeypatch.setattr(main_module, "partner_store", StaticPartnerStore(partner))
     tasks = CapturingBackgroundTasks()
 
     response = await main_module.merchant_partner_clickout(
@@ -79,26 +79,14 @@ async def test_partner_clickout_correlates_session_and_acquisition(
     )
 
     assert response.status_code == 302
-    assert response.headers["location"] == "https://example.com/partner"
-    assert len(tasks.calls) == 1
-
-    func, args, kwargs = tasks.calls[0]
-    assert func == main_module.analytics_tracker.record
-    assert args == ()
-    assert kwargs == {
-        "session_id": "session-partner-123456",
-        "event": "merchant_clickout",
-        "internal_qa": False,
-        "source": "qa-partner",
-        "acquisition_source": "tiktok",
-        "campaign_id": "launch_01",
-        "content_id": "partner_card_01",
-        "surface": "merchant_discovery",
-    }
+    assert response.headers["location"] == partner.affiliate_url
+    assert response.headers["cache-control"] == "no-store"
+    assert response.headers["referrer-policy"] == "no-referrer"
+    assert tasks.calls == []
 
 
 @pytest.mark.asyncio
-async def test_offer_clickout_correlates_session_and_acquisition(
+async def test_offer_copied_grant_redirect_is_measurement_free(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     offer = MerchantOffer(
@@ -116,21 +104,9 @@ async def test_offer_clickout_correlates_session_and_acquisition(
         last_updated_at=datetime(2026, 9, 30, 12, 0, tzinfo=UTC),
     )
     clickouts = CapturingClickoutTracker()
-    monkeypatch.setattr(
-        main_module,
-        "offer_store",
-        StaticOfferStore(offer),
-    )
-    monkeypatch.setattr(
-        main_module,
-        "clickout_tracker",
-        clickouts,
-    )
-    monkeypatch.setattr(
-        main_module,
-        "_live_dufynd_offer_product",
-        lambda product_id: product_id == "SC-QA-100",
-    )
+    monkeypatch.setattr(main_module, "offer_store", StaticOfferStore(offer))
+    monkeypatch.setattr(main_module, "clickout_tracker", clickouts)
+    monkeypatch.setattr(main_module, "_live_dufynd_offer_product", lambda _: True)
     tasks = CapturingBackgroundTasks()
 
     response = await main_module.merchant_clickout(
@@ -144,41 +120,15 @@ async def test_offer_clickout_correlates_session_and_acquisition(
     )
 
     assert response.status_code == 302
-    assert response.headers["location"] == "https://network.example/click"
-    assert clickouts.calls == [
-        (
-            offer,
-            {
-                "acquisition_source": "instagram",
-                "campaign_id": "launch_02",
-                "content_id": "offer_card_02",
-                "session_id": "session-offer-123456",
-                "internal_qa": False,
-            },
-        )
-    ]
-    assert len(tasks.calls) == 1
-
-    func, args, kwargs = tasks.calls[0]
-    assert func == main_module.analytics_tracker.record
-    assert args == ()
-    assert kwargs == {
-        "session_id": "session-offer-123456",
-        "event": "merchant_clickout",
-        "internal_qa": False,
-        "product_id": "SC-QA-100",
-        "source": "qa-merchant",
-        "acquisition_source": "instagram",
-        "campaign_id": "launch_02",
-        "content_id": "offer_card_02",
-        "surface": "merchant_offer",
-        "offer_id": "qa-offer",
-        "event_id": "12345678-1234-4234-8234-123456789abc",
-    }
+    assert response.headers["location"] == offer.affiliate_url
+    assert response.headers["cache-control"] == "no-store"
+    assert response.headers["referrer-policy"] == "no-referrer"
+    assert clickouts.calls == []
+    assert tasks.calls == []
 
 
 @pytest.mark.asyncio
-async def test_offer_clickout_forwards_attribution_into_awin_clickrefs(
+async def test_awin_copied_context_does_not_generate_clickrefs(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     offer = MerchantOffer(
@@ -199,14 +149,8 @@ async def test_offer_clickout_forwards_attribution_into_awin_clickrefs(
         ),
         last_updated_at=datetime(2026, 9, 30, 12, 0, tzinfo=UTC),
     )
-    clickouts = CapturingClickoutTracker()
     monkeypatch.setattr(main_module, "offer_store", StaticOfferStore(offer))
-    monkeypatch.setattr(main_module, "clickout_tracker", clickouts)
-    monkeypatch.setattr(
-        main_module,
-        "_live_dufynd_offer_product",
-        lambda product_id: product_id == "SC-QA-100",
-    )
+    monkeypatch.setattr(main_module, "_live_dufynd_offer_product", lambda _: True)
     tasks = CapturingBackgroundTasks()
 
     response = await main_module.merchant_clickout(
@@ -220,21 +164,21 @@ async def test_offer_clickout_forwards_attribution_into_awin_clickrefs(
     )
 
     assert response.status_code == 302
+    assert response.headers["location"] == offer.affiliate_url
     query = parse_qs(urlparse(response.headers["location"]).query)
-    assert query["clickref"] == ["content_01"]
-    assert query["clickref2"] == ["campaign_01"]
-    assert query["clickref3"] == ["youtube"]
-    assert query["clickref4"] == ["12345678123442348234123456789abc"]
-    assert tasks.calls[0][2]["event_id"].replace("-", "") == query["clickref4"][0]
-    assert tasks.calls[0][2]["session_id"] == "session-1234567890"
-    assert query["clickref5"] == ["SC-QA-100"]
-    assert query["clickref6"] == ["awin-offer"]
+    assert query["clickref"] == ["static_old"]
+    assert "clickref2" not in query
+    assert "clickref3" not in query
+    assert "clickref4" not in query
+    assert "clickref5" not in query
+    assert "clickref6" not in query
+    assert tasks.calls == []
 
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("session_id", ["session-cj-1234567890", None])
-async def test_cj_sid_joins_durable_clickout_without_changing_destination(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, session_id: str | None
+async def test_cj_copied_grant_does_not_replace_static_destination_sid(
+    monkeypatch: pytest.MonkeyPatch, session_id: str | None
 ) -> None:
     offer = MerchantOffer(
         offer_id="notino-pdm-delina-edp-75",
@@ -252,15 +196,10 @@ async def test_cj_sid_joins_durable_clickout_without_changing_destination(
         network="CJ Affiliate",
         last_updated_at=datetime.now(UTC),
     )
-    tracker = FirstPartyAnalyticsTracker(tmp_path / "analytics.jsonl")
-    tracker.supabase_url = ""
-    monkeypatch.setattr(main_module, "analytics_tracker", tracker)
-    monkeypatch.setattr(
-        main_module, "clickout_tracker", MerchantClickoutTracker(tmp_path / "clicks.jsonl")
-    )
     monkeypatch.setattr(main_module, "offer_store", StaticOfferStore(offer))
     monkeypatch.setattr(main_module, "_live_dufynd_offer_product", lambda _: True)
     tasks = CapturingBackgroundTasks()
+
     response = await main_module.merchant_clickout(
         offer.offer_id,
         tasks,
@@ -270,24 +209,53 @@ async def test_cj_sid_joins_durable_clickout_without_changing_destination(
         content="qa_content",
         sid=session_id,
     )
-    for func, args, kwargs in tasks.calls:
-        await func(*args, **kwargs)
-    row = json.loads(tracker.path.read_text())
-    local = json.loads((tmp_path / "clicks.jsonl").read_text())
-    target = urlparse(response.headers["location"])
-    query = parse_qs(target.query)
-    assert target.netloc == "www.jdoqocy.com"
-    assert target.path == "/click-101884613-12260695"
+
+    assert response.status_code == 302
+    assert response.headers["location"] == offer.affiliate_url
+    query = parse_qs(urlparse(response.headers["location"]).query)
+    assert query["SID"] == ["old"]
+    assert query["sid"] == ["older"]
     assert query["url"] == [offer.product_url]
-    assert query["sid"] == [row["event_id"].replace("-", "")]
-    assert len(query["sid"][0]) == 32
-    assert "SID" not in query
-    assert row["event_id"] == local["click_id"]
-    assert row["session_key"] == local["session_key"]
-    assert row["offer_id"] == offer.offer_id
-    assert row["product_id"] == offer.product_id
-    assert row["campaign_id"] == "qa_campaign"
-    assert row["content_id"] == "qa_content"
-    assert row["acquisition_source"] == "instagram"
-    assert row["source"] == "notino"
-    assert "session_id" not in row
+    assert tasks.calls == []
+
+
+@pytest.mark.asyncio
+async def test_live_consent_analytics_post_correlates_offer_and_acquisition(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    tracker = CapturingAnalyticsTracker()
+    monkeypatch.setattr(main_module, "analytics_tracker", tracker)
+    payload = AnalyticsEventRequest(
+        event="merchant_clickout",
+        analytics_session_id="measurement-session-1234567890",
+        product_id="SC-QA-100",
+        offer_id="qa-offer",
+        source="qa-merchant",
+        acquisition_source="instagram",
+        campaign_id="launch_02",
+        content_id="offer_card_02",
+        surface="merchant_offer",
+    )
+
+    response = await main_module.analytics_event(
+        payload,
+        SimpleNamespace(session_id="functional-session-1234567890"),
+        measurement="granted-v1",
+    )
+
+    assert response == {
+        "ok": True,
+        "event_id": "12345678-1234-4234-8234-123456789abc",
+        "storage": "test-memory",
+    }
+    assert len(tracker.calls) == 1
+    call = tracker.calls[0]
+    assert call["session_id"] == "measurement-session-1234567890"
+    assert call["event"] == "merchant_clickout"
+    assert call["product_id"] == "SC-QA-100"
+    assert call["offer_id"] == "qa-offer"
+    assert call["source"] == "qa-merchant"
+    assert call["acquisition_source"] == "instagram"
+    assert call["campaign_id"] == "launch_02"
+    assert call["content_id"] == "offer_card_02"
+    assert call["surface"] == "merchant_offer"

@@ -123,6 +123,7 @@ def request():
         event="page_view",
         internal_qa=True,
         product_id=None,
+        offer_id=None,
         source="fixture",
         acquisition_source="instagram",
         campaign_id="synthetic",
