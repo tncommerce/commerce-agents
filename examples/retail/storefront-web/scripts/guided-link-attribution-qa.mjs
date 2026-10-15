@@ -57,13 +57,18 @@ export async function verifyGuidedLinkAttribution(browser, baseUrl) {
         assert.equal(messages.length, storage === "all_denied" ? 0 : 1,
           "attribution handoff must preserve the existing storage-based confirmation gate");
         const homeView = events.find((event) => event.event === "page_view" && event.source === "storefront");
-        assert.ok(homeView, "the destination page view must be recorded");
         const consultation = events.find((event) => event.event === "consultation_start");
-        if (storage !== "all_denied") assert.ok(consultation);
-        for (const event of [homeView, consultation].filter(Boolean)) {
-          assert.equal(event.acquisition_source, "tiktok");
-          assert.equal(event.campaign_id, "gift_video");
-          assert.equal(event.content_id, "video_1");
+        if (storage === "all_denied") {
+          assert.equal(homeView, undefined, "memory-only consent must not survive document navigation");
+          assert.equal(consultation, undefined, "no destination telemetry after unpersisted consent is revoked");
+        } else {
+          assert.ok(homeView, "the destination page view must be recorded");
+          assert.ok(consultation);
+          for (const event of [homeView, consultation]) {
+            assert.equal(event.acquisition_source, "tiktok");
+            assert.equal(event.campaign_id, "gift_video");
+            assert.equal(event.content_id, "video_1");
+          }
         }
         assert.equal(new URL(page.url()).searchParams.get("cmp"), "gift_video");
       } finally {

@@ -2883,8 +2883,11 @@ try {
       name: /QA Partner Timeout Recovery öffnen/,
     });
     const recoveredUrl = new URL(await recoveredPartner.getAttribute("href"));
+    const partnerMeasurementSid = recoveredUrl.searchParams.get("sid");
     if (
-      recoveredUrl.searchParams.get("sid") !== "qa-partner-timeout-recovery-session-1234567890" ||
+      !/^[0-9a-f-]{36}$/i.test(partnerMeasurementSid || "") ||
+      partnerMeasurementSid === "qa-partner-timeout-recovery-session-1234567890" ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("src") !== "instagram" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_partner_timeout_recovery"
     ) {
