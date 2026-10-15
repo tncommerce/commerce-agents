@@ -52,6 +52,10 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
           ? `src=${source}&cmp=${campaign}&content=${content}`
           : `utm_source=${source}&utm_campaign=${campaign}&utm_content=${content}`;
         await page.goto(`${baseUrl}/duft/rabanne-1-million?qa=1&${params}`);
+        // A positive attribution test must make the same explicit consent
+        // choice as a real visitor; qa=1 never grants analytics permission.
+        await page.getByRole("button", { name: "Analyse erlauben", exact: true }).click();
+        await page.locator('[data-measurement-choice="granted"]').waitFor();
         const merchant = page.getByRole("link", { name: "Bei Perfumetrader ansehen", exact: true });
         await merchant.waitFor();
         await page.evaluate(() => document.fonts.ready);
@@ -82,9 +86,13 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
         assert.match(await section.innerText(), /Werbung · Partnerlink/);
         const clickout = new URL(await merchant.getAttribute("href"), baseUrl);
         assert.equal(clickout.pathname, `/api/clickout/${offerId}`);
-        for (const [key, value] of [["src", source], ["cmp", campaign], ["content", content], ["sid", session]]) {
+        for (const [key, value] of [["src", source], ["cmp", campaign], ["content", content]]) {
           assert.equal(clickout.searchParams.get(key), value);
         }
+        assert.match(clickout.searchParams.get("sid") || "", /^[0-9a-f-]{36}$/i,
+          "optional analytics has its own UUID, never the advisor transport session");
+        assert.notEqual(clickout.searchParams.get("sid"), session);
+        assert.equal(clickout.searchParams.get("measurement"), "granted-v1");
         assert.match(await merchant.getAttribute("rel"), /sponsored/);
         const catalog = page.locator('nav[aria-label="Breadcrumb"] a').filter({ hasText: "Düfte" });
         const href = new URL(await catalog.getAttribute("href"), baseUrl);
@@ -186,6 +194,8 @@ export async function verifyFirstMoneyLandingStates(browser, baseUrl, outputDir)
         return route.continue();
       });
       await page.goto(`${baseUrl}/duft/rabanne-1-million?qa=1&src=instagram&cmp=qa_landing_final&content=qa_state_review`);
+      await page.getByRole("button", { name: "Analyse erlauben", exact: true }).click();
+      await page.locator('[data-measurement-choice="granted"]').waitFor();
       await page.locator('[data-offer-state]:not([data-offer-state="loading"])').waitFor();
       await page.evaluate(() => document.fonts.ready);
       assert.doesNotMatch(await page.locator("body").innerText(), /Preisreferenz|67,95/);
