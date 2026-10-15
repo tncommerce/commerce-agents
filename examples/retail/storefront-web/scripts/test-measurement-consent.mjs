@@ -115,6 +115,15 @@ for(const options of [{blockedLocal:true},{blockedSession:true},{blockedLocal:tr
  pass(`blocked storage never forces analytics or shopping failure ${JSON.stringify(options)}`);
 }
 {
+ const f=fixture({blockedLocal:true});f.consent.setMeasurementChoice('granted');
+ assert.equal(f.consent.measurementAllowed(),true);
+ f.dispatch('pagehide');
+ assert.equal(f.consent.measurementChoice(),'unknown');
+ await f.analytics.trackAnalyticsEvent('product_open');
+ assert.equal(f.log.posts.length,0);
+ pass('memory-only grant is revoked on document teardown');
+}
+{
  const local=new Map();const a=fixture({local}),b=fixture({local});a.consent.setMeasurementChoice('granted');
  assert.equal(b.consent.measurementChoice(),'granted');await b.analytics.trackAnalyticsEvent('page_view');
  a.consent.setMeasurementChoice('denied');b.dispatch('storage',{key:PKEY});assert.equal(b.consent.measurementAllowed(),false);

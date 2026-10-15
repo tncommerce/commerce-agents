@@ -55,7 +55,18 @@ function install(): void {
     if (event.key !== null && event.key !== MEASUREMENT_PREFERENCE_KEY) return;
     memoryOnly = false; refresh();
   });
-  window.addEventListener("pageshow", () => { memoryOnly = false; refresh(); });
+  // A choice that could not be persisted is valid only for this document.
+  // Revoke it during document teardown so reload/BFCache cannot silently carry
+  // an in-memory grant into a fresh page.
+  window.addEventListener("pagehide", () => {
+    if (memoryOnly) synchronize(null);
+  });
+  window.addEventListener("pageshow", () => {
+    const wasMemoryOnly = memoryOnly;
+    memoryOnly = false;
+    if (wasMemoryOnly) synchronize(null);
+    refresh();
+  });
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible") refresh();
   });
