@@ -474,7 +474,7 @@ main:has(.wow-home)+div textarea {font-size:16px}
 .dufynd-scent-index-toggle-copy{min-width:0;display:block}
 .dufynd-scent-index-toggle-copy small{
   display:block;color:#e5d9bb;font-size:10px;line-height:1.3;
-  letter-spacing:.06em;text-transform:uppercase;
+  letter-spacing:.06em;text-transform:none; /* Preserve exact readable rights-hold wording for shoppers and QA. */
 }
 .dufynd-scent-index-toggle-copy strong{
   display:block;margin-top:2px;color:#fff9e6;
