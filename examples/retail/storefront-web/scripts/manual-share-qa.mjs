@@ -36,9 +36,9 @@ export async function verifyManualShareFallback(browser, baseUrl) {
         assert.equal(url.pathname, pathname);
         assert.equal(url.hash, hash);
         assert.equal(url.searchParams.has("sid"), false);
-        assert.equal(url.searchParams.get("src"), "tiktok");
-        assert.equal(url.searchParams.get("cmp"), "manual_qa");
-        assert.equal(url.searchParams.get("content"), "video_02");
+        assert.equal(url.searchParams.get("src"), null);
+        assert.equal(url.searchParams.get("cmp"), null);
+        assert.equal(url.searchParams.get("content"), null);
         assert.equal(await field.getAttribute("readonly"), "");
         await field.focus();
         assert.deepEqual(await field.evaluate((input) => [input.selectionStart, input.selectionEnd]), [0, value.length]);

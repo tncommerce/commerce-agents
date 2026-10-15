@@ -10,6 +10,7 @@ import {
   appendAcquisitionAttribution,
 } from "@/lib/analytics";
 import type { MerchantPartnersPayload } from "@/lib/types";
+import { subscribeMeasurement } from "@/lib/measurementConsent";
 
 export default function MerchantDiscovery({
   sessionSettled,
@@ -21,6 +22,12 @@ export default function MerchantDiscovery({
   >(undefined);
   const [loadError, setLoadError] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
+  const [, setMeasurementRevision] = useState(0);
+
+  useEffect(
+    () => subscribeMeasurement(() => setMeasurementRevision((value) => value + 1)),
+    [],
+  );
 
   useEffect(() => {
     let active = true;

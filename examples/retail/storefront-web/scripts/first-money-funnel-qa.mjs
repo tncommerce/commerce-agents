@@ -1,3 +1,4 @@
+import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
 export async function verifyFirstMoneyFunnel(browser, baseUrl) {
@@ -41,15 +42,15 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
         assert.ok(response?.ok());
         await page.locator('[data-measurement-choice="unknown"]').waitFor();
         assert.equal(events.length, 0, "fresh entry must not collect optional analytics");
-        await page.getByRole("button", { name: "Analyse erlauben", exact: true }).click();
-        await page.waitForFunction(() => sessionStorage.getItem("dufynd_analytics_session_v1") !== null);
-        const measurementSession = await page.evaluate(() => sessionStorage.getItem("dufynd_analytics_session_v1"));
-        assert.match(measurementSession, /^[a-f0-9-]{36}$/);
-        assert.notEqual(measurementSession, `${session}-1`, "measurement identity must be independent from functional transport");
+        await chooseMeasurement(page, "granted");
         for (let attempt = 0; attempt < 100 && !events.some((e) => e.event === "page_view"); attempt += 1) {
           await page.waitForTimeout(25);
         }
-        assert.ok(events.some((e) => e.event === "page_view"), "explicit grant records the current page, not an unconsented backlog");
+        const initialView = events.find((e) => e.event === "page_view");
+        assert.ok(initialView, "explicit grant records the current page, not an unconsented backlog");
+        const measurementSession = initialView.analytics_session_id;
+        assert.match(measurementSession, /^[a-f0-9-]{36}$/);
+        assert.notEqual(measurementSession, `${session}-1`, "measurement identity must be independent from functional transport");
         const catalogLink = page.getByRole("link", { name: "Katalog entdecken", exact: true });
         await catalogLink.waitFor();
         await catalogLink.focus();

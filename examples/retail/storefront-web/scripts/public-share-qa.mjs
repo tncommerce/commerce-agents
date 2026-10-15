@@ -17,9 +17,9 @@ export async function verifyPublicShareLinks(browser, baseUrl) {
     const url = new URL(value);
     assert.equal(url.pathname, pathname);
     assert.equal(url.searchParams.has("sid"), false, "public links must not include a visitor session");
-    assert.equal(url.searchParams.get("src"), "tiktok");
-    assert.equal(url.searchParams.get("cmp"), "share_qa");
-    assert.equal(url.searchParams.get("content"), "video_01");
+    assert.equal(url.searchParams.get("src"), null);
+    assert.equal(url.searchParams.get("cmp"), null);
+    assert.equal(url.searchParams.get("content"), null);
     assert.equal(url.hash, hash);
     return url;
   };

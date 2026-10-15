@@ -1645,8 +1645,7 @@ try {
       });
     });
 
-    await merchantOfferTimeoutPage.route(
-      "**/api/analytics/events",
+    await merchantOfferTimeoutPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         await route.fulfill({
           status: 200,
@@ -1820,7 +1819,7 @@ try {
       }
       await route.abort("failed");
     });
-    await sessionTimeoutPage.route("**/api/analytics/events", (route) =>
+    await sessionTimeoutPage.route((url) => url.pathname === "/api/analytics/events", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
     );
     await sessionTimeoutPage.route("**/api/merchant-offers/**", (route) =>
@@ -1858,13 +1857,16 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 12_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await clickout.getAttribute("href"));
+    const measurementSid = failOpenUrl.searchParams.get("sid");
     if (
-      failOpenUrl.searchParams.has("sid") ||
+      !/^[0-9a-f-]{36}$/i.test(measurementSid || "") ||
+      measurementSid === recoveredSessionId ||
+      failOpenUrl.searchParams.get("measurement") !== "granted-v1" ||
       failOpenUrl.searchParams.get("src") !== "tiktok" ||
       failOpenUrl.searchParams.get("cmp") !== "qa_session_timeout" ||
       failOpenUrl.searchParams.get("content") !== "qa_session_timeout_content"
     ) {
-      throw new Error("session timeout fail-open installed a stale session or lost attribution");
+      throw new Error("session timeout fail-open lost independent measurement or acquisition context");
     }
     if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
       throw new Error("stalled session kept a loaded merchant offer blocked");
@@ -1874,7 +1876,8 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
     const recoveredUrl = new URL(await clickout.getAttribute("href"));
     if (
-      recoveredUrl.searchParams.get("sid") !== recoveredSessionId ||
+      recoveredUrl.searchParams.get("sid") !== measurementSid ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_session_timeout"
     ) {
       throw new Error("session recovery did not restore first-party correlation");
@@ -2012,8 +2015,7 @@ try {
       });
     });
 
-    await offerImpressionPage.route(
-      "**/api/analytics/events",
+    await offerImpressionPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         try {
           const payload = route.request().postDataJSON();
@@ -2282,8 +2284,7 @@ try {
       });
     });
 
-    await clickoutSessionPage.route(
-      "**/api/analytics/events",
+    await clickoutSessionPage.route((url) => url.pathname === "/api/analytics/events",
       async (route) => {
         await route.fulfill({
           status: 200,
@@ -2357,17 +2358,14 @@ try {
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
 
     await clickoutSessionPage.waitForFunction(
-      ({ selector, sessionId }) => {
+      (selector) => {
         const link = document.querySelector(selector);
         if (!(link instanceof HTMLAnchorElement)) return false;
         const url = new URL(link.href);
-        return url.searchParams.get("sid") === sessionId;
+        return /^[0-9a-f-]{36}$/i.test(url.searchParams.get("sid") || "") &&
+          url.searchParams.get("measurement") === "granted-v1";
       },
-      {
-        selector:
-          '[data-merchant-offers] a[href*="/api/clickout/"]',
-        sessionId: expectedSessionId,
-      },
+      '[data-merchant-offers] a[href*="/api/clickout/"]',
       { timeout: 10_000 },
     );
 
@@ -2383,7 +2381,9 @@ try {
       clickoutUrl.searchParams.get("src") !== "tiktok" ||
       clickoutUrl.searchParams.get("cmp") !== "qa_sid_campaign" ||
       clickoutUrl.searchParams.get("content") !== "qa_sid_content" ||
-      clickoutUrl.searchParams.get("sid") !== expectedSessionId
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("sid") === expectedSessionId ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant clickout did not correlate acquisition and analytics session context",
@@ -2498,7 +2498,9 @@ try {
       clickoutUrl.searchParams.get("src") !== "instagram" ||
       clickoutUrl.searchParams.get("cmp") !== "qa_partner_campaign" ||
       clickoutUrl.searchParams.get("content") !== "qa_partner_content" ||
-      clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("sid") === expectedPartnerSessionId ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant discovery clickout did not correlate acquisition and storefront session context",
@@ -2612,7 +2614,8 @@ try {
       clickoutUrl.searchParams.get("cmp") !== "qa_partner_failure" ||
       clickoutUrl.searchParams.get("content") !==
         "qa_partner_failure_content" ||
-      clickoutUrl.searchParams.has("sid")
+      !/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "") ||
+      clickoutUrl.searchParams.get("measurement") !== "granted-v1"
     ) {
       throw new Error(
         "merchant discovery session-failure fallback lost attribution or emitted an invalid sid",
@@ -2964,7 +2967,7 @@ try {
       }
       await route.abort("failed");
     });
-    await homeSessionTimeoutPage.route("**/api/analytics/events", (route) =>
+    await homeSessionTimeoutPage.route((url) => url.pathname === "/api/analytics/events", (route) =>
       route.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }),
     );
     await homeSessionTimeoutPage.route("**/api/merchant-partners", (route) =>
@@ -2996,8 +2999,11 @@ try {
     await partnerLink.waitFor({ state: "visible", timeout: 12_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await partnerLink.getAttribute("href"));
+    const homeMeasurementSid = failOpenUrl.searchParams.get("sid");
     if (
-      failOpenUrl.searchParams.has("sid") ||
+      !/^[0-9a-f-]{36}$/i.test(homeMeasurementSid || "") ||
+      homeMeasurementSid === recoveredHomeSessionId ||
+      failOpenUrl.searchParams.get("measurement") !== "granted-v1" ||
       failOpenUrl.searchParams.get("src") !== "instagram" ||
       failOpenUrl.searchParams.get("cmp") !== "qa_home_session_timeout" ||
       failOpenUrl.searchParams.get("content") !== "qa_home_session_content" ||
@@ -3010,7 +3016,8 @@ try {
     await partnerLink.waitFor({ state: "visible", timeout: 10_000 });
     const recoveredUrl = new URL(await partnerLink.getAttribute("href"));
     if (
-      recoveredUrl.searchParams.get("sid") !== recoveredHomeSessionId ||
+      recoveredUrl.searchParams.get("sid") !== homeMeasurementSid ||
+      recoveredUrl.searchParams.get("measurement") !== "granted-v1" ||
       recoveredUrl.searchParams.get("cmp") !== "qa_home_session_timeout"
     ) {
       throw new Error("homepage session recovery lost first-party correlation");
