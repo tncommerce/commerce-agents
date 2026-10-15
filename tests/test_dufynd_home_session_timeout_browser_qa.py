@@ -27,8 +27,11 @@ def test_homepage_session_timeout_is_opt_in_and_mobile_recovery_is_covered() -> 
     home_qa = qa.split("const homeSessionTimeoutContext", 1)[1]
     home_qa = home_qa.split("const productDetailAttributionContext", 1)[0]
     assert "setTimeout(resolve, 8_500)" in home_qa
-    assert 'failOpenUrl.searchParams.has("sid")' in home_qa
+    assert 'const homeMeasurementSid = failOpenUrl.searchParams.get("sid")' in home_qa
+    assert 'homeMeasurementSid === recoveredHomeSessionId' in home_qa
+    assert 'failOpenUrl.searchParams.get("measurement") !== "granted-v1"' in home_qa
     assert "homeSessionRecoveryAllowed = true" in home_qa
-    assert 'recoveredUrl.searchParams.get("sid") !== recoveredHomeSessionId' in home_qa
+    assert 'recoveredUrl.searchParams.get("sid") !== homeMeasurementSid' in home_qa
+    assert 'recoveredUrl.searchParams.get("measurement") !== "granted-v1"' in home_qa
     assert 'label: "storefront-session-request-timeout"' in home_qa
     assert 'label: "storefront-session-timeout-recovery"' in home_qa

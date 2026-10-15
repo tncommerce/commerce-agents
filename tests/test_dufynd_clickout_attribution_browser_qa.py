@@ -67,7 +67,9 @@ def test_clickout_waits_for_first_party_analytics_session() -> None:
     assert '"**/api/session"' in source
     assert "qa-clickout_session-1234567890" in source
     assert "setTimeout(resolve, 1200)" in source
-    assert 'clickoutUrl.searchParams.get("sid") !== expectedSessionId' in source
+    assert 'clickoutUrl.searchParams.get("sid") === expectedSessionId' in source
+    assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
+    assert '!/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "")' in source
     assert "merchant clickout did not correlate acquisition and analytics session context" in source
     assert (
         "merchant clickout became actionable before analytics session correlation completed"
@@ -99,7 +101,8 @@ def test_merchant_discovery_waits_for_storefront_session() -> None:
         "merchant discovery clickout became actionable before storefront session correlation completed"
         in source
     )
-    assert 'clickoutUrl.searchParams.get("sid") !== expectedPartnerSessionId' in source
+    assert 'clickoutUrl.searchParams.get("sid") === expectedPartnerSessionId' in source
+    assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
     assert "data-partner-clickout-preparing" in merchant_source
     assert "sessionSettled ? (" in merchant_source
     assert "<MerchantDiscovery sessionSettled={sessionSettled} />" in home_source
@@ -116,7 +119,8 @@ def test_merchant_discovery_fails_open_after_session_attempt_settles() -> None:
         "merchant discovery fail-open link became actionable before session initialization settled"
         in source
     )
-    assert 'clickoutUrl.searchParams.has("sid")' in source
+    assert '!/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "")' in source
+    assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
     assert "settled?: boolean" in session_source
     assert "settled: false" in session_source
     assert "settled: true" in session_source

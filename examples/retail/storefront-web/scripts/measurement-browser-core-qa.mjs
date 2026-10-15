@@ -12,6 +12,16 @@ const merchant=page=>page.locator(`[data-merchant-offers] a[href*="/api/clickout
 async function settle(page){
   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
 }
+async function settledRequestCount(page,stats){
+  let last=-1,stable=0;
+  for(let n=0;n<40;n++){
+    await page.waitForTimeout(50);
+    const current=stats.requests.length;
+    if(current===last) stable+=1; else { last=current; stable=0; }
+    if(current>0&&stable>=4) return current;
+  }
+  return stats.requests.length;
+}
 async function expectChoice(page,value){
   await page.waitForFunction(value=>document.querySelector('[data-measurement-choice]')?.getAttribute('data-measurement-choice')===value,value);
 }
@@ -155,7 +165,7 @@ export async function verifyMeasurementBrowser(browser,baseUrl,outputDir){
       await approve(page);await expectChoice(page,'granted');
       for(let n=0;n<100&&stats.requests.length===0;n++)await page.waitForTimeout(25);
       assert.ok(stats.requests.length>0,'Explicit in-memory permission enables an actual analytics request');
-      const count=stats.requests.length;
+      const count=await settledRequestCount(page,stats);
       await page.reload({waitUntil:'domcontentloaded'});await merchant(page).waitFor();await expectChoice(page,'unknown');await settle(page);
       assert.equal(stats.requests.length,count,'Unpersisted consent does not survive reload');
       await expectNoOptional(page);assert.equal(stats.clickouts,0);assert.deepEqual(stats.unexpected,[]);
