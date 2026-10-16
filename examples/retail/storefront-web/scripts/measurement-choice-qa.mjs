@@ -13,7 +13,14 @@ export async function chooseMeasurement(page, choice = "granted") {
       await page.getByRole("button", { name: "Datenschutz-Einstellungen", exact: true }).click();
     }
     const name = expected === "granted" ? "Analyse erlauben" : "Nur notwendige Funktionen";
-    await page.getByRole("button", { name, exact: true }).click();
+    try {
+      await page.getByRole("button", { name, exact: true }).click({ timeout: 2_000 });
+    } catch (error) {
+      // A navigation can expose the SSR "unknown" state just before hydration
+      // restores an earlier explicit choice and removes its button. Only accept
+      // that race when the requested state has actually been restored.
+      if (await region.getAttribute("data-measurement-choice") !== expected) throw error;
+    }
   }
   await page.waitForFunction(
     value => document.querySelector("[data-measurement-choice]")?.getAttribute("data-measurement-choice") === value,
