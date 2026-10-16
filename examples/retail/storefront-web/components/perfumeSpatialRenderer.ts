@@ -222,7 +222,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   const glassMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xffffff, roughness: .003, metalness: 0, transmission: 1,
-    thickness: .095, ior: 1.50, envMapIntensity: 1.55, dispersion: .006,
+    thickness: .095, ior: 1.50, envMapIntensity: 1.22, dispersion: .006,
     attenuationColor: new THREE.Color(0xffffff), attenuationDistance: 140,
     clearcoat: .18, clearcoatRoughness: .006,
   });
@@ -452,6 +452,11 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     camera.updateProjectionMatrix();
   }
 
+  // The transmissive pass sees an opaque, neutral studio backing even though
+  // the public canvas itself must remain transparent in the editorial hero.
+  // This prevents undefined clear-alpha pixels from bleaching the glass.
+  const refractionBacking = new THREE.Color("#cbb9a5");
+
   function draw() {
     const drawStarted = performance.now();
     renderer.info.autoReset = false;
@@ -462,15 +467,23 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     innerGlass.visible = false;
     base.visible = false;
     neck.visible = false;
-    renderer.setRenderTarget(refractionTarget);
-    renderer.render(scene, camera);
+    // Opaque only in the texture the glass samples. Restore the transparent
+    // display background and default framebuffer before the public frame.
+    const priorBackground = scene.background;
+    try {
+      scene.background = refractionBacking;
+      renderer.setRenderTarget(refractionTarget);
+      renderer.render(scene, camera);
+    } finally {
+      scene.background = priorBackground;
+      renderer.setRenderTarget(null);
+    }
     label.visible = true;
     glass.visible = true;
     glassEdge.visible = true;
     innerGlass.visible = true;
     base.visible = true;
     neck.visible = true;
-    renderer.setRenderTarget(null);
     renderer.render(scene, camera);
     host.dataset.renderDurationMs = (performance.now() - drawStarted).toFixed(2);
     renderCount += 1;
