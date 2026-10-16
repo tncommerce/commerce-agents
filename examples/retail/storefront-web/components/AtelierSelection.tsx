@@ -1,23 +1,27 @@
 "use client";
-import { LIVE_FRAGRANCES, originalPhotoFor } from "@/lib/fragranceCatalog";
-import { noteLabel } from "@/lib/noteLabels";
-import { trackAnalyticsEvent } from "@/lib/analytics";
+
+import { getLiveFragranceByProductId } from "@/lib/fragranceCatalog";
+import { HOME_PARTNER_PRODUCTS, getHomeVisual } from "@/lib/homeVisualAssets";
 import AcquisitionInternalLink from "./AcquisitionInternalLink";
 import FragranceVisual from "./FragranceVisual";
-import ImageAttribution from "./ImageAttribution";
+import styles from "./VisualHome.module.css";
 
+/** Partner permission travels with the photograph, including its destination. */
 export default function AtelierSelection() {
-  const items = ["SC-LANCOME-LA-VIE-EST-BELLE-EDP-100", "SC-YSL-LIBRE-EDP-90"].flatMap(id => {
-    const p = LIVE_FRAGRANCES.find(p => p.product_id === id); const visual = p && originalPhotoFor(p); return p && visual ? [{p,visual}] : [];
+  const items = HOME_PARTNER_PRODUCTS.flatMap(entry => {
+    const product = getLiveFragranceByProductId(entry.productId);
+    const visual = product && getHomeVisual(product, { kind: "merchant_showcase", merchantId: "top-parfuemerie", destinationUrl: entry.merchantProductUrl });
+    return product && visual ? [{ entry, product, visual }] : [];
   });
-  return <section className="wow-selection" aria-labelledby="wow-selection-title">
-    <div className="wow-section-heading"><div><p className="wow-kicker">02 / Im Detail</p><h2 id="wow-selection-title">Charakter zeigen.</h2></div></div>
-    <div className="wow-selection-grid" data-dufynd-home-selected-stage>{items.map(({p,visual},i) => <article className="wow-selection-item" key={p.product_id}>
-      <AcquisitionInternalLink data-dufynd-original-card href={`/duft/${p.slug}`} onClick={() => void trackAnalyticsEvent("product_open", { product_id:p.product_id,source:"homepage_spotlight" })} className="wow-selection-link">
-        <div className="wow-selection-photo"><span className="wow-selection-number">0{i+1}</span><FragranceVisual imageUrl={visual.url} cutoutUrl={visual.url} alt={`${p.brand} ${p.name} · ${p.concentration} ${p.volume_ml} ml`} variant="card" mode="cutout" className="h-full w-full" /></div>
-        <div className="wow-selection-copy"><span className="wow-kicker">{p.brand}</span><h3>{p.name}</h3><p>{p.concentration} · {p.volume_ml} ml</p><div className="wow-selection-notes">{[...p.notes.top,...p.notes.heart,...p.notes.base,...p.notes.key].slice(0,3).map(noteLabel).join(" / ")}</div><span className="wow-text-link">Duftprofil & Angebote <span aria-hidden>↗</span></span></div>
-      </AcquisitionInternalLink>
-      <ImageAttribution visual={visual} />
-    </article>)}</div>
+  if (!items.length) return null;
+  return <section className="wow-selection" data-dufynd-home-selected-stage aria-labelledby="wow-selection-title">
+    <div className={styles.heading}><div><p className={styles.kicker}>Partner-Schaufenster · top Parfümerie</p><h2 id="wow-selection-title">Ein erster <em>Funke.</em></h2><p className={styles.headingNote}>Drei Parfums im Blick. Entdecke sie direkt bei unserem Bildpartner.</p></div><AcquisitionInternalLink href="/duft">Zum Duftkatalog ↗</AcquisitionInternalLink></div>
+    <div className={styles.productGrid} aria-label="Parfums bei top Parfümerie">
+      {items.map(({ entry, product, visual }, index) => <a key={product.product_id} className={styles.product} data-dufynd-partner-photo href={entry.merchantProductUrl} target="_blank" rel="sponsored noopener noreferrer" aria-label={`${product.brand} ${product.name} bei top Parfümerie ansehen, neuer Tab`}>
+        <div className={styles.productPhoto}><span className={styles.productNumber}>0{index + 1}</span><FragranceVisual imageUrl={visual.url} cutoutUrl={visual.url} alt={`${product.brand} ${product.name} · ${product.concentration} ${product.volume_ml} ml`} variant="card" mode="cutout" className="h-full w-full" /></div>
+        <div className={styles.productCopy}><span className={styles.productBrand}>{product.brand}</span><h3>{product.name}</h3><p>Eau de Parfum · Abbildung: {entry.displayedVolumeMl} ml</p><span className={styles.productCta}>Bei top Parfümerie ansehen <span aria-hidden>↗</span></span></div>
+      </a>)}
+    </div>
+    <p className={styles.partnerNote}>Werbung · Bilder: top Parfümerie. Größe, Preis und Verfügbarkeit beim Händler prüfen. Die Händlerseite kann eine andere Größe vorauswählen.</p>
   </section>;
 }

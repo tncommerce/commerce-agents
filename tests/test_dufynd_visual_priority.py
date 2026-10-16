@@ -50,9 +50,24 @@ def test_customer_facing_image_cards_use_exact_original_registry() -> None:
     selection = Path("examples/retail/storefront-web/components/AtelierSelection.tsx").read_text(
         encoding="utf-8"
     )
-    assert "originalPhotoFor(p)" in selection
+    # The new homepage narrows registry access by the evidence's placement scope.
+    assert 'getHomeVisual(product, { kind: "merchant_showcase"' in selection
+    assert 'merchantId: "top-parfuemerie"' in selection
+    assert "destinationUrl: entry.merchantProductUrl" in selection
+    assert "href={entry.merchantProductUrl}" in selection
+    assert 'rel="sponsored noopener noreferrer"' in selection
     assert "preferred_visual" not in selection
-    assert "ImageAttribution visual={visual}" in selection
+    policy = Path("examples/retail/storefront-web/lib/homeVisualAssets.ts").read_text(
+        encoding="utf-8"
+    )
+    assert "originalPhotoFor(fragrance)" in policy
+    assert 'original.fidelity_status !== "verified"' in policy
+    assert "placement.destinationUrl === approved.merchantProductUrl" in policy
+    offers = Path("examples/retail/storefront-web/components/HomeOffers.tsx").read_text(
+        encoding="utf-8"
+    )
+    assert 'getHomeVisual(product, {kind: "editorial"})' in offers
+    assert "ImageAttribution visual={visual}" in offers
 
 
 def test_catalog_requires_original_photo_or_honest_studio_source_hold() -> None:

@@ -10,6 +10,7 @@ import process from "node:process";
 
 import { chromium } from "playwright";
 import { verifyWowExperience } from "./wow-experience-qa.mjs";
+import { verifyVisualReset } from "./visual-reset-qa.mjs";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
@@ -188,7 +189,7 @@ const viewports = [
 ];
 
 const coreRoutes = [
-  { name: "home", route: "/", marker: "Finde den Duft," },
+  { name: "home", route: "/", marker: "Parfum." },
   {
     name: "social-start",
     route: "/start",
@@ -287,6 +288,10 @@ const report = {
 };
 
 try {
+  try {
+    const result = await verifyVisualReset(browser, baseUrl, outputDir);
+    report.checks.push({ label: "visual-reset-30", status: "passed", cases: result.cases });
+  } catch (error) { report.failures.push({ label: "visual-reset-30", message: String(error) }); }
   try {
     const results = await verifyWowExperience(browser, baseUrl, outputDir);
     report.checks.push({ label: "wow22-experience", status: "passed", results });
@@ -1229,16 +1234,16 @@ try {
           }
 
           const spotlightTruth = page.locator(
-            'a[data-dufynd-original-card] img[src="https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png"]',
+            'a[data-dufynd-original-card] img[src="https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp"]',
           );
           if ((await spotlightTruth.count()) < 1) {
             throw new Error(
-              "homepage spotlight must use the approved original Libre 90 ml photo",
+              "homepage internal discovery must use the CC-BY-SA La Vie est Belle 100 ml photo",
             );
           }
           const spotlightHref = await spotlightTruth.first().evaluate((image) => image.closest("a")?.href);
-          if (!spotlightHref || new URL(spotlightHref, baseUrl).pathname !== "/duft/yves-saint-laurent-libre") {
-            throw new Error("homepage spotlight does not open Libre");
+          if (!spotlightHref || new URL(spotlightHref, baseUrl).pathname !== "/duft/lancome-la-vie-est-belle") {
+            throw new Error("homepage internal discovery does not open the exact La Vie est Belle profile");
           }
 
           if ([390, 1440].includes(viewport.width)) {
