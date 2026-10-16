@@ -73,6 +73,38 @@ function superellipsePlate(width: number, depth: number, exponent = .48) {
   return geometry;
 }
 
+function liquidShadeTexture() {
+  // A small, authored in-volume density/light falloff, not a static photo.
+  // Edges fade out before the inner glass wall, avoiding an amber sticker.
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 512;
+  const ctx = canvas.getContext("2d")!;
+  const depth = ctx.createLinearGradient(0, 0, 0, 512);
+  depth.addColorStop(0, "rgba(255,244,207,.02)");
+  depth.addColorStop(.18, "rgba(255,235,191,.04)");
+  depth.addColorStop(.45, "rgba(193,113,41,.08)");
+  depth.addColorStop(.76, "rgba(136,68,20,.20)");
+  depth.addColorStop(1, "rgba(91,40,10,.31)");
+  ctx.fillStyle = depth;
+  ctx.fillRect(0, 0, 256, 512);
+  ctx.globalCompositeOperation = "destination-in";
+  const edge = ctx.createLinearGradient(0, 0, 256, 0);
+  edge.addColorStop(0, "rgba(0,0,0,0)");
+  edge.addColorStop(.13, "rgba(0,0,0,.85)");
+  edge.addColorStop(.34, "rgba(0,0,0,1)");
+  edge.addColorStop(.72, "rgba(0,0,0,1)");
+  edge.addColorStop(.94, "rgba(0,0,0,.42)");
+  edge.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = edge;
+  ctx.fillRect(0, 0, 256, 512);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+  texture.generateMipmaps = false;
+  return texture;
+}
+
 function liquidRim(width: number, depth: number) {
   const vertices: THREE.Vector3[] = [];
   // The line follows the same square-shouldered superellipse as the liquid.
@@ -322,17 +354,29 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       .replace("#include <color_fragment>", `#include <color_fragment>
         // Clear champagne at the top, deeper honey at the glass base.
         // The change is based on the actual local height of the fill mesh.
-        float fillDepth = clamp((0.785 - vStudyPosition.y) / 1.57, 0.0, 1.0);
+        float fillDepth = clamp((0.82 - vStudyPosition.y) / 1.64, 0.0, 1.0);
         diffuseColor.rgb *= mix(vec3(1.0, 0.99, 0.93), vec3(0.78, 0.70, 0.57), pow(fillDepth, 0.84));`)
       .replace("#include <transmission_fragment>", THREE.ShaderChunk.transmission_fragment.replace(
         "material.thickness = thickness;",
         "material.thickness = thickness * (0.77 + 0.48 * pow(abs(vStudyPosition.x) / 0.96, 3.0));",
       ));
   };
-  const liquid = new THREE.Mesh(bevelledBody(1.94, 1.57, .86, .08, "flat-fill"), liquidMaterial);
-  liquid.position.set(0, 1.20, 0);
+  const liquid = new THREE.Mesh(bevelledBody(2.01, 1.64, .94, .08, "flat-fill"), liquidMaterial);
+  liquid.position.set(0, 1.165, 0);
   liquid.renderOrder = 2;
   assembly.add(liquid);
+
+  const liquidShadeMap = liquidShadeTexture();
+  const liquidShade = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.95, 1.61),
+    new THREE.MeshBasicMaterial({
+      map: liquidShadeMap, color: 0xffffff, transparent: true,
+      depthWrite: false, toneMapped: false,
+    }),
+  );
+  liquidShade.position.set(0, 1.165, .487);
+  liquidShade.renderOrder = 3;
+  assembly.add(liquidShade);
 
   // A flat optical surface and its fine bright boundary remain visibly
   // separate from the vertical body. Do not imply motion/sloshing at rest.
@@ -342,11 +386,11 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     transparent: true, opacity: .54, depthWrite: false, side: THREE.DoubleSide,
     clearcoat: .7, clearcoatRoughness: .028,
   });
-  const meniscus = new THREE.Mesh(superellipsePlate(1.90, .825), meniscusMaterial);
+  const meniscus = new THREE.Mesh(superellipsePlate(1.96, .89), meniscusMaterial);
   meniscus.position.set(0, 1.987, 0);
   meniscus.renderOrder = 5;
   assembly.add(meniscus);
-  const surfaceRim = liquidRim(1.92, .84);
+  const surfaceRim = liquidRim(1.985, .925);
   surfaceRim.position.set(0, 1.991, 0);
   surfaceRim.renderOrder = 6;
   assembly.add(surfaceRim);
@@ -478,7 +522,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     innerGlass.rotation.y = glass.rotation.y;
     glassEdge.position.copy(glass.position);
     glassEdge.rotation.y = glass.rotation.y;
-    liquid.position.set(liquidShift, 1.20, .018 * progress);
+    liquid.position.set(liquidShift, 1.165, .018 * progress);
+    liquidShade.position.set(liquidShift, 1.165, .487 + .018 * progress);
     meniscus.position.set(liquidShift, 1.987, .018 * progress);
     surfaceRim.position.set(liquidShift, 1.991, .018 * progress);
     label.position.x = shellShift;
@@ -658,6 +703,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       materials.forEach((material) => material.dispose());
       surfaceRim.geometry.dispose();
       surfaceRim.material.dispose();
+      liquidShadeMap.dispose();
       labelMap.dispose();
       backdropMap.dispose();
       shadowMap.dispose();
