@@ -73,38 +73,6 @@ function superellipsePlate(width: number, depth: number, exponent = .48) {
   return geometry;
 }
 
-function liquidShadeTexture() {
-  // A small, authored in-volume density/light falloff, not a static photo.
-  // Edges fade out before the inner glass wall, avoiding an amber sticker.
-  const canvas = document.createElement("canvas");
-  canvas.width = 256;
-  canvas.height = 512;
-  const ctx = canvas.getContext("2d")!;
-  const depth = ctx.createLinearGradient(0, 0, 0, 512);
-  depth.addColorStop(0, "rgba(255,244,207,.02)");
-  depth.addColorStop(.18, "rgba(255,235,191,.04)");
-  depth.addColorStop(.45, "rgba(193,113,41,.08)");
-  depth.addColorStop(.76, "rgba(136,68,20,.20)");
-  depth.addColorStop(1, "rgba(91,40,10,.31)");
-  ctx.fillStyle = depth;
-  ctx.fillRect(0, 0, 256, 512);
-  ctx.globalCompositeOperation = "destination-in";
-  const edge = ctx.createLinearGradient(0, 0, 256, 0);
-  edge.addColorStop(0, "rgba(0,0,0,0)");
-  edge.addColorStop(.13, "rgba(0,0,0,.85)");
-  edge.addColorStop(.34, "rgba(0,0,0,1)");
-  edge.addColorStop(.72, "rgba(0,0,0,1)");
-  edge.addColorStop(.94, "rgba(0,0,0,.42)");
-  edge.addColorStop(1, "rgba(0,0,0,0)");
-  ctx.fillStyle = edge;
-  ctx.fillRect(0, 0, 256, 512);
-  const texture = new THREE.CanvasTexture(canvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = THREE.LinearFilter;
-  texture.generateMipmaps = false;
-  return texture;
-}
-
 function liquidRim(width: number, depth: number) {
   const vertices: THREE.Vector3[] = [];
   // The line follows the same square-shouldered superellipse as the liquid.
@@ -342,42 +310,55 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   innerGlass.renderOrder = 3;
   assembly.add(innerGlass);
 
-  // The amber reservoir uses volume absorption and is captured before the outer-glass refraction pass.
-  const liquidMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffe7b8, roughness: .021, metalness: 0, transmission: .92,
-    thickness: .26, ior: 1.335, attenuationColor: new THREE.Color(0xa65e21), attenuationDistance: 1.78,
-    clearcoat: .08, clearcoatRoughness: .016, envMapIntensity: 1.08,
+  // One translucent light-absorbing volume replaces the layered transmissive
+  // amber solid and opaque-looking foreground plane. A real flat free surface
+  // remains separately modeled below. The amber colour comes from optical depth
+  // and viewing angle rather than a solid gold insert inside the glass.
+  const liquidMaterial = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: true,
+    side: THREE.FrontSide, toneMapped: true,
+    vertexShader: `
+      varying float vLiquidHeight;
+      varying vec3 vLiquidNormal;
+      varying vec3 vLiquidView;
+      void main() {
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vLiquidHeight = position.y;
+        vLiquidNormal = normalize(normalMatrix * normal);
+        vLiquidView = normalize(-mvPosition.xyz);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying float vLiquidHeight;
+      varying vec3 vLiquidNormal;
+      varying vec3 vLiquidView;
+      void main() {
+        vec3 N = normalize(vLiquidNormal);
+        vec3 V = normalize(vLiquidView);
+        float depth = clamp((0.82 - vLiquidHeight) / 1.64, 0.0, 1.0);
+        float absorption = pow(depth, 1.12);
+        float grazing = pow(1.0 - clamp(abs(dot(N, V)), 0.0, 1.0), 2.3);
+        // Champagne at the fill line, warm amber at the bottom. The centre
+        // stays see-through; oblique optical paths gather more pigment.
+        vec3 champagne = vec3(0.98, 0.73, 0.43);
+        vec3 amber = vec3(0.54, 0.26, 0.09);
+        vec3 pigment = mix(champagne, amber, absorption);
+        vec3 studioDirection = normalize(vec3(-0.57, 0.18, 0.8));
+        float specular = pow(max(dot(reflect(-studioDirection, N), V), 0.0), 32.0);
+        float density = 0.12 + 0.31 * absorption + 0.12 * grazing;
+        float alpha = clamp(density, 0.0, 0.58);
+        vec3 highlights = vec3(1.0, 0.83, 0.62) * specular * 0.12;
+        gl_FragColor = vec4(pigment + highlights, alpha);
+        #include <tonemapping_fragment>
+        #include <colorspace_fragment>
+      }
+    `,
   });
-  liquidMaterial.onBeforeCompile = (shader) => {
-    shader.vertexShader = "varying vec3 vStudyPosition;\n" + shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n vStudyPosition = position;");
-    shader.fragmentShader = "varying vec3 vStudyPosition;\n" + shader.fragmentShader
-      .replace("#include <color_fragment>", `#include <color_fragment>
-        // Clear champagne at the top, deeper honey at the glass base.
-        // The change is based on the actual local height of the fill mesh.
-        float fillDepth = clamp((0.82 - vStudyPosition.y) / 1.64, 0.0, 1.0);
-        diffuseColor.rgb *= mix(vec3(1.0, 0.99, 0.93), vec3(0.78, 0.70, 0.57), pow(fillDepth, 0.84));`)
-      .replace("#include <transmission_fragment>", THREE.ShaderChunk.transmission_fragment.replace(
-        "material.thickness = thickness;",
-        "material.thickness = thickness * (0.77 + 0.48 * pow(abs(vStudyPosition.x) / 0.96, 3.0));",
-      ));
-  };
   const liquid = new THREE.Mesh(bevelledBody(2.01, 1.64, .94, .08, "flat-fill"), liquidMaterial);
   liquid.position.set(0, 1.165, 0);
   liquid.renderOrder = 2;
   assembly.add(liquid);
-
-  const liquidShadeMap = liquidShadeTexture();
-  const liquidShade = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.95, 1.61),
-    new THREE.MeshBasicMaterial({
-      map: liquidShadeMap, color: 0xffffff, transparent: true,
-      depthWrite: false, toneMapped: false,
-    }),
-  );
-  liquidShade.position.set(0, 1.165, .487);
-  liquidShade.renderOrder = 3;
-  assembly.add(liquidShade);
-
   // A flat optical surface and its fine bright boundary remain visibly
   // separate from the vertical body. Do not imply motion/sloshing at rest.
   const meniscusMaterial = new THREE.MeshPhysicalMaterial({
@@ -523,7 +504,6 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     glassEdge.position.copy(glass.position);
     glassEdge.rotation.y = glass.rotation.y;
     liquid.position.set(liquidShift, 1.165, .018 * progress);
-    liquidShade.position.set(liquidShift, 1.165, .487 + .018 * progress);
     meniscus.position.set(liquidShift, 1.987, .018 * progress);
     surfaceRim.position.set(liquidShift, 1.991, .018 * progress);
     label.position.x = shellShift;
@@ -589,6 +569,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.capY = cap.position.y.toFixed(4);
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
+    host.dataset.liquidOptics = "translucent-volume";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
     host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
@@ -703,7 +684,6 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       materials.forEach((material) => material.dispose());
       surfaceRim.geometry.dispose();
       surfaceRim.material.dispose();
-      liquidShadeMap.dispose();
       labelMap.dispose();
       backdropMap.dispose();
       shadowMap.dispose();

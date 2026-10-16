@@ -260,6 +260,8 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         assert.ok(await overflow(page) <= 1, `${width}: no horizontal overflow`);
         await page.waitForFunction(() => document.querySelector("[data-dufynd-bottle]")?.getAttribute("data-spatial-state") === "ready", null, { timeout: 30_000 });
         const resting = await verifySpatialIdle(page);
+        assert.equal(await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-liquid-optics"),
+          "translucent-volume", "visible liquid must use the unified transparent volume, not a gold overlay");
         const initialScripts = [...new Set(requests.scriptRequests)];
         const initialFonts = [...new Set(requests.fontRequests)];
         assert.ok(resting.triangles > 100 && resting.draw_calls > 0, "capable device renders real mesh geometry");
