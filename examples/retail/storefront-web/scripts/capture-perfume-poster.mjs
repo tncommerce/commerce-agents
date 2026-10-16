@@ -20,11 +20,17 @@ export async function capturePerfumeStudioPoster(page, outputDir, state) {
     "body,body * {background-color:transparent!important;background-image:none!important;box-shadow:none!important}",
     "body *::before,body *::after {visibility:hidden!important}",
     "[data-dufynd-bottle] [data-dufynd-spatial-poster],",
-    "[data-dufynd-bottle] [aria-hidden],",
+    "[data-dufynd-bottle] [aria-hidden]:not([data-dufynd-spatial-canvas]),",
     "[data-dufynd-bottle] figcaption {visibility:hidden!important}",
     "[data-dufynd-spatial-canvas],[data-dufynd-spatial-canvas] canvas {visibility:visible!important}"
   ].join("\n");
   const style = await page.addStyleTag({ content: captureCss });
+  // An aria-hidden WebGL host is still visually rendered. The capture CSS
+  // may hide accessibility-only overlays, but never the real canvas itself.
+  if (!await canvas.isVisible()) {
+    await style.evaluate(element => element.remove());
+    throw new Error("QA capture CSS incorrectly hid the spatial WebGL canvas");
+  }
   try {
     for (const background of ["#000000", "#ffffff"]) {
       await page.evaluate(color => {
