@@ -310,45 +310,68 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   innerGlass.renderOrder = 3;
   assembly.add(innerGlass);
 
-  // One translucent light-absorbing volume replaces the layered transmissive
-  // amber solid and opaque-looking foreground plane. A real flat free surface
-  // remains separately modeled below. The amber colour comes from optical depth
-  // and viewing angle rather than a solid gold insert inside the glass.
+  // Beer-Lambert-inspired absorption follows the camera ray through the actual
+  // superellipse cross-section, rather than painting an amber gradient by height.
+  // A thin edge must transmit more light than a long ray through the centre.
+  // This single translucent volume remains visible through the glass refraction pass.
   const liquidMaterial = new THREE.ShaderMaterial({
+    uniforms: { eyeLocal: { value: new THREE.Vector3() } },
     transparent: true, depthWrite: false, depthTest: true,
     side: THREE.FrontSide, toneMapped: true,
     vertexShader: `
-      varying float vLiquidHeight;
+      varying vec3 vLiquidLocal;
       varying vec3 vLiquidNormal;
       varying vec3 vLiquidView;
       void main() {
         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        vLiquidHeight = position.y;
+        vLiquidLocal = position;
         vLiquidNormal = normalize(normalMatrix * normal);
         vLiquidView = normalize(-mvPosition.xyz);
         gl_Position = projectionMatrix * mvPosition;
       }
     `,
     fragmentShader: `
-      varying float vLiquidHeight;
+      uniform vec3 eyeLocal;
+      varying vec3 vLiquidLocal;
       varying vec3 vLiquidNormal;
       varying vec3 vLiquidView;
+
+      float liquidCrossSection(vec2 point) {
+        // The authored cross-section uses x/z = signed power(cos/sin, .48).
+        // Its implicit superellipse exponent is 2 / .48 = 4.1666667.
+        return pow(abs(point.x / 1.005), 4.1666667)
+          + pow(abs(point.y / 0.47), 4.1666667);
+      }
+
       void main() {
         vec3 N = normalize(vLiquidNormal);
         vec3 V = normalize(vLiquidView);
-        float depth = clamp((0.82 - vLiquidHeight) / 1.64, 0.0, 1.0);
-        float absorption = pow(depth, 1.12);
-        float grazing = pow(1.0 - clamp(abs(dot(N, V)), 0.0, 1.0), 2.3);
-        // Champagne at the fill line, warm amber at the bottom. The centre
-        // stays see-through; oblique optical paths gather more pigment.
-        vec3 champagne = vec3(0.96, 0.79, 0.53);
-        vec3 amber = vec3(0.64, 0.38, 0.16);
-        vec3 pigment = mix(champagne, amber, absorption);
-        vec3 studioDirection = normalize(vec3(-0.57, 0.18, 0.8));
-        float specular = pow(max(dot(reflect(-studioDirection, N), V), 0.0), 32.0);
-        float density = 0.14 + 0.29 * pow(absorption, 1.15) + 0.17 * grazing;
-        float alpha = clamp(density, 0.12, 0.61);
-        vec3 highlights = vec3(1.0, 0.91, 0.76) * specular * 0.17;
+        // Local coordinates keep the optical calculation stable while the
+        // bottle rotates, the liquid opens, or the camera framing changes.
+        vec3 ray = normalize(vLiquidLocal - eyeLocal);
+        float low = 0.0;
+        float high = 3.6 / max(length(ray.xz), 0.05);
+        for (int step = 0; step < 8; step++) {
+          float candidate = (low + high) * 0.5;
+          vec2 nextPoint = vLiquidLocal.xz + candidate * ray.xz;
+          if (liquidCrossSection(nextPoint) < 1.0) low = candidate;
+          else high = candidate;
+        }
+        float topOrBottomExit = 8.0;
+        if (ray.y > 0.001) topOrBottomExit = (0.82 - vLiquidLocal.y) / ray.y;
+        else if (ray.y < -0.001) topOrBottomExit = (-0.82 - vLiquidLocal.y) / ray.y;
+        float opticalPath = clamp(min(high, max(topOrBottomExit, 0.0)), 0.0, 3.0);
+        // Green and blue wavelengths are absorbed faster by champagne amber.
+        // Their exponential loss grows with actual travel distance.
+        vec3 absorption = 1.0 - exp(-vec3(0.18, 0.48, 1.20) * opticalPath);
+        float depth = dot(absorption, vec3(0.20, 0.35, 0.45));
+        float grazing = pow(1.0 - clamp(abs(dot(N, V)), 0.0, 1.0), 2.4);
+        float pigmentDepth = smoothstep(0.035, 0.64, depth);
+        vec3 pigment = mix(vec3(0.96, 0.87, 0.72), vec3(0.72, 0.43, 0.18), pigmentDepth);
+        vec3 studioDirection = normalize(vec3(-0.57, 0.18, 0.80));
+        float specular = pow(max(dot(reflect(-studioDirection, N), V), 0.0), 42.0);
+        float alpha = clamp(0.07 + 0.80 * depth + 0.13 * grazing, 0.07, 0.67);
+        vec3 highlights = vec3(1.0, 0.94, 0.82) * (specular * 0.14 + grazing * 0.025);
         gl_FragColor = vec4(pigment + highlights, alpha);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -359,6 +382,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   liquid.position.set(0, 1.165, 0);
   liquid.renderOrder = 2;
   assembly.add(liquid);
+  const liquidEyeLocal = liquidMaterial.uniforms.eyeLocal.value as THREE.Vector3;
   // A flat optical surface and its fine bright boundary remain visibly
   // separate from the vertical body. Do not imply motion/sloshing at rest.
   const meniscusMaterial = new THREE.MeshPhysicalMaterial({
@@ -526,6 +550,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const refractionBacking = new THREE.Color("#cbb9a5");
 
   function draw() {
+    // Update the eye in the liquid's own frame before BOTH refraction and final passes.
+    liquidEyeLocal.copy(camera.position);
+    liquid.worldToLocal(liquidEyeLocal);
     const drawStarted = performance.now();
     renderer.info.autoReset = false;
     renderer.info.reset();
@@ -570,6 +597,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
     host.dataset.liquidOptics = "translucent-volume";
+    host.dataset.liquidAbsorption = "beer-lambert-local-path";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
     host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
