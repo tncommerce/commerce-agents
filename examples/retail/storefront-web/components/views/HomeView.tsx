@@ -12,6 +12,7 @@ import HomeComparison from "../HomeComparison";
 import HomeOffers from "../HomeOffers";
 import styles from "../VisualHome.module.css";
 import ScentAtlas from "../ScentAtlas";
+import ScentWorlds from "../ScentWorlds";
 import LegalFooter from "../LegalFooter";
 import MerchantDiscovery from "../MerchantDiscovery";
 import PersonalLibrarySummary from "../PersonalLibrarySummary";
@@ -78,10 +79,7 @@ export default function HomeView({ shopperName: _shopperName, sessionSettled }: 
       <nav aria-label="Duftwelten im Katalog"><span>Nach Duftgefühl</span>{[["freshness","Frisch"],["sweetness","Süß"],["woodiness","Holzig"],["spiciness","Würzig"]].map(([profile,label])=><AcquisitionInternalLink key={profile} href={`/duft?profil=${profile}`}>{label} ↗</AcquisitionInternalLink>)}</nav>
       <AcquisitionInternalLink className="wow-catalog-index-link" href="/duft">Alle {scentCount} Düfte im Katalog entdecken →</AcquisitionInternalLink>
     </section>
-    <details id="duft-atlas" className={styles.atlasDisclosure} data-atlas-disclosure>
-      <summary><span><small>Für Neugierige</small><strong>Folge einer Duftnote.</strong></span><span>Duftnoten-Atlas öffnen <i aria-hidden>＋</i></span></summary>
-      <ScentAtlas />
-    </details>
+    <ScentWorlds><ScentAtlas /></ScentWorlds>
     <section id="duftberatung" className="wow-advisor" aria-labelledby="wow-advisor-title">
       <div><p className="wow-kicker">Persönliche Duftberatung</p><h2 id="wow-advisor-title">Noch unentschlossen?</h2><p>Beschreibe, was du suchst. Wir helfen dir beim Vergleichen.</p></div>
       <Composer send={ask} ready={chat?.ready ?? false} busy={chat?.busy ?? false} label="Nachricht an DUFYND Advisor" placeholder="Was suchst du?" />

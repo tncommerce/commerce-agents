@@ -3,7 +3,7 @@
 
 import type { Metadata } from "next";
 import MeasurementPreferences from "@/components/MeasurementPreferences";
-import { Instrument_Sans } from "next/font/google";
+import { Bodoni_Moda, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 import "./premium-discovery.css";
 import "./atelier.css";
@@ -14,6 +14,12 @@ const instrumentSans = Instrument_Sans({
   variable: "--font-body",
   // Keep the first rendered layout stable when the font arrives late.
   display: "optional",
+});
+
+// Self-hosted editorial faces; metric-adjusted fallback keeps the layout stable.
+const editorial = Bodoni_Moda({
+  subsets: ["latin"], weight: "400", style: ["normal", "italic"],
+  variable: "--font-editorial", display: "swap", preload: true,
 });
 
 export const metadata: Metadata = {
@@ -70,7 +76,7 @@ const websiteStructuredData = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={instrumentSans.variable}>
+    <html lang="de" className={`${instrumentSans.variable} ${editorial.variable}`}>
       <body>
         <script
           type="application/ld+json"

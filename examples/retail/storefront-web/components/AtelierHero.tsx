@@ -10,8 +10,8 @@ export default function AtelierHero() {
     <div className={styles.heroBar}><span>Die Welt der Parfums</span><nav aria-label="Schnellzugriff"><AcquisitionInternalLink href="/marken">Marken A–Z</AcquisitionInternalLink><AcquisitionInternalLink href="/merkliste">Merkliste ↗</AcquisitionInternalLink></nav></div>
     <div className={styles.heroMain}>
       <div className={styles.heroCopy}>
-        <div className={styles.titleBlock}><p className={styles.kicker}>Ein Duft. Ein Gefühl. Du.</p><h1 id="dufynd-home-discovery-heading">Parfum.<br /><em>Ganz du.</em></h1></div>
-        <p className={styles.heroDescription}>Finde deine nächste Duftliebe.<br />Entdecke Parfums, vergleiche ihre Facetten<br className={styles.desktopBreak} /> und finde passende Händlerangebote.</p>
+        <div className={styles.titleBlock}><p className={styles.kicker}>Eine Welt. Deine Entdeckung.</p><h1 id="dufynd-home-discovery-heading">Parfum.<br /><em>Ganz du.</em></h1></div>
+        <p className={styles.heroDescription}>Entdecke deinen Duft.<br className={styles.desktopBreak} /> Vergleiche deine Favoriten.</p>
         <div className={styles.searchBlock}>
           <form action="/duft" method="get" role="search" aria-label="DUFYND Duftkatalog durchsuchen" className={`wow-search ${styles.search}`} onSubmit={event => {
             event.preventDefault();
@@ -27,7 +27,7 @@ export default function AtelierHero() {
           <AcquisitionInternalLink href="/duftfinder" className={`dufynd-hero-primary ${styles.advisorLink}`}>Noch keine Idee? Finde deinen Duft <span aria-hidden>→</span></AcquisitionInternalLink>
         </div>
       </div>
-      <div className={styles.heroObject}><PerfumeObject /></div>
+      <div className={styles.heroObject}><span className={styles.objectIndex} aria-hidden>ÉTUDE 01 — LE FLACON</span><PerfumeObject /></div>
     </div>
     <nav className={styles.quickPaths} aria-label="Dein Weg zum Parfum">
       <AcquisitionInternalLink href="/duft"><span>01</span><strong>Düfte entdecken</strong><i aria-hidden>↗</i></AcquisitionInternalLink>

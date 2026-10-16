@@ -1,103 +1,67 @@
 .figure {
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
   position: relative;
   width: 100%;
-  max-width: 620px;
+  max-width: 700px;
   margin: 0;
   color: #514532;
   isolation: isolate;
-  container-type: inline-size;
 }
 
 .scene {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
-  perspective: 1000px;
+  height: 460px;
+  background: #eee8de;
+  overflow: hidden;
 }
 
-.halo {
-  position: absolute;
-  inset: 9% 0 8%;
-  background:
-    radial-gradient(ellipse at 52% 48%, #fffdf4b0 0%, #f8eacf45 42%, transparent 71%),
-    radial-gradient(ellipse at 75% 65%, #d5b57b26 0%, transparent 55%);
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.floor {
-  position: absolute;
-  z-index: -1;
-  left: 22%;
-  top: 83%;
-  width: 63%;
-  height: 10%;
-  background: radial-gradient(ellipse, #785f3f38 0%, #a78c6023 30%, #c5b18b10 51%, transparent 71%);
-  transform: rotate(-8deg);
-  pointer-events: none;
-}
-
-.object {
+.poster, .canvas {
   position: absolute;
   inset: 0;
-  transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
-  transform-origin: 52% 65%;
-  transition: transform 450ms cubic-bezier(.2, .7, .3, 1);
-  pointer-events: none;
-}
-
-.drawing {
   display: block;
   width: 100%;
   height: 100%;
-  overflow: visible;
 }
 
-.flacon {
-  transform: rotate(-9deg);
-  transform-origin: 52% 58%;
+.poster { object-fit: contain; }
+.poster, .canvas {
+  mask-image: linear-gradient(to right, transparent, #000 22px, #000 calc(100% - 22px), transparent),
+    linear-gradient(to bottom, transparent, #000 22px, #000 calc(100% - 22px), transparent);
+  mask-composite: intersect;
 }
-
-.cap {
-  transform: translateY(0);
-  transition: transform 650ms cubic-bezier(.22, .75, .25, 1);
-}
-
-.figure[data-explored="true"] .cap {
-  transform: translateY(-67px);
-}
+.canvas { opacity: 0; pointer-events: none; }
+.canvas canvas { display: block; width: 100%; height: 100%; }
+.figure[data-spatial-state="ready"] .canvas[data-render-count] { opacity: 1; }
+.figure[data-spatial-state="ready"]:has(.canvas[data-render-count]) .poster { opacity: 0; }
 
 .studyLabel {
   position: absolute;
-  right: 4%;
-  bottom: 10%;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(11px, 1.2vw, 15px);
-  font-style: italic;
-  letter-spacing: -.02em;
-  color: #8c7b60;
-  transform: rotate(-90deg) translateX(100%);
-  transform-origin: right bottom;
-  white-space: nowrap;
+  left: 6%;
+  bottom: 7%;
+  font-family: var(--font-sans, Arial, sans-serif);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  color: #716657;
+  text-transform: uppercase;
   pointer-events: none;
 }
 
 .controls {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  padding: 0 5% 14px;
+  gap: 12px;
+  padding: 0 6%;
+  background: #eee8de;
 }
 
 .caption {
-  color: #82735d;
-  font-size: 11px;
+  color: #716657;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 13px;
   line-height: 1.5;
-  letter-spacing: .025em;
 }
 
 .control {
@@ -105,120 +69,42 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  gap: 7px;
+  gap: 8px;
   min-height: 44px;
   padding: 9px 0 9px 9px;
   border: 0;
   background: none;
-  color: #584932;
+  color: #514532;
   font-family: inherit;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.4;
   cursor: pointer;
   text-underline-offset: 4px;
   -webkit-tap-highlight-color: transparent;
 }
 
-.control:hover {
-  color: #281f15;
-  text-decoration: underline;
-}
-
-.control:focus-visible {
-  outline: 2px solid #786342;
-  outline-offset: 4px;
-  border-radius: 2px;
-}
-
-.controlIcon {
-  transform-origin: center;
-  transition: transform 300ms ease;
-}
-
-.figure[data-explored="true"] .controlIcon {
-  transform: rotate(45deg);
-}
+.control:hover { color: #281f15; text-decoration: underline; }
+.control:focus-visible { outline: 2px solid #786342; outline-offset: 4px; border-radius: 2px; }
+.controlIcon { transform-origin: center; transition: transform 300ms ease; }
+.figure[data-explored="true"] .controlIcon { transform: rotate(45deg); }
 
 @media (max-width: 600px) {
-  .scene {
-    aspect-ratio: 1.12 / 1;
-  }
+  .scene { aspect-ratio: auto; height: 260px; }
+  .controls { padding: 0 5%; gap: 8px; }
+  .caption { font-size: 12px; }
+  .control { font-size: 11px; }
+  .studyLabel { left: 5%; bottom: 5%; font-size: 9px; }
+}
 
-  .drawing {
-    transform: scale(1.09) translateY(-2%);
-  }
-
-  .floor {
-    top: 85%;
-  }
-
-  .controls {
-    padding: 0 3% 8px;
-    gap: 8px;
-  }
-
-  .caption {
-    font-size: 10px;
-  }
-
-  .control {
-    font-size: 10px;
-    gap: 5px;
-  }
-
-  .studyLabel {
-    right: 1%;
-    bottom: 9%;
-    font-size: 11px;
-  }
+@media (max-width: 359px) {
+  .scene { height: 230px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .object {
-    transform: none;
-    transition: none;
-  }
-
-  .cap,
-  .controlIcon {
-    transition: none;
-  }
-}
-
-@container (max-width: 260px) {
-  .scene {
-    aspect-ratio: .84 / 1;
-  }
-
-  .drawing {
-    transform: scale(1.24) translate(-2%, -2%);
-  }
-
-  .controls {
-    justify-content: center;
-    padding: 0;
-  }
-
-  .caption,
-  .studyLabel {
-    display: none;
-  }
-
-  .floor {
-    top: 83%;
-    left: 19%;
-    width: 70%;
-  }
+  .controlIcon { transition: none; }
 }
 
 @media (forced-colors: active) {
-  .control {
-    border: 1px solid ButtonText;
-    padding: 9px;
-  }
-
-  .caption,
-  .studyLabel {
-    color: CanvasText;
-  }
+  .control { border: 1px solid ButtonText; padding: 9px; }
+  .caption, .studyLabel { color: CanvasText; }
 }
