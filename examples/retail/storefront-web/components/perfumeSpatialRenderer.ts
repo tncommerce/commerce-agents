@@ -286,9 +286,26 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const refractionTarget = new THREE.WebGLRenderTarget(1, 1, {
     type: refractionType, samples: 2, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter,
   });
+  const studyEyeLocal = new THREE.Vector3();
+  const studyVolumeShader = "\n#ifdef USE_TRANSMISSION\nuniform vec3 studyEyeInBottle;\nvarying vec3 vStudyBottlePoint;\nvarying vec3 vStudyBottleNormal;\n\n// Air -> silica glass -> hollow interior, approximated by a bounded refracted\n// ray inside the actual superellipse cavity. The perfume's free surface is\n// horizontal. Glass reflection stays in the stock MeshPhysical BRDF; only the\n// TRANSMITTED light receives perfume's Beer-Lambert absorption.\nfloat studyLiquidPath(vec3 entry, vec3 exteriorNormal) {\n  vec3 fromEye = normalize(entry - studyEyeInBottle);\n  vec3 insideRay = refract(fromEye, normalize(exteriorNormal), 1.0 / 1.50);\n  if (dot(insideRay, insideRay) < 0.01) insideRay = fromEye;\n\n  // Local dimensions: inner glass 2.055 x 1.005, liquid inset at walls,\n  // flat top at world y=1.985, base y=.345; bottle origin world y=1.42.\n  vec3 innerStart = entry + insideRay * 0.077;\n  vec3 boundsMin = vec3(-1.023, -1.075, -0.495);\n  vec3 boundsMax = vec3( 1.023,  0.565,  0.495);\n  vec3 safeRay = sign(insideRay) * max(abs(insideRay), vec3(0.0001));\n  vec3 t0 = (boundsMin - innerStart) / safeRay;\n  vec3 t1 = (boundsMax - innerStart) / safeRay;\n  vec3 earliest = min(t0, t1);\n  vec3 latest = max(t0, t1);\n  float nearDistance = max(0.0, max(earliest.x, max(earliest.y, earliest.z)));\n  float farDistance = min(latest.x, min(latest.y, latest.z));\n  if (farDistance <= nearDistance) return 0.0;\n  float raySpan = min(farDistance - nearDistance, 2.55);\n  float submerged = 0.0;\n  for (int sampleIndex = 0; sampleIndex < 8; sampleIndex++) {\n    float t = nearDistance + raySpan * (float(sampleIndex) + 0.5) / 8.0;\n    vec3 q = innerStart + insideRay * t;\n    float section = pow(abs(q.x / 1.023), 4.1666667)\n      + pow(abs(q.z / .495), 4.1666667);\n    float wall = 1.0 - smoothstep(.94, 1.025, section);\n    float floorProfile = smoothstep(-1.08, -.96, q.y);\n    submerged += wall * floorProfile;\n  }\n  return raySpan * submerged / 8.0;\n}\n#endif\n";
   glassMaterial.onBeforeCompile = (shader) => {
     shader.uniforms.studioRefractionMap = { value: refractionTarget.texture };
-    shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_pars_fragment>", THREE.ShaderChunk.transmission_pars_fragment.replaceAll("transmissionSamplerMap", "studioRefractionMap"));
+    shader.uniforms.studyEyeInBottle = { value: studyEyeLocal };
+    shader.vertexShader = shader.vertexShader.replace("#include <common>",
+      "#include <common>\nvarying vec3 vStudyBottlePoint;\nvarying vec3 vStudyBottleNormal;");
+    shader.vertexShader = shader.vertexShader.replace("#include <begin_vertex>",
+      "#include <begin_vertex>\nvStudyBottlePoint = position;\nvStudyBottleNormal = normal;");
+    shader.fragmentShader = shader.fragmentShader.replace("#include <common>",
+      "#include <common>\n" + studyVolumeShader);
+    shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_pars_fragment>",
+      THREE.ShaderChunk.transmission_pars_fragment.replaceAll("transmissionSamplerMap", "studioRefractionMap"));
+    const physicalTransmission = THREE.ShaderChunk.transmission_fragment;
+    const transmissionMix = "totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );";
+    if (!physicalTransmission.includes(transmissionMix)) {
+      throw new Error("Three.js transmission contract changed; do not silently omit glass/liquid coupling");
+    }
+    shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>",
+      physicalTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.14, 0.56, 1.30) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
   };
   const glass = new THREE.Mesh(bevelledBody(2.2, 2.45, 1.14, .12), glassMaterial);
   glass.position.set(0, 1.42, 0);
@@ -316,7 +333,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       varying vec3 vStudyView;
       void main() {
         float rim = pow(1.0 - clamp(abs(dot(normalize(vStudyNormal), normalize(vStudyView))), 0.0, 1.0), 2.35);
-        float alpha = rim * 0.16;
+        float alpha = rim * 0.095;
         gl_FragColor = vec4(vec3(1.0, 0.985, 0.95) * (0.72 + rim * 0.55), alpha);
       }
     `,
@@ -327,123 +344,48 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   glassEdge.renderOrder = 7;
   assembly.add(glassEdge);
 
-  // A separate inner wall makes the vessel read as a hollow glass object rather than a milky solid.
-  const innerGlassMaterial = new THREE.MeshStandardMaterial({
-    // The rear wall is a very faint optical boundary, not a white plastic lining.
-    color: 0xffffff, roughness: .025, metalness: 0,
-    transparent: true, opacity: .010, depthWrite: false, side: THREE.BackSide,
-    envMapIntensity: .9,
-  });
-  const innerGlass = new THREE.Mesh(bevelledBody(2.00, 2.24, .94, .095), innerGlassMaterial);
-  innerGlass.position.set(0, 1.43, 0);
-  innerGlass.renderOrder = 3;
-  assembly.add(innerGlass);
-
-  // The perfume absorbs transmitted studio light instead of painting its own
-  // foreground colour. Render it ONLY into the opaque refraction buffer, where
-  // multiplicative blending applies Beer's law to the light BEHIND the fluid.
-  // The public alpha canvas stays glass-only: no second coloured inner block.
-  const liquidMaterial = new THREE.ShaderMaterial({
-    uniforms: { eyeLocal: { value: new THREE.Vector3() } },
+  // Actual inset cavity wall: the outer glass radius is 1.10 x .57,
+  // the cavity radius is 1.0275 x .5025. The lower inset yields a
+  // structurally thicker transparent base than the side walls.
+  // Back-facing specular highlights reveal that empty cavity without
+  // painting a diffuse white lining (which previously made it milky).
+  const innerGlassMaterial = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, depthTest: true,
-    side: THREE.FrontSide, toneMapped: false,
-    blending: THREE.CustomBlending,
-    blendEquation: THREE.AddEquation,
-    blendSrc: THREE.ZeroFactor,
-    blendDst: THREE.SrcColorFactor,
-    blendEquationAlpha: THREE.AddEquation,
-    blendSrcAlpha: THREE.ZeroFactor,
-    blendDstAlpha: THREE.OneFactor,
+    side: THREE.BackSide, blending: THREE.AdditiveBlending,
     vertexShader: `
-      varying vec3 vLiquidLocal;
-      void main() {
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        vLiquidLocal = position;
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    `,
-    fragmentShader: `
-      uniform vec3 eyeLocal;
-      varying vec3 vLiquidLocal;
-
-      float liquidCrossSection(vec2 point) {
-        // The authored cross-section uses x/z = signed power(cos/sin, .48).
-        // Its implicit superellipse exponent is 2 / .48 = 4.1666667.
-        return pow(abs(point.x / 1.005), 4.1666667)
-          + pow(abs(point.y / 0.47), 4.1666667);
-      }
-
-      void main() {
-        // Local ray distance remains stable while the bottle is rotated,
-        // physically opened, and reframed by the camera.
-        vec3 ray = normalize(vLiquidLocal - eyeLocal);
-        float low = 0.0;
-        float high = 3.6 / max(length(ray.xz), 0.05);
-        for (int step = 0; step < 8; step++) {
-          float candidate = (low + high) * 0.5;
-          vec2 nextPoint = vLiquidLocal.xz + candidate * ray.xz;
-          if (liquidCrossSection(nextPoint) < 1.0) low = candidate;
-          else high = candidate;
-        }
-        float topOrBottomExit = 8.0;
-        if (ray.y > 0.001) topOrBottomExit = (0.82 - vLiquidLocal.y) / ray.y;
-        else if (ray.y < -0.001) topOrBottomExit = (-0.82 - vLiquidLocal.y) / ray.y;
-        float opticalPath = clamp(min(high, max(topOrBottomExit, 0.0)), 0.0, 3.0);
-        // Wavelength-specific attenuation. R passes more readily than G/B,
-        // making shallow paths champagne and deep paths warm amber. This value
-        // is a LINEAR blend factor, not emissive colour (no tone mapping).
-        vec3 transmittance = exp(-vec3(0.12, 0.52, 1.17) * opticalPath);
-        gl_FragColor = vec4(transmittance, 1.0);
-      }
-    `,
-  });
-  const liquid = new THREE.Mesh(bevelledBody(2.01, 1.64, .94, .08, "flat-fill"), liquidMaterial);
-  liquid.position.set(0, 1.165, 0);
-  liquid.renderOrder = 2;
-  assembly.add(liquid);
-
-  // The Beer-Lambert pass attenuates the studio behind the fluid, but does
-  // not model light returned by its air/liquid interface. Add a second,
-  // geometry-attached *specular-only* pass to the SAME refraction capture.
-  // Never draw another pigmented liquid mesh over the public alpha canvas.
-  // View-space normals keep the highlights anchored as the bottle rotates.
-  const liquidGlintMaterial = new THREE.ShaderMaterial({
-    transparent: true, depthWrite: false, depthTest: true,
-    toneMapped: false, side: THREE.FrontSide, blending: THREE.AdditiveBlending,
-    vertexShader: `
-      varying vec3 vGlintNormal;
-      varying vec3 vGlintView;
+      varying vec3 vInsideNormal;
+      varying vec3 vInsideView;
       void main() {
         vec4 eye = modelViewMatrix * vec4(position, 1.0);
-        vGlintNormal = normalize(normalMatrix * normal);
-        vGlintView = normalize(-eye.xyz);
+        vInsideNormal = normalize(normalMatrix * normal);
+        vInsideView = normalize(-eye.xyz);
         gl_Position = projectionMatrix * eye;
       }
     `,
     fragmentShader: `
-      varying vec3 vGlintNormal;
-      varying vec3 vGlintView;
+      varying vec3 vInsideNormal;
+      varying vec3 vInsideView;
       void main() {
-        vec3 N = normalize(vGlintNormal);
-        vec3 V = normalize(vGlintView);
-        float facing = clamp(dot(N, V), 0.0, 1.0);
-        // Dielectric interface (air / perfume), with restrained studio strips.
-        float fresnel = 0.020 + 0.980 * pow(1.0 - facing, 5.0);
-        vec3 key = normalize(vec3(-0.69, -0.13, 0.72));
-        vec3 fill = normalize(vec3(-0.40, -0.18, 0.90));
-        float wide = pow(max(dot(reflect(-key, N), V), 0.0), 46.0);
-        float fine = pow(max(dot(reflect(-fill, N), V), 0.0), 116.0);
-        float lightReturn = wide * 0.17 + fine * 0.062 + fresnel * 0.022;
-        gl_FragColor = vec4(vec3(1.0, 0.96, 0.88) * lightReturn, 1.0);
+        vec3 N = normalize(vInsideNormal);
+        vec3 V = normalize(vInsideView);
+        float f = pow(1.0 - abs(dot(N, V)), 4.0);
+        float key = pow(max(dot(reflect(-normalize(vec3(-0.6,0.3,0.75)), N), V), 0.0), 70.0);
+        float intensity = f * .075 + key * .035;
+        gl_FragColor = vec4(vec3(1.0, .97, .92) * intensity, 1.0);
       }
     `,
   });
-  const liquidGlint = new THREE.Mesh(liquid.geometry, liquidGlintMaterial);
-  liquidGlint.position.copy(liquid.position);
-  liquidGlint.scale.setScalar(1.001);
-  liquidGlint.renderOrder = 3;
-  assembly.add(liquidGlint);
-  const liquidEyeLocal = liquidMaterial.uniforms.eyeLocal.value as THREE.Vector3;
+  const innerGlass = new THREE.Mesh(bevelledBody(2.055, 2.26, 1.005, .08), innerGlassMaterial);
+  innerGlass.position.set(0, 1.43, 0);
+  innerGlass.renderOrder = 3;
+  assembly.add(innerGlass);
+
+  // No second coloured liquid mesh: transmission/absorption is coupled in
+  // glassMaterial itself. Keep a non-rendering fill transform for interaction
+  // contracts and level instrumentation.
+  const liquid = new THREE.Group();
+  liquid.position.set(0, 1.165, 0);
+  assembly.add(liquid);
   // A flat optical surface and its fine bright boundary remain visibly
   // separate from the vertical body. Do not imply motion/sloshing at rest.
   const meniscusMaterial = new THREE.MeshPhysicalMaterial({
@@ -472,7 +414,13 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   base.renderOrder = 3;
   assembly.add(base);
 
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(.31, .4, .38, 48), glassMaterial);
+  // The metal-neck glass is outside the main bottle/cavity coordinate frame;
+  // keep it transmissive but exclude the perfume-volume ray integration.
+  const neckGlassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff, roughness: .01, metalness: 0, transmission: 1,
+    thickness: .08, ior: 1.50, envMapIntensity: 1.15,
+  });
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(.31, .4, .38, 48), neckGlassMaterial);
   neck.position.y = 2.7;
   assembly.add(neck);
 
@@ -591,7 +539,6 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     glassEdge.position.copy(glass.position);
     glassEdge.rotation.y = glass.rotation.y;
     liquid.position.set(liquidShift, 1.165, .018 * progress);
-    liquidGlint.position.copy(liquid.position);
     meniscus.position.set(liquidShift, 1.987, .018 * progress);
     surfaceRim.position.set(liquidShift, 1.991, .018 * progress);
     label.position.x = shellShift;
@@ -616,9 +563,10 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const refractionBacking = new THREE.Color("#d9cabb");
 
   function draw() {
-    // Update the eye in the liquid's own frame before BOTH refraction and final passes.
-    liquidEyeLocal.copy(camera.position);
-    liquid.worldToLocal(liquidEyeLocal);
+    // Coupled glass/liquid shader receives the eye in the outer vessel frame.
+    // The same shader accounts for both opening rotation and camera reframing.
+    studyEyeLocal.copy(camera.position);
+    glass.worldToLocal(studyEyeLocal);
     const drawStarted = performance.now();
     renderer.info.autoReset = false;
     renderer.info.reset();
@@ -628,6 +576,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     innerGlass.visible = false;
     base.visible = false;
     neck.visible = false;
+    meniscus.visible = false;
+    surfaceRim.visible = false;
     // Opaque only in the texture the glass samples. Restore the transparent
     // display background and default framebuffer before the public frame.
     const priorBackground = scene.background;
@@ -644,9 +594,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     // but must not show as a rectangular plane behind the bottle on screen.
     backdrop.visible = false;
     rearCard.visible = false;
-    liquid.visible = false;
-    liquidGlint.visible = false;
     label.visible = true;
+    meniscus.visible = true;
+    surfaceRim.visible = true;
     glass.visible = true;
     glassEdge.visible = true;
     innerGlass.visible = true;
@@ -655,8 +605,6 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     try {
       renderer.render(scene, camera);
     } finally {
-      liquid.visible = true;
-      liquidGlint.visible = true;
       backdrop.visible = true;
       rearCard.visible = true;
     }
@@ -669,7 +617,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
     host.dataset.liquidOptics = "translucent-volume";
-    host.dataset.liquidAbsorption = "beer-lambert-with-specular-interface";
+    host.dataset.liquidAbsorption = "glass-coupled-ray-volume";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
     host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
