@@ -310,31 +310,32 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   innerGlass.renderOrder = 3;
   assembly.add(innerGlass);
 
-  // Beer-Lambert-inspired absorption follows the camera ray through the actual
-  // superellipse cross-section, rather than painting an amber gradient by height.
-  // A thin edge must transmit more light than a long ray through the centre.
-  // This single translucent volume remains visible through the glass refraction pass.
+  // The perfume absorbs transmitted studio light instead of painting its own
+  // foreground colour. Render it ONLY into the opaque refraction buffer, where
+  // multiplicative blending applies Beer's law to the light BEHIND the fluid.
+  // The public alpha canvas stays glass-only: no second coloured inner block.
   const liquidMaterial = new THREE.ShaderMaterial({
     uniforms: { eyeLocal: { value: new THREE.Vector3() } },
     transparent: true, depthWrite: false, depthTest: true,
-    side: THREE.FrontSide, toneMapped: true,
+    side: THREE.FrontSide, toneMapped: false,
+    blending: THREE.CustomBlending,
+    blendEquation: THREE.AddEquation,
+    blendSrc: THREE.ZeroFactor,
+    blendDst: THREE.SrcColorFactor,
+    blendEquationAlpha: THREE.AddEquation,
+    blendSrcAlpha: THREE.ZeroFactor,
+    blendDstAlpha: THREE.OneFactor,
     vertexShader: `
       varying vec3 vLiquidLocal;
-      varying vec3 vLiquidNormal;
-      varying vec3 vLiquidView;
       void main() {
         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
         vLiquidLocal = position;
-        vLiquidNormal = normalize(normalMatrix * normal);
-        vLiquidView = normalize(-mvPosition.xyz);
         gl_Position = projectionMatrix * mvPosition;
       }
     `,
     fragmentShader: `
       uniform vec3 eyeLocal;
       varying vec3 vLiquidLocal;
-      varying vec3 vLiquidNormal;
-      varying vec3 vLiquidView;
 
       float liquidCrossSection(vec2 point) {
         // The authored cross-section uses x/z = signed power(cos/sin, .48).
@@ -344,10 +345,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       }
 
       void main() {
-        vec3 N = normalize(vLiquidNormal);
-        vec3 V = normalize(vLiquidView);
-        // Local coordinates keep the optical calculation stable while the
-        // bottle rotates, the liquid opens, or the camera framing changes.
+        // Local ray distance remains stable while the bottle is rotated,
+        // physically opened, and reframed by the camera.
         vec3 ray = normalize(vLiquidLocal - eyeLocal);
         float low = 0.0;
         float high = 3.6 / max(length(ray.xz), 0.05);
@@ -361,20 +360,11 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
         if (ray.y > 0.001) topOrBottomExit = (0.82 - vLiquidLocal.y) / ray.y;
         else if (ray.y < -0.001) topOrBottomExit = (-0.82 - vLiquidLocal.y) / ray.y;
         float opticalPath = clamp(min(high, max(topOrBottomExit, 0.0)), 0.0, 3.0);
-        // Green and blue wavelengths are absorbed faster by champagne amber.
-        // Their exponential loss grows with actual travel distance.
-        vec3 absorption = 1.0 - exp(-vec3(0.18, 0.48, 1.20) * opticalPath);
-        float depth = dot(absorption, vec3(0.20, 0.35, 0.45));
-        float grazing = pow(1.0 - clamp(abs(dot(N, V)), 0.0, 1.0), 2.4);
-        float pigmentDepth = smoothstep(0.035, 0.64, depth);
-        vec3 pigment = mix(vec3(0.96, 0.87, 0.72), vec3(0.72, 0.43, 0.18), pigmentDepth);
-        vec3 studioDirection = normalize(vec3(-0.57, 0.18, 0.80));
-        float specular = pow(max(dot(reflect(-studioDirection, N), V), 0.0), 42.0);
-        float alpha = clamp(0.07 + 0.80 * depth + 0.13 * grazing, 0.07, 0.67);
-        vec3 highlights = vec3(1.0, 0.94, 0.82) * (specular * 0.14 + grazing * 0.025);
-        gl_FragColor = vec4(pigment + highlights, alpha);
-        #include <tonemapping_fragment>
-        #include <colorspace_fragment>
+        // Wavelength-specific attenuation. R passes more readily than G/B,
+        // making shallow paths champagne and deep paths warm amber. This value
+        // is a LINEAR blend factor, not emissive colour (no tone mapping).
+        vec3 transmittance = exp(-vec3(0.12, 0.52, 1.17) * opticalPath);
+        gl_FragColor = vec4(transmittance, 1.0);
       }
     `,
   });
@@ -577,6 +567,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     // The gradient stage is valuable INSIDE the glass refraction capture,
     // but must not show as a rectangular plane behind the bottle on screen.
     backdrop.visible = false;
+    liquid.visible = false;
     label.visible = true;
     glass.visible = true;
     glassEdge.visible = true;
@@ -586,6 +577,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     try {
       renderer.render(scene, camera);
     } finally {
+      liquid.visible = true;
       backdrop.visible = true;
     }
     host.dataset.renderDurationMs = (performance.now() - drawStarted).toFixed(2);
@@ -597,7 +589,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
     host.dataset.liquidOptics = "translucent-volume";
-    host.dataset.liquidAbsorption = "beer-lambert-local-path";
+    host.dataset.liquidAbsorption = "beer-lambert-refraction-only";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
     host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
