@@ -472,19 +472,27 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     const priorBackground = scene.background;
     try {
       scene.background = refractionBacking;
+      backdrop.visible = true;
       renderer.setRenderTarget(refractionTarget);
       renderer.render(scene, camera);
     } finally {
       scene.background = priorBackground;
       renderer.setRenderTarget(null);
     }
+    // The gradient stage is valuable INSIDE the glass refraction capture,
+    // but must not show as a rectangular plane behind the bottle on screen.
+    backdrop.visible = false;
     label.visible = true;
     glass.visible = true;
     glassEdge.visible = true;
     innerGlass.visible = true;
     base.visible = true;
     neck.visible = true;
-    renderer.render(scene, camera);
+    try {
+      renderer.render(scene, camera);
+    } finally {
+      backdrop.visible = true;
+    }
     host.dataset.renderDurationMs = (performance.now() - drawStarted).toFixed(2);
     renderCount += 1;
     host.dataset.renderCount = String(renderCount);
