@@ -49,6 +49,40 @@ function bevelledBody(width: number, height: number, depth: number, bevel: numbe
   return geometry;
 }
 
+function superellipsePlate(width: number, depth: number, exponent = .48) {
+  const shape = new THREE.Shape();
+  const segments = 96;
+  for (let i = 0; i <= segments; i++) {
+    const theta = i / segments * Math.PI * 2;
+    const cos = Math.cos(theta), sin = Math.sin(theta);
+    const x = Math.sign(cos) * Math.pow(Math.abs(cos), exponent) * width / 2;
+    const y = Math.sign(sin) * Math.pow(Math.abs(sin), exponent) * depth / 2;
+    if (i === 0) shape.moveTo(x, y);
+    else shape.lineTo(x, y);
+  }
+  shape.closePath();
+  const geometry = new THREE.ShapeGeometry(shape, 12);
+  geometry.rotateX(-Math.PI / 2);
+  return geometry;
+}
+
+function mistTexture() {
+  const canvas = document.createElement("canvas");
+  canvas.width = 64;
+  canvas.height = 64;
+  const context = canvas.getContext("2d")!;
+  const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 31);
+  gradient.addColorStop(0, "rgba(255,252,244,.82)");
+  gradient.addColorStop(.28, "rgba(255,247,229,.38)");
+  gradient.addColorStop(.7, "rgba(255,245,224,.09)");
+  gradient.addColorStop(1, "rgba(255,245,224,0)");
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, 64, 64);
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  return texture;
+}
+
 function labelTexture() {
   const canvas = document.createElement("canvas");
   canvas.width = 768;
@@ -93,14 +127,14 @@ function shadowTexture() {
 }
 
 export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options: Options): Promise<PerfumeSpatialController> {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "low-power" });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
   let didDispose = false;
   try {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.35 : 1.65));
   renderer.setClearColor(0xeee8de, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = .9;
+  renderer.toneMappingExposure = 1.02;
   renderer.domElement.setAttribute("aria-hidden", "true");
   renderer.domElement.setAttribute("data-spatial-webgl", "true");
   host.appendChild(renderer.domElement);
@@ -108,12 +142,12 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const scene = new THREE.Scene();
   scene.background = new THREE.Color("#eee8de");
   const camera = new THREE.PerspectiveCamera(30, 1, .1, 60);
-  camera.position.set(4.68, 3.15, 7.82);
-  camera.lookAt(0, 1.8, 0);
+  camera.position.set(4.35, 3.06, 7.48);
+  camera.lookAt(0, 1.74, 0);
 
   // A small authored studio environment: long reflected softboxes define the glass.
   const studio = new THREE.Scene();
-  studio.background = new THREE.Color("#221f1a");
+  studio.background = new THREE.Color("#171512");
   const room = new THREE.Mesh(new THREE.BoxGeometry(24, 18, 24), new THREE.MeshBasicMaterial({ color: 0x39352e, side: THREE.BackSide }));
   studio.add(room);
   const panel = (width: number, height: number, position: [number, number, number], color: number, intensity: number) => {
@@ -124,15 +158,15 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     mesh.lookAt(0, 1.8, 0);
     studio.add(mesh);
   };
-  panel(1.4, 9, [-4, 2.2, 7], 0xfffbef, 7);
-  panel(.5, 8, [4, 2.2, 6], 0xffffff, 6);
-  panel(5, 4, [0, 8, 0], 0xfff8eb, 2);
-  panel(2.8, 7, [1, 3, -6], 0xffdfac, 1.5);
-  panel(1.5, 7, [1.8, 2, 7], 0x56554e, .8);
+  panel(1.15, 9.5, [-4.4, 2.3, 6.8], 0xfff8e8, 9);
+  panel(.36, 8.5, [4.25, 2.25, 5.7], 0xf8fbff, 7.5);
+  panel(5.5, 3.4, [-.3, 8.2, .2], 0xfff3dd, 2.6);
+  panel(2.2, 7.5, [1.1, 2.6, -6], 0xffc66f, 2.0);
+  panel(1.0, 8.5, [2.8, 2.0, 6.5], 0x25231f, 1.1);
   const pmrem = new THREE.PMREMGenerator(renderer);
   const environment = pmrem.fromScene(studio, .035, .1, 30);
   scene.environment = environment.texture;
-  scene.environmentIntensity = .8;
+  scene.environmentIntensity = 1.05;
   studio.traverse((object) => {
     if (object instanceof THREE.Mesh) {
       object.geometry.dispose();
@@ -154,12 +188,13 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   studioGlow.addColorStop(1, "#eee8de");
   backdropContext.fillStyle = studioGlow;
   backdropContext.fillRect(0, 0, 1024, 1024);
-  const studioShade = backdropContext.createLinearGradient(450, 200, 820, 650);
-  studioShade.addColorStop(0, "rgba(106,89,64,0)");
-  studioShade.addColorStop(.34, "rgba(106,89,64,0)");
-  studioShade.addColorStop(.47, "rgba(106,89,64,.13)");
-  studioShade.addColorStop(.6, "rgba(106,89,64,.08)");
-  studioShade.addColorStop(1, "rgba(106,89,64,0)");
+  const studioShade = backdropContext.createLinearGradient(360, 170, 920, 700);
+  studioShade.addColorStop(0, "rgba(74,55,36,0)");
+  studioShade.addColorStop(.28, "rgba(74,55,36,0)");
+  studioShade.addColorStop(.48, "rgba(74,55,36,.16)");
+  studioShade.addColorStop(.61, "rgba(58,42,27,.11)");
+  studioShade.addColorStop(.78, "rgba(58,42,27,.035)");
+  studioShade.addColorStop(1, "rgba(58,42,27,0)");
   backdropContext.fillStyle = studioShade;
   backdropContext.fillRect(0, 0, 1024, 1024);
   const backdropMap = new THREE.CanvasTexture(backdropCanvas);
@@ -184,10 +219,10 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   scene.add(assembly);
 
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    toneMapped: false, color: 0xfffbef, roughness: .025, metalness: 0, transmission: 1,
-    thickness: .5, ior: 1.52, envMapIntensity: 1.5,
-    attenuationColor: new THREE.Color(0xffffff), attenuationDistance: 10,
-    clearcoat: 1, clearcoatRoughness: .035,
+    color: 0xffffff, roughness: .012, metalness: 0, transmission: 1,
+    thickness: .22, ior: 1.49, envMapIntensity: 2.05, dispersion: .018,
+    attenuationColor: new THREE.Color(0xfffdf8), attenuationDistance: 28,
+    clearcoat: .35, clearcoatRoughness: .02,
   });
   const refractionType = renderer.extensions.has("EXT_color_buffer_half_float") || renderer.extensions.has("EXT_color_buffer_float")
     ? THREE.HalfFloatType : THREE.UnsignedByteType;
@@ -201,12 +236,25 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   };
   const glass = new THREE.Mesh(bevelledBody(2.2, 2.45, 1.14, .12), glassMaterial);
   glass.position.set(0, 1.42, 0);
+  glass.renderOrder = 4;
   assembly.add(glass);
+
+  // A separate inner wall makes the vessel read as a hollow glass object rather than a milky solid.
+  const innerGlassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xfffdf8, roughness: .055, metalness: 0, transmission: .96,
+    thickness: .075, ior: 1.46, envMapIntensity: 1.5,
+    transparent: true, opacity: .30, depthWrite: false, side: THREE.BackSide,
+  });
+  const innerGlass = new THREE.Mesh(bevelledBody(2.00, 2.24, .94, .095), innerGlassMaterial);
+  innerGlass.position.set(0, 1.43, 0);
+  innerGlass.renderOrder = 3;
+  assembly.add(innerGlass);
 
   // The amber reservoir uses volume absorption and is captured before the outer-glass refraction pass.
   const liquidMaterial = new THREE.MeshPhysicalMaterial({
-    toneMapped: false, color: 0xffffff, roughness: .035, metalness: 0, transmission: 1, thickness: .9, ior: 1.36, attenuationColor: new THREE.Color(0xf0c47c), attenuationDistance: 2.4,
-    clearcoat: 1, clearcoatRoughness: .035, envMapIntensity: .6,
+    color: 0xf8d59c, roughness: .045, metalness: 0, transmission: .72,
+    thickness: .48, ior: 1.34, attenuationColor: new THREE.Color(0xc78337), attenuationDistance: .92,
+    clearcoat: .18, clearcoatRoughness: .025, envMapIntensity: .95,
   });
   liquidMaterial.onBeforeCompile = (shader) => {
     shader.vertexShader = "varying vec3 vStudyPosition;\n" + shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n vStudyPosition = position;");
@@ -214,11 +262,28 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   };
   const liquid = new THREE.Mesh(bevelledBody(1.91, 1.48, .83, .08), liquidMaterial);
   liquid.position.set(0, 1.245, 0);
+  liquid.renderOrder = 2;
   assembly.add(liquid);
 
+  // The flat surface/meniscus is intentionally separate from the rounded reservoir edge.
+  const meniscusMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xdca45a, roughness: .03, metalness: 0, transmission: .32,
+    ior: 1.335, envMapIntensity: 1.1, transparent: true, opacity: .72,
+    depthWrite: false, side: THREE.DoubleSide,
+  });
+  const meniscus = new THREE.Mesh(superellipsePlate(1.79, .74), meniscusMaterial);
+  meniscus.position.set(0, 1.992, 0);
+  meniscus.renderOrder = 5;
+  assembly.add(meniscus);
 
-  const base = new THREE.Mesh(bevelledBody(2.03, .16, 1.0, .04), glassMaterial);
-  base.position.set(0, .27, 0);
+  const baseMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff, roughness: .045, metalness: 0, transmission: .99,
+    thickness: .10, ior: 1.48, envMapIntensity: 1.75,
+    transparent: true, opacity: .62, depthWrite: false,
+  });
+  const base = new THREE.Mesh(bevelledBody(2.03, .13, 1.0, .035), baseMaterial);
+  base.position.set(0, .245, 0);
+  base.renderOrder = 3;
   assembly.add(base);
 
   const neck = new THREE.Mesh(new THREE.CylinderGeometry(.31, .4, .38, 48), glassMaterial);
@@ -281,8 +346,34 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     map: shadowMap, transparent: true, depthWrite: false, toneMapped: false,
   }));
   shadow.rotation.x = -Math.PI / 2;
-  shadow.position.set(.05, .065, .0);
+  shadow.position.set(.05, .055, .0);
   scene.add(shadow);
+
+  // A short, deterministic atomizer mist appears only during the opening gesture.
+  const mistPositions: number[] = [];
+  for (let index = 0; index < 58; index += 1) {
+    const t = index / 57;
+    const phase = index * 2.399963;
+    mistPositions.push(
+      .03 + t * 1.42 + Math.sin(phase) * t * .10,
+      3.16 + t * .18 + Math.cos(phase * 1.7) * t * .11,
+      .22 + t * .72 + Math.sin(phase * .8) * t * .06,
+    );
+  }
+  const mistGeometry = new THREE.BufferGeometry();
+  mistGeometry.setAttribute("position", new THREE.Float32BufferAttribute(mistPositions, 3));
+  const mistMap = mistTexture();
+  const mistMaterial = new THREE.PointsMaterial({
+    map: mistMap, color: 0xfff3db, size: .085, sizeAttenuation: true,
+    transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending,
+  });
+  const mist = new THREE.Points(mistGeometry, mistMaterial);
+  mist.frustumCulled = false;
+  mist.renderOrder = 20;
+  assembly.add(mist);
+  const sprayLight = new THREE.PointLight(0xffd9a0, 0, 2.4, 2);
+  sprayLight.position.set(.5, 3.25, .55);
+  assembly.add(sprayLight);
 
   let disposed = false;
   let initializing = true;
@@ -295,22 +386,32 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   let startProgress = 0;
   let transitionStart = 0;
   let rotating = false;
+  let openingMotion = false;
   const rotation = { x: -.02, y: -.12 };
   const target = { ...rotation };
 
   function updateParts(progress: number) {
-    cap.position.y = 3.13 + progress * .66;
-    cap.rotation.z = progress * -.045;
-    atomizer.position.y = 2.77 + progress * .19;
+    cap.position.set(.18 * progress, 3.13 + progress * .86, .035 * progress);
+    cap.rotation.z = progress * -.085;
+    cap.rotation.y = progress * .07;
+    atomizer.position.set(-.055 * progress, 2.77 + progress * .30, .02 * progress);
+    atomizer.rotation.z = progress * .025;
     glass.position.x = 0;
     glass.rotation.y = 0;
-    liquid.position.x = 0;
-    liquid.position.y = 1.245;
+    innerGlass.position.x = 0;
+    liquid.position.set(0, 1.245, 0);
+    meniscus.position.set(0, 1.992, 0);
     label.position.x = 0;
     base.position.x = 0;
     neck.position.x = 0;
-    camera.lookAt(0, 1.8 + progress * .17, 0);
-    camera.fov = framingFov + progress * 5;
+
+    const plume = openingMotion ? Math.sin(Math.min(1, Math.max(0, progress)) * Math.PI) : 0;
+    mistMaterial.opacity = plume * .24;
+    mist.scale.setScalar(.84 + progress * .22);
+    sprayLight.intensity = plume * .72;
+
+    camera.lookAt(.03 * progress, 1.76 + progress * .20, 0);
+    camera.fov = framingFov + progress * 4.2;
     camera.updateProjectionMatrix();
   }
 
@@ -320,12 +421,14 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     renderer.info.reset();
     label.visible = false;
     glass.visible = false;
+    innerGlass.visible = false;
     base.visible = false;
     neck.visible = false;
     renderer.setRenderTarget(refractionTarget);
     renderer.render(scene, camera);
     label.visible = true;
     glass.visible = true;
+    innerGlass.visible = true;
     base.visible = true;
     neck.visible = true;
     renderer.setRenderTarget(null);
@@ -339,6 +442,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
+    host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
   }
 
   function tick(time: number) {
@@ -404,6 +508,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       if (disposed) return;
       startProgress = explored;
       exploreTarget = value ? 1 : 0;
+      openingMotion = exploreTarget > startProgress;
       transitionStart = performance.now();
       if (immediate) {
         explored = exploreTarget;
@@ -450,6 +555,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       labelMap.dispose();
       backdropMap.dispose();
       shadowMap.dispose();
+      mistMap.dispose();
       environment.dispose();
       refractionTarget.dispose();
       renderer.dispose();

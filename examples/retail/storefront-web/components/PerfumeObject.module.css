@@ -1,7 +1,7 @@
 .figure {
   position: relative;
   width: 100%;
-  max-width: 700px;
+  max-width: 760px;
   margin: 0;
   color: #514532;
   isolation: isolate;
@@ -10,9 +10,22 @@
 .scene {
   position: relative;
   width: 100%;
-  height: 460px;
-  background: #eee8de;
+  height: 510px;
+  background:
+    radial-gradient(ellipse at 54% 52%, rgba(255,253,246,.95) 0 20%, rgba(244,236,222,.82) 46%, rgba(228,217,201,.36) 74%, rgba(228,217,201,0) 100%);
   overflow: hidden;
+}
+.scene::before {
+  content:"";
+  position:absolute;
+  left:20%;
+  right:3%;
+  bottom:7%;
+  height:14%;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(72,48,25,.16),rgba(72,48,25,0) 68%);
+  filter:blur(11px);
+  pointer-events:none;
 }
 
 .poster, .canvas {
@@ -23,7 +36,7 @@
   height: 100%;
 }
 
-.poster { object-fit: contain; }
+.poster { object-fit: contain; filter:contrast(1.03) saturate(.96); }
 .poster, .canvas {
   mask-image: linear-gradient(to right, transparent, #000 22px, #000 calc(100% - 22px), transparent),
     linear-gradient(to bottom, transparent, #000 22px, #000 calc(100% - 22px), transparent);
@@ -89,7 +102,7 @@
 .figure[data-explored="true"] .controlIcon { transform: rotate(45deg); }
 
 @media (max-width: 600px) {
-  .scene { aspect-ratio: auto; height: 260px; }
+  .scene { aspect-ratio: auto; height: 286px; }
   .controls { padding: 0 5%; gap: 8px; }
   .caption { font-size: 12px; }
   .control { font-size: 11px; }
@@ -97,7 +110,7 @@
 }
 
 @media (max-width: 359px) {
-  .scene { height: 230px; }
+  .scene { height: 252px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
