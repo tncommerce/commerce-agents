@@ -276,6 +276,11 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   const glassMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xffffff, roughness: .003, metalness: 0, transmission: 1,
+    // The real hero background is a CSS gradient outside WebGL. Keeping the
+    // exterior glass opaque exposes the solid capture colour as a milky slab.
+    // Composite its physical reflections and transmitted amber over that page
+    // gradient with a path-length-dependent alpha, as real clear glass requires.
+    transparent: true, depthWrite: false, opacity: 1,
     thickness: .095, ior: 1.50, envMapIntensity: 1.22, dispersion: .006,
     attenuationColor: new THREE.Color(0xffffff), attenuationDistance: 140,
     clearcoat: .18, clearcoatRoughness: .006,
@@ -306,6 +311,19 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     }
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>",
       physicalTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.14, 0.56, 1.30) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
+    // The framebuffer transmits the real editorial background through air,
+    // while progressively retaining the amber contribution for longer liquid
+    // paths. The original specular Fresnel stays on the MeshPhysical material.
+    shader.fragmentShader = shader.fragmentShader.replace("#include <opaque_fragment>",
+      `#include <opaque_fragment>
+      #ifdef USE_TRANSMISSION
+        float studyFacing = clamp(abs(dot(normalize(vStudyBottleNormal),
+          normalize(studyEyeInBottle - vStudyBottlePoint))), 0.0, 1.0);
+        float studyFresnel = pow(1.0 - studyFacing, 3.0);
+        float studyVisibleAbsorption = 1.0 - exp(-0.68 * studyPathLength);
+        gl_FragColor.a = clamp(.075 + .89 * studyVisibleAbsorption +
+          .30 * studyFresnel, .075, .93);
+      #endif`);
   };
   const glass = new THREE.Mesh(bevelledBody(2.2, 2.45, 1.14, .12), glassMaterial);
   glass.position.set(0, 1.42, 0);
@@ -515,6 +533,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   let frame = 0;
   let renderCount = 0;
   let framingFov = 28;
+  let openingFocusLift = .18;
   let explored = 0;
   let exploreTarget = 0;
   let startProgress = 0;
@@ -550,7 +569,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     mist.scale.setScalar(.84 + progress * .22);
     sprayLight.intensity = plume * .52;
 
-    camera.lookAt(.05 * progress, 1.76 + progress * .18, 0);
+    // A taller object separation must not clip the cap against the headline
+    // in the 320/390px stacked mobile composition.
+    camera.lookAt(.05 * progress, 1.76 + progress * openingFocusLift, 0);
     camera.fov = framingFov + progress * 6.2;
     camera.updateProjectionMatrix();
   }
@@ -614,6 +635,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.triangles = String(renderer.info.render.triangles);
     host.dataset.drawCalls = String(renderer.info.render.calls);
     host.dataset.capY = cap.position.y.toFixed(4);
+    const capCrest = cap.localToWorld(new THREE.Vector3(0, .372, 0)).project(camera);
+    host.dataset.capTopViewportY = (host.getBoundingClientRect().top +
+      (1 - capCrest.y) * host.clientHeight / 2).toFixed(2);
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
     host.dataset.liquidOptics = "translucent-volume";
@@ -662,6 +686,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     refractionTarget.setSize(Math.round(width * renderer.getPixelRatio()), Math.round(height * renderer.getPixelRatio()));
     camera.aspect = width / height;
     framingFov = window.matchMedia("(max-width: 600px)").matches ? 25 : 28;
+    openingFocusLift = width < 360 ? .44 : width < 601 ? .31 : .18;
+    camera.lookAt(.05 * explored, 1.76 + explored * openingFocusLift, 0);
     camera.fov = framingFov + explored * 6.2;
     camera.updateProjectionMatrix();
     requestDraw();
