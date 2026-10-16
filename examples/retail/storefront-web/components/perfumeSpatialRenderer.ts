@@ -88,7 +88,7 @@ function liquidRim(width: number, depth: number) {
   }
   return new THREE.LineLoop(
     new THREE.BufferGeometry().setFromPoints(vertices),
-    new THREE.LineBasicMaterial({ color: 0xf7d5a7, transparent: true, opacity: .32, depthWrite: false }),
+    new THREE.LineBasicMaterial({ color: 0xf7d5a7, transparent: true, opacity: .42, depthWrite: false }),
   );
 }
 
@@ -310,7 +310,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       throw new Error("Three.js transmission contract changed; do not silently omit glass/liquid coupling");
     }
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>",
-      physicalTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.14, 0.56, 1.30) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
+      physicalTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.08, 0.56, 1.55) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
     // The framebuffer transmits the real editorial background through air,
     // while progressively retaining the amber contribution for longer liquid
     // paths. The original specular Fresnel stays on the MeshPhysical material.
@@ -320,9 +320,11 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
         float studyFacing = clamp(abs(dot(normalize(vStudyBottleNormal),
           normalize(studyEyeInBottle - vStudyBottlePoint))), 0.0, 1.0);
         float studyFresnel = pow(1.0 - studyFacing, 3.0);
-        float studyVisibleAbsorption = 1.0 - exp(-0.68 * studyPathLength);
-        gl_FragColor.a = clamp(.075 + .89 * studyVisibleAbsorption +
-          .30 * studyFresnel, .075, .93);
+        float studyVisibleAbsorption = 1.0 - exp(-0.52 * studyPathLength);
+        // Beer-Lambert colours transmission: it does not turn the
+        // perfume into a solid gold filling on the alpha canvas.
+        gl_FragColor.a = clamp(.045 + .58 * studyVisibleAbsorption +
+          .21 * studyFresnel, .045, .70);
       #endif`);
   };
   const glass = new THREE.Mesh(bevelledBody(2.2, 2.45, 1.14, .12), glassMaterial);
@@ -350,8 +352,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       varying vec3 vStudyNormal;
       varying vec3 vStudyView;
       void main() {
-        float rim = pow(1.0 - clamp(abs(dot(normalize(vStudyNormal), normalize(vStudyView))), 0.0, 1.0), 2.35);
-        float alpha = rim * 0.095;
+        float rim = pow(1.0 - clamp(abs(dot(normalize(vStudyNormal), normalize(vStudyView))), 0.0, 1.0), 3.65);
+        float alpha = rim * 0.19;
         gl_FragColor = vec4(vec3(1.0, 0.985, 0.95) * (0.72 + rim * 0.55), alpha);
       }
     `,
@@ -388,7 +390,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
         vec3 V = normalize(vInsideView);
         float f = pow(1.0 - abs(dot(N, V)), 4.0);
         float key = pow(max(dot(reflect(-normalize(vec3(-0.6,0.3,0.75)), N), V), 0.0), 70.0);
-        float intensity = f * .075 + key * .035;
+        float intensity = f * .105 + key * .055;
         gl_FragColor = vec4(vec3(1.0, .97, .92) * intensity, 1.0);
       }
     `,
@@ -411,7 +413,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     // not to an opaque golden lid resting on top of the liquid.
     color: 0xfff4de, roughness: .045, metalness: 0, transmission: .94,
     thickness: .012, ior: 1.335, envMapIntensity: 1.0,
-    transparent: true, opacity: .15, depthWrite: false, side: THREE.DoubleSide,
+    transparent: true, opacity: .20, depthWrite: false, side: THREE.DoubleSide,
     clearcoat: .28, clearcoatRoughness: .025,
   });
   const meniscus = new THREE.Mesh(superellipsePlate(1.96, .89), meniscusMaterial);
@@ -545,7 +547,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   function updateParts(progress: number) {
     const mobileWidth = host.clientWidth;
-    const capRise = mobileWidth < 360 ? .80 : mobileWidth < 601 ? .92 : 1.04;
+    const capRise = mobileWidth < 360 ? .74 : mobileWidth < 601 ? .78 : 1.04;
     const atomizerRise = mobileWidth < 360 ? .24 : mobileWidth < 601 ? .33 : .46;
     cap.position.set(.34 * progress, 3.13 + progress * capRise, .10 * progress);
     cap.rotation.z = progress * -.115;
@@ -689,7 +691,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     refractionTarget.setSize(Math.round(width * renderer.getPixelRatio()), Math.round(height * renderer.getPixelRatio()));
     camera.aspect = width / height;
     framingFov = window.matchMedia("(max-width: 600px)").matches ? 25 : 28;
-    openingFocusLift = width < 360 ? .44 : width < 601 ? .31 : .18;
+    openingFocusLift = width < 360 ? .44 : width < 601 ? .43 : .18;
     camera.lookAt(.05 * explored, 1.76 + explored * openingFocusLift, 0);
     camera.fov = framingFov + explored * 6.2;
     camera.updateProjectionMatrix();

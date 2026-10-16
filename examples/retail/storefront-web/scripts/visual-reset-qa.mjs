@@ -262,6 +262,8 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         const resting = await verifySpatialIdle(page);
         assert.equal(await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-liquid-optics"),
           "translucent-volume", "visible liquid must use the unified transparent volume, not a gold overlay");
+        assert.equal(await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-liquid-absorption"),
+          "glass-coupled-ray-volume", "perfume attenuation must be coupled to glass, not a second gold mesh");
         const initialScripts = [...new Set(requests.scriptRequests)];
         const initialFonts = [...new Set(requests.fontRequests)];
         assert.ok(resting.triangles > 100 && resting.draw_calls > 0, "capable device renders real mesh geometry");
@@ -281,6 +283,15 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         assert.ok(explored.parts.capY > resting.parts.capY + .1, "exploring the perfume raises the actual cap mesh");
         assert.ok(explored.parts.atomizerY > resting.parts.atomizerY + .01, "exploded view reveals a separate atomizer mesh");
         assert.ok(explored.renders > resting.renders, "signature interaction renders the changed scene");
+        const capClearancePx = await page.evaluate(() => {
+          const capTop = Number(document.querySelector("[data-dufynd-spatial-canvas]")?.dataset.capTopViewportY);
+          const headingBottom = document.querySelector("#dufynd-home-discovery-heading")?.getBoundingClientRect().bottom;
+          return capTop - headingBottom;
+        });
+        if (width <= 390) {
+          assert.ok(Number.isFinite(capClearancePx) && capClearancePx >= 12,
+            `${width}: opened metal cap must clear the title by 12px (got ${capClearancePx.toFixed(1)}px)`);
+        }
         await page.screenshot({ path: path.join(outputDir, `visual-reset-${width}-interaction.png`) });
         await bottleControl.click();
         await page.mouse.move(0, 0);
