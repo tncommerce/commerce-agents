@@ -25,6 +25,15 @@ export default function PerfumeObject({ className = "" }: { className?: string }
     let idle: number | ReturnType<typeof setTimeout> = 0;
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const device = navigator as DeviceNavigator;
+    // Observer delivery is asynchronous. A completed lazy import must not trust
+    // an older intersection when scrolling has already moved this stage away.
+    const isCurrentlyVisible = () => {
+      if (!visible || !target.isConnected || document.hidden) return false;
+      const bounds = target.getBoundingClientRect();
+      return bounds.width > 0 && bounds.height > 0
+        && bounds.bottom > 0 && bounds.right > 0
+        && bounds.top < window.innerHeight && bounds.left < window.innerWidth;
+    };
     const fallback = (why: string) => {
       paused = true;
       if ("cancelIdleCallback" in window) window.cancelIdleCallback(idle as number);
@@ -48,7 +57,7 @@ export default function PerfumeObject({ className = "" }: { className?: string }
       return;
     }
     const start = async () => {
-      if (started || cancelled || paused || !visible || motion.matches) return;
+      if (started || cancelled || paused || !isCurrentlyVisible() || motion.matches) return;
       started = true;
       const probe = document.createElement("canvas");
       const gl = probe.getContext("webgl2", { failIfMajorPerformanceCaveat: false });
@@ -66,15 +75,15 @@ export default function PerfumeObject({ className = "" }: { className?: string }
       try {
         const { createPerfumeSpatialRenderer } = await import("./perfumeSpatialRenderer");
         if (cancelled || paused || motion.matches) return;
-        if (!visible) { started = false; return; }
+        if (!isCurrentlyVisible()) { started = false; return; }
         const instance = await createPerfumeSpatialRenderer(target, {
           reducedMotion: false,
-          isVisible: () => visible && !document.hidden,
+          isVisible: isCurrentlyVisible,
           onContextLost: () => fallback("context-lost"),
         });
         if (cancelled || paused || motion.matches) { instance.dispose(); return; }
         controller.current = instance;
-        controller.current.setVisible(visible);
+        controller.current.setVisible(isCurrentlyVisible());
         controller.current.setExplored(exploredRef.current, true);
         setState("ready");
       } catch {
@@ -83,7 +92,7 @@ export default function PerfumeObject({ className = "" }: { className?: string }
     };
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
-      controller.current?.setVisible(visible);
+      controller.current?.setVisible(isCurrentlyVisible());
       if (!visible) {
         if ("cancelIdleCallback" in window) window.cancelIdleCallback(idle as number);
         clearTimeout(idle);

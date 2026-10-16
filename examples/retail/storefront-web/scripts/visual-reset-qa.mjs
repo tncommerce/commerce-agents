@@ -482,6 +482,36 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
       const requests = journal();
       await deviceHints(context);
       await isolateNetwork(context, baseUrl, requests);
+      // Hold only this stage's exit notification, preserving its earlier visible
+      // callback. This reproduces the real interval between a DOM scroll and
+      // asynchronous IntersectionObserver delivery without relying on a sleep.
+      await context.addInitScript(() => {
+        const NativeObserver = window.IntersectionObserver;
+        const queued = [];
+        window.__spatialExitQA = {
+          hold: false,
+          pending: 0,
+          release() {
+            this.hold = false;
+            for (const deliver of queued.splice(0)) deliver();
+            this.pending = 0;
+          },
+        };
+        window.IntersectionObserver = class extends NativeObserver {
+          constructor(callback, options) {
+            super((entries, observer) => {
+              const delayed = entries.filter(entry => window.__spatialExitQA.hold
+                && entry.target.matches("[data-dufynd-spatial-canvas]") && !entry.isIntersecting);
+              const immediate = entries.filter(entry => !delayed.includes(entry));
+              if (immediate.length) callback(immediate, observer);
+              if (delayed.length) {
+                queued.push(() => callback(delayed, observer));
+                window.__spatialExitQA.pending += delayed.length;
+              }
+            }, options);
+          }
+        };
+      });
       let release;
       const hold = new Promise(resolve => { release = resolve; });
       let requested;
@@ -500,14 +530,17 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         let timer;
         await Promise.race([imported, new Promise((_, reject) => { timer = setTimeout(() => reject(new Error("visibility-race renderer request did not start")), 10_000); })]);
         clearTimeout(timer);
+        await page.evaluate(() => { window.__spatialExitQA.hold = true; });
         await page.locator("#haendlerangebote").scrollIntoViewIfNeeded();
         assert.equal(await page.locator("[data-dufynd-bottle]").evaluate(element => element.getBoundingClientRect().bottom < 0), true);
+        await page.waitForFunction(() => window.__spatialExitQA.pending > 0);
         release();
         await page.waitForLoadState("networkidle");
         assert.equal(await page.locator("[data-dufynd-spatial-canvas] canvas").count(), 0,
           "resolving a lazy renderer after scroll-away must not initialize an offscreen canvas");
         assert.equal(await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-render-count"), null,
           "no initial GPU frame is submitted while the perfume is offscreen");
+        await page.evaluate(() => window.__spatialExitQA.release());
         await page.locator("[data-dufynd-bottle]").scrollIntoViewIfNeeded();
         await page.waitForFunction(() => document.querySelector("[data-dufynd-bottle]")?.getAttribute("data-spatial-state") === "ready", null, { timeout: 45_000 });
         const resumed = await verifySpatialIdle(page);
@@ -515,7 +548,7 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         assert.deepEqual(requests.analytics, []);
         assert.deepEqual(requests.clickouts, []);
         assert.deepEqual(requests.blockedMutations, []);
-        report.cases.push({ variant: "scroll-during-renderer-load", status: "passed", no_offscreen_initial_frame: true, resumed });
+        report.cases.push({ variant: "scroll-during-renderer-load", status: "passed", delayed_exit_observer: true, no_offscreen_initial_frame: true, resumed });
       } catch (error) {
         report.cases.push({ variant: "scroll-during-renderer-load", status: "failed", error: String(error) });
         throw error;
