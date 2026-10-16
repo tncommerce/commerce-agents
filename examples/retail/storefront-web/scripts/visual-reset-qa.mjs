@@ -174,7 +174,7 @@ async function spatialSnapshot(page) {
     renders: Number(element.dataset.renderCount), pending: element.dataset.framePending,
     triangles: Number(element.dataset.triangles), draw_calls: Number(element.dataset.drawCalls),
     render_cpu_submission_ms: Number(element.dataset.renderDurationMs),
-    parts: Object.fromEntries(["capY", "atomizerY", "liquidY", "glassY"].map(name => [name, Number(element.dataset[name])])),
+    parts: Object.fromEntries(["capY", "atomizerY", "liquidY", "liquidSurfaceY", "glassY"].map(name => [name, Number(element.dataset[name])])),
     canvas_width: element.querySelector("canvas")?.width,
     canvas_height: element.querySelector("canvas")?.height,
   }));
@@ -263,6 +263,10 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         const initialScripts = [...new Set(requests.scriptRequests)];
         const initialFonts = [...new Set(requests.fontRequests)];
         assert.ok(resting.triangles > 100 && resting.draw_calls > 0, "capable device renders real mesh geometry");
+        assert.ok(resting.parts.liquidSurfaceY > resting.parts.liquidY + .70,
+          "the new flat free surface stands above the fluid volume, not as a rounded inner bottle");
+        assert.ok(resting.parts.liquidSurfaceY < resting.parts.glassY + 1.12,
+          "the fill level remains contained beneath the outer bottle shoulder");
         assert.ok(resting.canvas_width > 100 && resting.canvas_height > 100, "spatial canvas has a meaningful drawing buffer");
         const bottleControl = page.locator("[data-dufynd-bottle-control]").first();
         assert.equal(await bottleControl.getAttribute("aria-pressed"), "false", "bottle starts in its complete resting view");

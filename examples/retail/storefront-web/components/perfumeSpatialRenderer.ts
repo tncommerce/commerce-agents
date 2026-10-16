@@ -10,12 +10,19 @@ export type PerfumeSpatialController = {
 
 type Options = { reducedMotion: boolean; isVisible?(): boolean; onContextLost(): void };
 
-function bevelledBody(width: number, height: number, depth: number, bevel: number) {
+function bevelledBody(width: number, height: number, depth: number, bevel: number, surface: "rounded" | "flat-fill" = "rounded") {
   const segments = 96;
   const positions: number[] = [];
   const indices: number[] = [];
   const half = height / 2;
-  const profiles = [
+  // The perfume vessel is a rounded solid. Actual liquid must NOT repeat its
+  // rounded top: a horizontal free surface is the strongest visual cue that the
+  // amber volume is a liquid fill, not a smaller opaque bottle inside the glass.
+  const profiles = surface === "flat-fill" ? [
+    [-half, .90], [-half + bevel * .35, .96], [-half + bevel, .995],
+    [-half + bevel * 1.5, 1], [half - .09, 1],
+    [half - .02, .997], [half, .987],
+  ] : [
     [-half, .87], [-half + bevel * .18, .92], [-half + bevel * .55, .98],
     [-half + bevel, 1], [-half + bevel * 1.5, 1],
     [half - bevel * 1.8, 1], [half - bevel, .99],
@@ -64,6 +71,25 @@ function superellipsePlate(width: number, depth: number, exponent = .48) {
   const geometry = new THREE.ShapeGeometry(shape, 12);
   geometry.rotateX(-Math.PI / 2);
   return geometry;
+}
+
+function liquidRim(width: number, depth: number) {
+  const vertices: THREE.Vector3[] = [];
+  // The line follows the same square-shouldered superellipse as the liquid.
+  // Its narrow, continuous specular edge communicates a real fill level.
+  for (let i = 0; i < 96; i++) {
+    const angle = i / 96 * Math.PI * 2;
+    const x = Math.cos(angle), z = Math.sin(angle);
+    vertices.push(new THREE.Vector3(
+      Math.sign(x) * Math.pow(Math.abs(x), .48) * width / 2,
+      0,
+      Math.sign(z) * Math.pow(Math.abs(z), .48) * depth / 2,
+    ));
+  }
+  return new THREE.LineLoop(
+    new THREE.BufferGeometry().setFromPoints(vertices),
+    new THREE.LineBasicMaterial({ color: 0xf2c184, transparent: true, opacity: .68, depthWrite: false }),
+  );
 }
 
 function mistTexture() {
@@ -286,28 +312,44 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   // The amber reservoir uses volume absorption and is captured before the outer-glass refraction pass.
   const liquidMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffd08a, roughness: .015, metalness: 0, transmission: .94,
-    thickness: .21, ior: 1.335, attenuationColor: new THREE.Color(0xc27a2a), attenuationDistance: 2.2,
-    clearcoat: .05, clearcoatRoughness: .01, envMapIntensity: 1.25,
+    color: 0xffe7b8, roughness: .021, metalness: 0, transmission: .92,
+    thickness: .26, ior: 1.335, attenuationColor: new THREE.Color(0xa65e21), attenuationDistance: 1.78,
+    clearcoat: .08, clearcoatRoughness: .016, envMapIntensity: 1.08,
   });
   liquidMaterial.onBeforeCompile = (shader) => {
     shader.vertexShader = "varying vec3 vStudyPosition;\n" + shader.vertexShader.replace("#include <begin_vertex>", "#include <begin_vertex>\n vStudyPosition = position;");
-    shader.fragmentShader = "varying vec3 vStudyPosition;\n" + shader.fragmentShader.replace("#include <transmission_fragment>", THREE.ShaderChunk.transmission_fragment.replace("material.thickness = thickness;", "material.thickness = thickness * (0.70 + 0.45 * pow(abs(vStudyPosition.x) / 0.93, 3.0));"));
+    shader.fragmentShader = "varying vec3 vStudyPosition;\n" + shader.fragmentShader
+      .replace("#include <color_fragment>", `#include <color_fragment>
+        // Clear champagne at the top, deeper honey at the glass base.
+        // The change is based on the actual local height of the fill mesh.
+        float fillDepth = clamp((0.785 - vStudyPosition.y) / 1.57, 0.0, 1.0);
+        diffuseColor.rgb *= mix(vec3(1.0, 0.99, 0.93), vec3(0.78, 0.70, 0.57), pow(fillDepth, 0.84));`)
+      .replace("#include <transmission_fragment>", THREE.ShaderChunk.transmission_fragment.replace(
+        "material.thickness = thickness;",
+        "material.thickness = thickness * (0.77 + 0.48 * pow(abs(vStudyPosition.x) / 0.96, 3.0));",
+      ));
   };
-  const liquid = new THREE.Mesh(bevelledBody(1.85, 1.44, .78, .075), liquidMaterial);
-  liquid.position.set(0, 1.255, 0);
+  const liquid = new THREE.Mesh(bevelledBody(1.94, 1.57, .86, .08, "flat-fill"), liquidMaterial);
+  liquid.position.set(0, 1.20, 0);
   liquid.renderOrder = 2;
   assembly.add(liquid);
 
-  // The flat surface/meniscus is intentionally separate from the rounded reservoir edge.
-  const meniscusMaterial = new THREE.MeshStandardMaterial({
-    color: 0xc9812d, roughness: .06, metalness: 0, envMapIntensity: 1.35,
-    transparent: true, opacity: .26, depthWrite: false, side: THREE.DoubleSide,
+  // A flat optical surface and its fine bright boundary remain visibly
+  // separate from the vertical body. Do not imply motion/sloshing at rest.
+  const meniscusMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xeebd79, roughness: .095, metalness: 0, transmission: .23,
+    thickness: .025, ior: 1.335, envMapIntensity: 1.3,
+    transparent: true, opacity: .54, depthWrite: false, side: THREE.DoubleSide,
+    clearcoat: .7, clearcoatRoughness: .028,
   });
-  const meniscus = new THREE.Mesh(superellipsePlate(1.72, .68), meniscusMaterial);
-  meniscus.position.set(0, 1.982, 0);
+  const meniscus = new THREE.Mesh(superellipsePlate(1.90, .825), meniscusMaterial);
+  meniscus.position.set(0, 1.987, 0);
   meniscus.renderOrder = 5;
   assembly.add(meniscus);
+  const surfaceRim = liquidRim(1.92, .84);
+  surfaceRim.position.set(0, 1.991, 0);
+  surfaceRim.renderOrder = 6;
+  assembly.add(surfaceRim);
 
   const baseMaterial = new THREE.MeshStandardMaterial({
     color: 0xffffff, roughness: .08, metalness: 0, envMapIntensity: 1.6,
@@ -436,8 +478,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     innerGlass.rotation.y = glass.rotation.y;
     glassEdge.position.copy(glass.position);
     glassEdge.rotation.y = glass.rotation.y;
-    liquid.position.set(liquidShift, 1.255, .018 * progress);
-    meniscus.position.set(liquidShift, 1.982, .018 * progress);
+    liquid.position.set(liquidShift, 1.20, .018 * progress);
+    meniscus.position.set(liquidShift, 1.987, .018 * progress);
+    surfaceRim.position.set(liquidShift, 1.991, .018 * progress);
     label.position.x = shellShift;
     base.position.x = shellShift;
     neck.position.x = shellShift;
@@ -501,6 +544,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.capY = cap.position.y.toFixed(4);
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
+    host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
     host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
   }
@@ -612,6 +656,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       });
       geometries.forEach((geometry) => geometry.dispose());
       materials.forEach((material) => material.dispose());
+      surfaceRim.geometry.dispose();
+      surfaceRim.material.dispose();
       labelMap.dispose();
       backdropMap.dispose();
       shadowMap.dispose();
