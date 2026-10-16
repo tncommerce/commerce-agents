@@ -10,14 +10,19 @@ import {
   isVerifiedProductTruthVisual,
   type StaticFragrance,
 } from "@/lib/fragranceCatalog";
+import { SITE_URL } from "@/lib/site";
 
+const title = "Parfumvergleiche";
+const description =
+  "Vergleiche ausgewählte Parfums bei DUFYND anhand exakter Varianten, redaktioneller Duftprofile und historischer Preisreferenzen.";
 export const metadata: Metadata = {
-  title: "Parfumvergleiche",
-  description:
-    "Vergleiche ausgewählte Parfums bei DUFYND nach Duftprofil, Community-Bewertung, Haltbarkeit, Ausstrahlung und Preisreferenz.",
+  title,
+  description,
   alternates: {
     canonical: "/vergleich",
   },
+  openGraph: { type: "website", url: `${SITE_URL}/vergleich`, title, description },
+  twitter: { card: "summary", title, description },
 };
 
 const RELATION_LABELS = {
@@ -98,7 +103,7 @@ export default function ComparisonIndexPage() {
             </h1>
             <p className="mt-4 max-w-2xl text-[13px] leading-6 text-white/70 sm:text-[14px]">
               Ähnliche Duftstile und verwandte Profile nebeneinander entdecken:
-              mit Duftcharakter, Community-Daten und Preisreferenzen.
+              mit exakten Varianten, redaktionellen Duftprofilen und historischen Preisreferenzen.
             </p>
             <div className="mt-5 inline-flex rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-[11px] font-semibold text-white/80">
               {EXPLICIT_COMPARISON_PAIRS.length} dokumentierte Vergleiche
