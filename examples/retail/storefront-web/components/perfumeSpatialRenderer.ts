@@ -232,6 +232,34 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   backdrop.quaternion.copy(camera.quaternion);
   scene.add(backdrop);
 
+  // A photographed perfume needs a *rear* studio reflector to show light
+  // travelling through its coloured volume. This is a real plane in the
+  // refraction scene, NOT a 2D tint painted over the bottle on the page.
+  // A softly bounded card keeps the center transmissive and creates useful
+  // optical variation without a rectangular background panel in the hero.
+  const rearCardCanvas = document.createElement("canvas");
+  rearCardCanvas.width = 128;
+  rearCardCanvas.height = 256;
+  const rearCardContext = rearCardCanvas.getContext("2d")!;
+  const rearCardGradient = rearCardContext.createLinearGradient(0, 0, 128, 0);
+  rearCardGradient.addColorStop(0, "rgba(255,247,227,0)");
+  rearCardGradient.addColorStop(.16, "rgba(255,247,227,.02)");
+  rearCardGradient.addColorStop(.40, "rgba(255,247,227,.48)");
+  rearCardGradient.addColorStop(.57, "rgba(255,252,242,.76)");
+  rearCardGradient.addColorStop(.76, "rgba(255,247,227,.25)");
+  rearCardGradient.addColorStop(1, "rgba(255,247,227,0)");
+  rearCardContext.fillStyle = rearCardGradient;
+  rearCardContext.fillRect(0, 0, 128, 256);
+  const rearCardMap = new THREE.CanvasTexture(rearCardCanvas);
+  rearCardMap.colorSpace = THREE.SRGBColorSpace;
+  const rearCard = new THREE.Mesh(new THREE.PlaneGeometry(1.28, 4.1), new THREE.MeshBasicMaterial({
+    map: rearCardMap, transparent: true, opacity: .68, depthWrite: false, toneMapped: false,
+  }));
+  rearCard.position.set(-.47, 1.66, -2.35);
+  rearCard.quaternion.copy(camera.quaternion);
+  rearCard.renderOrder = 0;
+  scene.add(rearCard);
+
   const hemisphere = new THREE.HemisphereLight(0xfffcf3, 0x71604b, .48);
   scene.add(hemisphere);
   const key = new THREE.DirectionalLight(0xfff9eb, 1.25);
@@ -364,7 +392,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
         // Wavelength-specific attenuation. R passes more readily than G/B,
         // making shallow paths champagne and deep paths warm amber. This value
         // is a LINEAR blend factor, not emissive colour (no tone mapping).
-        vec3 transmittance = exp(-vec3(0.07, 0.34, 0.80) * opticalPath);
+        vec3 transmittance = exp(-vec3(0.12, 0.52, 1.17) * opticalPath);
         gl_FragColor = vec4(transmittance, 1.0);
       }
     `,
@@ -401,11 +429,11 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
         float facing = clamp(dot(N, V), 0.0, 1.0);
         // Dielectric interface (air / perfume), with restrained studio strips.
         float fresnel = 0.020 + 0.980 * pow(1.0 - facing, 5.0);
-        vec3 key = normalize(vec3(-0.55, 0.30, 0.78));
-        vec3 fill = normalize(vec3(0.72, 0.20, 0.66));
+        vec3 key = normalize(vec3(-0.69, -0.13, 0.72));
+        vec3 fill = normalize(vec3(-0.40, -0.18, 0.90));
         float wide = pow(max(dot(reflect(-key, N), V), 0.0), 46.0);
         float fine = pow(max(dot(reflect(-fill, N), V), 0.0), 116.0);
-        float lightReturn = wide * 0.11 + fine * 0.050 + fresnel * 0.025;
+        float lightReturn = wide * 0.17 + fine * 0.062 + fresnel * 0.022;
         gl_FragColor = vec4(vec3(1.0, 0.96, 0.88) * lightReturn, 1.0);
       }
     `,
@@ -583,9 +611,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   // The transmissive pass sees an opaque, neutral studio backing even though
   // the public canvas itself must remain transparent in the editorial hero.
   // This prevents undefined clear-alpha pixels from bleaching the glass.
-  // Match the light editorial stage instead of tinting every transmitted ray
-  // with a darker opaque slab (the alpha canvas itself remains transparent).
-  const refractionBacking = new THREE.Color("#ebe1d4");
+  // The studio target remains opaque while the public editorial canvas is
+  // transparent. Its warm mid-tone gives amber transmitted light room to vary.
+  const refractionBacking = new THREE.Color("#d9cabb");
 
   function draw() {
     // Update the eye in the liquid's own frame before BOTH refraction and final passes.
@@ -615,6 +643,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     // The gradient stage is valuable INSIDE the glass refraction capture,
     // but must not show as a rectangular plane behind the bottle on screen.
     backdrop.visible = false;
+    rearCard.visible = false;
     liquid.visible = false;
     liquidGlint.visible = false;
     label.visible = true;
@@ -629,6 +658,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       liquid.visible = true;
       liquidGlint.visible = true;
       backdrop.visible = true;
+      rearCard.visible = true;
     }
     host.dataset.renderDurationMs = (performance.now() - drawStarted).toFixed(2);
     renderCount += 1;
@@ -756,6 +786,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       surfaceRim.material.dispose();
       labelMap.dispose();
       backdropMap.dispose();
+      rearCardMap.dispose();
       shadowMap.dispose();
       mistMap.dispose();
       environment.dispose();
