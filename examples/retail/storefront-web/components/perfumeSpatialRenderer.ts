@@ -153,7 +153,7 @@ function shadowTexture() {
 }
 
 export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options: Options): Promise<PerfumeSpatialController> {
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, premultipliedAlpha: false, powerPreference: "high-performance" });
   let didDispose = false;
   try {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, window.innerWidth < 768 ? 1.35 : 1.65));
@@ -276,11 +276,11 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   const glassMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xffffff, roughness: .003, metalness: 0, transmission: 1,
-    // The real hero background is a CSS gradient outside WebGL. Keeping the
-    // exterior glass opaque exposes the solid capture colour as a milky slab.
-    // Composite its physical reflections and transmitted amber over that page
-    // gradient with a path-length-dependent alpha, as real clear glass requires.
-    transparent: true, depthWrite: false, opacity: 1,
+    // Keep this in the opaque renderer queue so the physically transmitted
+    // light samples the valid studio capture, not the transparent queue's
+    // uninitialized transmission target. The fragment shader writes an
+    // authored alpha straight into the alpha canvas (no GL blending needed).
+    // premultipliedAlpha:false lets CSS supply the genuine page background.
     thickness: .095, ior: 1.50, envMapIntensity: 1.22, dispersion: .006,
     attenuationColor: new THREE.Color(0xffffff), attenuationDistance: 140,
     clearcoat: .18, clearcoatRoughness: .006,
@@ -544,10 +544,13 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const target = { ...rotation };
 
   function updateParts(progress: number) {
-    cap.position.set(.34 * progress, 3.13 + progress * 1.04, .10 * progress);
+    const mobileWidth = host.clientWidth;
+    const capRise = mobileWidth < 360 ? .80 : mobileWidth < 601 ? .92 : 1.04;
+    const atomizerRise = mobileWidth < 360 ? .24 : mobileWidth < 601 ? .33 : .46;
+    cap.position.set(.34 * progress, 3.13 + progress * capRise, .10 * progress);
     cap.rotation.z = progress * -.115;
     cap.rotation.y = progress * .10;
-    atomizer.position.set(-.10 * progress, 2.77 + progress * .46, .07 * progress);
+    atomizer.position.set(-.10 * progress, 2.77 + progress * atomizerRise, .07 * progress);
     atomizer.rotation.z = progress * .045;
     const shellShift = -.095 * progress;
     const liquidShift = .085 * progress;
