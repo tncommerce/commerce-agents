@@ -341,14 +341,14 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
         float grazing = pow(1.0 - clamp(abs(dot(N, V)), 0.0, 1.0), 2.3);
         // Champagne at the fill line, warm amber at the bottom. The centre
         // stays see-through; oblique optical paths gather more pigment.
-        vec3 champagne = vec3(0.96, 0.68, 0.30);
-        vec3 amber = vec3(0.58, 0.30, 0.09);
+        vec3 champagne = vec3(0.96, 0.79, 0.53);
+        vec3 amber = vec3(0.64, 0.38, 0.16);
         vec3 pigment = mix(champagne, amber, absorption);
         vec3 studioDirection = normalize(vec3(-0.57, 0.18, 0.8));
         float specular = pow(max(dot(reflect(-studioDirection, N), V), 0.0), 32.0);
-        float density = 0.32 + 0.40 * pow(absorption, 0.90) + 0.08 * grazing;
-        float alpha = clamp(density, 0.0, 0.79);
-        vec3 highlights = vec3(1.0, 0.83, 0.62) * specular * 0.12;
+        float density = 0.14 + 0.29 * pow(absorption, 1.15) + 0.17 * grazing;
+        float alpha = clamp(density, 0.12, 0.61);
+        vec3 highlights = vec3(1.0, 0.91, 0.76) * specular * 0.17;
         gl_FragColor = vec4(pigment + highlights, alpha);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
