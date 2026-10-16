@@ -19,8 +19,11 @@
 .titleBlock em {font-family:var(--visual-serif);font-weight:400;font-size:1.13em;line-height:1;letter-spacing:-.065em;color:#886440}
 .heroDescription {font-size:15px;line-height:1.55;color:#6b6257;margin:0 0 24px;max-width:330px}
 .heroObject {position:relative;min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center;background:transparent;margin-right:-28px;isolation:isolate}
-.heroObject::before {content:"";position:absolute;inset:8% -4% 5% 10%;background:radial-gradient(ellipse at 54% 50%,rgba(255,255,255,.64),rgba(255,247,232,.22) 44%,rgba(86,59,33,.07) 70%,transparent 76%);filter:blur(10px);pointer-events:none}
-.heroObject :global([data-dufynd-bottle]) {position:relative;z-index:1;width:108%;max-width:720px}
+.heroObject::before {content:"";position:absolute;z-index:0;inset:4% -8% 3% 2%;background:
+  radial-gradient(ellipse at 58% 46%,rgba(255,255,255,.88) 0 9%,rgba(255,248,235,.42) 28%,rgba(132,92,52,.08) 58%,transparent 73%),
+  linear-gradient(103deg,transparent 38%,rgba(255,255,255,.30) 49%,transparent 61%);filter:blur(8px);pointer-events:none}
+.heroObject::after {content:"";position:absolute;z-index:0;left:19%;right:4%;bottom:8%;height:9%;border-radius:50%;background:radial-gradient(ellipse,rgba(70,45,23,.17),rgba(70,45,23,.06) 45%,transparent 72%);filter:blur(9px);transform:perspective(520px) rotateX(66deg);pointer-events:none}
+.heroObject :global([data-dufynd-bottle]) {position:relative;z-index:1;width:112%;max-width:760px}
 .objectIndex {position:absolute;right:0;top:25px;font-size:8px;letter-spacing:.18em;writing-mode:vertical-rl;color:#807464;z-index:2}
 .searchBlock {max-width:430px}
 .home .search {min-height:56px;border:1px solid #b7aa97;background:#fffcf6;box-shadow:none;border-radius:0;padding:5px;gap:0}

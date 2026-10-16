@@ -140,7 +140,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   host.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color("#eee8de");
+  scene.background = null;
   const camera = new THREE.PerspectiveCamera(30, 1, .1, 60);
   camera.position.set(4.35, 3.06, 7.48);
   camera.lookAt(0, 1.74, 0);
@@ -180,12 +180,12 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   backdropCanvas.width = 1024;
   backdropCanvas.height = 1024;
   const backdropContext = backdropCanvas.getContext("2d")!;
-  backdropContext.fillStyle = "#eee8de";
-  backdropContext.fillRect(0, 0, 1024, 1024);
-  const studioGlow = backdropContext.createRadialGradient(450, 610, 30, 450, 610, 470);
-  studioGlow.addColorStop(0, "#fffdf6");
-  studioGlow.addColorStop(.5, "#f6f0e3");
-  studioGlow.addColorStop(1, "#eee8de");
+  backdropContext.clearRect(0, 0, 1024, 1024);
+  const studioGlow = backdropContext.createRadialGradient(450, 610, 24, 450, 610, 470);
+  studioGlow.addColorStop(0, "rgba(255,253,246,.92)");
+  studioGlow.addColorStop(.42, "rgba(246,240,227,.52)");
+  studioGlow.addColorStop(.72, "rgba(231,218,199,.16)");
+  studioGlow.addColorStop(1, "rgba(231,218,199,0)");
   backdropContext.fillStyle = studioGlow;
   backdropContext.fillRect(0, 0, 1024, 1024);
   const studioShade = backdropContext.createLinearGradient(360, 170, 920, 700);
@@ -199,7 +199,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   backdropContext.fillRect(0, 0, 1024, 1024);
   const backdropMap = new THREE.CanvasTexture(backdropCanvas);
   backdropMap.colorSpace = THREE.SRGBColorSpace;
-  const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(11, 11), new THREE.MeshBasicMaterial({ map: backdropMap, toneMapped: false }));
+  const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(10.2, 10.2), new THREE.MeshBasicMaterial({
+    map: backdropMap, transparent: true, opacity: .96, depthWrite: false, toneMapped: false,
+  }));
   backdrop.position.set(-1.4, 1.7, -3.6);
   backdrop.quaternion.copy(camera.quaternion);
   scene.add(backdrop);
@@ -421,20 +423,24 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const target = { ...rotation };
 
   function updateParts(progress: number) {
-    cap.position.set(.26 * progress, 3.13 + progress * 1.02, .08 * progress);
-    cap.rotation.z = progress * -.10;
-    cap.rotation.y = progress * .085;
-    atomizer.position.set(-.12 * progress, 2.77 + progress * .44, .06 * progress);
-    atomizer.rotation.z = progress * .04;
-    glass.position.x = 0;
-    glass.rotation.y = 0;
-    innerGlass.position.x = 0;
+    cap.position.set(.34 * progress, 3.13 + progress * 1.04, .10 * progress);
+    cap.rotation.z = progress * -.115;
+    cap.rotation.y = progress * .10;
+    atomizer.position.set(-.10 * progress, 2.77 + progress * .46, .07 * progress);
+    atomizer.rotation.z = progress * .045;
+    const shellShift = -.095 * progress;
+    const liquidShift = .085 * progress;
+    glass.position.x = shellShift;
+    glass.rotation.y = progress * -.025;
+    innerGlass.position.x = shellShift;
+    innerGlass.rotation.y = glass.rotation.y;
     glassEdge.position.copy(glass.position);
-    liquid.position.set(0, 1.245, 0);
-    meniscus.position.set(0, 1.992, 0);
-    label.position.x = 0;
-    base.position.x = 0;
-    neck.position.x = 0;
+    glassEdge.rotation.y = glass.rotation.y;
+    liquid.position.set(liquidShift, 1.255, .018 * progress);
+    meniscus.position.set(liquidShift, 1.982, .018 * progress);
+    label.position.x = shellShift;
+    base.position.x = shellShift;
+    neck.position.x = shellShift;
 
     const plume = openingMotion ? Math.sin(Math.min(1, Math.max(0, progress)) * Math.PI) : 0;
     mistMaterial.opacity = plume * .18;
