@@ -134,7 +134,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   renderer.setClearColor(0xeee8de, 0);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = .94;
+  renderer.toneMappingExposure = .88;
   renderer.domElement.setAttribute("aria-hidden", "true");
   renderer.domElement.setAttribute("data-spatial-webgl", "true");
   host.appendChild(renderer.domElement);
@@ -158,15 +158,15 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     mesh.lookAt(0, 1.8, 0);
     studio.add(mesh);
   };
-  panel(1.15, 9.5, [-4.4, 2.3, 6.8], 0xfff8e8, 9);
-  panel(.36, 8.5, [4.25, 2.25, 5.7], 0xf8fbff, 7.5);
-  panel(5.5, 3.4, [-.3, 8.2, .2], 0xfff3dd, 2.6);
-  panel(2.2, 7.5, [1.1, 2.6, -6], 0xffc66f, 2.0);
+  panel(1.15, 9.5, [-4.4, 2.3, 6.8], 0xfff8e8, 5.1);
+  panel(.36, 8.5, [4.25, 2.25, 5.7], 0xf8fbff, 4.1);
+  panel(5.5, 3.4, [-.3, 8.2, .2], 0xfff3dd, 1.9);
+  panel(2.2, 7.5, [1.1, 2.6, -6], 0xffc66f, 1.55);
   panel(1.0, 8.5, [2.8, 2.0, 6.5], 0x25231f, 1.1);
   const pmrem = new THREE.PMREMGenerator(renderer);
   const environment = pmrem.fromScene(studio, .035, .1, 30);
   scene.environment = environment.texture;
-  scene.environmentIntensity = .94;
+  scene.environmentIntensity = .86;
   studio.traverse((object) => {
     if (object instanceof THREE.Mesh) {
       object.geometry.dispose();
@@ -182,17 +182,17 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const backdropContext = backdropCanvas.getContext("2d")!;
   backdropContext.clearRect(0, 0, 1024, 1024);
   const studioGlow = backdropContext.createRadialGradient(450, 610, 24, 450, 610, 470);
-  studioGlow.addColorStop(0, "rgba(255,253,246,.92)");
-  studioGlow.addColorStop(.42, "rgba(246,240,227,.52)");
-  studioGlow.addColorStop(.72, "rgba(231,218,199,.16)");
+  studioGlow.addColorStop(0, "rgba(244,232,212,.55)");
+  studioGlow.addColorStop(.42, "rgba(225,211,192,.30)");
+  studioGlow.addColorStop(.72, "rgba(193,167,137,.09)");
   studioGlow.addColorStop(1, "rgba(231,218,199,0)");
   backdropContext.fillStyle = studioGlow;
   backdropContext.fillRect(0, 0, 1024, 1024);
   const studioShade = backdropContext.createLinearGradient(360, 170, 920, 700);
   studioShade.addColorStop(0, "rgba(74,55,36,0)");
   studioShade.addColorStop(.28, "rgba(74,55,36,0)");
-  studioShade.addColorStop(.48, "rgba(74,55,36,.16)");
-  studioShade.addColorStop(.61, "rgba(58,42,27,.11)");
+  studioShade.addColorStop(.48, "rgba(74,55,36,.19)");
+  studioShade.addColorStop(.61, "rgba(58,42,27,.16)");
   studioShade.addColorStop(.78, "rgba(58,42,27,.035)");
   studioShade.addColorStop(1, "rgba(58,42,27,0)");
   backdropContext.fillStyle = studioShade;
@@ -200,18 +200,18 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const backdropMap = new THREE.CanvasTexture(backdropCanvas);
   backdropMap.colorSpace = THREE.SRGBColorSpace;
   const backdrop = new THREE.Mesh(new THREE.PlaneGeometry(10.2, 10.2), new THREE.MeshBasicMaterial({
-    map: backdropMap, transparent: true, opacity: .96, depthWrite: false, toneMapped: false,
+    map: backdropMap, transparent: true, opacity: .86, depthWrite: false, toneMapped: false,
   }));
   backdrop.position.set(-1.4, 1.7, -3.6);
   backdrop.quaternion.copy(camera.quaternion);
   scene.add(backdrop);
 
-  const hemisphere = new THREE.HemisphereLight(0xfffcf3, 0x71604b, .6);
+  const hemisphere = new THREE.HemisphereLight(0xfffcf3, 0x71604b, .48);
   scene.add(hemisphere);
-  const key = new THREE.DirectionalLight(0xfff9eb, 1.5);
+  const key = new THREE.DirectionalLight(0xfff9eb, 1.25);
   key.position.set(-5, 6, 5);
   scene.add(key);
-  const rim = new THREE.DirectionalLight(0xffffff, 1);
+  const rim = new THREE.DirectionalLight(0xffffff, .9);
   rim.position.set(3, 4, -4);
   scene.add(rim);
 
@@ -222,7 +222,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   const glassMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xffffff, roughness: .003, metalness: 0, transmission: 1,
-    thickness: .075, ior: 1.52, envMapIntensity: 2.75, dispersion: .006,
+    thickness: .095, ior: 1.50, envMapIntensity: 1.55, dispersion: .006,
     attenuationColor: new THREE.Color(0xffffff), attenuationDistance: 140,
     clearcoat: .18, clearcoatRoughness: .006,
   });
@@ -262,7 +262,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       varying vec3 vStudyView;
       void main() {
         float rim = pow(1.0 - clamp(abs(dot(normalize(vStudyNormal), normalize(vStudyView))), 0.0, 1.0), 2.35);
-        float alpha = rim * 0.145;
+        float alpha = rim * 0.16;
         gl_FragColor = vec4(vec3(1.0, 0.985, 0.95) * (0.72 + rim * 0.55), alpha);
       }
     `,
@@ -287,7 +287,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   // The amber reservoir uses volume absorption and is captured before the outer-glass refraction pass.
   const liquidMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xffd08a, roughness: .015, metalness: 0, transmission: .94,
-    thickness: .18, ior: 1.335, attenuationColor: new THREE.Color(0xc87824), attenuationDistance: 2.8,
+    thickness: .21, ior: 1.335, attenuationColor: new THREE.Color(0xc27a2a), attenuationDistance: 2.2,
     clearcoat: .05, clearcoatRoughness: .01, envMapIntensity: 1.25,
   });
   liquidMaterial.onBeforeCompile = (shader) => {
@@ -302,7 +302,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   // The flat surface/meniscus is intentionally separate from the rounded reservoir edge.
   const meniscusMaterial = new THREE.MeshStandardMaterial({
     color: 0xc9812d, roughness: .06, metalness: 0, envMapIntensity: 1.35,
-    transparent: true, opacity: .20, depthWrite: false, side: THREE.DoubleSide,
+    transparent: true, opacity: .26, depthWrite: false, side: THREE.DoubleSide,
   });
   const meniscus = new THREE.Mesh(superellipsePlate(1.72, .68), meniscusMaterial);
   meniscus.position.set(0, 1.982, 0);
