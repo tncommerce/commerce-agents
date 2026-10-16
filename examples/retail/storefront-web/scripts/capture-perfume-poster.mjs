@@ -20,7 +20,7 @@ export async function capturePerfumeStudioPoster(page, outputDir, state) {
     "body,body * {background-color:transparent!important;background-image:none!important;box-shadow:none!important}",
     "body *::before,body *::after {visibility:hidden!important}",
     "[data-dufynd-bottle] [data-dufynd-spatial-poster],",
-    "[data-dufynd-bottle] [aria-hidden]:not([data-dufynd-spatial-canvas]),",
+    "[data-dufynd-bottle] [aria-hidden]:not([data-dufynd-spatial-canvas]):not([data-spatial-webgl]),",
     "[data-dufynd-bottle] figcaption {visibility:hidden!important}",
     "[data-dufynd-spatial-canvas],[data-dufynd-spatial-canvas] canvas {visibility:visible!important}"
   ].join("\n");
