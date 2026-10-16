@@ -239,6 +239,38 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   glass.renderOrder = 4;
   assembly.add(glass);
 
+  // A restrained Fresnel shell draws only grazing-angle highlights: edge definition
+  // without adding another transmissive layer to Three's screen-space refraction.
+  const glassEdgeMaterial = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    vertexShader: `
+      varying vec3 vStudyNormal;
+      varying vec3 vStudyView;
+      void main() {
+        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+        vStudyNormal = normalize(normalMatrix * normal);
+        vStudyView = normalize(-mvPosition.xyz);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vStudyNormal;
+      varying vec3 vStudyView;
+      void main() {
+        float rim = pow(1.0 - clamp(abs(dot(normalize(vStudyNormal), normalize(vStudyView))), 0.0, 1.0), 2.35);
+        float alpha = rim * 0.23;
+        gl_FragColor = vec4(vec3(1.0, 0.965, 0.89) * (0.72 + rim * 0.55), alpha);
+      }
+    `,
+  });
+  const glassEdge = new THREE.Mesh(glass.geometry, glassEdgeMaterial);
+  glassEdge.position.copy(glass.position);
+  glassEdge.scale.set(1.003, 1.002, 1.008);
+  glassEdge.renderOrder = 7;
+  assembly.add(glassEdge);
+
   // A separate inner wall makes the vessel read as a hollow glass object rather than a milky solid.
   const innerGlassMaterial = new THREE.MeshStandardMaterial({
     color: 0xfff9ed, roughness: .16, metalness: 0,
@@ -397,6 +429,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     glass.position.x = 0;
     glass.rotation.y = 0;
     innerGlass.position.x = 0;
+    glassEdge.position.copy(glass.position);
     liquid.position.set(0, 1.245, 0);
     meniscus.position.set(0, 1.992, 0);
     label.position.x = 0;
@@ -419,6 +452,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     renderer.info.reset();
     label.visible = false;
     glass.visible = false;
+    glassEdge.visible = false;
     innerGlass.visible = false;
     base.visible = false;
     neck.visible = false;
@@ -426,6 +460,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     renderer.render(scene, camera);
     label.visible = true;
     glass.visible = true;
+    glassEdge.visible = true;
     innerGlass.visible = true;
     base.visible = true;
     neck.visible = true;
