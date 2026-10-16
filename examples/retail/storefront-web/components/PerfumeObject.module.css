@@ -40,12 +40,15 @@
 .poster {
   /* Constrain the bitmap to its real 700:660 shape before feathering.
      Masking a full-width object-fit:contain image leaves its inner edges visible. */
+  /* The static model must command the same approximate space as the live
+     3D hero, rather than shrinking to a small thumbnail on low-power phones. */
   left: 50%;
   right: auto;
   bottom: auto;
+  top: -9%;
   width: auto;
-  max-width: 100%;
-  height: 100%;
+  max-width: none;
+  height: 118%;
   transform: translateX(-50%);
   object-fit: contain;
   filter: contrast(1.03) saturate(.96);
