@@ -9,12 +9,14 @@ const photos = JSON.parse(await readFile(new URL("../lib/generated/original-phot
 const unrestrictedPhoto = photos.find(photo => photo.product_id === "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100");
 const merchantPhotos = photos.filter(photo => photo.rights_basis_id === "awin_top_parfuemerie_feed_materials_20260928");
 const imageFixtures = new Map();
-if (process.env.QA_IMAGE_MANIFEST) {
-  for (const asset of JSON.parse(await readFile(process.env.QA_IMAGE_MANIFEST, "utf8"))) {
-    assert.ok(photos.some(photo => photo.url === asset.url), "image fixtures may only mirror registered source photographs");
-    const bytes = await readFile(asset.path);
-    assert.equal(createHash("sha256").update(bytes).digest("hex"), asset.sha256, "cached photograph must match its recorded source bytes");
-    imageFixtures.set(asset.url, { body: bytes, contentType: asset.content_type });
+async function loadImageFixtures() {
+  if (process.env.QA_IMAGE_MANIFEST && !imageFixtures.size) {
+    for (const asset of JSON.parse(await readFile(process.env.QA_IMAGE_MANIFEST, "utf8"))) {
+      assert.ok(photos.some(photo => photo.url === asset.url), "image fixtures may only mirror registered source photographs");
+      const bytes = await readFile(asset.path);
+      assert.equal(createHash("sha256").update(bytes).digest("hex"), asset.sha256, "cached photograph must match its recorded source bytes");
+      imageFixtures.set(asset.url, { body: bytes, contentType: asset.content_type });
+    }
   }
 }
 
@@ -137,6 +139,7 @@ async function captureJourney(page, out, width) {
 
 export async function verifyVisualReset(browser, baseUrl, outputDir) {
   requireLocalBase(baseUrl);
+  await loadImageFixtures();
   await mkdir(outputDir, { recursive: true });
   const report = { generated_at: new Date().toISOString(), base_url: baseUrl, environment: "local fixture; not a field-performance measurement", cases: [] };
   try {
