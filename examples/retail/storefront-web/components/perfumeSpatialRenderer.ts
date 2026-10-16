@@ -88,7 +88,7 @@ function liquidRim(width: number, depth: number) {
   }
   return new THREE.LineLoop(
     new THREE.BufferGeometry().setFromPoints(vertices),
-    new THREE.LineBasicMaterial({ color: 0xf2c184, transparent: true, opacity: .68, depthWrite: false }),
+    new THREE.LineBasicMaterial({ color: 0xf7d5a7, transparent: true, opacity: .32, depthWrite: false }),
   );
 }
 
@@ -301,9 +301,10 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   // A separate inner wall makes the vessel read as a hollow glass object rather than a milky solid.
   const innerGlassMaterial = new THREE.MeshStandardMaterial({
-    color: 0xfffdf7, roughness: .08, metalness: 0,
-    transparent: true, opacity: .026, depthWrite: false, side: THREE.BackSide,
-    envMapIntensity: 1.45,
+    // The rear wall is a very faint optical boundary, not a white plastic lining.
+    color: 0xffffff, roughness: .025, metalness: 0,
+    transparent: true, opacity: .010, depthWrite: false, side: THREE.BackSide,
+    envMapIntensity: .9,
   });
   const innerGlass = new THREE.Mesh(bevelledBody(2.00, 2.24, .94, .095), innerGlassMaterial);
   innerGlass.position.set(0, 1.43, 0);
@@ -363,7 +364,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
         // Wavelength-specific attenuation. R passes more readily than G/B,
         // making shallow paths champagne and deep paths warm amber. This value
         // is a LINEAR blend factor, not emissive colour (no tone mapping).
-        vec3 transmittance = exp(-vec3(0.12, 0.52, 1.17) * opticalPath);
+        vec3 transmittance = exp(-vec3(0.07, 0.34, 0.80) * opticalPath);
         gl_FragColor = vec4(transmittance, 1.0);
       }
     `,
@@ -372,14 +373,58 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   liquid.position.set(0, 1.165, 0);
   liquid.renderOrder = 2;
   assembly.add(liquid);
+
+  // The Beer-Lambert pass attenuates the studio behind the fluid, but does
+  // not model light returned by its air/liquid interface. Add a second,
+  // geometry-attached *specular-only* pass to the SAME refraction capture.
+  // Never draw another pigmented liquid mesh over the public alpha canvas.
+  // View-space normals keep the highlights anchored as the bottle rotates.
+  const liquidGlintMaterial = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false, depthTest: true,
+    toneMapped: false, side: THREE.FrontSide, blending: THREE.AdditiveBlending,
+    vertexShader: `
+      varying vec3 vGlintNormal;
+      varying vec3 vGlintView;
+      void main() {
+        vec4 eye = modelViewMatrix * vec4(position, 1.0);
+        vGlintNormal = normalize(normalMatrix * normal);
+        vGlintView = normalize(-eye.xyz);
+        gl_Position = projectionMatrix * eye;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vGlintNormal;
+      varying vec3 vGlintView;
+      void main() {
+        vec3 N = normalize(vGlintNormal);
+        vec3 V = normalize(vGlintView);
+        float facing = clamp(dot(N, V), 0.0, 1.0);
+        // Dielectric interface (air / perfume), with restrained studio strips.
+        float fresnel = 0.020 + 0.980 * pow(1.0 - facing, 5.0);
+        vec3 key = normalize(vec3(-0.55, 0.30, 0.78));
+        vec3 fill = normalize(vec3(0.72, 0.20, 0.66));
+        float wide = pow(max(dot(reflect(-key, N), V), 0.0), 46.0);
+        float fine = pow(max(dot(reflect(-fill, N), V), 0.0), 116.0);
+        float lightReturn = wide * 0.11 + fine * 0.050 + fresnel * 0.025;
+        gl_FragColor = vec4(vec3(1.0, 0.96, 0.88) * lightReturn, 1.0);
+      }
+    `,
+  });
+  const liquidGlint = new THREE.Mesh(liquid.geometry, liquidGlintMaterial);
+  liquidGlint.position.copy(liquid.position);
+  liquidGlint.scale.setScalar(1.001);
+  liquidGlint.renderOrder = 3;
+  assembly.add(liquidGlint);
   const liquidEyeLocal = liquidMaterial.uniforms.eyeLocal.value as THREE.Vector3;
   // A flat optical surface and its fine bright boundary remain visibly
   // separate from the vertical body. Do not imply motion/sloshing at rest.
   const meniscusMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xeebd79, roughness: .095, metalness: 0, transmission: .23,
-    thickness: .025, ior: 1.335, envMapIntensity: 1.3,
-    transparent: true, opacity: .54, depthWrite: false, side: THREE.DoubleSide,
-    clearcoat: .7, clearcoatRoughness: .028,
+    // An interface is nearly clear: the amber belongs to the volume below,
+    // not to an opaque golden lid resting on top of the liquid.
+    color: 0xfff4de, roughness: .045, metalness: 0, transmission: .94,
+    thickness: .012, ior: 1.335, envMapIntensity: 1.0,
+    transparent: true, opacity: .15, depthWrite: false, side: THREE.DoubleSide,
+    clearcoat: .28, clearcoatRoughness: .025,
   });
   const meniscus = new THREE.Mesh(superellipsePlate(1.96, .89), meniscusMaterial);
   meniscus.position.set(0, 1.987, 0);
@@ -518,6 +563,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     glassEdge.position.copy(glass.position);
     glassEdge.rotation.y = glass.rotation.y;
     liquid.position.set(liquidShift, 1.165, .018 * progress);
+    liquidGlint.position.copy(liquid.position);
     meniscus.position.set(liquidShift, 1.987, .018 * progress);
     surfaceRim.position.set(liquidShift, 1.991, .018 * progress);
     label.position.x = shellShift;
@@ -537,7 +583,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   // The transmissive pass sees an opaque, neutral studio backing even though
   // the public canvas itself must remain transparent in the editorial hero.
   // This prevents undefined clear-alpha pixels from bleaching the glass.
-  const refractionBacking = new THREE.Color("#cbb9a5");
+  // Match the light editorial stage instead of tinting every transmitted ray
+  // with a darker opaque slab (the alpha canvas itself remains transparent).
+  const refractionBacking = new THREE.Color("#ebe1d4");
 
   function draw() {
     // Update the eye in the liquid's own frame before BOTH refraction and final passes.
@@ -568,6 +616,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     // but must not show as a rectangular plane behind the bottle on screen.
     backdrop.visible = false;
     liquid.visible = false;
+    liquidGlint.visible = false;
     label.visible = true;
     glass.visible = true;
     glassEdge.visible = true;
@@ -578,6 +627,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       renderer.render(scene, camera);
     } finally {
       liquid.visible = true;
+      liquidGlint.visible = true;
       backdrop.visible = true;
     }
     host.dataset.renderDurationMs = (performance.now() - drawStarted).toFixed(2);
@@ -589,7 +639,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
     host.dataset.liquidOptics = "translucent-volume";
-    host.dataset.liquidAbsorption = "beer-lambert-refraction-only";
+    host.dataset.liquidAbsorption = "beer-lambert-with-specular-interface";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
     host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
