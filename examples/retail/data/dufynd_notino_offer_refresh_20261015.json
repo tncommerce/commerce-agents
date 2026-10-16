@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-15T20:31:14Z",
+  "source_freshness_date": "2026-10-15",
+  "freshness_at": "2026-10-15T00:00:00Z",
+  "freshness_policy": "Primary merchant pages were reported crawled today by the read-only web retrieval. The earliest UTC time that day is used for eligibility because no exact upstream crawl timestamp is available. Never use the later retrieval time to extend the 72-hour window.",
+  "observation_method": "current_public_merchant_page_read_only_web_retrieval",
+  "runtime_observation": "All three existing product pages returned HTTP 200 with zero eligible offers at 2026-10-15T20:28:41Z; existing source offer timestamps were 2026-10-09.",
+  "max_age_hours": 72,
+  "expires_at": "2026-10-18T00:00:00Z",
+  "products": [
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "offer_id": "notino-ysl-libre-edp-90",
+      "merchant_product_id": "VZR11010",
+      "exact_variant": "Yves Saint Laurent Libre Eau de Parfum 90 ml, refillable bottle",
+      "price_eur": 132,
+      "shipping_cost_eur": 0,
+      "availability_observed": true,
+      "source_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+      "source_ref": "turn4view0",
+      "source_lines": "205-260",
+      "variant_note": "The current landing explicitly says refillable Eau de Parfum, 90 ml and VZR11010. The existing approved offer already contains this refillable variant and this exact product URL. No replacement with non-refillable or refill-only variant.",
+      "conditional_coupon_price_excluded": true
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "offer_id": "notino-ysl-black-opium-edp-90",
+      "merchant_product_id": "YSL2377",
+      "exact_variant": "Yves Saint Laurent Black Opium Eau de Parfum 90 ml",
+      "price_eur": 113,
+      "shipping_cost_eur": 0,
+      "availability_observed": true,
+      "source_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/p-451726/",
+      "source_ref": "turn3view0",
+      "source_lines": "111-166",
+      "variant_note": "Current selected product explicitly identifies Eau de Parfum, 90 ml and YSL2377. It is not Le Parfum, Over Red, Glitter or Extreme.",
+      "conditional_coupon_price_excluded": true
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "offer_id": "notino-pdm-delina-edp-75",
+      "merchant_product_id": "PDM0227",
+      "exact_variant": "Parfums de Marly Delina Eau de Parfum 75 ml",
+      "price_eur": 285,
+      "shipping_cost_eur": 0,
+      "availability_observed": true,
+      "source_url": "https://www.notino.de/parfums-de-marly/darley-royal-essence-delina-eau-de-parfum-fuer-damen/p-11598204/",
+      "source_ref": "turn3view1",
+      "source_lines": "97-134",
+      "variant_note": "Current selected product explicitly identifies Delina Eau de Parfum, 75 ml and PDM0227. It is not Delina Exclusif, La Rosee or 30 ml.",
+      "conditional_coupon_price_excluded": true
+    }
+  ],
+  "affiliate_basis": {
+    "current_db": "public.dufynd_affiliate_partners.notino: tracking_ready=true; feed_ready=false, read 2026-10-15",
+    "existing_production_scope": "merchant_partners.json active_product_deeplink_only contains all three products; existing CJ product URL mappings reused without modification",
+    "new_tracking_verification": false,
+    "network_receipt_or_transaction_access": false
+  },
+  "safeguards": {
+    "exact_variant_mapping_unchanged": true,
+    "tracked_deep_links_unchanged": true,
+    "affiliate_scope_unchanged": true,
+    "prices_stock_shipping_unchanged": true,
+    "images_unchanged": true,
+    "image_rights_changed": false,
+    "production_mutation": false,
+    "new_clickouts": 0,
+    "test_purchases": 0,
+    "additional_cost_eur": 0
+  },
+  "release_note": "DEV-only evidence refresh. Revalidate all three exact pages before any later merge if this evidence has aged out. Never bypass the existing 72-hour expiry."
+}
