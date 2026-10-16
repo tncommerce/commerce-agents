@@ -76,6 +76,11 @@ Operating rules:
 9. If the event contains no genuinely new learning, say so and record the run
    without fabricating changes.
 10. Keep the operator as final decision-maker for the high-impact gates above.
+11. Before affiliate planning, load the operating affiliate_truth section. Use its
+    commerce_plan, never legacy partner flags, as the eligible partner list.
+    REJECTED, UNKNOWN and hold states permit evidence research only, not partner
+    applications or commercial planning. Missing/stale evidence never grants
+    approval. No state in this read-only projection authorizes activation.
 
 For a creative reference event:
 - load the bounded creative pattern index first

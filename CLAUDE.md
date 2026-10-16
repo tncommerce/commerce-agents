@@ -15,6 +15,7 @@ paths each, four vertical examples, and a Claude Code plugin.
 - `*/managed-agents/`: the manifest directory (with the derived `system.md`) and the role's MCP server.
 - `examples/demo_common/` and `examples/web-shared/`: what the verticals' APIs and web apps share; `examples/` is the npm workspace.
 - `examples/retail/api/jarvis_crew.py`: deterministic read-only crew and risk projections from the sanitized Control Room DTO.
+- `scripts/dufynd_affiliate_truth.py`: evidence-bound, read-only partner maturity projection in the existing Jarvis context; never authorizes activation.
 - `examples/<vertical>/`: `api/`, `data/`, `storefront-web/`, `merchant-web/`; ports 8000-8003, 3000-3003, 3100-3103.
 - `plugins/commerce-builder/`: six skills, four commands; `.claude-plugin/marketplace.json` points at it.
 - `docs/`: `safety.md`, `backends.md`, `deployment.md`. `scripts/`: install, demo, smoke, screenshots, check, deploy, verify.

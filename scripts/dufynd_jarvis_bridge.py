@@ -8,6 +8,7 @@ from typing import Any
 from uuid import uuid4
 
 import httpx
+from scripts.dufynd_affiliate_truth import context_partner_truth
 from scripts.dufynd_jarvis_control_plane import HUMAN_REASONS
 
 
@@ -126,6 +127,7 @@ class DufyndJarvisBridge:
         payload = self._rpc("get_dufynd_jarvis_context")
         if not isinstance(payload, dict):
             raise ValueError("DUFYND Jarvis context must be a JSON object")
+        payload["affiliate_truth"] = context_partner_truth(payload)
         return payload
 
     def load_creative_context(self) -> dict[str, Any]:
