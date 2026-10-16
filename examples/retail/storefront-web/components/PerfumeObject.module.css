@@ -11,8 +11,9 @@
   position: relative;
   width: 100%;
   height: 510px;
-  background:
-    radial-gradient(ellipse at 54% 52%, rgba(235,220,201,.34) 0 19%, rgba(224,207,187,.22) 48%, rgba(199,177,153,.10) 76%, transparent 100%);
+  /* The studio light belongs to the entire hero; a background on the
+     scene rectangle makes a hard-edged panel on wide displays. */
+  background: transparent;
   overflow: hidden;
 }
 .scene::before {

@@ -141,7 +141,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   const scene = new THREE.Scene();
   scene.background = null;
-  const camera = new THREE.PerspectiveCamera(30, 1, .1, 60);
+  const camera = new THREE.PerspectiveCamera(28, 1, .1, 60);
   camera.position.set(4.35, 3.06, 7.48);
   camera.lookAt(0, 1.74, 0);
 
@@ -412,7 +412,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   let visible = options.isVisible?.() ?? true;
   let frame = 0;
   let renderCount = 0;
-  let framingFov = 30;
+  let framingFov = 28;
   let explored = 0;
   let exploreTarget = 0;
   let startProgress = 0;
@@ -448,7 +448,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     sprayLight.intensity = plume * .52;
 
     camera.lookAt(.05 * progress, 1.76 + progress * .18, 0);
-    camera.fov = framingFov + progress * 4.2;
+    camera.fov = framingFov + progress * 6.2;
     camera.updateProjectionMatrix();
   }
 
@@ -535,8 +535,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     renderer.setSize(width, height, false);
     refractionTarget.setSize(Math.round(width * renderer.getPixelRatio()), Math.round(height * renderer.getPixelRatio()));
     camera.aspect = width / height;
-    framingFov = window.matchMedia("(max-width: 600px)").matches ? 27 : 30;
-    camera.fov = framingFov + explored * 5;
+    framingFov = window.matchMedia("(max-width: 600px)").matches ? 25 : 28;
+    camera.fov = framingFov + explored * 6.2;
     camera.updateProjectionMatrix();
     requestDraw();
   }
