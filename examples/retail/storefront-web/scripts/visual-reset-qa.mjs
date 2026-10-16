@@ -4,6 +4,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
+import { capturePerfumeStudioPoster } from "./capture-perfume-poster.mjs";
 
 const photos = JSON.parse(await readFile(new URL("../lib/generated/original-photos.json", import.meta.url), "utf8"));
 const unrestrictedPhoto = photos.find(photo => photo.product_id === "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100");
@@ -275,6 +276,7 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         const bottleControl = page.locator("[data-dufynd-bottle-control]").first();
         assert.equal(await bottleControl.getAttribute("aria-pressed"), "false", "bottle starts in its complete resting view");
         await page.screenshot({ path: path.join(outputDir, `visual-reset-${width}-first.png`) });
+        if (width === 1440) await capturePerfumeStudioPoster(page, outputDir, "closed");
         if (width < 1024) await bottleControl.tap();
         else { await bottleControl.focus(); await bottleControl.press("Enter"); }
         await page.waitForFunction(() => document.querySelector("[data-dufynd-bottle-control]")?.getAttribute("aria-pressed") === "true");
@@ -293,6 +295,7 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
             `${width}: opened metal cap must clear the title by 12px (got ${capClearancePx.toFixed(1)}px)`);
         }
         await page.screenshot({ path: path.join(outputDir, `visual-reset-${width}-interaction.png`) });
+        if (width === 1440) await capturePerfumeStudioPoster(page, outputDir, "open");
         await bottleControl.click();
         await page.mouse.move(0, 0);
         await page.waitForFunction(() => document.querySelector("[data-dufynd-bottle-control]")?.getAttribute("aria-pressed") === "false");
