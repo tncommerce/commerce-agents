@@ -240,10 +240,10 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   assembly.add(glass);
 
   // A separate inner wall makes the vessel read as a hollow glass object rather than a milky solid.
-  const innerGlassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xfffdf8, roughness: .055, metalness: 0, transmission: .96,
-    thickness: .075, ior: 1.46, envMapIntensity: 1.5,
-    transparent: true, opacity: .30, depthWrite: false, side: THREE.BackSide,
+  const innerGlassMaterial = new THREE.MeshStandardMaterial({
+    color: 0xfff9ed, roughness: .16, metalness: 0,
+    transparent: true, opacity: .105, depthWrite: false, side: THREE.BackSide,
+    envMapIntensity: 1.25,
   });
   const innerGlass = new THREE.Mesh(bevelledBody(2.00, 2.24, .94, .095), innerGlassMaterial);
   innerGlass.position.set(0, 1.43, 0);
@@ -266,20 +266,18 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   assembly.add(liquid);
 
   // The flat surface/meniscus is intentionally separate from the rounded reservoir edge.
-  const meniscusMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xdca45a, roughness: .03, metalness: 0, transmission: .32,
-    ior: 1.335, envMapIntensity: 1.1, transparent: true, opacity: .72,
-    depthWrite: false, side: THREE.DoubleSide,
+  const meniscusMaterial = new THREE.MeshStandardMaterial({
+    color: 0xd49343, roughness: .11, metalness: 0, envMapIntensity: 1.15,
+    transparent: true, opacity: .46, depthWrite: false, side: THREE.DoubleSide,
   });
   const meniscus = new THREE.Mesh(superellipsePlate(1.79, .74), meniscusMaterial);
   meniscus.position.set(0, 1.992, 0);
   meniscus.renderOrder = 5;
   assembly.add(meniscus);
 
-  const baseMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff, roughness: .045, metalness: 0, transmission: .99,
-    thickness: .10, ior: 1.48, envMapIntensity: 1.75,
-    transparent: true, opacity: .62, depthWrite: false,
+  const baseMaterial = new THREE.MeshStandardMaterial({
+    color: 0xfffdf6, roughness: .14, metalness: 0, envMapIntensity: 1.35,
+    transparent: true, opacity: .16, depthWrite: false, side: THREE.DoubleSide,
   });
   const base = new THREE.Mesh(bevelledBody(2.03, .13, 1.0, .035), baseMaterial);
   base.position.set(0, .245, 0);
