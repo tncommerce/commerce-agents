@@ -78,9 +78,7 @@ def token(key, **overrides):
 
 
 def keys_for(key):
-    return SimpleNamespace(
-        get_signing_key_from_jwt=lambda _: SimpleNamespace(key=key.public_key())
-    )
+    return SimpleNamespace(get_signing_key_from_jwt=lambda _: SimpleNamespace(key=key.public_key()))
 
 
 @pytest.mark.parametrize(
