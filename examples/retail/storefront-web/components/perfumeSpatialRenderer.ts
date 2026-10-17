@@ -220,11 +220,6 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const hdriQa = (window as typeof window & { __dufyndHdrStudioQA?: boolean })
     .__dufyndHdrStudioQA === true;
   host.dataset.opticalEnvironment = "procedural-studio";
-  // CGI-first optical transport R&D: private internal browser fixture only.
-  // The default storefront and its actual WebGL path are unchanged.
-  const cavityQa = (window as typeof window & { __dufyndCavityOpticsQA?: boolean })
-    .__dufyndCavityOpticsQA === true;
-  host.dataset.opticalVolumeQa = cavityQa ? "hollow-cavity-qa" : "off";
   if (hdriQa) {
     try {
       const { EXRLoader } = await import("three/addons/loaders/EXRLoader.js");
@@ -400,120 +395,6 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const studyEyeLocal = new THREE.Vector3();
   // For exponent q=.60, the matching implicit superellipse power is 2/q=3.3333333.
   const studyVolumeShader = "\n#ifdef USE_TRANSMISSION\nuniform vec3 studyEyeInBottle;\nvarying vec3 vStudyBottlePoint;\nvarying vec3 vStudyBottleNormal;\n\n// Air -> silica glass -> hollow interior, approximated by a bounded refracted\n// ray inside the actual superellipse cavity. The perfume's free surface is\n// horizontal. Glass reflection stays in the stock MeshPhysical BRDF; only the\n// TRANSMITTED light receives perfume's Beer-Lambert absorption.\nfloat studyLiquidPath(vec3 entry, vec3 exteriorNormal) {\n  vec3 fromEye = normalize(entry - studyEyeInBottle);\n  vec3 insideRay = refract(fromEye, normalize(exteriorNormal), 1.0 / 1.50);\n  if (dot(insideRay, insideRay) < 0.01) insideRay = fromEye;\n\n  // Local dimensions: inner glass 2.055 x 1.005, liquid inset at walls,\n  // flat top at world y=1.985, base y=.345; bottle origin world y=1.42.\n  vec3 innerStart = entry + insideRay * 0.077;\n  vec3 boundsMin = vec3(-1.023, -1.075, -0.495);\n  vec3 boundsMax = vec3( 1.023,  0.565,  0.495);\n  vec3 safeRay = sign(insideRay) * max(abs(insideRay), vec3(0.0001));\n  vec3 t0 = (boundsMin - innerStart) / safeRay;\n  vec3 t1 = (boundsMax - innerStart) / safeRay;\n  vec3 earliest = min(t0, t1);\n  vec3 latest = max(t0, t1);\n  float nearDistance = max(0.0, max(earliest.x, max(earliest.y, earliest.z)));\n  float farDistance = min(latest.x, min(latest.y, latest.z));\n  if (farDistance <= nearDistance) return 0.0;\n  float raySpan = min(farDistance - nearDistance, 2.55);\n  float submerged = 0.0;\n  for (int sampleIndex = 0; sampleIndex < 12; sampleIndex++) {\n    float t = nearDistance + raySpan * (float(sampleIndex) + 0.5) / 12.0;\n    vec3 q = innerStart + insideRay * t;\n    float section = pow(abs(q.x / 1.023), 3.3333333)\n      + pow(abs(q.z / .495), 3.3333333);\n    float wall = 1.0 - smoothstep(.94, 1.025, section);\n    float floorProfile = smoothstep(-1.08, -.96, q.y);\n    submerged += wall * floorProfile;\n  }\n  return raySpan * submerged / 12.0;\n}\n#endif\n";
-  const studyCavityShader = `
-float cavityField(vec3 p, vec2 radii) {
-  return pow(abs(p.x / radii.x), 3.3333333) + pow(abs(p.z / radii.y), 3.3333333) - 1.0;
-}
-vec3 cavityNormal(vec3 p, vec2 radii) {
-  float x = p.x / radii.x;
-  float z = p.z / radii.y;
-  return normalize(vec3(
-    sign(x) * pow(max(abs(x), 0.00001), 2.3333333) / radii.x,
-    0.0,
-    sign(z) * pow(max(abs(z), 0.00001), 2.3333333) / radii.y
-  ));
-}
-// Starting INSIDE a convex superellipse, bracket the departure by the
-// containing rectangle and solve its true curved boundary by bisection.
-float cavityExitDistance(vec3 p, vec3 ray, vec2 radii) {
-  float tx = abs(ray.x) < 0.0001 ? 100.0 :
-    ((ray.x > 0.0 ? radii.x : -radii.x) - p.x) / ray.x;
-  float tz = abs(ray.z) < 0.0001 ? 100.0 :
-    ((ray.z > 0.0 ? radii.y : -radii.y) - p.z) / ray.z;
-  float hi = min(tx, tz);
-  if (hi <= 0.001 || hi > 5.0 || cavityField(p, radii) >= 0.0) return -1.0;
-  float lo = 0.0;
-  for (int i = 0; i < 12; i++) {
-    float mid = 0.5 * (lo + hi);
-    if (cavityField(p + ray * mid, radii) >= 0.0) hi = mid;
-    else lo = mid;
-  }
-  return 0.5 * (lo + hi);
-}
-// A real layered optical path: front air/glass, inner glass/fluid,
-// rear fluid/glass, rear glass/air, and camera-projected studio capture.
-// This is deliberately NOT a 2D alpha/glow painting over the perfume.
-vec4 cavityRefractedStudio(vec3 hit, vec3 surfaceNormal,
-                           float roughness, float ior) {
-  vec2 cavity = vec2(1.023, .495);
-  vec2 exterior = vec2(1.100, .570);
-  // The heavy foot and closed shoulder have no hollow cavity. For them,
-  // use the existing correctly tested transmission rather than inventing one.
-  if (hit.y < -1.04 || hit.y > 1.035) return vec4(0.0, 0.0, 0.0, -1.0);
-  vec3 eyeRay = normalize(hit - studyEyeInBottle);
-  vec3 glassRay = refract(eyeRay, normalize(surfaceNormal), 1.0 / 1.50);
-  if (dot(glassRay, glassRay) < .01) return vec4(0.0, 0.0, 0.0, -1.0);
-  float entering = -1.0;
-  for (int step = 1; step <= 30; step++) {
-    float d = float(step) * .025;
-    if (cavityField(hit + glassRay * d, cavity) < 0.0) {
-      entering = d;
-      break;
-    }
-  }
-  if (entering < 0.0) return vec4(0.0, 0.0, 0.0, -1.0);
-  float lo = max(0.0, entering - .025);
-  float hi = entering;
-  for (int i = 0; i < 10; i++) {
-    float mid = (lo + hi) * .5;
-    if (cavityField(hit + glassRay * mid, cavity) < 0.0) hi = mid;
-    else lo = mid;
-  }
-  vec3 innerFront = hit + glassRay * hi;
-  // At the near cavity wall the outward cavity normal points against the ray.
-  float fluidIor = innerFront.y < .565 ? 1.335 : 1.0;
-  vec3 fluidRay = refract(glassRay, cavityNormal(innerFront, cavity), 1.50 / fluidIor);
-  if (dot(fluidRay, fluidRay) < .01) return vec4(0.0, 0.0, 0.0, -1.0);
-  vec3 fluidStart = innerFront + fluidRay * .001;
-  float distanceInCavity = cavityExitDistance(fluidStart, fluidRay, cavity);
-  if (distanceInCavity < 0.0) return vec4(0.0, 0.0, 0.0, -1.0);
-  vec3 innerBack = fluidStart + fluidRay * distanceInCavity;
-  if (min(innerFront.y, innerBack.y) < -1.11 ||
-      max(innerFront.y, innerBack.y) > 1.11)
-    return vec4(0.0, 0.0, 0.0, -1.0);
-  // Calculate actual fluid segment length below its horizontal free surface.
-  float perfumePath = 0.0;
-  if (abs(fluidRay.y) < .0001) {
-    if (fluidStart.y > -1.075 && fluidStart.y < .565)
-      perfumePath = distanceInCavity;
-  } else {
-    float ta = (-1.075 - fluidStart.y) / fluidRay.y;
-    float tb = (.565 - fluidStart.y) / fluidRay.y;
-    perfumePath = max(0.0,
-      min(distanceInCavity, max(ta, tb)) - max(0.0, min(ta, tb)));
-  }
-  // Rear interface normals oppose travel for GLSL refract().
-  vec3 rearGlassRay = refract(fluidRay, -cavityNormal(innerBack, cavity),
-                               fluidIor / 1.50);
-  if (dot(rearGlassRay, rearGlassRay) < .01)
-    return vec4(0.0, 0.0, 0.0, -1.0);
-  vec3 rearStart = innerBack + rearGlassRay * .001;
-  float rearThickness = cavityExitDistance(rearStart, rearGlassRay, exterior);
-  if (rearThickness < 0.0) return vec4(0.0, 0.0, 0.0, -1.0);
-  vec3 outerBack = rearStart + rearGlassRay * rearThickness;
-  vec3 airRay = refract(rearGlassRay, -cavityNormal(outerBack, exterior), 1.50);
-  if (dot(airRay, airRay) < .01) return vec4(0.0, 0.0, 0.0, -1.0);
-  vec4 projectRay = projectionMatrix * viewMatrix * modelMatrix *
-    vec4(outerBack + normalize(airRay) * 2.1, 1.0);
-  vec2 uv = projectRay.xy / projectRay.w * .5 + .5;
-  // The capture is the true studio scene, not a CSS/raster fake.
-  vec4 refracted = getTransmissionSample(clamp(uv, vec2(.003), vec2(.997)), roughness, ior);
-  return vec4(refracted.rgb, perfumePath);
-}
-`;
-  const cavityReplacement = `vec4 cavityStudy = cavityRefractedStudio(vStudyBottlePoint,
-      vStudyBottleNormal, material.roughness, material.ior);
-    float studyPathLength = cavityStudy.a >= 0.0 ? cavityStudy.a :
-      studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);
-    vec3 studyAbsorption = exp(-vec3(0.10, 0.67, 1.72) * studyPathLength);
-    vec3 cavityTransmission = transmitted.rgb;
-    if (cavityStudy.a >= 0.0) {
-      vec3 cavityFresnel = EnvironmentBRDF(n, v, material.specularColorBlended,
-        material.specularF90, material.roughness);
-      cavityTransmission = (vec3(1.0) - cavityFresnel) * cavityStudy.rgb;
-    }
-    totalDiffuse = mix(totalDiffuse, cavityTransmission * studyAbsorption,
-      material.transmission);`;
   glassMaterial.onBeforeCompile = (shader) => {
     shader.uniforms.studioRefractionMap = { value: refractionTarget.texture };
     shader.uniforms.studyEyeInBottle = { value: studyEyeLocal };
@@ -524,7 +405,7 @@ vec4 cavityRefractedStudio(vec3 hit, vec3 surfaceNormal,
     shader.fragmentShader = shader.fragmentShader.replace("#include <common>",
       "#include <common>\n" + studyVolumeShader);
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_pars_fragment>",
-      THREE.ShaderChunk.transmission_pars_fragment.replaceAll("transmissionSamplerMap", "studioRefractionMap") + (cavityQa ? "\n" + studyCavityShader : ""));
+      THREE.ShaderChunk.transmission_pars_fragment.replaceAll("transmissionSamplerMap", "studioRefractionMap"));
     const physicalTransmission = THREE.ShaderChunk.transmission_fragment;
     // The thick optical base of an actual heavy perfume bottle bends the
     // studio more strongly than the very thin side walls. The shader varies
@@ -547,7 +428,7 @@ vec4 cavityRefractedStudio(vec3 hit, vec3 surfaceNormal,
       throw new Error("Three.js transmission contract changed; do not silently omit glass/liquid coupling");
     }
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>",
-      physicallyProfiledTransmission.replace(transmissionMix, cavityQa ? cavityReplacement : "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.10, 0.67, 1.72) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
+      physicallyProfiledTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.10, 0.67, 1.72) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
     // The framebuffer transmits the real editorial background through air,
     // while progressively retaining the amber contribution for longer liquid
     // paths. The original specular Fresnel stays on the MeshPhysical material.
