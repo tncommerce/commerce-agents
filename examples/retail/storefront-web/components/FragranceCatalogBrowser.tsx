@@ -1233,6 +1233,10 @@ export default function FragranceCatalogBrowser({
                 isVerifiedProductTruthVisual(visual);
               const dominantProfile =
                 dominantCatalogProfile(fragrance);
+              // Only the independently published RC1 has an approved
+              // affiliate offer path. This is not live stock or price data.
+              const isPublishedRc1 =
+                fragrance.product_id === "SC-RABANNE-1-MILLION-EDT-100";
 
               return (
               <article
@@ -1349,10 +1353,26 @@ export default function FragranceCatalogBrowser({
                     </div>
 
                     <div className="dufynd-catalog-card-cta mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
-                      Duftprofil & Angebote ansehen →
+                      {isPublishedRc1
+                        ? "Duftprofil & Händlerangebote ansehen →"
+                        : "Duftprofil entdecken →"}
                     </div>
                   </div>
                 </AcquisitionInternalLink>
+
+                {isPublishedRc1 ? (
+                  <div className="dufynd-catalog-rc1-offer mx-3 mb-3">
+                    <AcquisitionInternalLink
+                      data-dufynd-catalog-rc1-offer
+                      href="/duft/rabanne-1-million#angebote"
+                      aria-label="Rabanne 1 Million Eau de Toilette 100 ml: Händlerangebote prüfen"
+                      className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg bg-[#715328] px-4 py-2 text-[12px] font-semibold text-[#fff6e7] transition-colors hover:bg-[#553d1d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#715328]"
+                    >
+                      <span>Händlerangebote prüfen</span>
+                      <span aria-hidden="true">↗</span>
+                    </AcquisitionInternalLink>
+                  </div>
+                ) : null}
 
                 <div className="dufynd-catalog-card-actions flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
                   <FragranceSaveControls

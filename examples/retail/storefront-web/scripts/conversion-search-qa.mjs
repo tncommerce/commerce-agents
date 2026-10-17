@@ -1,6 +1,9 @@
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
+// Route readiness is verified by the semantic headings and controls below.
+// Network-idle is not a valid readiness gate while analytics, image decoding or
+// async search are active; it can deadlock on an otherwise functional page.
 export async function verifyConversionSearch(browser, baseUrl, outputDir) {
   const cases=[];
   for (const width of [390,1440]) {
@@ -12,7 +15,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
     await context.route('**/api/merchant-offers/**',r=>r.fulfill({json:{offers:[],best_offer_id:null}}));
     const page=await context.newPage();
     try {
-      await page.goto(`${baseUrl}/?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'networkidle'});
+      await page.goto(`${baseUrl}/?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
       await chooseMeasurement(page, 'granted');
       await page.locator('#dufynd-home-search').fill('YSL Libre EDP 90ml');
       await page.getByRole('search',{name:'DUFYND Duftkatalog durchsuchen'}).getByRole('button',{name:'Suchen',exact:true}).click();
@@ -20,9 +23,51 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.equal(new URL(page.url()).searchParams.get('src'),'instagram');
       assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion');
       if(outputDir) await page.screenshot({path:`${outputDir}/conversion-search-${width}-catalog.png`,fullPage:true});
-      await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'networkidle'});
+      // Catalog offer claims must be bound to the only published affiliate
+      // product; a non-offered fragrance must never show a buy-intent link.
+      assert.equal(await page.locator('a[data-dufynd-catalog-rc1-offer]').count(),0);
+      assert.equal(
+        (await page.locator('.dufynd-catalog-card-cta').first().innerText()).trim(),
+        'Duftprofil entdecken →',
+      );
+      await page.goto(`${baseUrl}/duft?q=Rabanne%201%20Million&qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
+      const verifiedRc1Entry=page.locator('a[data-dufynd-catalog-rc1-offer]');
+      await verifiedRc1Entry.waitFor({state:'visible'});
+      assert.equal(await verifiedRc1Entry.count(),1,'Exact RC1 alone has a catalog offer shortcut');
+      const rc1Target=new URL(await verifiedRc1Entry.getAttribute('href'),baseUrl);
+      assert.equal(rc1Target.pathname,'/duft/rabanne-1-million');
+      assert.equal(rc1Target.hash,'#angebote');
+      assert.match(await verifiedRc1Entry.getAttribute('aria-label'),/Rabanne 1 Million.*100 ml/);
+      const rc1Layout=await verifiedRc1Entry.evaluate(link=>{
+        const [label,arrow]=link.querySelectorAll(':scope > span');
+        if(!label||!arrow) return null;
+        const rect=node=>{const b=node.getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height,right:b.right,centerY:b.y+b.height/2};};
+        const card=link.closest('article');
+        const actions=card?.querySelector('.dufynd-catalog-card-actions');
+        return {button:rect(link),label:rect(label),arrow:rect(arrow),actions:actions?rect(actions):null,caption:label.textContent?.trim()};
+      });
+      assert.ok(rc1Layout,'Exact RC1 must have a meaningful label and separate arrow');
+      assert.equal(rc1Layout.caption,'Händlerangebote prüfen');
+      assert.ok(rc1Layout.button.h>=44 && rc1Layout.button.h<=64,'RC1 CTA must remain a compact accessible button');
+      assert.ok(Math.abs(rc1Layout.label.centerY-rc1Layout.arrow.centerY)<=5,
+        `${width}: CTA arrow must share the text line (not wrap below it)`);
+      assert.ok(rc1Layout.arrow.x>rc1Layout.label.x+rc1Layout.label.w,
+        `${width}: arrow must be placed after the text`);
+      if(width>=1024) assert.ok(rc1Layout.actions &&
+        rc1Layout.actions.x>=rc1Layout.button.x-2 &&
+        rc1Layout.actions.right<=rc1Layout.button.right+2,
+        'Desktop archive action buttons must share the RC1 right-hand column');
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,
+        'RC1 catalog CTA must not add horizontal overflow');
+      if(outputDir) await page.locator('.dufynd-catalog-card').filter({has:verifiedRc1Entry}).screenshot({path:`${outputDir}/conversion-search-${width}-rc1-catalog.png`});
+      await verifiedRc1Entry.click();
+      await page.waitForURL(url=>url.pathname==='/duft/rabanne-1-million'&&url.hash==='#angebote');
+      assert.equal(new URL(page.url()).searchParams.get('src'),'instagram','Catalog RC1 offer link preserves campaign source');
+      assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion','Catalog RC1 offer link preserves campaign ID');
+      await page.locator('#angebote').waitFor({state:'visible'});
+      await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'domcontentloaded'});
       await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
-      await page.goto(`${baseUrl}/start?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'networkidle'});
+      await page.goto(`${baseUrl}/start?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
       const input=page.getByLabel('Duft oder Marke suchen',{exact:true});
       await input.fill('Libre YSL EDP 90ml');
       const results=page.locator('[data-dufynd-social-live-results]');
@@ -55,7 +100,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
         await page.waitForURL('**/duft/parfums-de-marly-delina**',{waitUntil:'domcontentloaded',timeout:5000});
         assert.ok(Date.now()-started<4000,'stalled analytics must not block navigation');
       }
-      cases.push({width,home_search:true,social_search:true,wrong_variant_excluded:true,attribution:true,empty_offer_fallback:true,clickouts:0});
+      cases.push({width,home_search:true,social_search:true,wrong_variant_excluded:true,attribution:true,catalog_rc1_offer_route:true,non_rc1_offer_claim_suppressed:true,empty_offer_fallback:true,clickouts:0});
     } finally {await context.close();}
   }
   return cases;

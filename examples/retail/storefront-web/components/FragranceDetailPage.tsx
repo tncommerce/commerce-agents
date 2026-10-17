@@ -201,6 +201,12 @@ export async function generateMetadata({
   const description = descriptionFor(fragrance);
   const canonical = `/duft/${fragrance.slug}`;
   const shareImage = originalPhotoFor(fragrance)?.url || null;
+  // RC1 lacks a reused product-truth photograph. A separate original
+  // abstract social card is allowed for PREVIEW only, never Product JSON-LD.
+  const editorialSocialCard =
+    !shareImage && fragrance.product_id === "SC-RABANNE-1-MILLION-EDT-100"
+      ? "/assets/social/dufynd-rabanne-1-million-og.png"
+      : null;
 
   return {
     title,
@@ -213,13 +219,18 @@ export async function generateMetadata({
       url: `${SITE_URL}${canonical}`,
       title,
       description,
-      images: shareImage ? [shareImage] : undefined,
+      images: shareImage
+        ? [shareImage]
+        : editorialSocialCard
+          ? [{ url: editorialSocialCard, width: 1200, height: 630,
+               alt: "Redaktionelle DUFYND-Grafik für Rabanne 1 Million EDT 100 ml – kein Produktfoto" }]
+          : undefined,
     },
     twitter: {
-      card: shareImage ? "summary_large_image" : "summary",
+      card: shareImage || editorialSocialCard ? "summary_large_image" : "summary",
       title,
       description,
-      images: shareImage ? [shareImage] : undefined,
+      images: shareImage ? [shareImage] : editorialSocialCard ? [editorialSocialCard] : undefined,
     },
   };
 }
