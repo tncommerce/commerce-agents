@@ -88,9 +88,28 @@ def cap_sdf(pos, shift_x, shift_y):
 
 
 @njit
-def hit_cap(o, d, opened):
-    shift_y = 0.74 if opened else 0.0
-    shift_x = 0.27 if opened else 0.0
+def opening_cap_rise(viewport_width):
+    # Same 320/390/desktop opening travel as the public WebGL controller.
+    if viewport_width < 360:
+        return 0.74
+    if viewport_width < 601:
+        return 0.78
+    return 1.04
+
+
+@njit
+def opening_atomizer_rise(viewport_width):
+    if viewport_width < 360:
+        return 0.24
+    if viewport_width < 601:
+        return 0.33
+    return 0.46
+
+
+@njit
+def hit_cap(o, d, opened, viewport_width):
+    shift_y = opening_cap_rise(viewport_width) if opened else 0.0
+    shift_x = 0.34 if opened else 0.0
     # Cheap analytic bound limits the raymarch.
     bound, _ = hit_cylinder(o, d, shift_x, 0.0, 0.0, 0.52, 2.765 + shift_y, 3.50 + shift_y)
     if bound > 1.0e12:
@@ -195,26 +214,51 @@ def hit_cylinder(o, d, x, y, z, r, lo, hi):
 
 
 @njit
-def hit_metal(o, d, opened):
+def hit_metal(o, d, opened, viewport_width):
     # caps/neck/atomizer, immutable studio geometry for self-contained render
     # returns t, material, normal
     tt = 1.0e15
     kind = 0
     N = np.zeros(3)
     # Black cap: exploded in 'open' state but kept as a real 3D solid
-    cap_y_shift = 0.74 if opened else 0.0
-    cap_x_shift = 0.27 if opened else 0.0
-    tcap, ncap = hit_cap(o, d, opened)
+    cap_y_shift = opening_cap_rise(viewport_width) if opened else 0.0
+    cap_x_shift = 0.34 if opened else 0.0
+    atomizer_y_shift = opening_atomizer_rise(viewport_width) if opened else 0.0
+    atomizer_x_shift = -0.10 if opened else 0.0
+    tcap, ncap = hit_cap(o, d, opened, viewport_width)
     if tcap < tt:
         tt = tcap
         kind = 4
         N = ncap
     for x, z, r, y0, y1, k in (
         (cap_x_shift, 0.0, 0.496, 2.787 + cap_y_shift, 2.805 + cap_y_shift, 7),
-        (0.0, 0.0, 0.301, 2.648, 2.694, 7),
+        # Collar, rim and sprayer move as one spatial atomizer, never as
+        # disconnected decorative rings; the glass neck stays on the vessel.
+        (
+            atomizer_x_shift,
+            0.0,
+            0.360,
+            2.67 + atomizer_y_shift,
+            2.87 + atomizer_y_shift,
+            7,
+        ),
+        (
+            atomizer_x_shift,
+            0.0,
+            0.362,
+            2.698 + atomizer_y_shift,
+            2.72 + atomizer_y_shift,
+            7,
+        ),
+        (
+            atomizer_x_shift,
+            0.0,
+            0.190,
+            2.83 + atomizer_y_shift,
+            3.17 + atomizer_y_shift,
+            7,
+        ),
         (0.0, 0.0, 0.245, 2.62, 2.87, 5),
-        (0.0, 0.0, 0.290, 2.790, 2.835, 7),
-        (0.0, 0.0, 0.126, 2.83, 2.943, 8),
     ):
         t, n = hit_cylinder(o, d, x, 0.0, z, r, y0, y1)
         if t < tt:
@@ -225,7 +269,7 @@ def hit_metal(o, d, opened):
 
 
 @njit
-def hit_scene(o, d, opened):
+def hit_scene(o, d, opened, viewport_width):
     tt = 1.0e15
     N = np.zeros(3)
     kind = 0
@@ -264,7 +308,7 @@ def hit_scene(o, d, opened):
             tt = t
             kind = 6
             N = np.array((0.0, 0.0, 1.0))
-    t, k, n = hit_metal(o, d, opened)
+    t, k, n = hit_metal(o, d, opened, viewport_width)
     if t < tt:
         tt = t
         kind = k
@@ -375,7 +419,7 @@ def shade_metal(kind, n, d, p):
 
 
 @njit
-def trace(o, d, tex, opened):
+def trace(o, d, tex, opened, viewport_width):
     # Iterative forward ray transport with Fresnel reflection highlights.
     # Weighted deterministic branch avoids Monte Carlo white noise in stills.
     result = np.zeros(3)
@@ -383,7 +427,7 @@ def trace(o, d, tex, opened):
     hit_any = 0
     fluid_distance = 0.0
     for _bounce in range(11):
-        t, kind, n = hit_scene(o, d, opened)
+        t, kind, n = hit_scene(o, d, opened, viewport_width)
         if t > 1.0e12:
             result += throughput * refraction_env(o, d)
             return result, 0.08 + 0.92 * (
@@ -474,16 +518,25 @@ def tonemap(c):
 
 
 @njit(parallel=True)
-def render(width, height, samples, opened, tex):
+def render(width, height, samples, opened, tex, viewport_width):
     out = np.empty((height, width, 3), dtype=np.uint8)
     mask = np.empty((height, width), dtype=np.uint8)
     aspect = width / height
-    campos = np.array((3.70, 3.45, 9.30)) if opened else np.array((3.3, 3.05, 8.2))
-    center = np.array((0.0, 2.06, 0.0)) if opened else np.array((0.0, 1.82, 0.0))
+    # A fixed narrow-frustum desktop opening clips the actual 1.04-unit cap lift.
+    # Author the research still separately for mobile vs desktop viewport poses.
+    if opened and viewport_width >= 601:
+        campos = np.array((3.70, 3.65, 10.05))
+    elif opened:
+        campos = np.array((3.70, 3.45, 9.30))
+    else:
+        campos = np.array((3.3, 3.05, 8.2))
+    center_y = 2.24 if opened and viewport_width >= 601 else 2.06
+    center = np.array((0.0, center_y, 0.0)) if opened else np.array((0.0, 1.82, 0.0))
     fw = vnorm(center - campos)
     right = vnorm(np.cross(fw, np.array((0.0, 1.0, 0.0))))
     up = vnorm(np.cross(right, fw))
-    size = math.tan(math.radians(26.8) / 2.0)
+    field_of_view = 29.2 if opened and viewport_width >= 601 else 26.8
+    size = math.tan(math.radians(field_of_view) / 2.0)
     for py in prange(height):
         for px in range(width):
             col = np.zeros(3)
@@ -494,7 +547,7 @@ def render(width, height, samples, opened, tex):
                 u = (ix / width - 0.5) * 2 * size * aspect
                 v = (0.5 - iy / height) * 2 * size
                 direction = vnorm(fw + u * right + v * up)
-                c, h = trace(campos, direction, tex, opened)
+                c, h = trace(campos, direction, tex, opened, viewport_width)
                 col += c
                 hit += h
             col = tonemap(col / samples)
@@ -546,6 +599,13 @@ def main():
     parser.add_argument("--samples", type=int, default=2)
     parser.add_argument("--out", default=".cgi-lab/perfume-study-closed.png")
     parser.add_argument("--open", action="store_true")
+    parser.add_argument(
+        "--viewport-width",
+        type=int,
+        choices=(320, 390, 1440),
+        default=320,
+        help="Target WebGL opening pose; independent of output image resolution.",
+    )
     args = parser.parse_args()
     if not (240 <= args.width <= 1600 and 240 <= args.height <= 1600 and 1 <= args.samples <= 20):
         parser.error("lab render limits: 240..1600 px, 1..20 samples")
@@ -555,7 +615,7 @@ def main():
     os.makedirs(os.path.dirname(out), exist_ok=True)
     tex = make_label()
     started = time.monotonic()
-    img, mask = render(args.width, args.height, args.samples, args.open, tex)
+    img, mask = render(args.width, args.height, args.samples, args.open, tex, args.viewport_width)
     rgba = np.dstack((img, mask)).astype(np.uint8)
     # Fail closed on missing product or cropped silhouette.
     populated = np.nonzero(mask >= 8)
@@ -581,6 +641,9 @@ def main():
         "size": [args.width, args.height],
         "samples": args.samples,
         "pose": "open" if args.open else "closed",
+        "reference_viewport_width": args.viewport_width,
+        "cap_rise": float(opening_cap_rise(args.viewport_width)) if args.open else 0.0,
+        "atomizer_rise": float(opening_atomizer_rise(args.viewport_width)) if args.open else 0.0,
         "alpha_bbox_xyxy": [left, top, right, bottom],
         "alpha_max": int(mask.max()),
         "alpha_zero_corners": all(
