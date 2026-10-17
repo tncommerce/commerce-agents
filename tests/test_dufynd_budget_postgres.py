@@ -2,13 +2,13 @@
 
 from __future__ import annotations
 
+import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from threading import Barrier
-import json
 from uuid import uuid4
 
 import pytest
@@ -105,6 +105,11 @@ def database():
             + next(
                 (ROOT / "supabase/migrations").glob("*gmail_owner_gate_persistence.sql")
             ).read_text()
+        )
+        # The exact live-sourced, narrowly scoped event replay fix is installed
+        # only in CI's disposable database, never in production by this PR.
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*purchase_event_rearm_guard.sql")).read_text()
         )
     yield
 
@@ -3103,7 +3108,7 @@ def test_mission_disabled_handler_and_public_access_fail_closed(mission_db):
     with pytest.raises(psycopg.errors.RaiseException), c.transaction():
         c.execute("select start_dufynd_mission_v1('unsafe','social_publish')")
 
- 
+
 def test_internal_purchase_event_only_wakes_named_task():
     """Shared purchase observer must not rearm every historical generation."""
     import psycopg
@@ -3138,7 +3143,7 @@ def test_internal_purchase_event_only_wakes_named_task():
                 observer_source,
                 json.dumps({"observer_id": oid, "evidence": {}}),
                 uuid4().hex,
-                __import__("json").dumps([current]),
+                json.dumps([current]),
             ),
         )
         db.execute("select process_dufynd_external_events()")
