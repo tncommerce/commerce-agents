@@ -22,8 +22,9 @@ editorial social metadata source from the large, unmerged PR #799 at
    product photography would automatically take precedence; structured Product
    image data remains limited to its old verified-photo source.
 3. Changes are localized to two components, one RC1-specific CSS appendix,
-   two new social image-generation/test scripts, one responsive navigation QA
-   extension and minimum necessary package script hooks.
+   two new social image-generation/test scripts, one responsive navigation QA,
+   one exact source-level SEO regression guard and minimum necessary package
+   script hooks.
 
 ## Isolation (strict)
 
@@ -39,6 +40,14 @@ base exactly; only prefixes the two existing dev/prebuild scripts with the
 self-contained 0-EUR RC1 social-card generator/test.
 
 ## Release gate and evidence
+
+Isolated-baseline integration: the existing Python SEO regression
+`tests/test_dufynd_fragrance_detail_seo.py` originally expected a single
+shareImage-only Twitter/OG branch. Update just this assertion to enforce
+exact-RC1 editorial fallback and verified-photo precedence, while preserving
+conservative Product structured-data assertions. The independent Node
+`test-rc1-social-card.mjs` verifies metadata dynamically, including another
+product and a licensed-photo override.
 
 Upstream evidence: PR #799 [CI #39070518141](https://github.com/tncommerce/commerce-agents/actions/runs/39070518141)
 SUCCESS 7/7; original QA artifact 12114972293 includes actual responsive
