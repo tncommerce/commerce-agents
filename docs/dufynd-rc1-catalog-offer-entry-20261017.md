@@ -28,3 +28,25 @@ only if the card remains legible and accessible at both widths.
 Conversion after launch requires real attributable sessions, offer views,
 merchant clickouts and eventually confirmed partner commissions. Separate
 Owner merge/deploy GO mandatory. No additional paid services or content.
+
+## RESET41 — evidence-led responsive CTA repair (pending exact CI)
+
+Original screenshots from [RESET40 CI #39069002565](https://github.com/tncommerce/commerce-agents/actions/runs/39069002565)
+(artifact `dufynd-visual-qa-799`, ID 12115011508) independently exposed a
+problem **not caught by the successful technical run**: at both 390 and 1440 px
+the arrow on the new catalog offer button appeared on a second line. The
+desktop photo-pending archive card also auto-placed its Save/Compare controls
+in the wrong grid column.
+
+Root cause: the legacy `.dufynd-catalog-card > a` selector set
+`display:flex;flex-direction:column;flex:1` for every direct child anchor,
+including the new CTA, and the 1024px+ non-photo archive grid had no explicit
+positions for its third direct child. The fix wraps *only the exact RC1*
+action in its own container, makes the CTA a guaranteed horizontal label
+and arrow, and explicitly places the CTA and Save/Compare controls in the
+right column on desktop. No URL, consent, merchant, price or product identity
+changed. The existing responsive browser QA now fails if the arrow wraps,
+the button becomes oversized or the desktop actions leave the CTA column.
+
+**This fix requires a NEW exact-HEAD responsive CI/artifact review; a prior
+green run is not visual approval.**

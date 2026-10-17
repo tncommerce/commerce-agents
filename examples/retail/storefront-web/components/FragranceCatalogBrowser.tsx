@@ -1361,14 +1361,17 @@ export default function FragranceCatalogBrowser({
                 </AcquisitionInternalLink>
 
                 {isPublishedRc1 ? (
-                  <AcquisitionInternalLink
-                    data-dufynd-catalog-rc1-offer
-                    href="/duft/rabanne-1-million#angebote"
-                    aria-label="Rabanne 1 Million Eau de Toilette 100 ml: Händlerangebote prüfen"
-                    className="mx-3 mb-3 flex min-h-11 items-center justify-between gap-3 rounded-lg bg-[#715328] px-4 py-2 text-[12px] font-semibold text-[#fff6e7] transition-colors hover:bg-[#553d1d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#715328]"
-                  >
-                    Händlerangebote prüfen <span aria-hidden="true">↗</span>
-                  </AcquisitionInternalLink>
+                  <div className="dufynd-catalog-rc1-offer mx-3 mb-3">
+                    <AcquisitionInternalLink
+                      data-dufynd-catalog-rc1-offer
+                      href="/duft/rabanne-1-million#angebote"
+                      aria-label="Rabanne 1 Million Eau de Toilette 100 ml: Händlerangebote prüfen"
+                      className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg bg-[#715328] px-4 py-2 text-[12px] font-semibold text-[#fff6e7] transition-colors hover:bg-[#553d1d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#715328]"
+                    >
+                      <span>Händlerangebote prüfen</span>
+                      <span aria-hidden="true">↗</span>
+                    </AcquisitionInternalLink>
+                  </div>
                 ) : null}
 
                 <div className="dufynd-catalog-card-actions flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
