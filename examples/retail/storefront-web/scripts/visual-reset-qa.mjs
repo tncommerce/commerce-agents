@@ -578,6 +578,45 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         throw error;
       } finally { release(); await context.close(); }
     }
+    // A/B photographic studio experiment. Kept out of public/runtime defaults;
+    // inspect its genuine WebGL frames against the regular captures above.
+    // Do not count code/CI success as a premium image acceptance.
+    for (const width of [390, 1440]) {
+      const context = await browser.newContext({
+        viewport: { width, height: width < 640 ? 844 : 1000 },
+        reducedMotion: "reduce", hasTouch: width < 1024,
+      });
+      const requests = journal();
+      await deviceHints(context);
+      await isolateNetwork(context, baseUrl, requests);
+      await context.addInitScript(() => { window.__dufyndHdrStudioQA = true; });
+      const page = await context.newPage();
+      try {
+        const response = await page.goto(baseUrl, { waitUntil: "load" });
+        assert.equal(response.status(), 200);
+        await page.waitForFunction(() => document.querySelector("[data-dufynd-bottle]")
+          ?.getAttribute("data-spatial-state") === "ready", null, { timeout: 45_000 });
+        await chooseMeasurement(page, "denied");
+        await settledSpatial(page);
+        const environment = await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-optical-environment");
+        assert.equal(environment, "cc0-hdri-qa", "CC0 photo studio must really decode, not silently fall back");
+        await page.screenshot({ path: path.join(outputDir, `optical-study-${width}-cc0-hdri.png`) });
+        const control = page.locator("[data-dufynd-bottle-control]").first();
+        if (width < 1024) await control.tap();
+        else await control.click();
+        await page.waitForFunction(() => document.querySelector("[data-dufynd-spatial-canvas]")
+          ?.dataset.framePending === "false" && document.querySelector("[data-dufynd-bottle-control]")
+          ?.getAttribute("aria-pressed") === "true");
+        await page.screenshot({ path: path.join(outputDir, `optical-study-${width}-cc0-hdri-open.png`) });
+        assert.deepEqual(requests.clickouts, [], "A/B materials never click merchants");
+        assert.deepEqual(requests.blockedMutations, [], "A/B materials never mutate commerce data");
+        report.cases.push({ variant: "cc0-hdri-optics-lab", width, status: "passed", environment,
+          note: "QA-only optical reference; visual comparison and owner gate still required" });
+      } catch (error) {
+        report.cases.push({ variant: "cc0-hdri-optics-lab", width, status: "failed", error: String(error) });
+        throw error;
+      } finally { await context.close(); }
+    }
     return report;
   } finally {
     await writeFile(path.join(outputDir, "visual-reset-report.json"), JSON.stringify(report, null, 2) + "\n");

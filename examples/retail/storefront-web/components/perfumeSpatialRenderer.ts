@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-/** Entire scene is original procedural geometry. No models, HDRIs or remote textures. */
+/** Original procedural bottle geometry. Optional QA-only CC0 studio HDRI; no third-party product models or remote runtime textures. */
 export type PerfumeSpatialController = {
   setExplored(value: boolean, immediate?: boolean): void;
   setPointer(x: number, y: number): void;
@@ -213,9 +213,29 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   panel(2.2, 7.5, [1.1, 2.6, -6], 0xffc66f, 1.55);
   panel(1.0, 8.5, [2.8, 2.0, 6.5], 0x25231f, 1.1);
   const pmrem = new THREE.PMREMGenerator(renderer);
-  const environment = pmrem.fromScene(studio, .035, .1, 30);
+  let environment = pmrem.fromScene(studio, .035, .1, 30);
+  // A/B optical QA only: image-based softboxes from a locally bundled CC0
+  // studio panorama. Production remains on the original procedural PMREM.
+  // Keep failed downloads/decode entirely off the ordinary WebGL path.
+  const hdriQa = (window as typeof window & { __dufyndHdrStudioQA?: boolean })
+    .__dufyndHdrStudioQA === true;
+  host.dataset.opticalEnvironment = "procedural-studio";
+  if (hdriQa) {
+    try {
+      const { EXRLoader } = await import("three/addons/loaders/EXRLoader.js");
+      const source = await new EXRLoader().loadAsync("/assets/atelier/studio-reflection-cc0.exr");
+      source.mapping = THREE.EquirectangularReflectionMapping;
+      const photoPmrem = pmrem.fromEquirectangular(source);
+      source.dispose();
+      environment.dispose();
+      environment = photoPmrem;
+      host.dataset.opticalEnvironment = "cc0-hdri-qa";
+    } catch {
+      host.dataset.opticalEnvironment = "procedural-studio-hdri-failed";
+    }
+  }
   scene.environment = environment.texture;
-  scene.environmentIntensity = .86;
+  scene.environmentIntensity = host.dataset.opticalEnvironment === "cc0-hdri-qa" ? 1.07 : .86;
   studio.traverse((object) => {
     if (object instanceof THREE.Mesh) {
       object.geometry.dispose();

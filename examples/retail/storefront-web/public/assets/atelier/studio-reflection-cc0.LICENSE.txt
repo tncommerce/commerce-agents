@@ -1,0 +1,14 @@
+DUFYND – internal optical QA asset (NOT a product or brand photograph)
+Asset: studio-reflection-cc0.exr
+Original CC0 HDRI: Poly Haven / Greg Zaal, Studio Small 01 (mirrored derivative).
+Source mirror: https://github.com/TencentARC/Pixal3D/blob/master/assets/hdri/studio.exr
+Mirror license: https://github.com/TencentARC/Pixal3D/blob/master/assets/hdri/license.txt
+Poly Haven: https://polyhaven.com/a/studio_small_01
+Copyright/license: CC0 1.0 public-domain dedication; commercial use allowed.
+The mirror's own license states attribution to Studio Small 01 as *probable*, not proven:
+this provenance therefore describes that identification as tentative.
+Compressed EXR is derived from a 1K panorama (DWAB:300).
+GitHub source blob SHA-1: baf478da00acddbd70593e36d90146eb15c8939d
+Use: locally hosted image-based studio softbox illumination for a private, opt-in
+WebGL A/B quality experiment. It does NOT depict a DUFYND commercial product.
+No external browser requests, no new paid tool, no storefront promotion.
