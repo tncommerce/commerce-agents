@@ -1,5 +1,7 @@
 from datetime import UTC, datetime
 
+import pytest
+
 from retail.api.jarvis_operator import build_operator_diagnosis
 
 NOW = datetime(2026, 10, 5, 19, 16, tzinfo=UTC)
@@ -240,6 +242,7 @@ def _planner_gap(*, move="funnel_conversion_readiness", ready_domain=None,
         credentials=[],
         thin={
             "active_leases": 1 if has_active else 0,
+            "stop_reason": "no_safe_work",
             "business_checkpoint": {"age_seconds": checkpoint_age},
             "planner": {"state": "scheduled_safe_work"},
             "business_planner": {
@@ -269,9 +272,6 @@ def test_work_handoff_is_read_only_and_exactly_scoped_to_planner_gap():
     assert "keine Social-Veröffentlichung" in handoff["prompt"]
     assert "keinen automatischen Start" in handoff["prompt"]
     assert "task:supervisor" not in handoff["prompt"]
-
-
-import pytest
 
 
 @pytest.mark.parametrize(

@@ -4610,7 +4610,7 @@ body[data-execution-mode="unknown"] .execution-evidence {
 .operator-brief[data-state="IDLE_NO_RUNNABLE_WORK"] article:first-child {
   border-color: #e7bc7748;
 }
-.operator-brief[data-state="MASTER_ACTION_REQUIRED"] article:last-child {
+.operator-brief[data-state="MASTER_ACTION_REQUIRED"] article:nth-child(3) {
   border-color: #e7bc775c;
 }
 .operator-brief[data-state="WORKING"] article:first-child {
