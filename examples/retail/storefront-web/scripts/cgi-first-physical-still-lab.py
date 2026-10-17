@@ -80,8 +80,11 @@ def cap_sdf(pos, shift_x, shift_y):
     bevel = 0.044
     radial = math.sqrt(x * x + z * z) - (0.489 - bevel)
     vertical = abs(y) - (0.345 - bevel)
-    return (math.sqrt(max(radial, 0.0) ** 2 + max(vertical, 0.0) ** 2)
-            + min(max(radial, vertical), 0.0) - bevel)
+    return (
+        math.sqrt(max(radial, 0.0) ** 2 + max(vertical, 0.0) ** 2)
+        + min(max(radial, vertical), 0.0)
+        - bevel
+    )
 
 
 @njit
@@ -89,8 +92,7 @@ def hit_cap(o, d, opened):
     shift_y = 0.74 if opened else 0.0
     shift_x = 0.27 if opened else 0.0
     # Cheap analytic bound limits the raymarch.
-    bound, _ = hit_cylinder(o, d, shift_x, 0.0, 0.0, 0.52,
-                            2.765 + shift_y, 3.50 + shift_y)
+    bound, _ = hit_cylinder(o, d, shift_x, 0.0, 0.0, 0.52, 2.765 + shift_y, 3.50 + shift_y)
     if bound > 1.0e12:
         return 1.0e15, np.zeros(3)
     t = max(0.0001, bound - 0.08)
@@ -99,14 +101,16 @@ def hit_cap(o, d, opened):
         dist = cap_sdf(pt, shift_x, shift_y)
         if abs(dist) < 0.0003:
             e = 0.0005
-            n = np.array((
-                cap_sdf(pt + np.array((e, 0.0, 0.0)), shift_x, shift_y)
-                - cap_sdf(pt - np.array((e, 0.0, 0.0)), shift_x, shift_y),
-                cap_sdf(pt + np.array((0.0, e, 0.0)), shift_x, shift_y)
-                - cap_sdf(pt - np.array((0.0, e, 0.0)), shift_x, shift_y),
-                cap_sdf(pt + np.array((0.0, 0.0, e)), shift_x, shift_y)
-                - cap_sdf(pt - np.array((0.0, 0.0, e)), shift_x, shift_y)
-            ))
+            n = np.array(
+                (
+                    cap_sdf(pt + np.array((e, 0.0, 0.0)), shift_x, shift_y)
+                    - cap_sdf(pt - np.array((e, 0.0, 0.0)), shift_x, shift_y),
+                    cap_sdf(pt + np.array((0.0, e, 0.0)), shift_x, shift_y)
+                    - cap_sdf(pt - np.array((0.0, e, 0.0)), shift_x, shift_y),
+                    cap_sdf(pt + np.array((0.0, 0.0, e)), shift_x, shift_y)
+                    - cap_sdf(pt - np.array((0.0, 0.0, e)), shift_x, shift_y),
+                )
+            )
             return t, vnorm(n)
         t += max(0.0002, abs(dist) * 0.72)
         if t > bound + 0.90:
@@ -382,9 +386,15 @@ def trace(o, d, tex, opened):
         t, kind, n = hit_scene(o, d, opened)
         if t > 1.0e12:
             result += throughput * refraction_env(o, d)
-            return result, 0.08 + 0.92 * (1.0 -
-                (math.exp(-.15 * fluid_distance) + math.exp(-.92 * fluid_distance)
-                 + math.exp(-2.05 * fluid_distance)) / 3.0) if hit_any else 0.0
+            return result, 0.08 + 0.92 * (
+                1.0
+                - (
+                    math.exp(-0.15 * fluid_distance)
+                    + math.exp(-0.92 * fluid_distance)
+                    + math.exp(-2.05 * fluid_distance)
+                )
+                / 3.0
+            ) if hit_any else 0.0
         p = o + d * t
         hit_any = 1
         if kind >= 4 and kind != 6:
@@ -443,9 +453,15 @@ def trace(o, d, tex, opened):
         if max(throughput) < 0.003:
             break
     result += throughput * refraction_env(o, d)
-    return result, 0.08 + 0.92 * (1.0 -
-        (math.exp(-.15 * fluid_distance) + math.exp(-.92 * fluid_distance)
-         + math.exp(-2.05 * fluid_distance)) / 3.0)
+    return result, 0.08 + 0.92 * (
+        1.0
+        - (
+            math.exp(-0.15 * fluid_distance)
+            + math.exp(-0.92 * fluid_distance)
+            + math.exp(-2.05 * fluid_distance)
+        )
+        / 3.0
+    )
 
 
 @njit
@@ -567,9 +583,15 @@ def main():
         "pose": "open" if args.open else "closed",
         "alpha_bbox_xyxy": [left, top, right, bottom],
         "alpha_max": int(mask.max()),
-        "alpha_zero_corners": all(mask[y, x] == 0 for y, x in (
-            (0, 0), (0, args.width - 1), (args.height - 1, 0),
-            (args.height - 1, args.width - 1))),
+        "alpha_zero_corners": all(
+            mask[y, x] == 0
+            for y, x in (
+                (0, 0),
+                (0, args.width - 1),
+                (args.height - 1, 0),
+                (args.height - 1, args.width - 1),
+            )
+        ),
         "runtime_seconds": round(time.monotonic() - started, 2),
         "note": "Internal CGI research only. No public poster replacement or quality approval.",
     }
