@@ -63,7 +63,7 @@ def hit_round3(o,d,ax,lo,hi,az,r):
     # A true 3D signed distance field provides a continuous optical normal.
     # Sphere tracing steps are conservative; no screen-space bottle tint.
     t=0.0
-    for step in range(68):
+    for _step in range(68):
         x=o[0]+d[0]*t
         y=o[1]+d[1]*t
         z=o[2]+d[2]*t
@@ -272,7 +272,7 @@ def trace(o,d,tex,opened):
     throughput=np.ones(3)
     hit_any=0
     fluid_distance=0.
-    for bounce in range(11):
+    for _bounce in range(11):
         t,kind,n=hit_scene(o,d,opened)
         if t>1.e12:
             result+=throughput*refraction_env(o,d)
