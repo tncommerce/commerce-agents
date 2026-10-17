@@ -1,12 +1,26 @@
 "use client";
 
+import { useEffect, useState, type ComponentType } from "react";
 import AcquisitionInternalLink from "./AcquisitionInternalLink";
 import PerfumeObject from "./PerfumeObject";
 import { appendAcquisitionAttribution } from "@/lib/analytics";
 import styles from "./VisualHome.module.css";
 
 export default function AtelierHero() {
-  return <section className={styles.hero} aria-labelledby="dufynd-home-discovery-heading">
+  // Research-only experience: no visitor query parameters or production UI
+  // selection are allowed to switch the commissioned premium hero.
+  const [LicensedStudy, setLicensedStudy] = useState<ComponentType | null>(null);
+  useEffect(() => {
+    if (!["localhost", "127.0.0.1", "[::1]"].includes(window.location.hostname) ||
+        !new URLSearchParams(window.location.search).has("dufynd_commons_study")) return;
+    let cancelled = false;
+    void import("./HeroLicensedEditorialStudy").then(module => {
+      if (!cancelled) setLicensedStudy(() => module.default);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  return <section className={`${styles.hero} ${LicensedStudy ? styles.heroLicensedStudy : ""}`} aria-labelledby="dufynd-home-discovery-heading">
     <div className={styles.heroBar}><span>Die Welt der Parfums</span><nav aria-label="Schnellzugriff"><AcquisitionInternalLink href="/marken">Marken A–Z</AcquisitionInternalLink><AcquisitionInternalLink href="/merkliste">Merkliste ↗</AcquisitionInternalLink></nav></div>
     <div className={styles.heroMain}>
       <div className={styles.heroCopy}>
@@ -27,7 +41,10 @@ export default function AtelierHero() {
           <AcquisitionInternalLink href="/duftfinder" className={`dufynd-hero-primary ${styles.advisorLink}`}>Noch keine Idee? Finde deinen Duft <span aria-hidden>→</span></AcquisitionInternalLink>
         </div>
       </div>
-      <div className={styles.heroObject}><span className={styles.objectIndex} aria-hidden>ÉTUDE 01 — LE FLACON</span><PerfumeObject /></div>
+      <div className={styles.heroObject}>
+        {LicensedStudy ? <LicensedStudy /> :
+          <><span className={styles.objectIndex} aria-hidden>ÉTUDE 01 — LE FLACON</span><PerfumeObject /></>}
+      </div>
     </div>
     <nav className={styles.quickPaths} aria-label="Dein Weg zum Parfum">
       <AcquisitionInternalLink href="/duft"><span>01</span><strong>Düfte entdecken</strong><i aria-hidden>↗</i></AcquisitionInternalLink>
