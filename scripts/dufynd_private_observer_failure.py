@@ -7,7 +7,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from private_broker.observer_contract import validate_source
-from private_broker.observer_read import SAFE_REASONS
+from private_broker.observer_read import FAILURE_STAGES, SAFE_REASONS
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 
@@ -15,7 +15,7 @@ def validate_failure(payload, *, run_id, sha):
     if not isinstance(payload, dict) or set(payload) != {"_meta", "stage", "reason"}:
         raise ValueError("invalid failure shape")
     source = validate_source(payload["_meta"], expected_run_id=run_id, expected_sha=sha)
-    if payload["stage"] not in {"render", "gmail_1", "gmail_2", "gmail_3", "health"}:
+    if payload["stage"] not in FAILURE_STAGES:
         raise ValueError("invalid failure stage")
     reason = payload["reason"]
     if not isinstance(reason, str) or not (
