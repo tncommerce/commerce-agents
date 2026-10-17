@@ -19,9 +19,14 @@
 .titleBlock em {font-family:var(--visual-serif);font-weight:400;font-size:1.13em;line-height:1;letter-spacing:-.065em;color:#886440}
 .heroDescription {font-size:15px;line-height:1.55;color:#6b6257;margin:0 0 24px;max-width:330px}
 .heroObject {position:relative;min-width:0;align-self:stretch;display:flex;align-items:center;justify-content:center;background:transparent;margin-right:-28px;isolation:isolate}
-.heroObject::before {content:"";position:absolute;z-index:0;inset:4% -8% 3% 2%;background:
-  radial-gradient(ellipse at 57% 49%,rgba(134,108,78,.22) 0 12%,rgba(177,145,104,.10) 38%,transparent 75%),
-  linear-gradient(103deg,transparent 38%,rgba(255,255,255,.13) 49%,transparent 61%);filter:blur(10px);pointer-events:none}
+/* An actual dark negative-fill studio behind the *live* 3D object:
+   localized warm graphite, faded to the editorial stone page on all sides.
+   The flacon and its WebGL glass remain completely genuine/interactive.
+   This is a stage light/background, never a flat bottle graphic. */
+.heroObject::before {content:"";position:absolute;z-index:0;inset:3% -6% 2% 1%;background:
+  radial-gradient(ellipse 63% 58% at 56% 44%,rgba(25,22,20,.88) 0%,rgba(43,34,29,.74) 27%,rgba(89,67,53,.42) 47%,rgba(174,147,119,.09) 69%,transparent 91%),
+  radial-gradient(ellipse 28% 54% at 38% 39%,rgba(255,233,195,.22),transparent 78%);
+  filter:blur(16px);pointer-events:none}
 .heroObject::after {content:"";position:absolute;z-index:0;left:19%;right:4%;bottom:8%;height:9%;border-radius:50%;background:radial-gradient(ellipse,rgba(70,45,23,.17),rgba(70,45,23,.06) 45%,transparent 72%);filter:blur(9px);transform:perspective(520px) rotateX(66deg);pointer-events:none}
 .heroObject :global([data-dufynd-bottle]) {position:relative;z-index:1;width:112%;max-width:760px}
 .objectIndex {position:absolute;right:0;top:25px;font-size:8px;letter-spacing:.18em;writing-mode:vertical-rl;color:#807464;z-index:2}
