@@ -23,6 +23,27 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.equal(new URL(page.url()).searchParams.get('src'),'instagram');
       assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion');
       if(outputDir) await page.screenshot({path:`${outputDir}/conversion-search-${width}-catalog.png`,fullPage:true});
+      // Catalog offer claims must be bound to the only published affiliate
+      // product; a non-offered fragrance must never show a buy-intent link.
+      assert.equal(await page.locator('a[data-dufynd-catalog-rc1-offer]').count(),0);
+      assert.equal(
+        (await page.locator('.dufynd-catalog-card-cta').first().innerText()).trim(),
+        'Duftprofil entdecken →',
+      );
+      await page.goto(`${baseUrl}/duft?q=Rabanne%201%20Million&qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
+      const verifiedRc1Entry=page.locator('a[data-dufynd-catalog-rc1-offer]');
+      await verifiedRc1Entry.waitFor({state:'visible'});
+      assert.equal(await verifiedRc1Entry.count(),1,'Exact RC1 alone has a catalog offer shortcut');
+      const rc1Target=new URL(await verifiedRc1Entry.getAttribute('href'),baseUrl);
+      assert.equal(rc1Target.pathname,'/duft/rabanne-1-million');
+      assert.equal(rc1Target.hash,'#angebote');
+      assert.match(await verifiedRc1Entry.getAttribute('aria-label'),/Rabanne 1 Million.*100 ml/);
+      if(outputDir) await page.locator('.dufynd-catalog-card').filter({has:verifiedRc1Entry}).screenshot({path:`${outputDir}/conversion-search-${width}-rc1-catalog.png`});
+      await verifiedRc1Entry.click();
+      await page.waitForURL(url=>url.pathname==='/duft/rabanne-1-million'&&url.hash==='#angebote');
+      assert.equal(new URL(page.url()).searchParams.get('src'),'instagram','Catalog RC1 offer link preserves campaign source');
+      assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion','Catalog RC1 offer link preserves campaign ID');
+      await page.locator('#angebote').waitFor({state:'visible'});
       await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'domcontentloaded'});
       await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
       await page.goto(`${baseUrl}/start?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
@@ -58,7 +79,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
         await page.waitForURL('**/duft/parfums-de-marly-delina**',{waitUntil:'domcontentloaded',timeout:5000});
         assert.ok(Date.now()-started<4000,'stalled analytics must not block navigation');
       }
-      cases.push({width,home_search:true,social_search:true,wrong_variant_excluded:true,attribution:true,empty_offer_fallback:true,clickouts:0});
+      cases.push({width,home_search:true,social_search:true,wrong_variant_excluded:true,attribution:true,catalog_rc1_offer_route:true,non_rc1_offer_claim_suppressed:true,empty_offer_fallback:true,clickouts:0});
     } finally {await context.close();}
   }
   return cases;
