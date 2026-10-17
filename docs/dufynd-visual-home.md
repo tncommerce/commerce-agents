@@ -7,7 +7,8 @@ projection, merchant offers, tracking contract, analytics consent or release gat
 ## Composition
 
 1. `AtelierHero`: original generic glass bottle, catalogue search, discovery,
-   comparison and offer-section navigation.
+   comparison and an attribution-preserving direct route to the published
+   Rabanne 1 Million EDT 100 ml offer section.
 2. `AtelierSelection`: an offset editorial sequence of three original photographs
    in an explicitly named top Parfümerie showcase, with merchant-only destinations.
 3. `HomeComparison`: two actual published fragrances and documented notes,
@@ -16,6 +17,13 @@ projection, merchant offers, tracking contract, analytics consent or release gat
    path, with an internal Rabanne offer entry. No hard-coded price or stock.
 5. Existing audience/profile catalogue paths, `ScentWorlds` native notes-atlas
    disclosure, advisor, personal library, partner discovery and disclosures.
+
+The third quick path opens the verified RC1 offer section in one tap while
+preserving native campaign attribution. It does not invent a merchant link,
+price, stock claim, analytics event or image right. Existing generic discovery
+and comparison navigation are retained. The unsuccessful opt-in EXR/HDRI
+experiment was removed from source, public assets and the recurring CI; its
+original comparison and rejection evidence remains in the PR discussion.
 
 `VisualHome.module.css` scopes the new homepage layout. Existing catalogue and
 product styles are unchanged. Existing attribution-aware internal links and

@@ -32,7 +32,7 @@ export default function AtelierHero() {
     <nav className={styles.quickPaths} aria-label="Dein Weg zum Parfum">
       <AcquisitionInternalLink href="/duft"><span>01</span><strong>Düfte entdecken</strong><i aria-hidden>↗</i></AcquisitionInternalLink>
       <AcquisitionInternalLink href="/vergleich"><span>02</span><strong>Düfte vergleichen</strong><i aria-hidden>↗</i></AcquisitionInternalLink>
-      <a href="#haendlerangebote"><span>03</span><strong>Händlerangebote finden</strong><i aria-hidden>↗</i></a>
+      <AcquisitionInternalLink data-dufynd-hero-rc1-offer href="/duft/rabanne-1-million#angebote" aria-label="Rabanne 1 Million Eau de Toilette 100 ml: Händlerangebote prüfen"><span>03</span><strong>1 Million · Angebote</strong><i aria-hidden>↗</i></AcquisitionInternalLink>
     </nav>
   </section>;
 }
