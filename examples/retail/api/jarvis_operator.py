@@ -119,8 +119,7 @@ def _work_handoff(
         or not isinstance(checkpoint_age, (int, float))
         or not 0 <= checkpoint_age <= 3600
         or any(
-            str(row.get("domain") or "").lower()
-            in {"engineering", "web", "platform", "commerce"}
+            str(row.get("domain") or "").lower() in {"engineering", "web", "platform", "commerce"}
             for row in ready
         )
     ):

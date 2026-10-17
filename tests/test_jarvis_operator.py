@@ -227,10 +227,20 @@ def test_business_planner_gap_wins_over_later_scheduled_maintenance():
     assert "spätere Wartungscheck" in result["jarvis_message"]
 
 
-def _planner_gap(*, move="funnel_conversion_readiness", ready_domain=None,
-                 owner_gate=False, source_complete=True, checkpoint_age=90,
-                 has_active=False):
-    tasks = [{"task_id": "task:supervisor", "status": "ready", "domain": ready_domain}] if ready_domain else []
+def _planner_gap(
+    *,
+    move="funnel_conversion_readiness",
+    ready_domain=None,
+    owner_gate=False,
+    source_complete=True,
+    checkpoint_age=90,
+    has_active=False,
+):
+    tasks = (
+        [{"task_id": "task:supervisor", "status": "ready", "domain": ready_domain}]
+        if ready_domain
+        else []
+    )
     if has_active:
         tasks.append({"task_id": "task:active", "status": "working", "domain": "engineering"})
     if owner_gate:
@@ -296,12 +306,20 @@ def test_work_handoff_rejects_unsafe_stale_or_duplicate_execution(flags):
 def test_idle_or_scheduled_supervisor_work_does_not_invent_work_handoff():
     result = build_operator_diagnosis(
         tasks=[{"task_id": "old", "status": "waiting_external"}],
-        waits=[], observers=[], credentials=[],
-        thin={"business_checkpoint": {"age_seconds": 20},
-              "planner": {"state": "scheduled_safe_work"},
-              "business_planner": {"state": "no_capability_gap",
-                                   "business_next_move": "funnel_conversion_readiness",
-                                   "capability_gap": ""}},
-        runtime={}, now=NOW, handoff_sources_complete=True,
+        waits=[],
+        observers=[],
+        credentials=[],
+        thin={
+            "business_checkpoint": {"age_seconds": 20},
+            "planner": {"state": "scheduled_safe_work"},
+            "business_planner": {
+                "state": "no_capability_gap",
+                "business_next_move": "funnel_conversion_readiness",
+                "capability_gap": "",
+            },
+        },
+        runtime={},
+        now=NOW,
+        handoff_sources_complete=True,
     )
     assert result["work_handoff"]["status"] == "unavailable"
