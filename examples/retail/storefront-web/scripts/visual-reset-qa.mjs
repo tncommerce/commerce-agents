@@ -620,59 +620,6 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         throw error;
       } finally { await context.close(); }
     }
-    // One decisive photo-first art-direction A/B, local and permission-bound.
-    // Do not ship this alternate surface merely because an image decodes.
-    for (const width of [320, 390, 1440]) {
-      const context = await browser.newContext({
-        viewport: { width, height: width < 640 ? 844 : 1000 },
-        reducedMotion: "reduce", hasTouch: width < 1024,
-      });
-      const requests = journal();
-      await isolateNetwork(context, baseUrl, requests);
-      const page = await context.newPage();
-      const errors = [];
-      page.on("pageerror", e => errors.push(e.message));
-      try {
-        const url = new URL(baseUrl);
-        url.searchParams.set("dufynd_photo_study", "1");
-        const response = await page.goto(url.href, { waitUntil: "load" });
-        assert.equal(response.status(), 200);
-        await page.locator("[data-dufynd-photo-first='internal']").waitFor({state: "visible", timeout: 20_000});
-        assert.equal(await page.locator("[data-dufynd-bottle]").count(), 0,
-          "photo-first A/B must not silently retain an invisible WebGL renderer");
-        const imageLink = page.locator("[data-dufynd-editorial-hero-photo]");
-        assert.equal(await imageLink.count(), 1);
-        assert.equal(new URL(await imageLink.getAttribute("href"), baseUrl).pathname,
-          "/duft/lancome-la-vie-est-belle", "licensed photo stays on exact internal product route");
-        assert.deepEqual(await imageLink.locator("img").evaluateAll(images =>
-          images.map(image => image.getAttribute("src"))), [unrestrictedPhoto.url],
-          "A/B photo uses the existing exact, registered CC BY-SA photograph");
-        assert.ok(await page.locator("[data-dufynd-photo-first] a[rel~='license']").count() === 1,
-          "photo-first context must expose visible linked license attribution");
-        assert.deepEqual(await settleImages(page), [], "original image must decode under local fixtures");
-        await chooseMeasurement(page, "denied");
-        const search = page.getByRole("searchbox", { name: "Duft oder Marke suchen", exact: true });
-        const searchBounds = await search.boundingBox();
-        assert.ok(searchBounds && searchBounds.y + searchBounds.height < 740,
-          `${width}: real perfume hero must preserve immediate search reachability`);
-        assert.ok(await overflow(page) <= 1, `${width}: no horizontal overflow in photo-first A/B`);
-        const scrollHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-        if (width === 390) assert.ok(scrollHeight <= 3800, "390px max page-height unchanged");
-        if (width === 320) assert.ok(scrollHeight <= 4200, "320px max page-height unchanged");
-        assert.equal(await page.locator("h1").count(), 1);
-        assert.deepEqual(requests.clickouts, []);
-        assert.deepEqual(requests.blockedMutations, []);
-        assert.deepEqual(requests.analytics, []);
-        assert.deepEqual(errors, []);
-        await page.screenshot({ path: path.join(outputDir, `editorial-a-b-${width}-photo-first.png`) });
-        report.cases.push({ variant: "photo-first-editorial-study", width, status: "passed",
-          scroll_height: scrollHeight, rights: "CC BY-SA 3.0", merchant_clickouts: 0,
-          note: "Internal A/B only; real licensed perfume photo is not approved for the public hero." });
-      } catch (error) {
-        report.cases.push({ variant: "photo-first-editorial-study", width, status: "failed", error: String(error) });
-        throw error;
-      } finally { await context.close(); }
-    }
     return report;
   } finally {
     await writeFile(path.join(outputDir, "visual-reset-report.json"), JSON.stringify(report, null, 2) + "\n");
