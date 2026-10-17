@@ -279,6 +279,66 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   rearCard.renderOrder = 0;
   scene.add(rearCard);
 
+  // OPTICAL STUDIO / V3 — physical flags only behind the refracting glass.
+  // Premium bottle photography is sculpted with broad bright softboxes
+  // opposed by dark negative-fill cards; beige alone cannot reveal a
+  // three-dimensional glass/liquid boundary. These authored planes are
+  // stationary in the studio's camera-facing backdrop and NEVER render
+  // into the public transparent hero canvas. No paid HDRI or external asset.
+  const studioFlagBasisRight = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+  const studioFlagViewRay = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+  const studioFlagOrigin = new THREE.Vector3(0, 1.63, 0)
+    .addScaledVector(studioFlagViewRay, 2.85);
+  const opticalFlagPositions: number[] = [];
+  const opticalFlags: THREE.Mesh[] = [];
+  function studioFlag(positionX: number, width: number, color: number,
+    strength: number, feather = .20) {
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        flagColor: { value: new THREE.Color(color) },
+        flagStrength: { value: strength },
+        flagFeather: { value: feather },
+      },
+      transparent: true, depthTest: false, depthWrite: false,
+      toneMapped: false, side: THREE.DoubleSide,
+      vertexShader: `
+        varying vec2 vFlagUV;
+        void main() {
+          vFlagUV = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform vec3 flagColor;
+        uniform float flagStrength;
+        uniform float flagFeather;
+        varying vec2 vFlagUV;
+        void main() {
+          // Soft photographic penumbra at the edges of a finite light card;
+          // the central highlight stays continuous across the bottle height.
+          float sides = smoothstep(0.0, flagFeather, vFlagUV.x)
+            * smoothstep(0.0, flagFeather, 1.0 - vFlagUV.x);
+          float ends = smoothstep(0.0, .12, vFlagUV.y)
+            * smoothstep(0.0, .12, 1.0 - vFlagUV.y);
+          gl_FragColor = vec4(flagColor, flagStrength * sides * ends);
+        }
+      `,
+    });
+    const flag = new THREE.Mesh(new THREE.PlaneGeometry(width, 4.8), material);
+    flag.quaternion.copy(camera.quaternion);
+    flag.position.copy(studioFlagOrigin).addScaledVector(studioFlagBasisRight, positionX);
+    flag.renderOrder = 1; // draw AFTER the diffuse capture stage, before glass
+    scene.add(flag);
+    opticalFlags.push(flag);
+    opticalFlagPositions.push(positionX);
+  }
+  // From camera-left to right: narrow white strip, warm luminous core,
+  // strongly feathered charcoal negative fill, crisp tertiary softbox.
+  studioFlag(-.98, .35, 0xfff8df, .92, .18);
+  studioFlag(-.36, .80, 0xffd79c, .39, .36);
+  studioFlag( .73, 1.04, 0x1c1612, .82, .24);
+  studioFlag(1.30, .22, 0xe6f2ff, .65, .12);
+
   const hemisphere = new THREE.HemisphereLight(0xfffcf3, 0x71604b, .48);
   scene.add(hemisphere);
   const key = new THREE.DirectionalLight(0xfff9eb, 1.25);
@@ -324,12 +384,28 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_pars_fragment>",
       THREE.ShaderChunk.transmission_pars_fragment.replaceAll("transmissionSamplerMap", "studioRefractionMap"));
     const physicalTransmission = THREE.ShaderChunk.transmission_fragment;
+    // The thick optical base of an actual heavy perfume bottle bends the
+    // studio more strongly than the very thin side walls. The shader varies
+    // this physical *ray displacement*, not a painted bottom colour.
+    const thicknessAssignment = "material.thickness = thickness;";
+    if (!physicalTransmission.includes(thicknessAssignment)) {
+      throw new Error("Three.js transmission thickness contract changed");
+    }
+    const physicallyProfiledTransmission = physicalTransmission.replace(
+      thicknessAssignment, `
+      material.thickness = thickness;
+      float heavyGlassBase = 1.0 - smoothstep(-1.19, -.83, vStudyBottlePoint.y);
+      float glassShoulder = smoothstep(.81, 1.20, vStudyBottlePoint.y);
+      float glassIncidence = 1.0 - abs(dot(normalize(vStudyBottleNormal),
+        normalize(studyEyeInBottle - vStudyBottlePoint)));
+      material.thickness += .32 * heavyGlassBase
+        + .06 * glassShoulder + .045 * pow(glassIncidence, 3.0);`);
     const transmissionMix = "totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );";
-    if (!physicalTransmission.includes(transmissionMix)) {
+    if (!physicallyProfiledTransmission.includes(transmissionMix)) {
       throw new Error("Three.js transmission contract changed; do not silently omit glass/liquid coupling");
     }
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>",
-      physicalTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.08, 0.56, 1.55) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
+      physicallyProfiledTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.08, 0.56, 1.55) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
     // The framebuffer transmits the real editorial background through air,
     // while progressively retaining the amber contribution for longer liquid
     // paths. The original specular Fresnel stays on the MeshPhysical material.
@@ -654,6 +730,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     // but must not show as a rectangular plane behind the bottle on screen.
     backdrop.visible = false;
     rearCard.visible = false;
+    for (const flag of opticalFlags) flag.visible = false;
     label.visible = true;
     meniscus.visible = true;
     surfaceRim.visible = true;
@@ -667,6 +744,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     } finally {
       backdrop.visible = true;
       rearCard.visible = true;
+      for (const flag of opticalFlags) flag.visible = true;
     }
     host.dataset.renderDurationMs = (performance.now() - drawStarted).toFixed(2);
     renderCount += 1;
@@ -684,6 +762,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.meniscusX = meniscus.position.x.toFixed(4);
     host.dataset.liquidOptics = "translucent-volume";
     host.dataset.liquidAbsorption = "glass-coupled-ray-volume";
+    host.dataset.opticalStudio = "camera-plane-four-flags";
+    host.dataset.opticalGlassBase = "depth-profile-thickness";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
     host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
