@@ -160,11 +160,25 @@ def env(d,mask=1.0):
     return np.maximum(.0,C)
 
 @njit
-def refraction_env(d):
-    # The background behind the model is a physical illuminated backdrop.
-    # No strips on the front bottle: ray trajectories sample actual studio.
+def refraction_env(o,d):
+    # Finite studio diffusion plane BEHIND the object, not a painted color
+    # on its silhouette. Refracted rays actually travel to this field.
+    # Gaussian softbox/negative-fill profiles avoid hard rectangular shapes.
     C=env(d)
-    return C
+    if d[2] < -.035:
+        t=(-3.5-o[2])/d[2]
+        if t>0.0 and t<70.0:
+            x=o[0]+d[0]*t
+            y=o[1]+d[1]*t
+            key=np.exp(-.5*((x+.71)/.34)**2)*np.exp(-.5*((y-1.65)/2.7)**2)
+            broad=np.exp(-.5*((x-.25)/.84)**2)*np.exp(-.5*((y-1.55)/2.25)**2)
+            rim=np.exp(-.5*((x-1.39)/.19)**2)*np.exp(-.5*((y-1.65)/2.5)**2)
+            neg=np.exp(-.5*((x-.84)/.33)**2)*np.exp(-.5*((y-1.62)/2.65)**2)
+            C+=key*np.array((1.75,1.50,1.15))
+            C+=broad*np.array((.34,.24,.19))
+            C+=rim*np.array((.89,1.03,1.10))
+            C-=neg*np.array((.67,.62,.56))
+    return np.maximum(C,.02)
 
 @njit
 def fresnel(n1,n2,cosi):
@@ -210,7 +224,7 @@ def trace(o,d,tex,opened):
     for bounce in range(11):
         t,kind,n=hit_scene(o,d,opened)
         if t>1.e12:
-            result+=throughput*refraction_env(d)
+            result+=throughput*refraction_env(o,d)
             return result, max(0.,min(1.,.44+.58*fluid_distance)) if hit_any else 0.
         p=o+d*t
         hit_any=1
@@ -251,7 +265,7 @@ def trace(o,d,tex,opened):
         o=p+refr*.002
         d=refr
         if max(throughput)<.003:break
-    result+=throughput*refraction_env(d)
+    result+=throughput*refraction_env(o,d)
     return result, max(0.,min(1.,.44+.58*fluid_distance))
 
 @njit
