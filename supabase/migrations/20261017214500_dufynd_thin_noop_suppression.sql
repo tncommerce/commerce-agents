@@ -77,8 +77,7 @@ begin
  insert into public.dufynd_master_status(key,category,value,priority,last_verified_at)
  values('jarvis.thin_v1.status','jarvis',report,100,now()) on conflict(key) do update set value=excluded.value,last_verified_at=excluded.last_verified_at;
  return report;
-end $function$
-
+end $function$;
 
 update public.dufynd_master_status
 set value=jsonb_set(value,'{periodic_health_tasks}','false'::jsonb,true),last_verified_at=now()
