@@ -553,11 +553,15 @@ def main():
     bg = Image.new("RGB", (args.width, args.height), (235, 225, 209))
     bg.paste(Image.fromarray(rgba, "RGBA"), (0, 0), Image.fromarray(rgba, "RGBA"))
     bg.save(out[:-4] + "-preview.jpg", quality=93)
+    with open(__file__, "rb") as source_file:
+        renderer_hash = hashlib.sha256(source_file.read()).hexdigest()
+    with open(out, "rb") as image_file:
+        image_hash = hashlib.sha256(image_file.read()).hexdigest()
     report = {
         "status": "INTERNAL_NOT_APPROVED",
         "scene": "dufynd-cgi-first-lab-02",
-        "renderer_sha256": hashlib.sha256(open(__file__, "rb").read()).hexdigest(),
-        "image_sha256": hashlib.sha256(open(out, "rb").read()).hexdigest(),
+        "renderer_sha256": renderer_hash,
+        "image_sha256": image_hash,
         "size": [args.width, args.height],
         "samples": args.samples,
         "pose": "open" if args.open else "closed",
