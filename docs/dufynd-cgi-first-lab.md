@@ -50,3 +50,12 @@ The research generator is an optional technical foundation; it is *not* an alter
 6. Preserve Rabanne RC1, published products, merchant photos/rights, catalogue, consent, analytics and attribution. Merge and production deploy require separate owner approval.
 
 **Current release decision: NO GO** for this CGI still. PR #799 stays draft. No production mutation and no spend.
+
+
+## LAB 02 — improved offline optics, still NO GO (17.10.2026)
+
+The existing free CPU renderer now has a real wall-dependent 3D meniscus and ray-solved normal, a chamfered cap with analytically bounded raymarch, a correctly lowered closed cap over the nozzle, and physically linked spectral-opacity straight-alpha reconstruction. This removes the former ghostlike light-glass rectangle when compositing against dark backgrounds; it is not a CSS/glow substitute for optical glass. An exact-source SHA-256, image SHA-256, pose, alpha bounds and \`INTERNAL_NOT_APPROVED\` evidence file are generated alongside each *local* PNG. Realpath output validation and a fail-closed 6px image-edge check protect the public asset tree.
+
+**Executed visual and technical research:** Original closed 850×960/6-sample and open 700×760/6-sample renders, separately inspected. Closed and opened smaller proof renders have transparent corners, an opaque label/cap and silhouette bounds [92,52,386,477] and [110,18,368,477] respectively at 480×530. Python bytecode compilation passed. A combined two-render command exceeded the terminal wrapper time; separately the high-resolution poses completed in around 21s and 16s. No browser QA or licensed merchant image was involved; the script remains excluded from builds/CI/runtime and the results are **not promoted** to storefront posters.
+
+**Independent hold:** Real meniscus/cap curvature and compositing are better, but studio lighting remains visually synthetic. The research bottle is still a filleted box, not exactly the live q=.60 superellipse; a separate exact-q prototype was rejected for exaggerated foot caustics. Do not claim photorealism, 9.5/10, true physical device-GPU testing or owner approval. Prioritize original high-end CGI asset art direction, then live-scene geometry matching, then closed/open poster and 1440/390/320 device QA; never pay for external assets/credits without authorization.

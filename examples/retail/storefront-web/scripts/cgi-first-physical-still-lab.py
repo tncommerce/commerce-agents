@@ -1,8 +1,12 @@
-"""DUFYND CGI study: original analytic, layered glass/perfume ray tracing.
-Local research asset, never auto-promote to storefront. No external models/textures.
+"""DUFYND CGI-first LAB 02: original layered glass/liquid ray transport.
+
+On-demand research only; never invoked in public build or browser runtime.
+No external models, stock photographs, paid APIs or generated credits.
 """
 
 import argparse
+import hashlib
+import json
 import math
 import os
 import time
@@ -59,10 +63,62 @@ def sdf_round3(x, y, z, ax, lo, hi, az, r):
 
 
 @njit
+def fluid_surface(x, z):
+    # Physical meniscus rises only near the inner cavity wall.
+    p = 3.3333333333333
+    radius = (abs(x / 0.985) ** p + abs(z / 0.476) ** p) ** (1.0 / p)
+    gap = max(0.0, 1.0 - radius) * 0.476
+    return 1.971 + 0.019 * math.exp(-gap / 0.032)
+
+
+@njit
+def cap_sdf(pos, shift_x, shift_y):
+    # Actual chamfered cap cylinder rather than a painted edge.
+    x = pos[0] - shift_x
+    z = pos[2]
+    y = pos[1] - (3.13 + shift_y)
+    bevel = 0.044
+    radial = math.sqrt(x * x + z * z) - (0.489 - bevel)
+    vertical = abs(y) - (0.345 - bevel)
+    return (math.sqrt(max(radial, 0.0) ** 2 + max(vertical, 0.0) ** 2)
+            + min(max(radial, vertical), 0.0) - bevel)
+
+
+@njit
+def hit_cap(o, d, opened):
+    shift_y = 0.74 if opened else 0.0
+    shift_x = 0.27 if opened else 0.0
+    # Cheap analytic bound limits the raymarch.
+    bound, _ = hit_cylinder(o, d, shift_x, 0.0, 0.0, 0.52,
+                            2.765 + shift_y, 3.50 + shift_y)
+    if bound > 1.0e12:
+        return 1.0e15, np.zeros(3)
+    t = max(0.0001, bound - 0.08)
+    for _ in range(72):
+        pt = o + d * t
+        dist = cap_sdf(pt, shift_x, shift_y)
+        if abs(dist) < 0.0003:
+            e = 0.0005
+            n = np.array((
+                cap_sdf(pt + np.array((e, 0.0, 0.0)), shift_x, shift_y)
+                - cap_sdf(pt - np.array((e, 0.0, 0.0)), shift_x, shift_y),
+                cap_sdf(pt + np.array((0.0, e, 0.0)), shift_x, shift_y)
+                - cap_sdf(pt - np.array((0.0, e, 0.0)), shift_x, shift_y),
+                cap_sdf(pt + np.array((0.0, 0.0, e)), shift_x, shift_y)
+                - cap_sdf(pt - np.array((0.0, 0.0, e)), shift_x, shift_y)
+            ))
+            return t, vnorm(n)
+        t += max(0.0002, abs(dist) * 0.72)
+        if t > bound + 0.90:
+            break
+    return 1.0e15, np.zeros(3)
+
+
+@njit
 def medium(x, y, z):
     if sdf_round3(x, y, z, 1.08, 0.31, 2.62, 0.57, 0.16) < 0.0:
         if sdf_round3(x, y, z, 0.985, 0.48, 2.46, 0.476, 0.102) < 0.0:
-            if y <= 1.99:
+            if y <= fluid_surface(x, z):
                 return 2
             return 0
         return 1
@@ -144,9 +200,13 @@ def hit_metal(o, d, opened):
     # Black cap: exploded in 'open' state but kept as a real 3D solid
     cap_y_shift = 0.74 if opened else 0.0
     cap_x_shift = 0.27 if opened else 0.0
+    tcap, ncap = hit_cap(o, d, opened)
+    if tcap < tt:
+        tt = tcap
+        kind = 4
+        N = ncap
     for x, z, r, y0, y1, k in (
-        (cap_x_shift, 0.0, 0.487, 2.87 + cap_y_shift, 3.48 + cap_y_shift, 4),
-        (cap_x_shift, 0.0, 0.492, 2.881 + cap_y_shift, 2.900 + cap_y_shift, 7),
+        (cap_x_shift, 0.0, 0.496, 2.787 + cap_y_shift, 2.805 + cap_y_shift, 7),
         (0.0, 0.0, 0.301, 2.648, 2.694, 7),
         (0.0, 0.0, 0.245, 2.62, 2.87, 5),
         (0.0, 0.0, 0.290, 2.790, 2.835, 7),
@@ -175,17 +235,22 @@ def hit_scene(o, d, opened):
         tt = t
         kind = 2
         N = n
-    if abs(d[1]) > 1.0e-8:
-        t = (1.99 - o[1]) / d[1]
-        if (
-            t > 1.0e-4
-            and t < tt
-            and sdf_round3(o[0] + t * d[0], 1.99, o[2] + t * d[2], 0.985, 0.48, 2.46, 0.476, 0.102)
-            < -1.0e-6
-        ):
-            tt = t
-            kind = 3
-            N = np.array((0.0, 1.0, 0.0))
+    # Ray-solved curved air/fluid interface, with genuine normal.
+    if abs(d[1]) > 1.0e-7:
+        t = (1.984 - o[1]) / d[1]
+        for _ in range(4):
+            x = o[0] + d[0] * t
+            z = o[2] + d[2] * t
+            t += (fluid_surface(x, z) - (o[1] + d[1] * t)) / d[1]
+        if t > 1.0e-4 and t < tt:
+            x, y, z = o + d * t
+            if sdf_round3(x, y, z, 0.985, 0.48, 2.46, 0.476, 0.102) < -1.0e-6:
+                e = 0.002
+                dx = (fluid_surface(x + e, z) - fluid_surface(x - e, z)) / (2.0 * e)
+                dz = (fluid_surface(x, z + e) - fluid_surface(x, z - e)) / (2.0 * e)
+                tt = t
+                kind = 3
+                N = vnorm(np.array((-dx, 1.0, -dz)))
     # A deeply embossed separate brand-label panel with 3D shadow edges.
     if abs(d[2]) > 1.0e-7:
         t = (0.588 - o[2]) / d[2]
@@ -317,7 +382,9 @@ def trace(o, d, tex, opened):
         t, kind, n = hit_scene(o, d, opened)
         if t > 1.0e12:
             result += throughput * refraction_env(o, d)
-            return result, max(0.0, min(1.0, 0.44 + 0.58 * fluid_distance)) if hit_any else 0.0
+            return result, 0.08 + 0.92 * (1.0 -
+                (math.exp(-.15 * fluid_distance) + math.exp(-.92 * fluid_distance)
+                 + math.exp(-2.05 * fluid_distance)) / 3.0) if hit_any else 0.0
         p = o + d * t
         hit_any = 1
         if kind >= 4 and kind != 6:
@@ -376,7 +443,9 @@ def trace(o, d, tex, opened):
         if max(throughput) < 0.003:
             break
     result += throughput * refraction_env(o, d)
-    return result, max(0.0, min(1.0, 0.44 + 0.58 * fluid_distance))
+    return result, 0.08 + 0.92 * (1.0 -
+        (math.exp(-.15 * fluid_distance) + math.exp(-.92 * fluid_distance)
+         + math.exp(-2.05 * fluid_distance)) / 3.0)
 
 
 @njit
@@ -413,9 +482,22 @@ def render(width, height, samples, opened, tex):
                 col += c
                 hit += h
             col = tonemap(col / samples)
+            # Undo transmitted ivory background energy for real straight RGBA.
+            backing = np.array((235.0 / 255.0, 225.0 / 255.0, 209.0 / 255.0))
+            opacity = min(1.0, max(0.0, hit / samples))
+            for ch in range(3):
+                if col[ch] > backing[ch]:
+                    lo = (col[ch] - backing[ch]) / max(0.00001, 1.0 - backing[ch])
+                else:
+                    lo = (backing[ch] - col[ch]) / backing[ch]
+                if opacity > 0.0:
+                    opacity = max(opacity, lo)
+            opacity = min(1.0, max(0.0, opacity))
+            if opacity > 0.00001:
+                col = np.maximum(0.0, np.minimum(1.0, (col - (1.0 - opacity) * backing) / opacity))
             for ch in range(3):
                 out[py, px, ch] = int(max(0, min(255, col[ch] * 255)))
-            mask[py, px] = round(hit * 255 / samples)
+            mask[py, px] = round(opacity * 255)
     return out, mask
 
 
@@ -451,7 +533,7 @@ def main():
     args = parser.parse_args()
     if not (240 <= args.width <= 1600 and 240 <= args.height <= 1600 and 1 <= args.samples <= 20):
         parser.error("lab render limits: 240..1600 px, 1..20 samples")
-    out = os.path.abspath(args.out)
+    out = os.path.realpath(os.path.abspath(args.out))
     if not out.lower().endswith(".png") or "/public/" in out.replace("\\", "/"):
         parser.error("internal lab output must be a PNG outside storefront public/")
     os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -459,12 +541,38 @@ def main():
     started = time.monotonic()
     img, mask = render(args.width, args.height, args.samples, args.open, tex)
     rgba = np.dstack((img, mask)).astype(np.uint8)
+    # Fail closed on missing product or cropped silhouette.
+    populated = np.nonzero(mask >= 8)
+    if not len(populated[0]) or int(mask.max()) < 254:
+        raise RuntimeError("CGI study is empty or has no opaque label/metal pixels")
+    top, bottom = int(populated[0].min()), int(populated[0].max())
+    left, right = int(populated[1].min()), int(populated[1].max())
+    if min(top, left, args.height - 1 - bottom, args.width - 1 - right) < 6:
+        raise RuntimeError("CGI study clips a product silhouette at the output edge")
     Image.fromarray(rgba, "RGBA").save(out)
-    # Light beige page color and rgba matte. Display against final editorial background.
     bg = Image.new("RGB", (args.width, args.height), (235, 225, 209))
     bg.paste(Image.fromarray(rgba, "RGBA"), (0, 0), Image.fromarray(rgba, "RGBA"))
     bg.save(out[:-4] + "-preview.jpg", quality=93)
-    print("CGI-first internal reference:", out, "seconds", round(time.monotonic() - started, 2))
+    report = {
+        "status": "INTERNAL_NOT_APPROVED",
+        "scene": "dufynd-cgi-first-lab-02",
+        "renderer_sha256": hashlib.sha256(open(__file__, "rb").read()).hexdigest(),
+        "image_sha256": hashlib.sha256(open(out, "rb").read()).hexdigest(),
+        "size": [args.width, args.height],
+        "samples": args.samples,
+        "pose": "open" if args.open else "closed",
+        "alpha_bbox_xyxy": [left, top, right, bottom],
+        "alpha_max": int(mask.max()),
+        "alpha_zero_corners": all(mask[y, x] == 0 for y, x in (
+            (0, 0), (0, args.width - 1), (args.height - 1, 0),
+            (args.height - 1, args.width - 1))),
+        "runtime_seconds": round(time.monotonic() - started, 2),
+        "note": "Internal CGI research only. No public poster replacement or quality approval.",
+    }
+    with open(out[:-4] + "-evidence.json", "w", encoding="utf-8") as file:
+        json.dump(report, file, indent=2)
+        file.write("\n")
+    print(json.dumps(report))
 
 
 if __name__ == "__main__":
