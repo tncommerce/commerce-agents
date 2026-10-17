@@ -581,10 +581,13 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
     // A/B photographic studio experiment. Kept out of public/runtime defaults;
     // inspect its genuine WebGL frames against the regular captures above.
     // Do not count code/CI success as a premium image acceptance.
+    // The REAL application deliberately disables WebGL under reduced-motion.
+    // This optical test needs live WebGL, while separate reduced-motion cases
+    // continue to verify the static fallback without bypassing its safety gate.
     for (const width of [390, 1440]) {
       const context = await browser.newContext({
         viewport: { width, height: width < 640 ? 844 : 1000 },
-        reducedMotion: "reduce", hasTouch: width < 1024,
+        reducedMotion: "no-preference", hasTouch: width < 1024,
       });
       const requests = journal();
       await deviceHints(context);
