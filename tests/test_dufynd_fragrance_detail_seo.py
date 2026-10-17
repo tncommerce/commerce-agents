@@ -32,8 +32,8 @@ def test_product_pages_override_social_metadata() -> None:
     assert '"summary_large_image"' in source
     assert "const shareImage = originalPhotoFor(fragrance)?.url || null;" in source
     assert 'fragrance.product_id === "SC-RABANNE-1-MILLION-EDT-100"' in source
-    assert 'editorialSocialCard' in source
-    assert 'kein Produktfoto' in source
-    assert 'width: 1200, height: 630' in source
+    assert "editorialSocialCard" in source
+    assert "kein Produktfoto" in source
+    assert "width: 1200, height: 630" in source
     assert 'card: shareImage || editorialSocialCard ? "summary_large_image" : "summary"' in source
     assert "const productTruthVisual = originalPhotoFor(fragrance);" in source

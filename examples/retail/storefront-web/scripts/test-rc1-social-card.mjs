@@ -25,6 +25,7 @@ async function metadataFor({ productId, slug, originalUrl = null }) {
     module: mod, exports: mod.exports,
     require(name) {
       if (name === "@/lib/releasedProfileCatalog") return { RELEASED_PROFILES: [] };
+      if (name === "@/lib/accordLabels") return { accordLabel: (value) => value };
       if (name === "@/lib/site") return {
         SITE_INDEXABLE: false, SITE_URL: "https://dufynd.example",
       };
