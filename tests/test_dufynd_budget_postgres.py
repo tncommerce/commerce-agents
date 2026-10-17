@@ -3149,8 +3149,7 @@ def test_internal_purchase_event_only_wakes_named_task():
         db.execute("select process_dufynd_external_events()")
         status = dict(
             db.execute(
-                "select task_id,status from dufynd_autonomy_tasks "
-                "where task_id in (%s,%s)",
+                "select task_id,status from dufynd_autonomy_tasks where task_id in (%s,%s)",
                 (older, current),
             ).fetchall()
         )
@@ -3158,18 +3157,20 @@ def test_internal_purchase_event_only_wakes_named_task():
         assert status[current] == "ready"
         wait_status = dict(
             db.execute(
-                "select task_id,satisfied from dufynd_task_external_waits "
-                "where task_id in (%s,%s)",
+                "select task_id,satisfied from dufynd_task_external_waits where task_id in (%s,%s)",
                 (older, current),
             ).fetchall()
         )
         assert wait_status == {older: False, current: True}
         # Same event must not generate second work, even on another cycle.
         db.execute("select process_dufynd_external_events()")
-        assert db.execute(
-            "select status from dufynd_autonomy_tasks where task_id=%s",
-            (older,),
-        ).fetchone()[0] == "waiting_external"
+        assert (
+            db.execute(
+                "select status from dufynd_autonomy_tasks where task_id=%s",
+                (older,),
+            ).fetchone()[0]
+            == "waiting_external"
+        )
         db.rollback()
 
 
@@ -3207,8 +3208,7 @@ def test_released_purchase_attempt_is_not_rearmed_by_satisfied_wait():
         )
         db.execute("select process_dufynd_external_events()")
         row = db.execute(
-            "select status,worker_state,released_at from dufynd_autonomy_tasks "
-            "where task_id=%s",
+            "select status,worker_state,released_at from dufynd_autonomy_tasks where task_id=%s",
             (task,),
         ).fetchone()
         assert row[0] == "blocked" and row[1] == "done"
