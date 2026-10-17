@@ -29,6 +29,18 @@ jobs:
         run: pip install -r requirements-dev.txt
       - name: Lint
         run: ruff check .
+      # Ephemeral non-production lab-source normalization step. This block will
+      # be removed in the same commit that installs its verified output.
+      - name: Normalize internal CGI lab source once
+        if: matrix.python-version == '3.11'
+        run: ruff format examples/retail/storefront-web/scripts/cgi-first-physical-still-lab.py
+      - name: Upload normalized CGI lab source once
+        if: matrix.python-version == '3.11'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dufynd-cgi-normalized-once
+          path: examples/retail/storefront-web/scripts/cgi-first-physical-still-lab.py
+          retention-days: 1
       - name: Format
         run: ruff format --check .
       - name: Unit tests
