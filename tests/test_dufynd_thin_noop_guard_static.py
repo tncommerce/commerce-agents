@@ -25,9 +25,7 @@ def test_only_synthetic_half_hour_task_is_feature_gated():
 
     # Old synthetic insert remains exact; handler changes need a new review.
     old_sql = original[
-        original.index(needle) : original.index(
-            "  for i in 1..4 loop", original.index(needle)
-        )
+        original.index(needle) : original.index("  for i in 1..4 loop", original.index(needle))
     ]
     new_sql = sql[sql.index(needle) : sql.index("  end if;", sql.index(needle))]
     assert old_sql.strip() == new_sql.strip()
