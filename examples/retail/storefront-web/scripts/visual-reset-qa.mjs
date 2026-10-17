@@ -175,7 +175,7 @@ async function spatialSnapshot(page) {
     renders: Number(element.dataset.renderCount), pending: element.dataset.framePending,
     triangles: Number(element.dataset.triangles), draw_calls: Number(element.dataset.drawCalls),
     render_cpu_submission_ms: Number(element.dataset.renderDurationMs),
-    parts: Object.fromEntries(["capY", "atomizerY", "liquidY", "liquidSurfaceY", "glassY"].map(name => [name, Number(element.dataset[name])])),
+    parts: Object.fromEntries(["capY", "atomizerY", "liquidY", "liquidSurfaceY", "glassY", "liquidX", "glassX", "meniscusX"].map(name => [name, Number(element.dataset[name])])),
     canvas_width: element.querySelector("canvas")?.width,
     canvas_height: element.querySelector("canvas")?.height,
   }));
@@ -284,6 +284,10 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         const explored = await settledSpatial(page);
         assert.ok(explored.parts.capY > resting.parts.capY + .1, "exploring the perfume raises the actual cap mesh");
         assert.ok(explored.parts.atomizerY > resting.parts.atomizerY + .01, "exploded view reveals a separate atomizer mesh");
+        assert.ok(Math.abs(explored.parts.liquidX - explored.parts.glassX) < .001,
+          "explored perfume absorption must stay inside the glass vessel");
+        assert.ok(Math.abs(explored.parts.meniscusX - explored.parts.glassX) < .001,
+          "explored meniscus stays attached to its original inner glass wall");
         assert.ok(explored.renders > resting.renders, "signature interaction renders the changed scene");
         const capClearancePx = await page.evaluate(() => {
           const capTop = Number(document.querySelector("[data-dufynd-spatial-canvas]")?.dataset.capTopViewportY);

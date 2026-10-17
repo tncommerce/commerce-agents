@@ -114,26 +114,45 @@ function labelTexture() {
   canvas.width = 768;
   canvas.height = 640;
   const context = canvas.getContext("2d")!;
-  context.fillStyle = "#eee7d9";
+  // A dark foil-printed label belongs to the perfume-object identity, not
+  // to a separate opaque cream card that visually turns the bottle to plastic.
+  // Authored once in the original scene; no manufacturer or third-party art.
+  const paper = context.createLinearGradient(0, 0, 768, 640);
+  paper.addColorStop(0, "#2b241d");
+  paper.addColorStop(.47, "#171411");
+  paper.addColorStop(1, "#292018");
+  context.fillStyle = paper;
   context.fillRect(0, 0, 768, 640);
-  context.strokeStyle = "#a89a7d";
-  context.lineWidth = 2;
-  context.strokeRect(30, 30, 708, 580);
+  for (let index = 0; index < 900; index++) {
+    const x = (index * 97) % 768, y = (index * 193) % 640;
+    context.fillStyle = index % 3 === 0 ? "rgba(246,221,171,.025)" : "rgba(255,246,223,.012)";
+    context.fillRect(x, y, 1, 1);
+  }
+  const foil = context.createLinearGradient(130, 160, 620, 470);
+  foil.addColorStop(0, "#b89460");
+  foil.addColorStop(.46, "#f4dfb8");
+  foil.addColorStop(1, "#c09a62");
+  context.lineWidth = 3;
+  context.strokeStyle = "#b5986d";
+  context.strokeRect(28, 28, 712, 584);
+  context.lineWidth = 1;
+  context.strokeStyle = "rgba(240,216,170,.28)";
+  context.strokeRect(39, 39, 690, 562);
+  context.fillStyle = foil;
   context.textAlign = "center";
-  context.fillStyle = "#453e32";
-  context.font = "38px Arial";
-  context.letterSpacing = "12px";
-  context.fillText("D U F Y N D", 384, 137);
-  context.font = "italic 184px Georgia";
+  context.letterSpacing = "10px";
+  context.font = "600 41px Arial";
+  context.fillText("DUFYND", 384, 145);
   context.letterSpacing = "0px";
-  context.fillText("n° 01", 384, 382);
-  context.fillStyle = "#81745e";
-  context.fillRect(321, 436, 126, 2);
-  context.font = "20px Arial";
-  context.fillText("É T U D E   D E   P A R F U M", 384, 518);
+  context.font = "italic 187px Georgia";
+  context.fillText("n° 01", 384, 383);
+  context.fillRect(319, 433, 130, 2);
+  context.font = "500 22px Arial";
+  context.letterSpacing = "5px";
+  context.fillText("ÉTUDE DE PARFUM", 384, 516);
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 4;
+  texture.anisotropy = 8;
   return texture;
 }
 
@@ -332,12 +351,14 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   glass.renderOrder = 4;
   assembly.add(glass);
 
-  // A restrained Fresnel shell draws only grazing-angle highlights: edge definition
-  // without adding another transmissive layer to Three's screen-space refraction.
+  // Studio flag reflections: a clear bottle on a pale editorial background
+  // needs both luminous glass strips AND a restrained dark negative-fill edge.
+  // A uniformly white additive Fresnel layer makes the vessel look milky.
+  // This thin geometry-attached shell follows rotation, keeps the glass
+  // physical transmission untouched and never paints a second amber volume.
   const glassEdgeMaterial = new THREE.ShaderMaterial({
-    transparent: true,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending,
+    transparent: true, depthWrite: false, depthTest: true,
+    toneMapped: false, blending: THREE.NormalBlending,
     vertexShader: `
       varying vec3 vStudyNormal;
       varying vec3 vStudyView;
@@ -352,9 +373,16 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       varying vec3 vStudyNormal;
       varying vec3 vStudyView;
       void main() {
-        float rim = pow(1.0 - clamp(abs(dot(normalize(vStudyNormal), normalize(vStudyView))), 0.0, 1.0), 3.65);
-        float alpha = rim * 0.19;
-        gl_FragColor = vec4(vec3(1.0, 0.985, 0.95) * (0.72 + rim * 0.55), alpha);
+        vec3 N = normalize(vStudyNormal);
+        vec3 V = normalize(vStudyView);
+        float grazing = pow(1.0 - clamp(abs(dot(N, V)), 0.0, 1.0), 2.65);
+        // Long bright softbox at camera-left, dark studio flag at camera-right.
+        float flag = smoothstep(-0.55, 0.55, N.x);
+        vec3 studioReflection = mix(vec3(0.98, 0.88, 0.69), vec3(0.24, 0.19, 0.15), flag);
+        float strip = pow(max(dot(reflect(-normalize(vec3(-.64, .21, .74)), N), V), 0.0), 92.0);
+        studioReflection = mix(studioReflection, vec3(1.0, .95, .82), clamp(strip * 1.6, 0.0, 1.0));
+        float alpha = clamp(grazing * (0.15 + 0.17 * flag) + strip * .095, 0.0, 0.38);
+        gl_FragColor = vec4(studioReflection, alpha);
       }
     `,
   });
@@ -489,7 +517,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   const labelMap = labelTexture();
   const label = new THREE.Mesh(new THREE.PlaneGeometry(1.04, .87), new THREE.MeshStandardMaterial({
-    map: labelMap, color: 0xffffff, roughness: .88, metalness: 0, transparent: true, depthWrite: false, depthTest: false,
+    map: labelMap, color: 0xffffff, roughness: .64, metalness: .035, transparent: true, depthWrite: false, depthTest: false,
   }));
   label.position.set(0, 1.45, .59);
   label.renderOrder = 10;
@@ -555,16 +583,22 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     atomizer.position.set(-.10 * progress, 2.77 + progress * atomizerRise, .07 * progress);
     atomizer.rotation.z = progress * .045;
     const shellShift = -.095 * progress;
-    const liquidShift = .085 * progress;
+    // The perfume no longer has a separate front-facing mesh. Its absorption
+    // is calculated INSIDE the glass, so the real meniscus and liquid
+    // instrumentation must follow that same shell while the cap opens.
+    const liquidShift = shellShift;
     glass.position.x = shellShift;
     glass.rotation.y = progress * -.025;
     innerGlass.position.x = shellShift;
     innerGlass.rotation.y = glass.rotation.y;
     glassEdge.position.copy(glass.position);
     glassEdge.rotation.y = glass.rotation.y;
-    liquid.position.set(liquidShift, 1.165, .018 * progress);
-    meniscus.position.set(liquidShift, 1.987, .018 * progress);
-    surfaceRim.position.set(liquidShift, 1.991, .018 * progress);
+    liquid.position.set(liquidShift, 1.165, 0);
+    liquid.rotation.y = glass.rotation.y;
+    meniscus.position.set(liquidShift, 1.987, 0);
+    meniscus.rotation.y = glass.rotation.y;
+    surfaceRim.position.set(liquidShift, 1.991, 0);
+    surfaceRim.rotation.y = glass.rotation.y;
     label.position.x = shellShift;
     base.position.x = shellShift;
     neck.position.x = shellShift;
@@ -645,6 +679,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       (1 - capCrest.y) * host.clientHeight / 2).toFixed(2);
     host.dataset.atomizerY = atomizer.position.y.toFixed(4);
     host.dataset.liquidY = liquid.position.y.toFixed(4);
+    host.dataset.liquidX = liquid.position.x.toFixed(4);
+    host.dataset.glassX = glass.position.x.toFixed(4);
+    host.dataset.meniscusX = meniscus.position.x.toFixed(4);
     host.dataset.liquidOptics = "translucent-volume";
     host.dataset.liquidAbsorption = "glass-coupled-ray-volume";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
