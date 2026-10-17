@@ -647,7 +647,7 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         assert.deepEqual(await imageLink.locator("img").evaluateAll(images =>
           images.map(image => image.getAttribute("src"))), [unrestrictedPhoto.url],
           "A/B photo uses the existing exact, registered CC BY-SA photograph");
-        assert.ok(await page.locator("[data-dufynd-photo-first] a[rel='license']").count() === 1,
+        assert.ok(await page.locator("[data-dufynd-photo-first] a[rel~='license']").count() === 1,
           "photo-first context must expose visible linked license attribution");
         assert.deepEqual(await settleImages(page), [], "original image must decode under local fixtures");
         await chooseMeasurement(page, "denied");
