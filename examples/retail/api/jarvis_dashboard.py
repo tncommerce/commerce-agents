@@ -1416,6 +1416,11 @@ def build_snapshot(
         },
         runtime=runtime if isinstance(runtime, dict) else {},
         now=now,
+        handoff_sources_complete=(
+            not operational_incomplete
+            and _fresh(thin.get("observed_at"), now, 360)
+            and _fresh(business_planner.get("observed_at"), now, 900)
+        ),
     )
     snapshot["operator_diagnosis"] = operator
     command["system_explanation"] = operator["cause"]

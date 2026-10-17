@@ -2812,6 +2812,36 @@
     );
     const operatorPanel = $("operator-brief");
     if (operatorPanel) operatorPanel.dataset.state = operator.state || "UNKNOWN";
+    const handoff = operator.work_handoff || {};
+    const handoffBox = $("operator-work-handoff");
+    if (handoffBox) {
+      const available = complete &&
+        handoff.status === "ready_for_manual_handoff" &&
+        handoff.dispatch_performed === false &&
+        typeof handoff.prompt === "string" &&
+        handoff.prompt.startsWith("DUFYND – JARVIS-TO-WORK / MANUELLER HANDOFF V1");
+      handoffBox.hidden = !available;
+      handoffBox.style.display = available ? "" : "none";
+      if (available) {
+        put("operator-work-title", handoff.title);
+        put("operator-work-detail",
+          "Geprüfte Planungslücke. Nur manueller Work-Start; keine automatische Beauftragung.");
+      } else put("operator-work-feedback", "");
+      const button = $("operator-work-copy");
+      if (button) button.onclick = async () => {
+        const current = snapshot?.operator_diagnosis?.work_handoff;
+        if (handoffBox.hidden || current?.status !== "ready_for_manual_handoff" ||
+            current?.dispatch_performed !== false ||
+            typeof current?.prompt !== "string" ||
+            !current.prompt.startsWith("DUFYND – JARVIS-TO-WORK / MANUELLER HANDOFF V1")) return;
+        try {
+          await navigator.clipboard.writeText(current.prompt);
+          put("operator-work-feedback", "Auftrag kopiert. In ChatGPT Work manuell starten.");
+        } catch {
+          put("operator-work-feedback", "Kopieren nicht möglich. Keine Übergabe gestartet.");
+        }
+      };
+    }
     put("loop-time", "Freier Loop · " + shortTime(c.last_loop_at));
     const jarvisState = $("jarvis-state");
     if (jarvisState)

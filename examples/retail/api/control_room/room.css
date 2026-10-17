@@ -4891,3 +4891,23 @@ body.cockpit-v2 { --sidebar: 164px; --bg: #0d1018; --panel: #171c29; --muted: #a
 @media (prefers-reduced-motion: reduce) {
   .cockpit-v2 *, .cockpit-v2 *::before, .cockpit-v2 *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }
+/* Manual handoff only when the trusted owner projection explicitly offers one.
+   No background model dispatch and no changes to existing three-column layout. */
+.operator-brief #operator-work-handoff {
+  grid-column: 1 / -1;
+  min-height: 0;
+  border-color: #8decc04a;
+}
+.operator-brief #operator-work-handoff[hidden] { display: none !important; }
+#operator-work-copy {
+  margin-top: 12px;
+  border: 1px solid #8decc077;
+  border-radius: 8px;
+  padding: 10px 13px;
+  min-height: 44px;
+  background: #13312b;
+  color: #d9eee9;
+  cursor: pointer;
+  font: inherit;
+}
+#operator-work-copy:focus-visible { outline: 2px solid #8decc0; outline-offset: 3px; }
