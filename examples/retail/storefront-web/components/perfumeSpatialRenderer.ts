@@ -522,9 +522,9 @@ vec4 cavityRefractedStudio(vec3 hit, vec3 surfaceNormal,
     shader.vertexShader = shader.vertexShader.replace("#include <begin_vertex>",
       "#include <begin_vertex>\nvStudyBottlePoint = position;\nvStudyBottleNormal = normal;");
     shader.fragmentShader = shader.fragmentShader.replace("#include <common>",
-      "#include <common>\n" + studyVolumeShader + (cavityQa ? studyCavityShader : ""));
+      "#include <common>\n" + studyVolumeShader);
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_pars_fragment>",
-      THREE.ShaderChunk.transmission_pars_fragment.replaceAll("transmissionSamplerMap", "studioRefractionMap"));
+      THREE.ShaderChunk.transmission_pars_fragment.replaceAll("transmissionSamplerMap", "studioRefractionMap") + (cavityQa ? "\n" + studyCavityShader : ""));
     const physicalTransmission = THREE.ShaderChunk.transmission_fragment;
     // The thick optical base of an actual heavy perfume bottle bends the
     // studio more strongly than the very thin side walls. The shader varies
