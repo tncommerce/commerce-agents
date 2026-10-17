@@ -197,9 +197,10 @@ def test_scheduler_can_refresh_but_not_read_ack_or_admin():
     assert client.post(SCHEDULER_PATH, headers=auth).status_code == 204
     assert len(calls) == before + 1
     assert not thread_reads
-    assert all(vault.thread_state(t).get("cursor") is None for t in (
-        "1a0f385ed98c6af8", "1a0f69c169fb928f", "1a0f6a90772a743d"
-    ))
+    assert all(
+        vault.thread_state(t).get("cursor") is None
+        for t in ("1a0f385ed98c6af8", "1a0f69c169fb928f", "1a0f6a90772a743d")
+    )
     assert "refresh-canary" not in reply.text
     assert "new-access-canary" not in reply.text
     assert not json.loads(json.dumps({"status": "read-only"})).get("secret")
