@@ -39,8 +39,10 @@ analytics, consent, git-branch protection or production DB is mutated by the
 **creation of this migration file**.
 
 Regression tests in the existing disposable PostgreSQL CI fixture verify that a
-new internal event wakes only its named task and that a released purchase attempt
-cannot be resurrected by the old broad dependency sweep. The fixture rollback
+new internal event wakes only its named task, a released purchase attempt
+cannot be resurrected by the old broad dependency sweep, and a real fenced
+terminal execution produces exactly one idempotent obsolete-task cancellation
+without modifying its immutable execution receipt. The fixture rollback
 preserves production data. No claim that the live queue is repaired before
 a separately approved migration application and subsequent live read verification.
 

@@ -3214,3 +3214,56 @@ def test_released_purchase_attempt_is_not_rearmed_by_satisfied_wait():
         assert row[0] == "blocked" and row[1] == "done"
         assert row[2] is not None
         db.rollback()
+
+
+def test_purchase_cleanup_backfill_is_receipt_bound_and_idempotent():
+    """Historical terminal task is cancelled, never called verified or restarted."""
+    import psycopg
+
+    task, prepared = durable_fixture(steps=1)
+    completed = take_execution(prepared["execution"])
+    assert execution_checkpoint(completed, 1)["status"] == "verifying"
+    assert finish_execution(completed)
+    assert execution_state(completed)["status"] == "completed"
+
+    with psycopg.connect(DSN) as db:
+        # Reproduce only the four historical rows' defining metadata in the
+        # disposable fixture. A real completed, fenced execution already exists.
+        db.execute(
+            "update dufynd_autonomy_tasks set status='ready',worker_state='ready',"
+            "durable_payload=%s::jsonb where task_id=%s",
+            ('{"kind":"purchase_destination_freshness_audit"}', task),
+        )
+        original = db.execute(
+            "select released_at,evidence from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert original[0] is not None
+        migration = next(
+            (ROOT / "supabase/migrations").glob("*purchase_event_rearm_guard.sql")
+        ).read_text()
+        # Reapply the exact migration deliberately; it must be repeatable.
+        db.execute(migration)
+        once = db.execute(
+            "select status,worker_state,released_at,evidence "
+            "from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert once[0] == "cancelled" and once[1] == "done"
+        assert once[2] == original[0]
+        assert "superseded_completed_purchase_attempt" == db.execute(
+            "select blocked_reason from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()[0]
+        db.execute(migration)
+        twice = db.execute(
+            "select status,worker_state,released_at,evidence "
+            "from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert once == twice
+        assert db.execute(
+            "select status from dufynd_execution_runs where execution_id=%s",
+            (completed["execution_id"],),
+        ).fetchone()[0] == "completed"
+        db.rollback()
