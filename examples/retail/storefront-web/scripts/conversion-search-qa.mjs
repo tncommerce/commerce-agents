@@ -1,6 +1,9 @@
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
+// Route readiness is verified by the semantic headings and controls below.
+// Network-idle is not a valid readiness gate while analytics, image decoding or
+// async search are active; it can deadlock on an otherwise functional page.
 export async function verifyConversionSearch(browser, baseUrl, outputDir) {
   const cases=[];
   for (const width of [390,1440]) {
@@ -12,7 +15,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
     await context.route('**/api/merchant-offers/**',r=>r.fulfill({json:{offers:[],best_offer_id:null}}));
     const page=await context.newPage();
     try {
-      await page.goto(`${baseUrl}/?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'networkidle'});
+      await page.goto(`${baseUrl}/?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
       await chooseMeasurement(page, 'granted');
       await page.locator('#dufynd-home-search').fill('YSL Libre EDP 90ml');
       await page.getByRole('search',{name:'DUFYND Duftkatalog durchsuchen'}).getByRole('button',{name:'Suchen',exact:true}).click();
@@ -20,9 +23,9 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.equal(new URL(page.url()).searchParams.get('src'),'instagram');
       assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion');
       if(outputDir) await page.screenshot({path:`${outputDir}/conversion-search-${width}-catalog.png`,fullPage:true});
-      await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'networkidle'});
+      await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'domcontentloaded'});
       await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
-      await page.goto(`${baseUrl}/start?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'networkidle'});
+      await page.goto(`${baseUrl}/start?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
       const input=page.getByLabel('Duft oder Marke suchen',{exact:true});
       await input.fill('Libre YSL EDP 90ml');
       const results=page.locator('[data-dufynd-social-live-results]');

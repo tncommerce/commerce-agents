@@ -30,5 +30,6 @@ def test_homepage_photo_entry_does_not_instantiate_a_bottle_model() -> None:
     assert "<AtelierSelection />" in home
     assert "FragranceModel3D" not in home + intro
     assert "model-viewer" not in intro
-    assert "originalPhotoFor(p)" in intro
+    assert 'getHomeVisual(product, { kind: "merchant_showcase"' in intro
+    assert "destinationUrl: entry.merchantProductUrl" in intro
     assert 'mode="cutout"' in intro

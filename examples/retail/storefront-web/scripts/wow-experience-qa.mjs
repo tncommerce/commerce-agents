@@ -1,4 +1,5 @@
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
+import { verifyHomepageImageScope } from './visual-reset-qa.mjs';
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 
@@ -35,7 +36,8 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
         await page.locator('h1').first().waitFor({state:'visible'});
         if (name === 'home') {
           await page.locator('.wow-search input').waitFor({state:'visible'});
-          await page.locator('[data-scent-atlas] select').waitFor({state:'visible'});
+          assert.equal(await page.locator('[data-atlas-disclosure]').getAttribute('open'),null,'secondary atlas is opt-in on initial home load');
+          assert.equal(await page.locator('[data-scent-atlas] select').isVisible(),false);
         }
         if(name==='lancome') {
           assert.match(await page.locator('h1').innerText(),/La Vie est Belle/);
@@ -51,8 +53,12 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
         if(name==='home') {
           const search=await page.locator('.wow-search').boundingBox();
           assert.ok(search && search.y+search.height<740,`home/${width}: search above fold`);
-          await page.locator('.wow-hero-art').click();
+          await page.locator('[data-dufynd-bottle]').waitFor({state:'visible'});
+          // The perfume object is the primary visual; the retained atlas lives lower in the page.
+          const atlasDisclosure=page.locator('[data-atlas-disclosure]');
+          await atlasDisclosure.locator(':scope > summary').focus();await page.keyboard.press('Enter');
           const atlas=page.locator('[data-scent-atlas]');
+          await atlas.locator('select').waitFor({state:'visible'});
           // Long source labels must remain readable after the note-label composition changed.
           await atlas.locator('select').selectOption('1');
           const labelChoices=atlas.locator('.wow-atlas-notes button');
@@ -83,18 +89,17 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await atlas.scrollIntoViewIfNeeded();
           await page.screenshot({path:`${outputDir}/wow22-atlas-${width}-interaction.png`});
           await atlas.screenshot({path:`${outputDir}/polish23-atlas-${width}-complete.png`});
+          await atlasDisclosure.locator(':scope > summary').click();
+          assert.equal(await atlas.locator('select').isVisible(),false,'atlas closes back into the compact discovery journey');
           const editorialCards=page.locator('a[data-dufynd-original-card]');
-          assert.equal(await editorialCards.count(),2,'one curated original selection, without repeated product rows');
-          if(width<=390){
-            const firstCard=await editorialCards.nth(0).boundingBox();
-            const secondCard=await editorialCards.nth(1).boundingBox();
-            const firstPhoto=await editorialCards.nth(0).locator('.wow-selection-photo').boundingBox();
-            assert.ok(firstCard&&secondCard&&firstPhoto&&secondCard.y>firstCard.y+firstCard.height,
-              'licensed mobile editorial cards are individually readable in a vertical journey');
-            assert.ok(firstPhoto.width>=105,'mobile source photo remains prominent, not a tiny thumbnail');
-            assert.ok(firstCard.x>=0&&firstCard.x+firstCard.width<=width,
-              'mobile original-photo entry fits the viewport');
-          }
+          assert.equal(await editorialCards.count(),1,'internal editorial discovery uses the one unrestricted licensed photograph');
+          const firstCard=await editorialCards.first().boundingBox();
+          const firstPhoto=await editorialCards.first().locator('[data-dufynd-image-kind]').boundingBox();
+          assert.ok(firstCard&&firstPhoto&&firstPhoto.width>=105,
+            'licensed source photograph remains visually prominent');
+          assert.ok(firstCard.x>=0&&firstCard.x+firstCard.width<=width,
+            'internal original-photo entry fits the viewport');
+          await verifyHomepageImageScope(page,baseUrl);
           assert.equal(await page.locator('.wow-advisor textarea').count(),1,'existing advisor composer is inline on the homepage');
           assert.equal(await page.locator('textarea').count(),1,'no second fixed composer overlaps homepage content');
           const advisor=page.locator('.wow-advisor textarea');await advisor.fill('Isolierte Eingabe ohne Versand');
@@ -128,6 +133,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           metrics.searchBottom=search.y+search.height;
           metrics.keyboard=true;metrics.touch=width<1024;metrics.reducedMotion=true;
           const destination=new URL(await matches.first().getAttribute('href'),baseUrl).pathname;
+          await atlasDisclosure.locator(':scope > summary').click();
           await matches.first().focus();await page.keyboard.press('Enter');
           await page.waitForURL(url=>url.pathname===destination);
           assert.equal(new URL(page.url()).searchParams.get('cmp'),'wow22_fixture','actual atlas keyboard navigation preserves campaign');
@@ -208,6 +214,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
   try {
     await context.route('**/api/**',r=>r.fulfill({json:{session_id:'wow22-motion-fixture',products:[],partners:[],ok:true}}));
     const p=await context.newPage();await p.goto(baseUrl,{waitUntil:'load'});await chooseMeasurement(p,'denied');
+    await p.locator('[data-atlas-disclosure] > summary').click();
     const atlas=p.locator('[data-scent-atlas]');
     assert.notEqual(await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration),'0s');
     await atlas.locator('select').selectOption('1');
