@@ -1,10 +1,14 @@
 """DUFYND CGI study: original analytic, layered glass/perfume ray tracing.
 Local research asset, never auto-promote to storefront. No external models/textures.
 """
-import math, os, argparse, time
+import argparse
+import math
+import os
+import time
+
 import numpy as np
 from numba import njit, prange
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFont
 
 # materials: 0 air, 1 optical glass, 2 perfumed fluid
 # object surface: 1 outer shell, 2 inner shell, 3 liquid-air, 4 cap, 5 neck, 6 label, 7 cap gold, 8 atomizer
@@ -12,18 +16,23 @@ TINY=1.e-4
 
 @njit
 
-def vdot(a,b):return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]
+def vdot(a,b):
+    return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]
 @njit
-def vlen(a):return np.sqrt(vdot(a,a))
+def vlen(a):
+    return np.sqrt(vdot(a,a))
 @njit
-def vnorm(a):return a / max(1.e-12,vlen(a))
+def vnorm(a):
+    return a / max(1.e-12,vlen(a))
 @njit
-def vref(d,n):return d - 2.0*vdot(d,n)*n
+def vref(d,n):
+    return d - 2.0*vdot(d,n)*n
 @njit
 def vrefract(d,n,eta):
     c=-vdot(d,n)
     k=1.0-eta*eta*(1.0-c*c)
-    if k<0.0:return vref(d,n),False
+    if k<0.0:
+        return vref(d,n),False
     return vnorm(eta*d+(eta*c-np.sqrt(k))*n),True
 @njit
 def sdf_round3(x,y,z,ax,lo,hi,az,r):
@@ -37,14 +46,16 @@ def sdf_round3(x,y,z,ax,lo,hi,az,r):
 def medium(x,y,z):
     if sdf_round3(x,y,z,1.08,.31,2.62,.57,.16)<0.0:
         if sdf_round3(x,y,z,.985,.48,2.46,.476,.102)<0.0:
-            if y<=1.99:return 2
+            if y<=1.99:
+                return 2
             return 0
         return 1
     return 0
 
 @njit
 def roundbox(x,z,ax,az,r):
-    dx=abs(x)-(ax-r);dz=abs(z)-(az-r)
+    dx=abs(x)-(ax-r)
+    dz=abs(z)-(az-r)
     return np.sqrt(max(dx,0.0)**2+max(dz,0.0)**2)+min(max(dx,dz),0.)-r
 
 @njit
@@ -53,7 +64,9 @@ def hit_round3(o,d,ax,lo,hi,az,r):
     # Sphere tracing steps are conservative; no screen-space bottle tint.
     t=0.0
     for step in range(68):
-        x=o[0]+d[0]*t;y=o[1]+d[1]*t;z=o[2]+d[2]*t
+        x=o[0]+d[0]*t
+        y=o[1]+d[1]*t
+        z=o[2]+d[2]*t
         dist=sdf_round3(x,y,z,ax,lo,hi,az,r)
         if abs(dist)<.0004 and t>.0002:
             eps=.0006
@@ -62,33 +75,46 @@ def hit_round3(o,d,ax,lo,hi,az,r):
             dz=sdf_round3(x,y,z+eps,ax,lo,hi,az,r)-sdf_round3(x,y,z-eps,ax,lo,hi,az,r)
             return t,vnorm(np.array((dx,dy,dz)))
         t+=max(.00035,abs(dist)*.83)
-        if t>25.:break
+        if t>25.:
+            break
     return 1.e15,np.zeros(3)
 
 @njit
 def hit_cylinder(o,d,x,y,z,r,lo,hi):
-    dx=o[0]-x;dz=o[2]-z
-    a=d[0]*d[0]+d[2]*d[2];b=dx*d[0]+dz*d[2];c=dx*dx+dz*dz-r*r
-    best=1.e15;N=np.zeros(3)
+    dx=o[0]-x
+    dz=o[2]-z
+    a=d[0]*d[0]+d[2]*d[2]
+    b=dx*d[0]+dz*d[2]
+    c=dx*dx+dz*dz-r*r
+    best=1.e15
+    N=np.zeros(3)
     if a>1.e-9:
         discr=b*b-a*c
         if discr>=0:
             sq=np.sqrt(discr)
             for t in ((-b-sq)/a,(-b+sq)/a):
                 if t>1.e-4 and t<best and lo<=o[1]+d[1]*t<=hi:
-                    best=t;N[0]=(dx+d[0]*t)/r;N[1]=0;N[2]=(dz+d[2]*t)/r
+                    best=t
+                    N[0]=(dx+d[0]*t)/r
+                    N[1]=0
+                    N[2]=(dz+d[2]*t)/r
     if abs(d[1])>1.e-9:
         for yy,s in ((lo,-1.),(hi,1.)):
             t=(yy-o[1])/d[1]
             if t>1.e-4 and t<best and (dx+d[0]*t)**2+(dz+d[2]*t)**2<=r*r:
-                best=t;N[0]=0.;N[1]=s;N[2]=0.
+                best=t
+                N[0]=0.
+                N[1]=s
+                N[2]=0.
     return best,N
 
 @njit
 def hit_metal(o,d,opened):
     # caps/neck/atomizer, immutable studio geometry for self-contained render
     # returns t, material, normal
-    tt=1.e15;kind=0;N=np.zeros(3)
+    tt=1.e15
+    kind=0
+    N=np.zeros(3)
     # Black cap: exploded in 'open' state but kept as a real 3D solid
     cap_y_shift=.74 if opened else 0.
     cap_x_shift=.27 if opened else 0.
@@ -102,39 +128,60 @@ def hit_metal(o,d,opened):
     ):
         t,n=hit_cylinder(o,d,x,0.,z,r,y0,y1)
         if t<tt:
-            tt=t;kind=k;N=n
+            tt=t
+            kind=k
+            N=n
     return tt,kind,N
 
 @njit
 def hit_scene(o,d,opened):
-    tt=1.e15; N=np.zeros(3);kind=0
+    tt=1.e15
+    N=np.zeros(3)
+    kind=0
     t,n=hit_round3(o,d,1.08,.31,2.62,.57,.16)
-    if t<tt:tt=t;kind=1;N=n
+    if t<tt:
+        tt=t
+        kind=1
+        N=n
     t,n=hit_round3(o,d,.985,.48,2.46,.476,.102)
-    if t<tt:tt=t;kind=2;N=n
+    if t<tt:
+        tt=t
+        kind=2
+        N=n
     if abs(d[1])>1.e-8:
         t=(1.99-o[1])/d[1]
         if t>1.e-4 and t<tt and sdf_round3(o[0]+t*d[0],1.99,o[2]+t*d[2],.985,.48,2.46,.476,.102)<-1.e-6:
-            tt=t;kind=3;N=np.array((0.,1.,0.))
+            tt=t
+            kind=3
+            N=np.array((0.,1.,0.))
     # A deeply embossed separate brand-label panel with 3D shadow edges.
     if abs(d[2])>1.e-7:
         t=(.588-o[2])/d[2]
-        x=o[0]+d[0]*t;y=o[1]+d[1]*t
+        x=o[0]+d[0]*t
+        y=o[1]+d[1]*t
         if t>1.e-4 and t<tt and abs(x)<.635 and .97<y<1.925 and d[2]<0.:
-            tt=t;kind=6;N=np.array((0.,0.,1.))
+            tt=t
+            kind=6
+            N=np.array((0.,0.,1.))
     t,k,n=hit_metal(o,d,opened)
-    if t<tt:tt=t;kind=k;N=n
+    if t<tt:
+        tt=t
+        kind=k
+        N=n
     return tt,kind,N
 
 @njit
 def rect_glow(d,center,spread_x,spread_y,intensity):
     # Smooth angular rectangular softbox, not an arbitrary bottle overlay.
     vec=vnorm(center)
-    u=np.array((vec[2],0.,-vec[0]));u=vnorm(u)
+    u=np.array((vec[2],0.,-vec[0]))
+    u=vnorm(u)
     v=np.cross(u,vec)
     c=vdot(d,vec)
-    if c<0.7:return 0.
-    x=vdot(d,u)/c;y=vdot(d,v)/c
+    if c<0.7:
+        return 0.
+    x=vdot(d,u)/c
+    y=vdot(d,v)/c
     # feathered area panel highlights
     aa=np.sqrt((x/max(.001,spread_x))**4+(y/max(.001,spread_y))**4)
     edge=max(0.,min(1.,(1.21-aa)*5.))
@@ -161,9 +208,9 @@ def env(d,mask=1.0):
 
 @njit
 def refraction_env(o,d):
-    # Finite studio diffusion plane BEHIND the object, not a painted color
-    # on its silhouette. Refracted rays actually travel to this field.
-    # Gaussian softbox/negative-fill profiles avoid hard rectangular shapes.
+    # A physically placed studio diffusion plane behind the vessel.
+    # The glass/fluid rays genuinely bend across the backlight spatial field.
+    # Gaussian photographic flags avoid rectangular silhouettes in the liquid.
     C=env(d)
     if d[2] < -.035:
         t=(-3.5-o[2])/d[2]
@@ -187,7 +234,8 @@ def fresnel(n1,n2,cosi):
 
 @njit
 def label_sample(x,y,tex):
-    u=(x+.635)/1.27;v=(1.925-y)/.955
+    u=(x+.635)/1.27
+    v=(1.925-y)/.955
     col=min(tex.shape[1]-1,max(0,int(u*(tex.shape[1]-1))))
     row=min(tex.shape[0]-1,max(0,int(v*(tex.shape[0]-1))))
     color=np.array((tex[row,col,0],tex[row,col,1],tex[row,col,2]))/255.
@@ -220,7 +268,10 @@ def shade_metal(kind,n,d,p):
 def trace(o,d,tex,opened):
     # Iterative forward ray transport with Fresnel reflection highlights.
     # Weighted deterministic branch avoids Monte Carlo white noise in stills.
-    result=np.zeros(3);throughput=np.ones(3);hit_any=0;fluid_distance=0.
+    result=np.zeros(3)
+    throughput=np.ones(3)
+    hit_any=0
+    fluid_distance=0.
     for bounce in range(11):
         t,kind,n=hit_scene(o,d,opened)
         if t>1.e12:
@@ -239,32 +290,50 @@ def trace(o,d,tex,opened):
         before=medium(o[0],o[1],o[2])
         after=medium(p[0]+d[0]*.0018,p[1]+d[1]*.0018,p[2]+d[2]*.0018)
         if before==after:
-            o=p+d*.002;continue
+            o=p+d*.002
+            continue
         if before==2:
             absorption=np.array((.15,.92,2.05))
             throughput*=np.exp(-absorption*t)
             fluid_distance+=t
-        if before==1 and after==2:n1=1.52;n2=1.339
-        elif before==2 and after==1:n1=1.339;n2=1.52
-        elif before==2 and after==0:n1=1.339;n2=1.
-        elif before==0 and after==2:n1=1.;n2=1.339
-        elif before==1 and after==0:n1=1.52;n2=1.
-        elif before==0 and after==1:n1=1.;n2=1.52
-        else:n1=1.;n2=1.
+        if before==1 and after==2:
+            n1=1.52
+            n2=1.339
+        elif before==2 and after==1:
+            n1=1.339
+            n2=1.52
+        elif before==2 and after==0:
+            n1=1.339
+            n2=1.
+        elif before==0 and after==2:
+            n1=1.
+            n2=1.339
+        elif before==1 and after==0:
+            n1=1.52
+            n2=1.
+        elif before==0 and after==1:
+            n1=1.
+            n2=1.52
+        else:
+            n1=1.
+            n2=1.
         nn=n if vdot(d,n)<0 else -n
         cosi=max(0.,min(1.,-vdot(d,nn)))
         refl=vnorm(vref(d,nn))
         F=fresnel(n1,n2,cosi)
         refr,possible=vrefract(d,nn,n1/n2)
         if not possible:
-            d=refl;o=p+d*.002;continue
+            d=refl
+            o=p+d*.002
+            continue
         # reflected studio highlights are real env specular, keep direction
         # behind camera and off-axis sources physically varied across surface
         result+=throughput*F*env(refl)
         throughput*=1.-F
         o=p+refr*.002
         d=refr
-        if max(throughput)<.003:break
+        if max(throughput)<.003:
+            break
     result+=throughput*refraction_env(o,d)
     return result, max(0.,min(1.,.44+.58*fluid_distance))
 
@@ -289,7 +358,8 @@ def render(width,height,samples,opened,tex):
     size=math.tan(math.radians(26.8)/2.)
     for py in prange(height):
       for px in range(width):
-        col=np.zeros(3);hit=0
+        col=np.zeros(3)
+        hit=0
         for sy in range(samples):
           ix=px+(sy*0.61803398875)%1.
           iy=py+(sy*0.75487766625)%1.
@@ -300,21 +370,23 @@ def render(width,height,samples,opened,tex):
           col+=c
           hit+=h
         col=tonemap(col/samples)
-        for ch in range(3):out[py,px,ch]=int(max(0,min(255,col[ch]*255)))
+        for ch in range(3):
+            out[py,px,ch]=int(max(0,min(255,col[ch]*255)))
         mask[py,px]=round(hit*255/samples)
     return out,mask
 
 def make_label():
     w,h=920,690
-    a=Image.new('RGB',(w,h),(19,18,16));draw=ImageDraw.Draw(a)
+    a=Image.new('RGB',(w,h),(19,18,16))
+    draw=ImageDraw.Draw(a)
     draw.rectangle((16,16,w-17,h-17),outline=(164,122,67),width=7)
     draw.rectangle((26,26,w-27,h-27),outline=(72,57,37),width=2)
     serif='/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf'
     sans='/usr/share/fonts/truetype/lato/Lato-Semibold.ttf'
     light='/usr/share/fonts/truetype/lato/Lato-Regular.ttf'
     def centered(y,txt,font,color):
-        l,t,r,b=draw.textbbox((0,0),txt,font=font)
-        draw.text(((w-(r-l))/2,y),txt,font=font,fill=color)
+        left,_,right,_=draw.textbbox((0,0),txt,font=font)
+        draw.text(((w-(right-left))/2,y),txt,font=font,fill=color)
     centered(110,'D U F Y N D',ImageFont.truetype(sans,40),(199,152,86))
     draw.line((w*.34,206,w*.66,206),fill=(140,103,61),width=2)
     centered(230,'n° 01',ImageFont.truetype(serif,170),(221,177,114))
@@ -346,4 +418,5 @@ def main():
     bg.paste(Image.fromarray(rgba,'RGBA'),(0,0),Image.fromarray(rgba,'RGBA'))
     bg.save(out[:-4]+'-preview.jpg',quality=93)
     print('CGI-first internal reference:',out,'seconds',round(time.monotonic()-started,2))
-if __name__=='__main__': main()
+if __name__=='__main__':
+    main()
