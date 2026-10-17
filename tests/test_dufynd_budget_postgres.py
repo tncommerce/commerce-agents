@@ -3251,10 +3251,11 @@ def test_purchase_cleanup_backfill_is_receipt_bound_and_idempotent():
         ).fetchone()
         assert once[0] == "cancelled" and once[1] == "done"
         assert once[2] == original[0]
-        assert "superseded_completed_purchase_attempt" == db.execute(
+        reason = db.execute(
             "select blocked_reason from dufynd_autonomy_tasks where task_id=%s",
             (task,),
         ).fetchone()[0]
+        assert reason == "superseded_completed_purchase_attempt"
         db.execute(migration)
         twice = db.execute(
             "select status,worker_state,released_at,evidence "
