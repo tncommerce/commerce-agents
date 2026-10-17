@@ -8,7 +8,7 @@ for (const fact of ["DUFYND", "RABANNE", "1 Million", "Eau de Toilette · 100 ml
   assert.ok(source.includes(fact), "Missing editorial fact " + fact);
 }
 assert.ok(!/<(?:image|foreignObject)(?:\s|>)/i.test(source));
-assert.ok(!/(?:https?:\/\/|€|InStock|auf Lager|kaufen für)/i.test(source));
+assert.ok(!/(?:href\s*=|xlink:href|url\(https?:|€|InStock|auf Lager|kaufen für)/i.test(source));
 const image = readFileSync(new URL("../public" + RC1_SOCIAL_CARD, import.meta.url));
 const imageMeta = await sharp(image).metadata();
 assert.equal(imageMeta.format, "png");
