@@ -60,6 +60,30 @@ jobs:
       - name: Real PostgreSQL budget contention and recovery
         run: pytest -q tests/test_dufynd_budget_postgres.py tests/test_jarvis_owner_session_postgres.py tests/test_dufynd_content_workflow_postgres.py tests/test_dufynd_first_money_replacement_postgres.py tests/test_dufynd_analytics_retention_postgres.py
 
+  content7-postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: content7_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      DUFYND_CONTENT_TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/content7_test
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements-dev.txt psycopg[binary]==3.3.6
+      - name: Atomic seven-worker results and concurrent receipt replay
+        run: pytest -q tests/test_dufynd_content7_atomic.py tests/test_dufynd_content7_activation.py
+
   no-pypi-fallback:
     runs-on: ubuntu-latest
     steps:
@@ -238,7 +262,7 @@ jobs:
     # Owner-authorized incident recovery, gated by the existing broker opt-in.
     # This uses the already reviewed fixed OIDC path; no Google/admin credentials.
     if: github.event_name == 'push' && github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
-    needs: [python, budget-postgres, web, private-broker-container]
+    needs: [python, budget-postgres, content7-postgres, web, private-broker-container]
     runs-on: ubuntu-latest
     timeout-minutes: 2
     permissions:
