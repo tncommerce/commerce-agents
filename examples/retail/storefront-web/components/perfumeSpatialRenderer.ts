@@ -289,7 +289,6 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   const studioFlagViewRay = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
   const studioFlagOrigin = new THREE.Vector3(0, 1.63, 0)
     .addScaledVector(studioFlagViewRay, 2.85);
-  const opticalFlagPositions: number[] = [];
   const opticalFlags: THREE.Mesh[] = [];
   function studioFlag(positionX: number, width: number, color: number,
     strength: number, feather = .20) {
@@ -330,14 +329,13 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     flag.renderOrder = 1; // draw AFTER the diffuse capture stage, before glass
     scene.add(flag);
     opticalFlags.push(flag);
-    opticalFlagPositions.push(positionX);
   }
   // From camera-left to right: narrow white strip, warm luminous core,
-  // strongly feathered charcoal negative fill, crisp tertiary softbox.
+  // narrow charcoal negative-fill edge, crisp tertiary softbox.
   studioFlag(-.98, .35, 0xfff8df, .92, .18);
   studioFlag(-.36, .80, 0xffd79c, .39, .36);
-  studioFlag( .73, 1.04, 0x1c1612, .82, .24);
-  studioFlag(1.30, .22, 0xe6f2ff, .65, .12);
+  studioFlag(1.15, .42, 0x241d18, .50, .39);
+  studioFlag(1.43, .22, 0xe6f2ff, .67, .16);
 
   const hemisphere = new THREE.HemisphereLight(0xfffcf3, 0x71604b, .48);
   scene.add(hemisphere);
@@ -371,7 +369,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     type: refractionType, samples: 2, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter,
   });
   const studyEyeLocal = new THREE.Vector3();
-  const studyVolumeShader = "\n#ifdef USE_TRANSMISSION\nuniform vec3 studyEyeInBottle;\nvarying vec3 vStudyBottlePoint;\nvarying vec3 vStudyBottleNormal;\n\n// Air -> silica glass -> hollow interior, approximated by a bounded refracted\n// ray inside the actual superellipse cavity. The perfume's free surface is\n// horizontal. Glass reflection stays in the stock MeshPhysical BRDF; only the\n// TRANSMITTED light receives perfume's Beer-Lambert absorption.\nfloat studyLiquidPath(vec3 entry, vec3 exteriorNormal) {\n  vec3 fromEye = normalize(entry - studyEyeInBottle);\n  vec3 insideRay = refract(fromEye, normalize(exteriorNormal), 1.0 / 1.50);\n  if (dot(insideRay, insideRay) < 0.01) insideRay = fromEye;\n\n  // Local dimensions: inner glass 2.055 x 1.005, liquid inset at walls,\n  // flat top at world y=1.985, base y=.345; bottle origin world y=1.42.\n  vec3 innerStart = entry + insideRay * 0.077;\n  vec3 boundsMin = vec3(-1.023, -1.075, -0.495);\n  vec3 boundsMax = vec3( 1.023,  0.565,  0.495);\n  vec3 safeRay = sign(insideRay) * max(abs(insideRay), vec3(0.0001));\n  vec3 t0 = (boundsMin - innerStart) / safeRay;\n  vec3 t1 = (boundsMax - innerStart) / safeRay;\n  vec3 earliest = min(t0, t1);\n  vec3 latest = max(t0, t1);\n  float nearDistance = max(0.0, max(earliest.x, max(earliest.y, earliest.z)));\n  float farDistance = min(latest.x, min(latest.y, latest.z));\n  if (farDistance <= nearDistance) return 0.0;\n  float raySpan = min(farDistance - nearDistance, 2.55);\n  float submerged = 0.0;\n  for (int sampleIndex = 0; sampleIndex < 8; sampleIndex++) {\n    float t = nearDistance + raySpan * (float(sampleIndex) + 0.5) / 8.0;\n    vec3 q = innerStart + insideRay * t;\n    float section = pow(abs(q.x / 1.023), 4.1666667)\n      + pow(abs(q.z / .495), 4.1666667);\n    float wall = 1.0 - smoothstep(.94, 1.025, section);\n    float floorProfile = smoothstep(-1.08, -.96, q.y);\n    submerged += wall * floorProfile;\n  }\n  return raySpan * submerged / 8.0;\n}\n#endif\n";
+  const studyVolumeShader = "\n#ifdef USE_TRANSMISSION\nuniform vec3 studyEyeInBottle;\nvarying vec3 vStudyBottlePoint;\nvarying vec3 vStudyBottleNormal;\n\n// Air -> silica glass -> hollow interior, approximated by a bounded refracted\n// ray inside the actual superellipse cavity. The perfume's free surface is\n// horizontal. Glass reflection stays in the stock MeshPhysical BRDF; only the\n// TRANSMITTED light receives perfume's Beer-Lambert absorption.\nfloat studyLiquidPath(vec3 entry, vec3 exteriorNormal) {\n  vec3 fromEye = normalize(entry - studyEyeInBottle);\n  vec3 insideRay = refract(fromEye, normalize(exteriorNormal), 1.0 / 1.50);\n  if (dot(insideRay, insideRay) < 0.01) insideRay = fromEye;\n\n  // Local dimensions: inner glass 2.055 x 1.005, liquid inset at walls,\n  // flat top at world y=1.985, base y=.345; bottle origin world y=1.42.\n  vec3 innerStart = entry + insideRay * 0.077;\n  vec3 boundsMin = vec3(-1.023, -1.075, -0.495);\n  vec3 boundsMax = vec3( 1.023,  0.565,  0.495);\n  vec3 safeRay = sign(insideRay) * max(abs(insideRay), vec3(0.0001));\n  vec3 t0 = (boundsMin - innerStart) / safeRay;\n  vec3 t1 = (boundsMax - innerStart) / safeRay;\n  vec3 earliest = min(t0, t1);\n  vec3 latest = max(t0, t1);\n  float nearDistance = max(0.0, max(earliest.x, max(earliest.y, earliest.z)));\n  float farDistance = min(latest.x, min(latest.y, latest.z));\n  if (farDistance <= nearDistance) return 0.0;\n  float raySpan = min(farDistance - nearDistance, 2.55);\n  float submerged = 0.0;\n  for (int sampleIndex = 0; sampleIndex < 12; sampleIndex++) {\n    float t = nearDistance + raySpan * (float(sampleIndex) + 0.5) / 12.0;\n    vec3 q = innerStart + insideRay * t;\n    float section = pow(abs(q.x / 1.023), 4.1666667)\n      + pow(abs(q.z / .495), 4.1666667);\n    float wall = 1.0 - smoothstep(.94, 1.025, section);\n    float floorProfile = smoothstep(-1.08, -.96, q.y);\n    submerged += wall * floorProfile;\n  }\n  return raySpan * submerged / 12.0;\n}\n#endif\n";
   glassMaterial.onBeforeCompile = (shader) => {
     shader.uniforms.studioRefractionMap = { value: refractionTarget.texture };
     shader.uniforms.studyEyeInBottle = { value: studyEyeLocal };
@@ -405,7 +403,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       throw new Error("Three.js transmission contract changed; do not silently omit glass/liquid coupling");
     }
     shader.fragmentShader = shader.fragmentShader.replace("#include <transmission_fragment>",
-      physicallyProfiledTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.08, 0.56, 1.55) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
+      physicallyProfiledTransmission.replace(transmissionMix, "float studyPathLength = studyLiquidPath(vStudyBottlePoint, vStudyBottleNormal);\n    vec3 studyAbsorption = exp(-vec3(0.10, 0.67, 1.72) * studyPathLength);\n    totalDiffuse = mix(totalDiffuse, transmitted.rgb * studyAbsorption, material.transmission);"));
     // The framebuffer transmits the real editorial background through air,
     // while progressively retaining the amber contribution for longer liquid
     // paths. The original specular Fresnel stays on the MeshPhysical material.
@@ -415,11 +413,14 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
         float studyFacing = clamp(abs(dot(normalize(vStudyBottleNormal),
           normalize(studyEyeInBottle - vStudyBottlePoint))), 0.0, 1.0);
         float studyFresnel = pow(1.0 - studyFacing, 3.0);
-        float studyVisibleAbsorption = 1.0 - exp(-0.52 * studyPathLength);
+        // Opacity represents lost transmitted spectral energy, rather than
+        // an unrelated pigment alpha independent of Beer-Lambert.
+        float studyVisibleAbsorption = 1.0 -
+          dot(vec3(.18, .35, .47), studyAbsorption);
         // Beer-Lambert colours transmission: it does not turn the
         // perfume into a solid gold filling on the alpha canvas.
-        gl_FragColor.a = clamp(.045 + .58 * studyVisibleAbsorption +
-          .21 * studyFresnel, .045, .70);
+        gl_FragColor.a = clamp(.044 + .78 * studyVisibleAbsorption +
+          .10 * studyFresnel, .044, .78);
       #endif`);
   };
   const glass = new THREE.Mesh(bevelledBody(2.2, 2.45, 1.14, .12), glassMaterial);
@@ -764,6 +765,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.liquidAbsorption = "glass-coupled-ray-volume";
     host.dataset.opticalStudio = "camera-plane-four-flags";
     host.dataset.opticalGlassBase = "depth-profile-thickness";
+    host.dataset.opticalFluidEnergy = "spectral-beer-lambert-v2";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
     host.dataset.mistOpacity = mistMaterial.opacity.toFixed(4);
