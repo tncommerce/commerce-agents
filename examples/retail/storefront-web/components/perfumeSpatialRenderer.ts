@@ -186,7 +186,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
 
   const scene = new THREE.Scene();
   scene.background = null;
-  const camera = new THREE.PerspectiveCamera(28, 1, .1, 60);
+  const camera = new THREE.PerspectiveCamera(26, 1, .1, 60);
   camera.position.set(4.35, 3.06, 7.48);
   camera.lookAt(0, 1.74, 0);
 
@@ -396,21 +396,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       float glassShoulder = smoothstep(.81, 1.20, vStudyBottlePoint.y);
       float glassIncidence = 1.0 - abs(dot(normalize(vStudyBottleNormal),
         normalize(studyEyeInBottle - vStudyBottlePoint)));
-
-      // Real heavy flacon corners refract the studio cards more strongly
-      // than the broad, thin central glass faces. This varies geometric
-      // ray displacement; it does not paint a light strip or gold overlay.
-      float cornerX = smoothstep(.63, 1.08, abs(vStudyBottlePoint.x));
-      float cornerZ = smoothstep(.22, .56, abs(vStudyBottlePoint.z));
-      float superellipseCorner = cornerX * cornerZ;
-      material.thickness += .32 * heavyGlassBase + .06 * glassShoulder
-        + .19 * superellipseCorner + .075 * pow(glassIncidence, 2.0);
-
-      // Outside the perfume: air behind silica (ior 1.5). Below the level:
-      // the glass + liquid interior has a lower effective ray-bending index.
-      // Keep the glass BRDF/Fresnel intact; adjust only transmitted rays.
-      float submergedFace = 1.0 - smoothstep(.495, .595, vStudyBottlePoint.y);
-      material.ior = mix(material.ior, 1.37, .70 * submergedFace);`);
+      material.thickness += .32 * heavyGlassBase
+        + .06 * glassShoulder + .045 * pow(glassIncidence, 3.0);`);
     const transmissionMix = "totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );";
     if (!physicallyProfiledTransmission.includes(transmissionMix)) {
       throw new Error("Three.js transmission contract changed; do not silently omit glass/liquid coupling");
@@ -652,7 +639,9 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
   let visible = options.isVisible?.() ?? true;
   let frame = 0;
   let renderCount = 0;
-  let framingFov = 28;
+  // Frame the original 3D flacon as a hero product rather than a thumbnail.
+  // Wider scene height on narrow screens retains headline/cap clearance.
+  let framingFov = 26;
   let openingFocusLift = .18;
   let explored = 0;
   let exploreTarget = 0;
@@ -777,7 +766,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.liquidOptics = "translucent-volume";
     host.dataset.liquidAbsorption = "glass-coupled-ray-volume";
     host.dataset.opticalStudio = "camera-plane-four-flags";
-    host.dataset.opticalGlassBase = "corner-prism-split-medium-v2";
+    host.dataset.opticalGlassBase = "depth-profile-thickness";
     host.dataset.opticalFluidEnergy = "spectral-beer-lambert-v2";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
@@ -822,7 +811,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     renderer.setSize(width, height, false);
     refractionTarget.setSize(Math.round(width * renderer.getPixelRatio()), Math.round(height * renderer.getPixelRatio()));
     camera.aspect = width / height;
-    framingFov = window.matchMedia("(max-width: 600px)").matches ? 25 : 28;
+    framingFov = window.matchMedia("(max-width: 600px)").matches ? 23 : 26;
     openingFocusLift = width < 360 ? .44 : width < 601 ? .43 : .18;
     camera.lookAt(.05 * explored, 1.76 + explored * openingFocusLift, 0);
     camera.fov = framingFov + explored * 6.2;

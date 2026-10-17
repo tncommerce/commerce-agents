@@ -115,7 +115,7 @@
 .figure[data-explored="true"] .controlIcon { transform: rotate(45deg); }
 
 @media (max-width: 600px) {
-  .scene { aspect-ratio: auto; height: 260px; }
+  .scene { aspect-ratio: auto; height: 292px; }
   .controls { padding: 0 5%; gap: 8px; }
   .caption { font-size: 12px; }
   .control { font-size: 11px; }
@@ -123,7 +123,7 @@
 }
 
 @media (max-width: 359px) {
-  .scene { height: 252px; }
+  .scene { height: 284px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
