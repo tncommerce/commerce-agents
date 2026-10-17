@@ -19,11 +19,12 @@ begin
  perform set_config('dufynd.event_processing','true',true);
  perform set_config('dufynd.worker_write','supervisor',true);
  for ev in select * from public.dufynd_jarvis_inbox where fingerprint is not null and status='pending' order by inbox_id limit 100 for update skip locked loop
-  for w in select * from public.dufynd_task_external_waits where observer_id=ev.payload->>'observer_id'
+  for w in select * from public.dufynd_task_external_waits as wait_row
+  where wait_row.observer_id=ev.payload->>'observer_id'
     and (
       ev.source_type is distinct from 'internal_dependency'
       or (jsonb_typeof(ev.related_task_ids) = 'array'
-          and ev.related_task_ids ? w.task_id)
+          and ev.related_task_ids ? wait_row.task_id)
     ) loop
    select * into t from public.dufynd_autonomy_tasks where task_id=w.task_id for update;
    if t.status in ('done','cancelled','in_progress')
