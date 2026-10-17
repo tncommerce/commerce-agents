@@ -86,9 +86,17 @@ def test_thin_noop_guard_controls_actual_task_creation():
             on conflict(key) do update set value=excluded.value
             """
         )
+        # The generic budget fixture predates created_at; production has it.
+        # Add it only to this transaction, where rollback removes it again.
+        db.execute(
+            "alter table public.dufynd_autonomy_tasks "
+            "add column if not exists created_at timestamptz default now()"
+        )
         db.execute(migration)
 
-        task_filter = "select count(*) from public.dufynd_autonomy_tasks where task_id like 'thin-health:%'"
+        task_filter = (
+            "select count(*) from public.dufynd_autonomy_tasks where task_id like 'thin-health:%'"
+        )
         before = db.execute(task_filter).fetchone()[0]
         off = db.execute("select public.run_dufynd_thin_v1()").fetchone()[0]
         after_off = db.execute(task_filter).fetchone()[0]
