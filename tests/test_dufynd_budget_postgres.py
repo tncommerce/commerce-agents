@@ -3263,8 +3263,9 @@ def test_purchase_cleanup_backfill_is_receipt_bound_and_idempotent():
             (task,),
         ).fetchone()
         assert once == twice
-        assert db.execute(
+        execution_status = db.execute(
             "select status from dufynd_execution_runs where execution_id=%s",
             (completed["execution_id"],),
-        ).fetchone()[0] == "completed"
+        ).fetchone()[0]
+        assert execution_status == "completed"
         db.rollback()
