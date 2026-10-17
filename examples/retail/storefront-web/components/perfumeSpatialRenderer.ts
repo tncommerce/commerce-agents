@@ -10,6 +10,10 @@ export type PerfumeSpatialController = {
 
 type Options = { reducedMotion: boolean; isVisible?(): boolean; onContextLost(): void };
 
+// Deliberately rounded-square original perfume-vessel profile. The geometry,
+// free-surface rim and the shader's 2/q implicit cross-section must correspond.
+const FLACON_SECTION_EXPONENT = .60;
+
 function bevelledBody(width: number, height: number, depth: number, bevel: number, surface: "rounded" | "flat-fill" = "rounded") {
   const segments = 96;
   const positions: number[] = [];
@@ -32,7 +36,7 @@ function bevelledBody(width: number, height: number, depth: number, bevel: numbe
     for (let i = 0; i <= segments; i++) {
       const theta = i / segments * Math.PI * 2;
       const cos = Math.cos(theta), sin = Math.sin(theta);
-      const exponent = .48;
+      const exponent = FLACON_SECTION_EXPONENT;
       positions.push(Math.sign(cos) * Math.pow(Math.abs(cos), exponent) * width / 2 * size,
         y, Math.sign(sin) * Math.pow(Math.abs(sin), exponent) * depth / 2 * size);
     }
@@ -56,7 +60,7 @@ function bevelledBody(width: number, height: number, depth: number, bevel: numbe
   return geometry;
 }
 
-function superellipsePlate(width: number, depth: number, exponent = .48) {
+function superellipsePlate(width: number, depth: number, exponent = FLACON_SECTION_EXPONENT) {
   const shape = new THREE.Shape();
   const segments = 96;
   for (let i = 0; i <= segments; i++) {
@@ -81,9 +85,9 @@ function liquidRim(width: number, depth: number) {
     const angle = i / 96 * Math.PI * 2;
     const x = Math.cos(angle), z = Math.sin(angle);
     vertices.push(new THREE.Vector3(
-      Math.sign(x) * Math.pow(Math.abs(x), .48) * width / 2,
+      Math.sign(x) * Math.pow(Math.abs(x), FLACON_SECTION_EXPONENT) * width / 2,
       0,
-      Math.sign(z) * Math.pow(Math.abs(z), .48) * depth / 2,
+      Math.sign(z) * Math.pow(Math.abs(z), FLACON_SECTION_EXPONENT) * depth / 2,
     ));
   }
   return new THREE.LineLoop(
@@ -369,7 +373,8 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     type: refractionType, samples: 2, generateMipmaps: true, minFilter: THREE.LinearMipmapLinearFilter,
   });
   const studyEyeLocal = new THREE.Vector3();
-  const studyVolumeShader = "\n#ifdef USE_TRANSMISSION\nuniform vec3 studyEyeInBottle;\nvarying vec3 vStudyBottlePoint;\nvarying vec3 vStudyBottleNormal;\n\n// Air -> silica glass -> hollow interior, approximated by a bounded refracted\n// ray inside the actual superellipse cavity. The perfume's free surface is\n// horizontal. Glass reflection stays in the stock MeshPhysical BRDF; only the\n// TRANSMITTED light receives perfume's Beer-Lambert absorption.\nfloat studyLiquidPath(vec3 entry, vec3 exteriorNormal) {\n  vec3 fromEye = normalize(entry - studyEyeInBottle);\n  vec3 insideRay = refract(fromEye, normalize(exteriorNormal), 1.0 / 1.50);\n  if (dot(insideRay, insideRay) < 0.01) insideRay = fromEye;\n\n  // Local dimensions: inner glass 2.055 x 1.005, liquid inset at walls,\n  // flat top at world y=1.985, base y=.345; bottle origin world y=1.42.\n  vec3 innerStart = entry + insideRay * 0.077;\n  vec3 boundsMin = vec3(-1.023, -1.075, -0.495);\n  vec3 boundsMax = vec3( 1.023,  0.565,  0.495);\n  vec3 safeRay = sign(insideRay) * max(abs(insideRay), vec3(0.0001));\n  vec3 t0 = (boundsMin - innerStart) / safeRay;\n  vec3 t1 = (boundsMax - innerStart) / safeRay;\n  vec3 earliest = min(t0, t1);\n  vec3 latest = max(t0, t1);\n  float nearDistance = max(0.0, max(earliest.x, max(earliest.y, earliest.z)));\n  float farDistance = min(latest.x, min(latest.y, latest.z));\n  if (farDistance <= nearDistance) return 0.0;\n  float raySpan = min(farDistance - nearDistance, 2.55);\n  float submerged = 0.0;\n  for (int sampleIndex = 0; sampleIndex < 12; sampleIndex++) {\n    float t = nearDistance + raySpan * (float(sampleIndex) + 0.5) / 12.0;\n    vec3 q = innerStart + insideRay * t;\n    float section = pow(abs(q.x / 1.023), 4.1666667)\n      + pow(abs(q.z / .495), 4.1666667);\n    float wall = 1.0 - smoothstep(.94, 1.025, section);\n    float floorProfile = smoothstep(-1.08, -.96, q.y);\n    submerged += wall * floorProfile;\n  }\n  return raySpan * submerged / 12.0;\n}\n#endif\n";
+  // For exponent q=.60, the matching implicit superellipse power is 2/q=3.3333333.
+  const studyVolumeShader = "\n#ifdef USE_TRANSMISSION\nuniform vec3 studyEyeInBottle;\nvarying vec3 vStudyBottlePoint;\nvarying vec3 vStudyBottleNormal;\n\n// Air -> silica glass -> hollow interior, approximated by a bounded refracted\n// ray inside the actual superellipse cavity. The perfume's free surface is\n// horizontal. Glass reflection stays in the stock MeshPhysical BRDF; only the\n// TRANSMITTED light receives perfume's Beer-Lambert absorption.\nfloat studyLiquidPath(vec3 entry, vec3 exteriorNormal) {\n  vec3 fromEye = normalize(entry - studyEyeInBottle);\n  vec3 insideRay = refract(fromEye, normalize(exteriorNormal), 1.0 / 1.50);\n  if (dot(insideRay, insideRay) < 0.01) insideRay = fromEye;\n\n  // Local dimensions: inner glass 2.055 x 1.005, liquid inset at walls,\n  // flat top at world y=1.985, base y=.345; bottle origin world y=1.42.\n  vec3 innerStart = entry + insideRay * 0.077;\n  vec3 boundsMin = vec3(-1.023, -1.075, -0.495);\n  vec3 boundsMax = vec3( 1.023,  0.565,  0.495);\n  vec3 safeRay = sign(insideRay) * max(abs(insideRay), vec3(0.0001));\n  vec3 t0 = (boundsMin - innerStart) / safeRay;\n  vec3 t1 = (boundsMax - innerStart) / safeRay;\n  vec3 earliest = min(t0, t1);\n  vec3 latest = max(t0, t1);\n  float nearDistance = max(0.0, max(earliest.x, max(earliest.y, earliest.z)));\n  float farDistance = min(latest.x, min(latest.y, latest.z));\n  if (farDistance <= nearDistance) return 0.0;\n  float raySpan = min(farDistance - nearDistance, 2.55);\n  float submerged = 0.0;\n  for (int sampleIndex = 0; sampleIndex < 12; sampleIndex++) {\n    float t = nearDistance + raySpan * (float(sampleIndex) + 0.5) / 12.0;\n    vec3 q = innerStart + insideRay * t;\n    float section = pow(abs(q.x / 1.023), 3.3333333)\n      + pow(abs(q.z / .495), 3.3333333);\n    float wall = 1.0 - smoothstep(.94, 1.025, section);\n    float floorProfile = smoothstep(-1.08, -.96, q.y);\n    submerged += wall * floorProfile;\n  }\n  return raySpan * submerged / 12.0;\n}\n#endif\n";
   glassMaterial.onBeforeCompile = (shader) => {
     shader.uniforms.studioRefractionMap = { value: refractionTarget.texture };
     shader.uniforms.studyEyeInBottle = { value: studyEyeLocal };
@@ -767,6 +772,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.liquidAbsorption = "glass-coupled-ray-volume";
     host.dataset.opticalStudio = "camera-plane-four-flags";
     host.dataset.opticalGlassBase = "depth-profile-thickness";
+    host.dataset.opticalCrossSection = "rounded-square-q060";
     host.dataset.opticalFluidEnergy = "spectral-beer-lambert-v2";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);
