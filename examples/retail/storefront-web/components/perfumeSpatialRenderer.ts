@@ -396,8 +396,21 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
       float glassShoulder = smoothstep(.81, 1.20, vStudyBottlePoint.y);
       float glassIncidence = 1.0 - abs(dot(normalize(vStudyBottleNormal),
         normalize(studyEyeInBottle - vStudyBottlePoint)));
-      material.thickness += .32 * heavyGlassBase
-        + .06 * glassShoulder + .045 * pow(glassIncidence, 3.0);`);
+
+      // Real heavy flacon corners refract the studio cards more strongly
+      // than the broad, thin central glass faces. This varies geometric
+      // ray displacement; it does not paint a light strip or gold overlay.
+      float cornerX = smoothstep(.63, 1.08, abs(vStudyBottlePoint.x));
+      float cornerZ = smoothstep(.22, .56, abs(vStudyBottlePoint.z));
+      float superellipseCorner = cornerX * cornerZ;
+      material.thickness += .32 * heavyGlassBase + .06 * glassShoulder
+        + .19 * superellipseCorner + .075 * pow(glassIncidence, 2.0);
+
+      // Outside the perfume: air behind silica (ior 1.5). Below the level:
+      // the glass + liquid interior has a lower effective ray-bending index.
+      // Keep the glass BRDF/Fresnel intact; adjust only transmitted rays.
+      float submergedFace = 1.0 - smoothstep(.495, .595, vStudyBottlePoint.y);
+      material.ior = mix(material.ior, 1.37, .70 * submergedFace);`);
     const transmissionMix = "totalDiffuse = mix( totalDiffuse, transmitted.rgb, material.transmission );";
     if (!physicallyProfiledTransmission.includes(transmissionMix)) {
       throw new Error("Three.js transmission contract changed; do not silently omit glass/liquid coupling");
@@ -764,7 +777,7 @@ export async function createPerfumeSpatialRenderer(host: HTMLDivElement, options
     host.dataset.liquidOptics = "translucent-volume";
     host.dataset.liquidAbsorption = "glass-coupled-ray-volume";
     host.dataset.opticalStudio = "camera-plane-four-flags";
-    host.dataset.opticalGlassBase = "depth-profile-thickness";
+    host.dataset.opticalGlassBase = "corner-prism-split-medium-v2";
     host.dataset.opticalFluidEnergy = "spectral-beer-lambert-v2";
     host.dataset.liquidSurfaceY = meniscus.position.y.toFixed(4);
     host.dataset.glassY = glass.position.y.toFixed(4);

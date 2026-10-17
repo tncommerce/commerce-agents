@@ -265,6 +265,8 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
           "translucent-volume", "visible liquid must use the unified transparent volume, not a gold overlay");
         assert.equal(await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-liquid-absorption"),
           "glass-coupled-ray-volume", "perfume attenuation must be coupled to glass, not a second gold mesh");
+        assert.equal(await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-optical-glass-base"),
+          "corner-prism-split-medium-v2", "refraction must keep the split-medium glass/corner lens path");
         const initialScripts = [...new Set(requests.scriptRequests)];
         const initialFonts = [...new Set(requests.fontRequests)];
         assert.ok(resting.triangles > 100 && resting.draw_calls > 0, "capable device renders real mesh geometry");
