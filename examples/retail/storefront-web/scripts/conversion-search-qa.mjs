@@ -60,7 +60,15 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,
         'RC1 catalog CTA must not add horizontal overflow');
       const rc1Card=page.locator('.dufynd-catalog-card').filter({has:verifiedRc1Entry});
-      const catalogUrl=page.url();
+      // Catalog hydration may reserialize an identical search from %20 to +.
+      // Compare the complete URL after standard query encoding; do not drop
+      // origin, path, fragment, query values, duplicate params or their order.
+      const normalizedUrl=href=>{
+        const url=new URL(href);
+        url.search=url.searchParams.toString();
+        return url.href;
+      };
+      const catalogUrl=normalizedUrl(page.url());
       // Exercise the exact card after adding its offer CTA: these actions must
       // remain independent, operable and in-bounds even at the 320px minimum.
       const save=rc1Card.getByRole('button',{name:'♡ Merken',exact:true});
@@ -72,7 +80,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       const selected=rc1Card.getByRole('button',{name:'Rabanne 1 Million aus Vergleich entfernen',exact:true});
       await selected.waitFor({state:'visible'});
       assert.equal(await selected.getAttribute('aria-pressed'),'true');
-      assert.equal(page.url(),catalogUrl,'Save/compare must not navigate to the profile or merchant');
+      assert.equal(normalizedUrl(page.url()),catalogUrl,'Save/compare must not navigate to the profile or merchant');
       const actionLayout=await rc1Card.evaluate(card=>{
         const box=element=>{const b=element.getBoundingClientRect();return {left:b.left,right:b.right,top:b.top,bottom:b.bottom,width:b.width,height:b.height};};
         return {
@@ -98,7 +106,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       await saved.click();
       await save.waitFor({state:'visible'});
       assert.equal(await save.getAttribute('aria-pressed'),'false');
-      assert.equal(page.url(),catalogUrl,'Removing save/compare state must not navigate');
+      assert.equal(normalizedUrl(page.url()),catalogUrl,'Removing save/compare state must not navigate');
       if(outputDir) await rc1Card.screenshot({path:`${outputDir}/conversion-search-${width}-rc1-catalog.png`});
       await verifiedRc1Entry.click();
       await page.waitForURL(url=>url.pathname==='/duft/rabanne-1-million'&&url.hash==='#angebote');
