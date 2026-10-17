@@ -18,10 +18,12 @@ export async function capturePerfumeStudioPoster(page, outputDir, state) {
   const captureCss = [
     "html {background:var(--studio-capture-bg)!important}",
     "body,body * {background-color:transparent!important;background-image:none!important;box-shadow:none!important}",
+    // A locator screenshot also composites elements PAINTED over the canvas.
+    // In particular, the vertical ÉTUDE index is a sibling of the figure,
+    // outside the old bottle-only mask. Hide the entire DOM for capture,
+    // then reveal only the actual WebGL canvas and its host.
+    "body * {visibility:hidden!important}",
     "body *::before,body *::after {visibility:hidden!important}",
-    "[data-dufynd-bottle] [data-dufynd-spatial-poster],",
-    "[data-dufynd-bottle] [aria-hidden]:not([data-dufynd-spatial-canvas]):not([data-spatial-webgl]),",
-    "[data-dufynd-bottle] figcaption {visibility:hidden!important}",
     "[data-dufynd-spatial-canvas],[data-dufynd-spatial-canvas] canvas {visibility:visible!important}"
   ].join("\n");
   const style = await page.addStyleTag({ content: captureCss });
@@ -64,6 +66,18 @@ export async function capturePerfumeStudioPoster(page, outputDir, state) {
     rgba[k + 3] = clampByte(alpha * 255);
   }
   if (occupied < pixelCount * .01) throw new Error("Original glass scene captured empty");
+  // The glass body occupies the center; the far upper-right corner must be
+  // empty. A previous screenshot silently baked the sibling "ÉTUDE" label
+  // into the poster because the canvas screenshot included overlay content.
+  let foreignPixels = 0;
+  for (let y = 0; y < Math.floor(black.height * .38); y++) {
+    for (let x = Math.floor(black.width * .93); x < black.width; x++) {
+      if (rgba[(y * black.width + x) * 4 + 3] >= 60) foreignPixels++;
+    }
+  }
+  if (foreignPixels > 10) {
+    throw new Error(`Poster includes ${foreignPixels} non-scene pixels in upper-right safe region`);
+  }
   const targetDir = path.join(outputDir, "poster-candidates");
   await mkdir(targetDir, { recursive: true });
   const target = path.join(targetDir, "perfume-study-" + state + ".webp");
