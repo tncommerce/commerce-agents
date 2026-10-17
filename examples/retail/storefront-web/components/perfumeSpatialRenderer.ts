@@ -493,7 +493,7 @@ vec4 cavityRefractedStudio(vec3 hit, vec3 surfaceNormal,
   vec3 outerBack = rearStart + rearGlassRay * rearThickness;
   vec3 airRay = refract(rearGlassRay, -cavityNormal(outerBack, exterior), 1.50);
   if (dot(airRay, airRay) < .01) return vec4(0.0, 0.0, 0.0, -1.0);
-  vec4 projectRay = projectionMatrix * modelViewMatrix *
+  vec4 projectRay = projectionMatrix * viewMatrix * modelMatrix *
     vec4(outerBack + normalize(airRay) * 2.1, 1.0);
   vec2 uv = projectRay.xy / projectRay.w * .5 + .5;
   // The capture is the true studio scene, not a CSS/raster fake.

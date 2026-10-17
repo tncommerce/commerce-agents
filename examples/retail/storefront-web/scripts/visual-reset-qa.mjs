@@ -632,6 +632,12 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
       await isolateNetwork(context, baseUrl, requests);
       await context.addInitScript(() => { window.__dufyndCavityOpticsQA = true; });
       const page = await context.newPage();
+      const shaderErrors = [];
+      page.on("console", message => {
+        if (message.type() === "error" && /shader|webglprogram|glsl/i.test(message.text()))
+          shaderErrors.push(message.text().slice(0, 1800));
+      });
+      page.on("pageerror", error => shaderErrors.push(String(error).slice(0, 1800)));
       try {
         const response = await page.goto(baseUrl, { waitUntil: "load" });
         assert.equal(response.status(), 200);
@@ -640,7 +646,7 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         await chooseMeasurement(page, "denied");
         await settledSpatial(page);
         const environment = await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-optical-volume-qa");
-        assert.equal(environment, "cavity-v4-qa", "Cavity renderer must really decode, not silently fall back");
+        assert.equal(environment, "hollow-cavity-qa", "Cavity refraction must be genuinely enabled");
         await page.screenshot({ path: path.join(outputDir, `optical-study-${width}-cavity-v4.png`) });
         const control = page.locator("[data-dufynd-bottle-control]").first();
         if (width < 1024) await control.tap();
@@ -649,6 +655,7 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
           ?.dataset.framePending === "false" && document.querySelector("[data-dufynd-bottle-control]")
           ?.getAttribute("aria-pressed") === "true");
         await page.screenshot({ path: path.join(outputDir, `optical-study-${width}-cavity-v4-open.png`) });
+        assert.deepEqual(shaderErrors, [], "CGI-first A/B must compile and render without browser errors");
         assert.deepEqual(requests.clickouts, [], "A/B materials never click merchants");
         assert.deepEqual(requests.blockedMutations, [], "A/B materials never mutate commerce data");
         report.cases.push({ variant: "cavity-v4-optics-lab", width, status: "passed", environment,
