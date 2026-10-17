@@ -168,7 +168,7 @@
  .home :global(.wow-audiences h2) {font-size:29px}
 }
 @media (max-width:539px) {
- .home.home {gap:32px}
+ .home.home {gap:29px}
  .hero {margin:0 -16px;padding:0 16px}
  .heroBar nav a:first-child {display:none}
  .heroBar nav {gap:0}
