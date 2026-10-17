@@ -620,6 +620,44 @@ export async function verifyVisualReset(browser, baseUrl, outputDir) {
         throw error;
       } finally { await context.close(); }
     }
+    // CGI-first controlled A/B: layered air/glass/fluid/backglass transport.
+    // Nothing changes on the public or regular browser path.
+    for (const width of [390, 1440]) {
+      const context = await browser.newContext({
+        viewport: { width, height: width < 640 ? 844 : 1000 },
+        reducedMotion: "no-preference", hasTouch: width < 1024,
+      });
+      const requests = journal();
+      await deviceHints(context);
+      await isolateNetwork(context, baseUrl, requests);
+      await context.addInitScript(() => { window.__dufyndCavityOpticsQA = true; });
+      const page = await context.newPage();
+      try {
+        const response = await page.goto(baseUrl, { waitUntil: "load" });
+        assert.equal(response.status(), 200);
+        await page.waitForFunction(() => document.querySelector("[data-dufynd-bottle]")
+          ?.getAttribute("data-spatial-state") === "ready", null, { timeout: 45_000 });
+        await chooseMeasurement(page, "denied");
+        await settledSpatial(page);
+        const environment = await page.locator("[data-dufynd-spatial-canvas]").getAttribute("data-optical-volume-qa");
+        assert.equal(environment, "cavity-v4-qa", "Cavity renderer must really decode, not silently fall back");
+        await page.screenshot({ path: path.join(outputDir, `optical-study-${width}-cavity-v4.png`) });
+        const control = page.locator("[data-dufynd-bottle-control]").first();
+        if (width < 1024) await control.tap();
+        else await control.click();
+        await page.waitForFunction(() => document.querySelector("[data-dufynd-spatial-canvas]")
+          ?.dataset.framePending === "false" && document.querySelector("[data-dufynd-bottle-control]")
+          ?.getAttribute("aria-pressed") === "true");
+        await page.screenshot({ path: path.join(outputDir, `optical-study-${width}-cavity-v4-open.png`) });
+        assert.deepEqual(requests.clickouts, [], "A/B materials never click merchants");
+        assert.deepEqual(requests.blockedMutations, [], "A/B materials never mutate commerce data");
+        report.cases.push({ variant: "cavity-v4-optics-lab", width, status: "passed", environment,
+          note: "Private ray-traced hollow-cavity material study. Visual and GPU cost review required; never production by default." });
+      } catch (error) {
+        report.cases.push({ variant: "cavity-v4-optics-lab", width, status: "failed", error: String(error) });
+        throw error;
+      } finally { await context.close(); }
+    }
     return report;
   } finally {
     await writeFile(path.join(outputDir, "visual-reset-report.json"), JSON.stringify(report, null, 2) + "\n");
