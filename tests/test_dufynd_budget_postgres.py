@@ -8,6 +8,7 @@ from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
 from threading import Barrier
+import json
 from uuid import uuid4
 
 import pytest
@@ -3101,3 +3102,110 @@ def test_mission_disabled_handler_and_public_access_fail_closed(mission_db):
         c.execute("select tick_dufynd_mission_v1()")
     with pytest.raises(psycopg.errors.RaiseException), c.transaction():
         c.execute("select start_dufynd_mission_v1('unsafe','social_publish')")
+
+ 
+def test_internal_purchase_event_only_wakes_named_task():
+    """Shared purchase observer must not rearm every historical generation."""
+    import psycopg
+
+    older = f"purchase-freshness:qa-old-{uuid4().hex}"
+    current = f"purchase-freshness:qa-new-{uuid4().hex}"
+    observer_source = f"purchase-freshness:qa-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (observer_source,),
+        ).fetchone()[0]
+        for task in (older, current):
+            db.execute(
+                "insert into dufynd_autonomy_tasks "
+                "(task_id,domain,title,instruction,status,worker_state,"
+                "budget_class,resource_scope,durability_policy) "
+                "values(%s,'supervisor','test','read-only verification',"
+                "'waiting_external','waiting_external','free',%s::jsonb,'durable')",
+                (task, '["db:test-purchase-event"]'),
+            )
+            db.execute(
+                "select bind_dufynd_external_wait(%s,%s,%s::jsonb)",
+                (task, oid, '["purchase.freshness.due"]'),
+            )
+        db.execute(
+            "insert into dufynd_jarvis_inbox("
+            "event_type,source_type,source_id,payload,fingerprint,related_task_ids)"
+            "values('purchase.freshness.due','internal_dependency',"
+            "%s,%s::jsonb,%s,%s::jsonb)",
+            (
+                observer_source,
+                json.dumps({"observer_id": oid, "evidence": {}}),
+                uuid4().hex,
+                __import__("json").dumps([current]),
+            ),
+        )
+        db.execute("select process_dufynd_external_events()")
+        status = dict(
+            db.execute(
+                "select task_id,status from dufynd_autonomy_tasks "
+                "where task_id in (%s,%s)",
+                (older, current),
+            ).fetchall()
+        )
+        assert status[older] == "waiting_external"
+        assert status[current] == "ready"
+        wait_status = dict(
+            db.execute(
+                "select task_id,satisfied from dufynd_task_external_waits "
+                "where task_id in (%s,%s)",
+                (older, current),
+            ).fetchall()
+        )
+        assert wait_status == {older: False, current: True}
+        # Same event must not generate second work, even on another cycle.
+        db.execute("select process_dufynd_external_events()")
+        assert db.execute(
+            "select status from dufynd_autonomy_tasks where task_id=%s",
+            (older,),
+        ).fetchone()[0] == "waiting_external"
+        db.rollback()
+
+
+def test_released_purchase_attempt_is_not_rearmed_by_satisfied_wait():
+    """No old terminal purchase task can become ready from the broad sweep."""
+    import psycopg
+
+    task = f"purchase-freshness:qa-terminal-{uuid4().hex}"
+    observer_source = f"purchase-freshness:qa-terminal-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (observer_source,),
+        ).fetchone()[0]
+        db.execute(
+            "insert into dufynd_autonomy_tasks("
+            "task_id,domain,title,instruction,status,worker_state,"
+            "budget_class,resource_scope,durability_policy,durable_payload,released_at)"
+            "values(%s,'supervisor','test','old attempt',"
+            "'blocked','done','free',%s::jsonb,'durable',%s::jsonb,now())",
+            (
+                task,
+                '["db:test-purchase-terminal"]',
+                '{"kind":"purchase_destination_freshness_audit"}',
+            ),
+        )
+        db.execute(
+            "select bind_dufynd_external_wait(%s,%s,%s::jsonb)",
+            (task, oid, '["purchase.freshness.due"]'),
+        )
+        db.execute(
+            "update dufynd_task_external_waits set satisfied=true "
+            "where task_id=%s and observer_id=%s",
+            (task, oid),
+        )
+        db.execute("select process_dufynd_external_events()")
+        row = db.execute(
+            "select status,worker_state,released_at from dufynd_autonomy_tasks "
+            "where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert row[0] == "blocked" and row[1] == "done"
+        assert row[2] is not None
+        db.rollback()
