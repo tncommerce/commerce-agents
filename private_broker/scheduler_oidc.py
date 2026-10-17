@@ -35,9 +35,8 @@ class SchedulerOIDC:
             raise BrokerError("broker_activation_required")
         try:
             header = jwt.get_unverified_header(token)
-            if (
-                header.get("alg") != "RS256"
-                or any(item in header for item in ("jku", "jwk", "x5u", "x5c"))
+            if header.get("alg") != "RS256" or any(
+                item in header for item in ("jku", "jwk", "x5u", "x5c")
             ):
                 raise ValueError("unsafe jwt header")
 
