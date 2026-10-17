@@ -11,7 +11,6 @@ import re
 import time
 
 import jwt
-
 from scripts.dufynd_observer_credentials import BrokerError
 
 GOOGLE_SCHEDULER_ISSUER = "https://accounts.google.com"
