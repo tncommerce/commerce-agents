@@ -3269,3 +3269,51 @@ def test_purchase_cleanup_backfill_is_receipt_bound_and_idempotent():
         ).fetchone()[0]
         assert execution_status == "completed"
         db.rollback()
+
+
+def test_internal_dependency_event_provenance_only_marks_named_tasks():
+    """A shared observer event must never stamp unrelated task provenance."""
+    import psycopg
+
+    older = f"purchase-freshness:qa-provenance-old-{uuid4().hex}"
+    named = f"purchase-freshness:qa-provenance-new-{uuid4().hex}"
+    source = f"purchase-freshness:qa-provenance-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (source,),
+        ).fetchone()[0]
+        for task in (older, named):
+            db.execute(
+                "insert into dufynd_autonomy_tasks("
+                "task_id,domain,title,instruction,status,worker_state,"
+                "budget_class,resource_scope,durability_policy,dependencies)"
+                "values(%s,'supervisor','test','bounded metadata provenance',"
+                "'waiting_external','waiting_external','free',"
+                "%s::jsonb,'durable',%s::jsonb)",
+                (task, '["db:test-purchase-provenance"]', json.dumps([source])),
+            )
+        event_id = db.execute(
+            "insert into dufynd_jarvis_inbox("
+            "event_type,source_type,source_id,payload,fingerprint,related_task_ids)"
+            "values('purchase.freshness.due','internal_dependency',"
+            "%s,%s::jsonb,%s,%s::jsonb) returning event_id",
+            (
+                source,
+                json.dumps({"observer_id": oid, "evidence": {}}),
+                uuid4().hex,
+                json.dumps([named]),
+            ),
+        ).fetchone()[0]
+        db.execute("select process_dufynd_external_events()")
+        provenance = dict(
+            db.execute(
+                "select task_id,last_external_event_id "
+                "from dufynd_autonomy_tasks where task_id in (%s,%s)",
+                (older, named),
+            ).fetchall()
+        )
+        assert provenance[older] is None
+        assert provenance[named] == event_id
+        # No sale, no merchant proof, and no retained changes from this test.
+        db.rollback()

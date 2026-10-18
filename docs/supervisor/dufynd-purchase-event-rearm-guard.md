@@ -30,7 +30,8 @@ model or a reason to add another Nightshift.
 ## Fix and boundaries
 
 The existing processor is replaced **in place** with three narrow conditions:
-(1) internal events touch only explicitly named `related_task_ids`,
+(1) internal events touch only explicitly named `related_task_ids` (including
+    `last_external_event_id` audit provenance, not just dependency wakeups),
 (2) terminal/cancelled and released purchase attempts cannot be processed again,
 (3) the dependency sweep refuses to rearm released purchase attempts.
 

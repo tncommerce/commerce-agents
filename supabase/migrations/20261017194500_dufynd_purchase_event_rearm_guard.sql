@@ -52,7 +52,11 @@ begin
    affected:=affected+1;
   end loop;
   if ev.source_type='internal_dependency' then
-   update public.dufynd_autonomy_tasks set last_external_event_id=ev.event_id where dependencies ? ev.source_id and status in ('waiting_external','blocked')
+   update public.dufynd_autonomy_tasks set last_external_event_id=ev.event_id
+   where dependencies ? ev.source_id
+    and jsonb_typeof(ev.related_task_ids)='array'
+    and ev.related_task_ids ? dufynd_autonomy_tasks.task_id
+    and status in ('waiting_external','blocked')
     and not exists(select 1 from public.dufynd_execution_runs where task_id=dufynd_autonomy_tasks.task_id and status not in ('completed','failed_terminal'));
   end if;
   update public.dufynd_jarvis_inbox set status='done',processed_at=now(),attempts=attempts+1 where inbox_id=ev.inbox_id; processed:=processed+1;
