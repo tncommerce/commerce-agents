@@ -79,6 +79,7 @@ def test_october_18_refresh_preserves_exact_offers_and_freshness(verified: dict)
         verified["offer_id"]
     ]
     assert store.eligible_offer(verified["offer_id"], now=checked + timedelta(hours=72)) is not None
-    assert store.eligible_offer(
-        verified["offer_id"], now=checked + timedelta(hours=72, seconds=1)
-    ) is None
+    assert (
+        store.eligible_offer(verified["offer_id"], now=checked + timedelta(hours=72, seconds=1))
+        is None
+    )
