@@ -133,6 +133,22 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       else await results.getByRole('link').first().click();
       await page.waitForURL('**/duft/yves-saint-laurent-libre**');
       assert.equal(new URL(page.url()).searchParams.get('src'),'instagram');
+      // SEO buyer-guide visual proof on the REAL static export, not a mocked
+      // component. This is isolated to Libre EDP 90ml and must not click
+      // merchant links or write real analytics.
+      const guide=page.locator('[data-dufynd-libre-refill-guide]');
+      assert.equal(await guide.count(),1,'only one Libre buying guide may be rendered');
+      assert.equal(await guide.getByRole('heading',{name:'YSL Libre EDP 90 ml: nachfüllbarer Flakon oder Refill?'}).count(),1);
+      assert.match(await guide.innerText(),/VZR11010/);
+      assert.match(await guide.innerText(),/nachfüllbarer Flakon/);
+      assert.match(await guide.innerText(),/Werbung · DUFYND enthält Affiliate-Links/);
+      assert.equal(await guide.locator('a[href="#angebote"]').count(),2,'both editorial CTAs must remain internal');
+      assert.equal(await guide.locator('a[href*="/api/clickout/"]').count(),0);
+      await guide.scrollIntoViewIfNeeded();
+      const bounds=await guide.boundingBox();
+      assert.ok(bounds&&bounds.x>=-1&&bounds.x+bounds.width<=width+1,`${width}: Libre guide is outside viewport`);
+      assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`${width}: Libre guide causes horizontal overflow`);
+      if(outputDir) await guide.screenshot({path:`${outputDir}/libre-refill-guide-${width}.png`,animations:'disabled'});
       await page.locator('#dufynd-hero-offer-cta').click();
       assert.ok(await page.locator('#angebote').evaluate(el => {const r=el.getBoundingClientRect();return r.top < innerHeight && r.bottom > 0;}), 'offer anchor must reach the offers section');
       assert.match(await page.locator('.dufynd-journey-offers').innerText(),/kein ausreichend aktuelles/);
