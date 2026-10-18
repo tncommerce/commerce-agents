@@ -57,3 +57,51 @@ for (const globalGate of [false, true]) {
   }
 }
 console.log("Fragrance metadata: all four indexing gates and product-specific social previews PASS");
+
+// WORK45: rejected editorial creative must not enter the release.
+async function metadataFor({ productId, slug, originalUrl = null }) {
+  const mod = { exports: {} };
+  vm.runInNewContext(code, {
+    module: mod, exports: mod.exports,
+    require(name) {
+      if (name === "@/lib/releasedProfileCatalog") return { RELEASED_PROFILES: [] };
+      if (name === "@/lib/accordLabels") return { accordLabel: (value) => value };
+      if (name === "@/lib/site") return {
+        SITE_INDEXABLE: false, SITE_URL: "https://dufynd.example",
+      };
+      if (name === "@/lib/fragranceCatalog") return {
+        getLiveFragranceBySlug(target) {
+          return target !== slug ? null : {
+            product_id: productId, slug, brand: "Rabanne", name: "1 Million",
+            concentration: "Eau de Toilette", volume_ml: 100, accords: [],
+          };
+        },
+        originalPhotoFor() { return originalUrl ? { url: originalUrl } : null; },
+      };
+      return {};
+    },
+  });
+  const output = await mod.exports.generateMetadata({ params: Promise.resolve({ slug }) });
+  return JSON.parse(JSON.stringify(output));
+}
+const rc1 = await metadataFor({
+  productId: "SC-RABANNE-1-MILLION-EDT-100", slug: "rabanne-1-million",
+});
+assert.equal(rc1.alternates.canonical, "/duft/rabanne-1-million");
+assert.equal(rc1.openGraph.images, undefined);
+assert.equal(rc1.twitter.images, undefined);
+assert.equal(rc1.twitter.card, "summary");
+assert.match(rc1.title, /Rabanne 1 Million/);
+assert.match(rc1.title, /100 ml/);
+const other = await metadataFor({ productId: "SC-OTHER", slug: "other" });
+assert.equal(other.openGraph.images, undefined);
+assert.equal(other.twitter.card, "summary");
+const original = "https://example.invalid/licensed-original.webp";
+const licensed = await metadataFor({
+  productId: "SC-RABANNE-1-MILLION-EDT-100", slug: "rabanne-1-million",
+  originalUrl: original,
+});
+assert.equal(licensed.openGraph.images?.[0], original);
+assert.equal(licensed.twitter.images?.[0], original);
+assert.equal(licensed.twitter.card, "summary_large_image");
+console.log("RC1 metadata: exact identity, unapproved creative excluded, licensed-photo precedence PASS");
