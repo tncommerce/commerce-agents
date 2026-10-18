@@ -1,70 +1,80 @@
-# DUFYND — RC1 Acquisition Release Slice / Draft 42
+# DUFYND — RC1 First Money Release / WORK45
 
-**Stand:** 17. Oktober 2026. **Status:** DRAFT, NOT LIVE, NO MERGE/DEPLOY AUTHORIZATION.
-**Base:** `scentai-mvp` at `2868882d337244a7d4f0c3ac8b7c51ef9f9d5e7e`.
-**Provenance:** only the independently tested RC1 catalog acquisition and truthful
-editorial social metadata source from the large, unmerged PR #799 at
-`ad6e2a945312da376a6f8ad47b64216c47cfc18a`. This is a new, isolated release candidate, not a visual launch.
+**Stand:** 18. Oktober 2026. **Status:** DRAFT, NOT LIVE; no merge/deploy approval.
+**Protected base:** `2868882d337244a7d4f0c3ac8b7c51ef9f9d5e7e`.
+**Starting release #803:** `74d9cb4db92cd245f3636831d2f7784fd447b3c2`.
+**Search source #799:** `a6c0a63cabc9e8d259558f9c8c5044520c010d39`.
 
 ## Intended user-facing delta
 
-1. In the 37-fragrance catalog, cards without a verified published affiliate
-   offer say **"Duftprofil entdecken"**, not "Duftprofil & Angebote ansehen".
-   The exact `SC-RABANNE-1-MILLION-EDT-100` card additionally links internally
-   to `/duft/rabanne-1-million#angebote` with **"Händlerangebote prüfen"**.
-   No sale, stock, price, discount or additional approved partner implied.
-   The existing attribution-aware internal-link component preserves consent
-   and campaign context; no new merchant/clickout URL is introduced.
-2. The exact Rabanne 1 Million EDT **100 ml** profile, and only in the absence
-   of a verified reused product-photo source, uses an original abstract,
-   *non-product-image* 1200x630 social OpenGraph/Twitter card. No brand-logo
-   recreation, fabricated bottle, photo, review or offer fact. Rights-verified
-   product photography would automatically take precedence; structured Product
-   image data remains limited to its old verified-photo source.
-3. Changes are localized to two components, one RC1-specific CSS appendix,
-   two new social image-generation/test scripts, one responsive navigation QA,
-   one exact source-level SEO regression guard and minimum necessary package
-   script hooks.
+1. Catalog cards say **Duftprofil entdecken**. Only the exact released
+   `SC-RABANNE-1-MILLION-EDT-100` card adds the internal, accessible
+   **Händlerangebote prüfen** link to `/duft/rabanne-1-million#angebote`.
+2. The existing shared search accepts **One Million**, **onemillion** and
+   **1million**, in addition to the previous correct spellings. These aliases
+   are restricted to brand Rabanne and the complete name 1 Million. Existing
+   explicit size/concentration filters are unchanged. Lucky, Elixir, other
+   brands, wrong sizes and wrong concentrations must not resolve to RC1.
+3. The unapproved abstract 1200×630 OG creative is **excluded**. Independent
+   visual inspection rejected its medal/pedestal motif as insufficient perfume
+   identity. No replacement generation. RC1 uses text-only summary metadata
+   until an authorized original photo is available. Existing verified original
+   photographs still take precedence; Product JSON-LD image rights gates remain.
 
-## Isolation (strict)
+## Minimal source transfer and creative separation
 
-DO NOT import the replacement hero `AtelierHero`, new Three.js object,
-CGI shader experiments, the rejected 2011 Commons photo, licensed visual
-research branch assets, editorials or other style/feature changes from PR #799.
-DO NOT import Jarvis #800/#801/#802, SQL migrations, Control Room work,
-content publishing, catalog draft waves, prices, Awin/Perfumetrader
-destination changes, tracking consent changes or new paid services.
+Only `fragranceSearchIdentity.ts` and its existing unit tests are copied from
+exact #799. Its alias browser cases are adapted onto the existing #803 suite;
+#803 save/compare, CTA layout and complete URL assertions stay enabled.
+No hero, homepage, shader, image research asset or other #799 runtime code is
+imported. Production detail component and package scripts match the protected
+base again after removal of the rejected creative and generator.
 
-`package.json` keeps every production dependency and prebuild task from the
-base exactly; only prefixes the two existing dev/prebuild scripts with the
-self-contained 0-EUR RC1 social-card generator/test.
+Dynamic RC1/unrelated-product/licensed-photo metadata cases now live in the
+already active `test-fragrance-metadata.mjs`, preserving the original indexing
+cases. Exported DOM checks explicitly require no RC1 OG/Twitter image, truthful
+exact title and a `summary` card. Python guards retain Product image restrictions
+and prohibit reintroducing this unapproved creative. This is an intentional
+scope removal, not a test bypass or premium-creative approval.
 
-## Release gate and evidence
+## New-commit verification contract
 
-Isolated-baseline integration: the existing Python SEO regression
-`tests/test_dufynd_fragrance_detail_seo.py` originally expected a single
-shareImage-only Twitter/OG branch. Update just this assertion to enforce
-exact-RC1 editorial fallback and verified-photo precedence, while preserving
-conservative Product structured-data assertions. The independent Node
-`test-rc1-social-card.mjs` verifies metadata dynamically, including another
-product and a licensed-photo override.
+Full routine CI is mandatory on this new release commit. The previous passes
+(803: 39074257623; 799: 39104846696) are provenance, not proof for this revision.
+Record exact SHA, run ID, jobs, original artifact ID/hash and independent visual
+verdict in the PR and handoff only after completion.
 
-Upstream evidence: PR #799 [CI #39070518141](https://github.com/tncommerce/commerce-agents/actions/runs/39070518141)
-SUCCESS 7/7; original QA artifact 12114972293 includes actual responsive
-390/1440 RC1 catalog screenshots. These proofs are bound to **PR #799**, not to
-this isolated slice. The new PR requires its **own exact-SHA full CI**, genuine
-320/390/1440 browser screenshots where supported, search/offer/attribution/
-Consent/SEO/partner-image guard regression, and independent visual inspection.
-Never claim it has passed before the run and artifact are finished.
+New browser matrix: **320 / 390 / 768 / 1440 px**, Instagram and TikTok. Each
+platform has granted and denied cases; touch is actually exercised below1024,
+keyboard on1440; denied cases use reduced motion. APIs use isolated fixtures.
 
-**Release hold:** Separate exact Owner approval is still mandatory for
-mark-ready, merge, protected-branch write, production deployment, database
-migration, social posting or affiliate change. If no further authorization
-is available overnight, finish the draft, attach evidence and STOP at
-NOT_FINAL_YET without requesting permission or inventing authorization.
+- Social direct search tests all aliases and exact RC1 identity.
+- A second actual route follows `/start` -> **Katalog entdecken** -> `/duft`,
+  fills all aliases and activates the exact internal offer CTA to `#angebote`.
+  No campaign values are reinjected between those hops.
+- Granted navigation retains source, campaign, content and one independent
+  analytics session; destination events must carry the same attribution.
+- Denied navigation emits no optional analytics and strips optional URL fields.
+- Wrong50ml/EDP/Lucky/Elixir queries cannot show the RC1 offer CTA.
+- Empty offers display the existing honest fallback; no price, availability or
+  merchant destination is invented. Existing CI tests cover available-offer
+  presentation, consent and affiliate boundaries. No real merchant clickouts.
+- Capture `alias45-{width}-{source}-{social,catalog,offers}.png`; visually inspect
+  originals separately from automated assertions. No physical-device QA claim.
 
-## Post-release measurement (if separately authorized)
+## Strict isolation and remaining gates
 
-Compare qualified, consented sessions -> exact RC1 detail -> offer section ->
-documented merchant_clickout and later verified partner-reported commissions.
-None of these test steps represents proven revenue.
+No Jarvis #800/#801/#802, SQL migrations, activation, paid tools, social posts,
+merchant data, prices, affiliate destinations or protected branch changes.
+No new remote branch/PR. The release remains Draft after successful checks.
+Production merge/deploy and social publishing remain **OWNER-GATED**.
+
+No new hero work: rejected CGI/photo studies remain rejected. A commercially
+usable original with unmistakable perfume identity and strong mobile framing
+is still required before any further hero implementation.
+
+## Business measurement
+
+Keep Social views, website sessions, exact product views, offer views, clickouts
+and verified commissions separate. Test fixtures and CI do not establish traffic,
+sales or revenue. Use the existing content/link funnel; no duplicate routine.
