@@ -33,3 +33,10 @@ def test_product_pages_override_social_metadata() -> None:
     assert "const shareImage = originalPhotoFor(fragrance)?.url || null;" in source
     assert "images: shareImage ? [shareImage] : undefined" in source
     assert 'card: shareImage ? "summary_large_image" : "summary"' in source
+
+
+def test_unapproved_rc1_creative_is_not_part_of_release() -> None:
+    source = DETAIL_PAGE.read_text(encoding="utf-8")
+    assert "editorialSocialCard" not in source
+    assert "dufynd-rabanne-1-million-og.png" not in source
+    assert "const productTruthVisual = originalPhotoFor(fragrance);" in source

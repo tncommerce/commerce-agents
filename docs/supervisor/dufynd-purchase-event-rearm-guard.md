@@ -1,8 +1,13 @@
 # DUFYND supervisor – terminated purchase task replay guard (RESET36)
 
 **Status:** Reviewed development migration only, **NOT APPLIED TO PRODUCTION**.
-Repo: `tncommerce/commerce-agents`, PR #799. No new providers, schedulers,
+Repo: `tncommerce/commerce-agents`, PR #800. No new providers, schedulers,
 paid calls, new worker or extra purchase evidence.
+
+**Development integration (18.10.2026):** Reconciled only these three hotfix
+files against protected `scentai-mvp` at `7527880825c6904981fe092bb7be770e67ed15af`.
+The production SQL remains untouched. Exact integrated-head PostgreSQL CI
+must pass before any subsequent separate production decision.
 
 ## Live reproducible finding (2026-10-17)
 

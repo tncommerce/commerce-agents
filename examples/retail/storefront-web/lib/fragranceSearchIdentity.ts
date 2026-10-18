@@ -23,9 +23,12 @@ const CONCENTRATION_ALIASES: Record<string, string> = {
 };
 
 export function fragranceSearchIdentity(fragrance: FragranceIdentity): string {
+  const brand = normalizeFragranceSearch(fragrance.brand);
+  const productAliases = brand === "rabanne" && normalizeFragranceSearch(fragrance.name) === "1 million"
+    ? "one million onemillion 1million" : "";
   return normalizeFragranceSearch([
     fragrance.brand, fragrance.name, fragrance.concentration,
-    BRAND_ALIASES[normalizeFragranceSearch(fragrance.brand)] || "",
+    BRAND_ALIASES[brand] || "", productAliases,
     CONCENTRATION_ALIASES[normalizeFragranceSearch(fragrance.concentration)] || "",
     `${fragrance.volume_ml}ml ${fragrance.volume_ml} ml`,
   ].join(" "));
