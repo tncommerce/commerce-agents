@@ -49,16 +49,16 @@ export default function LibreRefillGuide() {
         </p>
         <h2
           id="libre-refill-title"
-          className="mt-2 text-[22px] font-semibold leading-tight tracking-[-0.025em] text-(--ink) sm:text-[28px]"
+          className="mt-2 text-[24px] font-semibold leading-tight tracking-[-0.025em] text-(--ink) sm:text-[28px]"
         >
           {LIBRE_REFILL_SEO_TITLE}
         </h2>
-        <p className="mt-4 text-[13px] leading-6 text-(--ink-soft) sm:text-[14px]">
+        <p className="mt-4 text-[14px] leading-6 text-(--ink-soft) sm:text-[15px]">
           Du suchst Libre, findest aber Angebote mit „nachfüllbar“, „Refill“
           und unterschiedlichen Milliliterangaben? Entscheidend ist nicht nur
           der Duftname: Auch der Lieferumfang muss passen.
         </p>
-        <p className="mt-3 text-[13px] leading-6 text-(--ink-soft) sm:text-[14px]">
+        <p className="mt-3 text-[14px] leading-6 text-(--ink-soft) sm:text-[15px]">
           Der auf DUFYND zugeordnete{" "}
           <strong className="font-semibold text-(--ink)">
             Yves Saint Laurent Libre Eau de Parfum mit 90 ml ist ein
@@ -81,7 +81,7 @@ export default function LibreRefillGuide() {
         <h3 className="mt-8 text-[18px] font-semibold tracking-tight text-(--ink)">
           „Nachfüllbar“ beschreibt den Flakon – „Refill“ den Nachfüller
         </h3>
-        <p className="mt-2 text-[13px] leading-6 text-(--ink-soft)">
+        <p className="mt-2 text-[14px] leading-6 text-(--ink-soft)">
           YSL führt Libre Eau de Parfum als vollständigen nachfüllbaren
           90-ml-Flakon und den 100-ml-Nachfüllpack als getrennte Varianten.
           Was du benötigst, hängt davon ab, ob du einen kompletten Flakon
@@ -95,17 +95,17 @@ export default function LibreRefillGuide() {
             key={item.title}
             className="min-w-0 rounded-xl border border-(--line) bg-(--well)/35 p-4"
           >
-            <h4 className="text-[13px] font-semibold leading-5 text-(--ink)">
+            <h4 className="text-[14px] font-semibold leading-5 text-(--ink)">
               {item.title}
             </h4>
-            <p className="mt-2 text-[12px] leading-5 text-(--ink-soft)">
+            <p className="mt-2 text-[13px] leading-5 text-(--ink-soft)">
               {item.description}
             </p>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 max-w-3xl space-y-6 text-[13px] leading-6 text-(--ink-soft)">
+      <div className="mt-4 max-w-3xl space-y-6 text-[14px] leading-6 text-(--ink-soft)">
         <p>
           Dass die aktuelle Ausführung nachfüllbar ist, beweist nicht die
           Kompatibilität jedes älteren Flakons. Versuche nicht, einen unklaren
@@ -129,7 +129,7 @@ export default function LibreRefillGuide() {
                 <dt className="text-[11px] font-semibold uppercase tracking-[0.06em] text-(--ink-soft)">
                   {item.label}
                 </dt>
-                <dd className="mt-1 text-[13px] font-medium text-(--ink)">
+                <dd className="mt-1 text-[14px] font-medium text-(--ink)">
                   {item.value}
                 </dd>
               </div>
@@ -214,7 +214,7 @@ export default function LibreRefillGuide() {
         <h3 className="text-[17px] font-semibold text-(--ink)">
           Libre EDP 90 ml · Händlerangebote prüfen
         </h3>
-        <p className="mt-2 max-w-3xl text-[12px] leading-5 text-(--ink-soft)">
+        <p className="mt-2 max-w-3xl text-[13px] leading-5 text-(--ink-soft)">
           Im Angebotsbereich findest du die jeweils von DUFYND angezeigten
           Händlerangaben, Prüfzeitpunkte und Versandkosten. Preise und
           Verfügbarkeit können sich ändern; maßgeblich sind die Angaben
@@ -228,7 +228,7 @@ export default function LibreRefillGuide() {
         >
           Zum aktuellen Angebotsbereich ↑
         </OfferSectionLink>
-        <p className="mt-3 text-[11px] leading-5 text-(--ink-soft)">
+        <p className="mt-3 text-[12px] leading-5 text-(--ink-soft)">
           Werbung · DUFYND enthält Affiliate-Links. Bei einem Kauf über
           einen Partnerlink kann DUFYND eine Provision erhalten. Weitere
           Informationen findest du unter{" "}
@@ -246,7 +246,7 @@ export default function LibreRefillGuide() {
         <h3 className="text-[13px] font-semibold text-(--ink)">
           Quellen zur Produkt- und Variantenabgrenzung
         </h3>
-        <ol className="mt-2 list-decimal space-y-2 pl-5 text-[11px] leading-5 text-(--ink-soft)">
+        <ol className="mt-2 list-decimal space-y-2 pl-5 text-[12px] leading-5 text-(--ink-soft)">
           <li>
             <a
               href="https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/"
@@ -279,7 +279,7 @@ export default function LibreRefillGuide() {
             </a>
           </li>
         </ol>
-        <p className="mt-2 text-[11px] leading-5 text-(--ink-soft)">
+        <p className="mt-2 text-[12px] leading-5 text-(--ink-soft)">
           Sachquellen geprüft am 18.10.2026. Kein Nachweis für heute
           gültige Händlerpreise oder Lieferbarkeit. Es wurden keine
           fremden Bilder oder Werbetexte übernommen.
