@@ -5,7 +5,7 @@ export async function verifyHomeNavigationAttribution(browser, baseUrl) {
   let cases = 0;
   for (const width of [390, 1440]) {
     for (const denied of [false, true]) {
-      for (const surface of ["finder", "spotlight", "audience", "profile", "comparison", "selected", "search-enter", "search-button"]) {
+      for (const surface of ["finder", "hero-offer", "spotlight", "audience", "profile", "comparison", "selected", "search-enter", "search-button"]) {
         const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
         const page = await context.newPage();
         const events = [];
@@ -46,12 +46,13 @@ export async function verifyHomeNavigationAttribution(browser, baseUrl) {
             else await page.getByRole("button", { name: "Suchen", exact: true }).click();
             path = "/duft";
           } else if (surface === "selected") {
-            const card = page.locator("a[data-dufynd-original-card]").nth(1);
+            const card = page.locator("a[data-dufynd-original-card]").first();
             await card.focus();
             await card.press("Enter");
           } else {
             const selectors = {
               finder: "a.dufynd-hero-primary",
+              "hero-offer": "a[data-dufynd-hero-rc1-offer]",
               spotlight: "a[data-dufynd-original-card]",
               audience: "a[data-dufynd-home-audience-card]",
               profile: "nav[aria-label='Duftwelten im Katalog'] a",
@@ -67,6 +68,10 @@ export async function verifyHomeNavigationAttribution(browser, baseUrl) {
           assert.equal(target.searchParams.get("cmp"), "home_qa");
           assert.equal(target.searchParams.get("content"), "video_3");
           if (surface.startsWith("search-")) assert.equal(target.searchParams.get("q"), "Naxos & Vanille + Duft", "form query encoding must survive");
+          if (surface === "hero-offer") {
+            assert.equal(target.pathname, "/duft/rabanne-1-million");
+            assert.equal(target.hash, "#angebote", "first-fold offer opens the product offer section");
+          }
           if (surface === "audience") assert.equal(target.searchParams.get("zielgruppe"), "women");
           if (surface === "profile") assert.equal(target.searchParams.get("profil"), "freshness");
           const expectedViews = surface === "comparison" ? 1 : 2;

@@ -1,5 +1,7 @@
 from datetime import UTC, datetime
 
+import pytest
+
 from retail.api.jarvis_operator import build_operator_diagnosis
 
 NOW = datetime(2026, 10, 5, 19, 16, tzinfo=UTC)
@@ -223,3 +225,101 @@ def test_business_planner_gap_wins_over_later_scheduled_maintenance():
     assert result["evidence"]["business_planner_state"] == "planner_gap"
     assert result["evidence"]["planner_state"] == "scheduled_safe_work"
     assert "spätere Wartungscheck" in result["jarvis_message"]
+
+
+def _planner_gap(
+    *,
+    move="funnel_conversion_readiness",
+    ready_domain=None,
+    owner_gate=False,
+    source_complete=True,
+    checkpoint_age=90,
+    has_active=False,
+):
+    tasks = (
+        [{"task_id": "task:supervisor", "status": "ready", "domain": ready_domain}]
+        if ready_domain
+        else []
+    )
+    if has_active:
+        tasks.append({"task_id": "task:active", "status": "working", "domain": "engineering"})
+    if owner_gate:
+        tasks.append({"task_id": "task:owner", "status": "approval_required"})
+    return build_operator_diagnosis(
+        tasks=tasks,
+        waits=[],
+        observers=[],
+        credentials=[],
+        thin={
+            "active_leases": 1 if has_active else 0,
+            "stop_reason": "no_safe_work",
+            "business_checkpoint": {"age_seconds": checkpoint_age},
+            "planner": {"state": "scheduled_safe_work"},
+            "business_planner": {
+                "state": "planner_gap",
+                "business_next_move": move,
+                "capability_gap": "no_certified_web_engineering_handler",
+                "master_action_required": False,
+            },
+        },
+        runtime={},
+        now=NOW,
+        handoff_sources_complete=source_complete,
+    )
+
+
+def test_work_handoff_is_read_only_and_exactly_scoped_to_planner_gap():
+    result = _planner_gap(ready_domain="supervisor")
+    handoff = result["work_handoff"]
+    assert result["state"] == "PLANNING_REQUIRED"
+    assert handoff["status"] == "ready_for_manual_handoff"
+    assert handoff["dispatch_performed"] is False
+    assert handoff["requires_manual_work_start"] is True
+    assert handoff["production_authorized"] is False
+    assert handoff["budget_eur"] == 0
+    assert handoff["goal_key"] == "funnel_conversion_readiness"
+    assert "tncommerce/commerce-agents" in handoff["prompt"]
+    assert "keine Social-Veröffentlichung" in handoff["prompt"]
+    assert "keinen automatischen Start" in handoff["prompt"]
+    assert "task:supervisor" not in handoff["prompt"]
+
+
+@pytest.mark.parametrize(
+    "flags",
+    [
+        {"move": "social_publication_readiness"},
+        {"move": "unknown_external_action"},
+        {"source_complete": False},
+        {"checkpoint_age": None},
+        {"checkpoint_age": 7200},
+        {"ready_domain": "engineering"},
+        {"ready_domain": "commerce"},
+        {"owner_gate": True},
+        {"has_active": True},
+    ],
+)
+def test_work_handoff_rejects_unsafe_stale_or_duplicate_execution(flags):
+    handoff = _planner_gap(**flags)["work_handoff"]
+    assert handoff == {"status": "unavailable", "dispatch_performed": False}
+
+
+def test_idle_or_scheduled_supervisor_work_does_not_invent_work_handoff():
+    result = build_operator_diagnosis(
+        tasks=[{"task_id": "old", "status": "waiting_external"}],
+        waits=[],
+        observers=[],
+        credentials=[],
+        thin={
+            "business_checkpoint": {"age_seconds": 20},
+            "planner": {"state": "scheduled_safe_work"},
+            "business_planner": {
+                "state": "no_capability_gap",
+                "business_next_move": "funnel_conversion_readiness",
+                "capability_gap": "",
+            },
+        },
+        runtime={},
+        now=NOW,
+        handoff_sources_complete=True,
+    )
+    assert result["work_handoff"]["status"] == "unavailable"

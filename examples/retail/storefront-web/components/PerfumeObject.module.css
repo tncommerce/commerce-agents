@@ -1,0 +1,136 @@
+.figure {
+  position: relative;
+  width: 100%;
+  max-width: 760px;
+  margin: 0;
+  color: #514532;
+  isolation: isolate;
+}
+
+.scene {
+  position: relative;
+  width: 100%;
+  height: 510px;
+  /* The studio light belongs to the entire hero; a background on the
+     scene rectangle makes a hard-edged panel on wide displays. */
+  background: transparent;
+  overflow: hidden;
+}
+.scene::before {
+  content:"";
+  position:absolute;
+  left:20%;
+  right:3%;
+  bottom:7%;
+  height:14%;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(72,48,25,.16),rgba(72,48,25,0) 68%);
+  filter:blur(11px);
+  pointer-events:none;
+}
+
+.poster, .canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.poster {
+  /* Constrain the bitmap to its real 700:660 shape before feathering.
+     Masking a full-width object-fit:contain image leaves its inner edges visible. */
+  /* The static model must command the same approximate space as the live
+     3D hero, rather than shrinking to a small thumbnail on low-power phones. */
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  top: -9%;
+  width: auto;
+  max-width: none;
+  height: 118%;
+  transform: translateX(-50%);
+  object-fit: contain;
+  filter: contrast(1.03) saturate(.96);
+  mask-image: radial-gradient(ellipse 51% 62% at 50% 50%,
+    #000 0 50%, rgba(0,0,0,.92) 65%, transparent 100%);
+}
+.canvas { opacity: 0; pointer-events: none; }
+.canvas canvas { display: block; width: 100%; height: 100%; }
+.figure[data-spatial-state="ready"] .canvas[data-render-count] { opacity: 1; }
+.figure[data-spatial-state="ready"]:has(.canvas[data-render-count]) .poster { opacity: 0; }
+
+.studyLabel {
+  position: absolute;
+  left: 6%;
+  bottom: 7%;
+  font-family: var(--font-sans, Arial, sans-serif);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .16em;
+  color: #716657;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 6%;
+  background: transparent;
+}
+
+.caption {
+  color: #716657;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.control {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 9px 0 9px 9px;
+  border: 0;
+  background: none;
+  color: #514532;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  cursor: pointer;
+  text-underline-offset: 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.control:hover { color: #281f15; text-decoration: underline; }
+.control:focus-visible { outline: 2px solid #786342; outline-offset: 4px; border-radius: 2px; }
+.controlIcon { transform-origin: center; transition: transform 300ms ease; }
+.figure[data-explored="true"] .controlIcon { transform: rotate(45deg); }
+
+@media (max-width: 600px) {
+  .scene { aspect-ratio: auto; height: 292px; }
+  .controls { padding: 0 5%; gap: 8px; }
+  .caption { font-size: 12px; }
+  .control { font-size: 11px; }
+  .studyLabel { left: 5%; bottom: 5%; font-size: 9px; }
+}
+
+@media (max-width: 359px) {
+  .scene { height: 284px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controlIcon { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .control { border: 1px solid ButtonText; padding: 9px; }
+  .caption, .studyLabel { color: CanvasText; }
+}

@@ -194,6 +194,12 @@ This is a reference implementation; it is not maintained and does not accept con
 
 The DUFYND Control Room uses `examples/retail/api/jarvis_crew.py` for read-only role and risk projections. See [Crew and risk semantics](docs/tech/control-room-crew-risk-v1.md).
 
+The DUFYND homepage combines an original generic `PerfumeObject` with a deferred
+Three.js renderer and static fallback, explicit search/comparison/offer paths,
+and placement-bound product photography through `homeVisualAssets`. `ScentWorlds`
+and the visual comparison use separately credited botanical illustrations.
+See [Visual homepage and QA](docs/dufynd-visual-home.md).
+
 Jarvis operating context includes the read-only, evidence-bound partner projection
 from `scripts/dufynd_affiliate_truth.py`. See [Affiliate truth contract](docs/dufynd-affiliate-truth-contract.md)
 for verification timestamps, stale/negative evidence, product readiness and migration boundaries.

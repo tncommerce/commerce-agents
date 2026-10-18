@@ -35,7 +35,14 @@ def test_discovery_surfaces_use_presentation_visual() -> None:
     assert "originalPhotoFor(fragrance)" in library_hub
     assert "fragrance.presentation_visual" not in library_hub
     assert "<AtelierSelection />" in home_view
-    assert "originalPhotoFor(p)" in _read("components/AtelierSelection.tsx")
+    selection = _read("components/AtelierSelection.tsx")
+    assert 'getHomeVisual(product, { kind: "merchant_showcase"' in selection
+    assert 'merchantId: "top-parfuemerie"' in selection
+    assert "destinationUrl: entry.merchantProductUrl" in selection
+    assert "originalPhotoFor(fragrance)" in _read("lib/homeVisualAssets.ts")
+    offers = _read("components/HomeOffers.tsx")
+    assert 'getHomeVisual(product, {kind: "editorial"})' in offers
+    assert "ImageAttribution visual={visual}" in offers
 
 
 def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> None:

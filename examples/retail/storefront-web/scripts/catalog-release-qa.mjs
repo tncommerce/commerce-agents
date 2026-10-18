@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {verifyHomepageImageScope} from './visual-reset-qa.mjs';
 import {photoIntegrationQa} from './photo-integration-qa.mjs';
 import {publicCount} from './public-catalog-summary.mjs';
 import {rendererDigest,renderDigest} from './release-gate.mjs';
@@ -51,31 +52,23 @@ for(const width of [320,390,768,1440]) {
  assert.equal(sum,publicCount);assert.equal(new Set(names.map(x=>x.toLowerCase())).size,names.length);
  await page.goto(base);await page.locator('#dufynd-home-search').waitFor();
  const searchBounds=await page.locator('#dufynd-home-search').boundingBox();assert.ok(searchBounds.y+searchBounds.height<740,'Search remains in the first viewport');
- const selection=page.locator('.wow-selection [data-dufynd-original-card]');
- assert.equal(await selection.count(),2,'Editorial selection exposes both original-photo products');
+ const selection=page.locator('a[data-dufynd-original-card]');
+ assert.equal(await selection.count(),1,'Internal editorial selection exposes the context-independent licensed product');
+ await verifyHomepageImageScope(page,base);
  for(const card of await selection.all()) {
    await card.scrollIntoViewIfNeeded();
    const sources=await card.locator('img').evaluateAll(xs=>xs.map(x=>x.getAttribute('src')));
    assert.ok(sources.length>0&&sources.every(src=>photos.some(p=>p.url===src)),'Selection uses registered originals');
  }
- // Editorial source photos are full-width stacked cards on mobile, not a
- // hidden carousel; tablet and desktop retain the two-column composition.
- // Fail on clipping, overlap, unreadable thumbnails or missing touch areas.
+ // The single internal editorial photograph remains legible at every width.
+ // Merchant-scoped photographs are separately asserted in their TOP shopping context.
  {
-  const a=await selection.nth(0).boundingBox(),b=await selection.nth(1).boundingBox();
-  assert.ok(a&&b,'Both licensed original product entries must be visible');
-  assert.ok(a.x>=0&&a.x+a.width<=width&&b.x>=0&&b.x+b.width<=width,
-   'Both licensed original entries fit inside the viewport');
-  assert.ok(a.height>=44&&b.height>=44,'Both product links retain touch targets');
-  if(width<640) {
-   assert.ok(b.y>=a.y+a.height,
-    'Mobile original-photo entries must stack vertically without overlap');
-   const photo=await selection.nth(0).locator('.wow-selection-photo').boundingBox();
-   assert.ok(photo&&photo.width>=105,'Mobile source photo must remain legible');
-  } else {
-   assert.ok(a.x+a.width<=b.x,
-    'Tablet and desktop original-photo selections must remain side by side');
-  }
+  const card=await selection.first().boundingBox();
+  const photo=await selection.first().locator('[data-dufynd-image-kind]').boundingBox();
+  assert.ok(card&&photo,'Licensed original product entry must remain visible');
+  assert.ok(card.x>=0&&card.x+card.width<=width,'Original product entry fits the viewport');
+  assert.ok(card.height>=44,'Product link retains a touch target');
+  assert.ok(photo.width>=105,'Source photo remains legible');
  }
  const selectedPath=new URL(await selection.first().getAttribute('href'),base).pathname;
  await selection.first().focus();await page.keyboard.press('Enter');await page.waitForURL(url=>url.pathname===selectedPath);

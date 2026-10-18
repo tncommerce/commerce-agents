@@ -54,3 +54,6 @@ examples/retail/data/scentai_pilot_batch_01_production_status.local.json
 
 # Ephemeral, hash-checked merchant photos for gated local review builds only.
 examples/retail/storefront-web/public/__review-photos/
+
+# Draft-only DUFYND CGI research outputs. Never ship local reference stills.
+examples/retail/storefront-web/.cgi-lab/

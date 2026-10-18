@@ -70,6 +70,101 @@ def _runtime(thin: dict[str, Any], runtime: dict[str, Any] | None) -> dict[str, 
     return nested if isinstance(nested, dict) else {}
 
 
+# Strictly authored objectives: no user/queue free-form instruction is copied
+# into an executor prompt. A Work handoff is a suggestion, not a dispatch.
+WORK_HANDOFF_GOALS = {
+    "funnel_conversion_readiness": (
+        "Verifizierten Duft-zu-Angebot-Weg verbessern",
+        "Prüfe den belegten Besucherpfad vom Duftfinder oder Katalog über "
+        "ein freigegebenes Duftprofil zu verifizierten Händlerangeboten. "
+        "Behebe höchstens eine nachgewiesene, conversionrelevante Reibungsstelle "
+        "auf dem bereits offenen Entwicklungs-PR. Bestätige die Wirkung durch "
+        "bestehende 320/390/1440-Browser-QA, Consent- und Attributionsprüfungen.",
+    ),
+    "qualified_traffic_generation": (
+        "Qualifizierten Traffic technisch vorbereiten",
+        "Analysiere ausschließlich vorhandene, als Besucher klassifizierte "
+        "Funnel-/Kampagnensignale und identifiziere einen messbaren Fehler "
+        "in Landing, Navigation oder Attribution. Bereite höchstens einen "
+        "reversiblen Draft-Fix mit unabhängigem Testnachweis vor. "
+        "Keine Veröffentlichung oder externe Kontaktaufnahme.",
+    ),
+}
+
+
+def _work_handoff(
+    *,
+    state: str,
+    business_move: str,
+    planner_capability_gap: str,
+    active_count: int,
+    ready: list[dict[str, Any]],
+    owner_required: bool,
+    source_complete: bool,
+    checkpoint_age: object,
+) -> dict[str, Any]:
+    """Offer manual Work delegation only for a fresh, real capability gap.
+
+    Certified free supervisor work is not an engineering executor. Existing
+    development tasks, active leases, owner gates or stale sources fail closed.
+    """
+    unavailable = {"status": "unavailable", "dispatch_performed": False}
+    if (
+        state != "PLANNING_REQUIRED"
+        or business_move not in WORK_HANDOFF_GOALS
+        or not planner_capability_gap
+        or active_count
+        or owner_required
+        or not source_complete
+        or not isinstance(checkpoint_age, (int, float))
+        or not 0 <= checkpoint_age <= 3600
+        or any(
+            str(row.get("domain") or "").lower() in {"engineering", "web", "platform", "commerce"}
+            for row in ready
+        )
+    ):
+        return unavailable
+    title, goal = WORK_HANDOFF_GOALS[business_move]
+    prompt = (
+        "DUFYND – JARVIS-TO-WORK / MANUELLER HANDOFF V1\n"
+        "LIVE STATE GEWINNT. DELTA-ONLY. BUDGET 0 EUR.\n\n"
+        "Repository: tncommerce/commerce-agents. "
+        "Prüfe vor jeder Änderung den aktuellen HEAD, PR, CI und alle "
+        "bereits aktiven Jarvis-Tasks und Sperren. "
+        "Nutze einen bestehenden passenden Draft-Entwicklungsbranch; "
+        "keinen parallelen Branch und keinen Produktionsbranch.\n\n"
+        f"Auftrag: {title}. {goal}\n\n"
+        "Qualitätsvertrag: Lege vor jeder Änderung genau eine überprüfbare "
+        "Hypothese, erwartete Wirkung und eine Abbruchbedingung fest. "
+        "Kein Patch allein für mehr Commits. Nur unabhängig überprüfte "
+        "Original-Screenshots und aktuelle CI zählen. "
+        "Wenn bereits ein Worker denselben Scope bearbeitet, NICHT erneut ausführen.\n\n"
+        "Grenzen: keine neuen kostenpflichtigen Tools oder Provideraufrufe, "
+        "keine Produktion, kein Merge nach scentai-mvp oder main, "
+        "kein Deploy, keine Social-Veröffentlichung, kein Outbound, "
+        "kein Datenbank-Schreibzugriff, keine Merchant-URL-Änderung "
+        "ohne validierten Produkt-/Rechte-/Tracking-Vertrag. "
+        "Owner-Gates bleiben strikt getrennt.\n\n"
+        "Abschluss: Änderung mit Commit/SHA, genauem QA-Nachweis, "
+        "ehrlicher Qualitätsbeurteilung und verbleibendem Blocker melden. "
+        "Wenn der Live-State oder die Quelle nicht übereinstimmt: "
+        "ohne Ausführung stoppen und neue Fakten einholen. "
+        "Dieser Text autorisiert keinen automatischen Start."
+    )
+    return {
+        "status": "ready_for_manual_handoff",
+        "dispatch_performed": False,
+        "requires_manual_work_start": True,
+        "target": "ChatGPT Work",
+        "goal_key": business_move,
+        "title": title,
+        "prompt": prompt,
+        "source": "verified_jarvis_business_planner_gap",
+        "budget_eur": 0,
+        "production_authorized": False,
+    }
+
+
 def build_operator_diagnosis(
     *,
     tasks: list[dict[str, Any]],
@@ -79,6 +174,7 @@ def build_operator_diagnosis(
     thin: dict[str, Any] | None = None,
     runtime: dict[str, Any] | None = None,
     now: datetime | None = None,
+    handoff_sources_complete: bool = False,
 ) -> dict[str, Any]:
     """Return one bounded, user-facing operating diagnosis."""
 
@@ -369,7 +465,18 @@ def build_operator_diagnosis(
             "noch terminierte sichere Arbeit vorhanden ist."
         )
 
+    work_handoff = _work_handoff(
+        state=state,
+        business_move=business_next_move,
+        planner_capability_gap=str(business_planner.get("capability_gap") or ""),
+        active_count=active_count,
+        ready=ready,
+        owner_required=real_owner_action,
+        source_complete=handoff_sources_complete,
+        checkpoint_age=checkpoint_age,
+    )
     return {
+        "work_handoff": work_handoff,
         "state": state,
         "headline": headline,
         "cause": cause,
