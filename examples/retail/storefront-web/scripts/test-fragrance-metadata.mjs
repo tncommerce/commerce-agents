@@ -65,6 +65,11 @@ async function metadataFor({ productId, slug, originalUrl = null }) {
     module: mod, exports: mod.exports,
     require(name) {
       if (name === "@/lib/releasedProfileCatalog") return { RELEASED_PROFILES: [] };
+      if (name === "@/components/LibreRefillGuide") return {
+        LIBRE_REFILL_SEO_TITLE: "YSL Libre EDP 90 ml: nachfüllbarer Flakon oder Refill?",
+        LIBRE_REFILL_SEO_DESCRIPTION:
+          "Libre EDP 90 ml richtig kaufen: nachfüllbaren Flakon und Refill unterscheiden, die Variante prüfen und passende Händlerangebote auf DUFYND finden.",
+      };
       if (name === "@/lib/accordLabels") return { accordLabel: (value) => value };
       if (name === "@/lib/site") return {
         SITE_INDEXABLE: false, SITE_URL: "https://dufynd.example",
@@ -105,3 +110,22 @@ assert.equal(licensed.openGraph.images?.[0], original);
 assert.equal(licensed.twitter.images?.[0], original);
 assert.equal(licensed.twitter.card, "summary_large_image");
 console.log("RC1 metadata: exact identity, unapproved creative excluded, licensed-photo precedence PASS");
+
+const libre = await metadataFor({
+  productId: "SC-YSL-LIBRE-EDP-90",
+  slug: "yves-saint-laurent-libre",
+});
+assert.equal(libre.title, "YSL Libre EDP 90 ml: nachfüllbarer Flakon oder Refill?");
+assert.equal(
+  libre.description,
+  "Libre EDP 90 ml richtig kaufen: nachfüllbaren Flakon und Refill unterscheiden, die Variante prüfen und passende Händlerangebote auf DUFYND finden.",
+);
+assert.equal(libre.alternates.canonical, "/duft/yves-saint-laurent-libre");
+assert.equal(libre.openGraph.url, "https://dufynd.example/duft/yves-saint-laurent-libre");
+assert.equal(libre.openGraph.title, libre.title);
+assert.equal(libre.twitter.description, libre.description);
+assert.equal(libre.openGraph.images, undefined);
+assert.equal(libre.twitter.card, "summary");
+assert.equal(other.title, "Rabanne 1 Million – Eau de Toilette 100 ml");
+console.log("Libre metadata: exact EDP 90ml intent, original canonical, no invented image PASS");
+

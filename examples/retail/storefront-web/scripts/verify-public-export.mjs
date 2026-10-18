@@ -23,4 +23,32 @@ for(const p of pilots){
  if(Boolean(approved)!==exported)throw Error(`Public route authorization mismatch: ${p.product_id}`);
  if(!approved?.indexing_approved&&sitemap.includes(`/duft/${p.slug}<`))throw Error(`Unauthorized indexing: ${p.product_id}`);
 }
+
+// WORK50: evidence-based buying guide must be server-rendered on the one
+// intended product URL. Keep canonical paths, other profiles and offer CTAs.
+function productHtml(slug) {
+  for (const candidate of [
+    path.join(root, 'duft', `${slug}.html`),
+    path.join(root, 'duft', slug, 'index.html'),
+  ]) {
+    if (existsSync(candidate)) return readFileSync(candidate, 'utf8');
+  }
+  throw new Error(`Missing public fragrance page: ${slug}`);
+}
+const libre = productHtml('yves-saint-laurent-libre');
+const rabanne = productHtml('rabanne-1-million');
+if (
+  !libre.includes('data-dufynd-libre-refill-guide') ||
+  !libre.includes('id="libre-nachfuellbar"') ||
+  !libre.includes('href="#angebote"') ||
+  !libre.includes('nachfüllbarer Flakon') ||
+  !libre.includes('kein vollständiger Flakon')
+) {
+  throw new Error('Libre buying guide is not present or incomplete in static HTML export');
+}
+if (rabanne.includes('data-dufynd-libre-refill-guide')) {
+  throw new Error('Libre buyer guide leaked onto the Rabanne product page');
+}
+console.log('Libre EDP 90ml buyer guide: static export, internal offer CTA and product isolation PASS');
+
 console.log('Public export verified: no raw Parfumo rating payload; review-route boundary intact.');
