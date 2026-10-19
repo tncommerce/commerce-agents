@@ -554,19 +554,44 @@ def test_deployment_smoke_accepts_only_safe_empty_rabanne_offer_with_explicit_wa
     )
     assert report.ok is True
     assert len(report.checks) == 18
-    check = next(check for check in report.checks if check.name == "merchant_offers_rabanne_1_million")
+    check = next(
+        check for check in report.checks if check.name == "merchant_offers_rabanne_1_million"
+    )
     assert check.ok is True
     assert "BUSINESS_WARNING" in check.detail
     assert "NOT confirmed" in check.detail
     assert check.status_code == 200
 
 
-@pytest.mark.parametrize("malformed", [
-    {"product_id": CRITICAL_PRODUCT_ID, "best_offer_id": "stale-offer", "offers": [], "affiliate_disclosure": "Disclosure"},
-    {"product_id": "SC-WRONG", "best_offer_id": None, "offers": [], "affiliate_disclosure": "Disclosure"},
-    {"product_id": CRITICAL_PRODUCT_ID, "best_offer_id": None, "offers": [], "affiliate_disclosure": ""},
-    {"product_id": CRITICAL_PRODUCT_ID, "best_offer_id": None, "offers": ["malformed"], "affiliate_disclosure": "Disclosure"},
-])
+@pytest.mark.parametrize(
+    "malformed",
+    [
+        {
+            "product_id": CRITICAL_PRODUCT_ID,
+            "best_offer_id": "stale-offer",
+            "offers": [],
+            "affiliate_disclosure": "Disclosure",
+        },
+        {
+            "product_id": "SC-WRONG",
+            "best_offer_id": None,
+            "offers": [],
+            "affiliate_disclosure": "Disclosure",
+        },
+        {
+            "product_id": CRITICAL_PRODUCT_ID,
+            "best_offer_id": None,
+            "offers": [],
+            "affiliate_disclosure": "",
+        },
+        {
+            "product_id": CRITICAL_PRODUCT_ID,
+            "best_offer_id": None,
+            "offers": ["malformed"],
+            "affiliate_disclosure": "Disclosure",
+        },
+    ],
+)
 def test_deployment_smoke_still_rejects_malformed_or_unsafe_offers(malformed: dict) -> None:
     report = run_smoke(
         storefront_url="https://dufynd.de",
@@ -586,7 +611,12 @@ def test_deployment_smoke_does_not_waive_indexing_or_route_regressions() -> None
         allow_safe_rabanne_absence=True,
         transport=transport(
             robots_text="User-agent: *\\nDisallow: /\\n",
-            offers_payload={"product_id": CRITICAL_PRODUCT_ID, "best_offer_id": None, "offers": [], "affiliate_disclosure": "Disclosure"},
+            offers_payload={
+                "product_id": CRITICAL_PRODUCT_ID,
+                "best_offer_id": None,
+                "offers": [],
+                "affiliate_disclosure": "Disclosure",
+            },
         ),
     )
     assert report.ok is False
