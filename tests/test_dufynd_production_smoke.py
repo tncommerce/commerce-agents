@@ -535,3 +535,59 @@ def test_smoke_accepts_hidden_notino_eclaire_while_publication_gate_is_closed() 
     assert check.ok is True
     assert check.status_code == 404
     assert "publication-gated" in check.detail
+
+
+def test_deployment_smoke_accepts_only_safe_empty_rabanne_offer_with_explicit_warning() -> None:
+    """A merchant-side outage must not turn a healthy deployment into a failed deploy."""
+    empty = {
+        "product_id": CRITICAL_PRODUCT_ID,
+        "best_offer_id": None,
+        "offers": [],
+        "affiliate_disclosure": "Affiliate disclosure",
+    }
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        expected_indexing="disabled",
+        allow_safe_rabanne_absence=True,
+        transport=transport(offers_payload=empty),
+    )
+    assert report.ok is True
+    assert len(report.checks) == 18
+    check = next(check for check in report.checks if check.name == "merchant_offers_rabanne_1_million")
+    assert check.ok is True
+    assert "BUSINESS_WARNING" in check.detail
+    assert "NOT confirmed" in check.detail
+    assert check.status_code == 200
+
+
+@pytest.mark.parametrize("malformed", [
+    {"product_id": CRITICAL_PRODUCT_ID, "best_offer_id": "stale-offer", "offers": [], "affiliate_disclosure": "Disclosure"},
+    {"product_id": "SC-WRONG", "best_offer_id": None, "offers": [], "affiliate_disclosure": "Disclosure"},
+    {"product_id": CRITICAL_PRODUCT_ID, "best_offer_id": None, "offers": [], "affiliate_disclosure": ""},
+    {"product_id": CRITICAL_PRODUCT_ID, "best_offer_id": None, "offers": ["malformed"], "affiliate_disclosure": "Disclosure"},
+])
+def test_deployment_smoke_still_rejects_malformed_or_unsafe_offers(malformed: dict) -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        allow_safe_rabanne_absence=True,
+        transport=transport(offers_payload=malformed),
+    )
+    assert report.ok is False
+    assert any(c.name == "merchant_offers_rabanne_1_million" and not c.ok for c in report.checks)
+
+
+def test_deployment_smoke_does_not_waive_indexing_or_route_regressions() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        expected_indexing="enabled",
+        allow_safe_rabanne_absence=True,
+        transport=transport(
+            robots_text="User-agent: *\\nDisallow: /\\n",
+            offers_payload={"product_id": CRITICAL_PRODUCT_ID, "best_offer_id": None, "offers": [], "affiliate_disclosure": "Disclosure"},
+        ),
+    )
+    assert report.ok is False
+    assert any(c.name == "robots_policy" and not c.ok for c in report.checks)
