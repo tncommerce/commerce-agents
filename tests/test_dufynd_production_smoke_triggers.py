@@ -31,4 +31,4 @@ def test_production_deployment_smoke_reports_absent_merchant_without_hiding_it()
     assert "--expected-indexing enabled --allow-safe-rabanne-absence" in workflow
     script = Path("scripts/dufynd_production_smoke.py").read_text(encoding="utf-8")
     assert '"BUSINESS_WARNING: no eligible merchant offer' in script
-    assert 'allow_safe_rabanne_absence: bool = False' in script
+    assert "allow_safe_rabanne_absence: bool = False" in script
