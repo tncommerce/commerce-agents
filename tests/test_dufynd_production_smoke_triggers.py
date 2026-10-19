@@ -23,3 +23,12 @@ def test_dufynd_production_smoke_requires_search_indexing_in_production() -> Non
     assert invocation + " --expected-indexing enabled; then" in workflow
     assert "if python scripts/dufynd_production_smoke.py; then" not in workflow
     # We do not change the observer read/ack/finalize or add a new schedule.
+
+
+def test_production_deployment_smoke_reports_absent_merchant_without_hiding_it() -> None:
+    """Deployment smoke may allow only an explicit safe empty offer, not invalid offers."""
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    assert "--expected-indexing enabled --allow-safe-rabanne-absence" in workflow
+    script = Path("scripts/dufynd_production_smoke.py").read_text(encoding="utf-8")
+    assert '"BUSINESS_WARNING: no eligible merchant offer' in script
+    assert 'allow_safe_rabanne_absence: bool = False' in script
