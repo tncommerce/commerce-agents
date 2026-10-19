@@ -485,11 +485,15 @@ def _check_merchant_offers(
         # Deployment health and commercial availability are different assertions.
         # Accept only the API's explicit, fail-closed empty contract in the
         # deployment smoke. The default full business smoke remains strict.
-        if allow_safe_absence and offers == [] and (
-            payload.get("product_id") == product_id
-            and best_offer_id is None
-            and isinstance(disclosure, str)
-            and bool(disclosure.strip())
+        if (
+            allow_safe_absence
+            and offers == []
+            and (
+                payload.get("product_id") == product_id
+                and best_offer_id is None
+                and isinstance(disclosure, str)
+                and bool(disclosure.strip())
+            )
         ):
             return SmokeCheck(
                 name=name,
@@ -869,7 +873,11 @@ def main() -> int:
             f"{len(report.checks)}"
         )
         for check in report.checks:
-            marker = "WARN" if check.detail.startswith("BUSINESS_WARNING:") else ("PASS" if check.ok else "FAIL")
+            marker = (
+                "WARN"
+                if check.detail.startswith("BUSINESS_WARNING:")
+                else ("PASS" if check.ok else "FAIL")
+            )
             print(f"  {marker} {check.name}: {check.detail}")
 
     return 0 if report.ok else 20
