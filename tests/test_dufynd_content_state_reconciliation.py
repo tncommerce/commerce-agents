@@ -53,4 +53,29 @@ def test_master_fingerprint_matches_rebuilt_control_plane() -> None:
     master = json.loads(MASTER.read_text(encoding="utf-8"))
     expected = refresh_state(generated_at=master["generated_at"])["master_status"]
 
+    # Development-only deterministic snapshot regeneration probe; removed before merge.
+    if master["source_fingerprint_sha256"] != expected["source_fingerprint_sha256"]:
+        refreshed = refresh_state(generated_at=master["generated_at"])
+        derived = {
+            "scentai_release_01_gate_status.json": "release_status",
+            "scentai_release_pipeline_status.json": "release_pipeline",
+            "scentai_jarvis_operations_status.json": "operations",
+            "scentai_jarvis_master_status.json": "master_status",
+        }
+        for filename, key in derived.items():
+            candidate = Path("examples/retail/data") / filename
+            payload = refreshed[key]
+            if json.loads(candidate.read_text(encoding="utf-8")) != payload:
+                print(
+                    "DUFYND_REFRESH_ARTIFACT="
+                    + json.dumps(
+                        {
+                            "path": candidate.as_posix(),
+                            "content": json.dumps(payload, ensure_ascii=False, indent=2)
+                            + "\n",
+                        },
+                        ensure_ascii=False,
+                        separators=(",", ":"),
+                    )
+                )
     assert master["source_fingerprint_sha256"] == expected["source_fingerprint_sha256"]
