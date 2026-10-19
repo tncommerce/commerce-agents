@@ -71,4 +71,50 @@ assert.doesNotMatch(external,/sponsored|Werbung · Partnerlink/);assert.match(ex
 for(const state of [{loading:true},{error:true},{offers:[]}]) {
  const html=render(state);assert.doesNotMatch(html,/href="\/api\/clickout|44,00/);cases++;
 }
+
+// Regression: editorial homepage spotlights cannot claim a live merchant offer.
+// This is rendering-only; it never creates analytics sessions or affiliate clicks.
+const spotlightFixtures = [
+  {
+    product_id: 'SC-LANCOME-LA-VIE-EST-BELLE-EDP-100',
+    slug: 'lancome-la-vie-est-belle',
+    brand: 'Lancôme', name: 'La Vie Est Belle',
+    concentration: 'EDP', volume_ml: 100,
+    notes: { top: [], heart: [], base: [], key: [] },
+  },
+  {
+    product_id: 'SC-YSL-LIBRE-EDP-90',
+    slug: 'yves-saint-laurent-libre',
+    brand: 'Yves Saint Laurent', name: 'Libre',
+    concentration: 'EDP', volume_ml: 90,
+    notes: { top: [], heart: [], base: [], key: [] },
+  },
+];
+const spotlight = compile('../components/AtelierSelection.tsx', id => {
+  if(id==='react' || id==='react/jsx-runtime') return require(id);
+  if(id==='@/lib/fragranceCatalog') return {
+    LIVE_FRAGRANCES: spotlightFixtures,
+    originalPhotoFor: () => ({ url: 'https://example.invalid/qa-only.png' }),
+  };
+  if(id==='@/lib/noteLabels') return {noteLabel: String};
+  if(id==='@/lib/analytics') return {trackAnalyticsEvent: () => {
+    throw Error('No analytics writes allowed during homepage render QA');
+  }};
+  if(id==='./AcquisitionInternalLink') return {__esModule:true,default:({children,onClick,...props}) =>
+    require('react').createElement('a',props,children)};
+  if(id==='./FragranceVisual') return {__esModule:true,default:({alt}) =>
+    require('react').createElement('span',{'aria-label':alt})};
+  if(id==='./ImageAttribution') return {__esModule:true,default:() => null};
+  throw Error('Unexpected spotlight dependency '+id);
+});
+const spotlightMarkup = renderToStaticMarkup(require('react').createElement(spotlight.default));
+assert.match(spotlightMarkup,/data-dufynd-home-selected-stage/);
+assert.equal((spotlightMarkup.match(/Duftprofil entdecken/g)||[]).length,2);
+assert.doesNotMatch(spotlightMarkup,/Duftprofil\s*&(amp;)?\s*Angebote/);
+assert.doesNotMatch(spotlightMarkup,/Händlerangebote prüfen|Bei .* ansehen/);
+assert.match(spotlightMarkup,/href="\/duft\/lancome-la-vie-est-belle"/);
+assert.match(spotlightMarkup,/href="\/duft\/yves-saint-laurent-libre"/);
+assert.doesNotMatch(spotlightMarkup,/href="[^"]*\/api\/clickout\//);
+cases++;
+
 console.log(JSON.stringify({status:'PASS',cases,networkRequests:0,merchantClicks:0,scope:'SSR offer presentation; no browser layout claim'}));
