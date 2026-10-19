@@ -18,6 +18,10 @@ import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import styles from "./FragranceOffers.module.css";
 
+// A backgrounded buyer tab may outlive the server's verified-offer window.
+// Recheck only when the tab returns, never with an extra polling interval.
+const RETURN_RECHECK_INTERVAL_MS = 5 * 60 * 1000;
+
 function OfferRecoveryLinks({ alternativesHref }: { alternativesHref?: string }) {
   return (
     <nav aria-label="Weitere Wege zum passenden Duft" className="mt-4 flex flex-wrap gap-2">
@@ -98,6 +102,7 @@ export default function FragranceOffers({
   const trackedDetailViewRef = useRef<string | null>(null);
   const offerSectionRef = useRef<HTMLElement | null>(null);
   const trackedOfferViewRef = useRef<string | null>(null);
+  const lastOfferFetchStartedAtRef = useRef(0);
 
   // Consent can change after this product mounted. Observe that choice without
   // re-fetching the functional offers or replaying pre-consent shopping actions.
@@ -143,6 +148,7 @@ export default function FragranceOffers({
     let active = true;
     setLoadError(false);
     setPayload(undefined);
+    lastOfferFetchStartedAtRef.current = Date.now();
 
     void fetchMerchantOffers(productId)
       .then((value) => {
@@ -162,6 +168,22 @@ export default function FragranceOffers({
 
     return () => { active = false; };
   }, [analyticsSurface, productId, reloadToken, trackProductOpen]);
+
+  useEffect(() => {
+    const recheckOnReturn = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - lastOfferFetchStartedAtRef.current < RETURN_RECHECK_INTERVAL_MS) return;
+      // The same fail-closed API fetch runs again. No clickout or measurement
+      // event is emitted by this functional freshness check.
+      setReloadToken((current) => current + 1);
+    };
+    document.addEventListener("visibilitychange", recheckOnReturn);
+    window.addEventListener("pageshow", recheckOnReturn);
+    return () => {
+      document.removeEventListener("visibilitychange", recheckOnReturn);
+      window.removeEventListener("pageshow", recheckOnReturn);
+    };
+  }, []);
 
   useEffect(() => {
     const section = offerSectionRef.current;
