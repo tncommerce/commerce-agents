@@ -71,8 +71,7 @@ def test_master_fingerprint_matches_rebuilt_control_plane() -> None:
                     + json.dumps(
                         {
                             "path": candidate.as_posix(),
-                            "content": json.dumps(payload, ensure_ascii=False, indent=2)
-                            + "\n",
+                            "content": json.dumps(payload, ensure_ascii=False, indent=2) + "\n",
                         },
                         ensure_ascii=False,
                         separators=(",", ":"),
