@@ -88,10 +88,20 @@ def test_october_18_refresh_preserves_exact_offers_and_freshness(verified: dict)
 
 
 @pytest.mark.parametrize("verified", EVIDENCE_OCT19["products"], ids=lambda row: row["offer_id"])
-def test_october_19_refresh_preserves_exact_variant_and_current_primary_evidence(verified: dict) -> None:
+def test_october_19_refresh_preserves_exact_variant_and_current_primary_evidence(
+    verified: dict,
+) -> None:
     """Keep 18 October immutable and assert the actual new merchant-observed SKU."""
-    before = next(row for row in json.loads(HISTORICAL_OCT18.read_text())["offers"] if row["offer_id"] == verified["offer_id"])
-    current = next(row for row in json.loads((DATA / "merchant_offers.json").read_text())["offers"] if row["offer_id"] == verified["offer_id"])
+    before = next(
+        row
+        for row in json.loads(HISTORICAL_OCT18.read_text())["offers"]
+        if row["offer_id"] == verified["offer_id"]
+    )
+    current = next(
+        row
+        for row in json.loads((DATA / "merchant_offers.json").read_text())["offers"]
+        if row["offer_id"] == verified["offer_id"]
+    )
     assert current == {
         **before,
         "price": verified["price_eur"],
@@ -108,4 +118,7 @@ def test_october_19_refresh_preserves_exact_variant_and_current_primary_evidence
     checked = datetime.fromisoformat(EVIDENCE_OCT19["observed_at"].replace("Z", "+00:00"))
     store = MerchantOfferStore(DATA / "merchant_offers.json")
     assert store.eligible_offer(verified["offer_id"], now=checked) is not None
-    assert store.eligible_offer(verified["offer_id"], now=checked + timedelta(hours=72, seconds=1)) is None
+    assert (
+        store.eligible_offer(verified["offer_id"], now=checked + timedelta(hours=72, seconds=1))
+        is None
+    )
