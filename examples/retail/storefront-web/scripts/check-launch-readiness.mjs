@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { upcomingAffiliateExpirations } from "./offer-expiry-warning.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const storefrontRoot = path.resolve(here, "..");
@@ -364,6 +365,20 @@ add(
     ? `${affiliateOffers.length} fresh affiliate offers are available.`
     : "No fresh affiliate offers are active yet; monetization is not a launch blocker for recommendation quality.",
 );
+
+// Passive early warning only: this runs inside existing launch/build checks.
+// Supabase-certified Perfumetrader freshness is handled by its separate worker.
+const expiringAffiliate = upcomingAffiliateExpirations(affiliateOffers, now);
+if (expiringAffiliate.length > 0) {
+  add(
+    "warn",
+    "affiliate_offer_expiry_24h",
+    "Original merchant evidence expires within 24 hours for " +
+      expiringAffiliate.map(row => row.offer_id + " (" + row.expires_at + ")").join("; ") +
+      ". Reverify the exact variant and contract with fresh primary evidence; " +
+      "never bump timestamps or replace affiliate URLs from this warning.",
+  );
+}
 
 const activeMerchantPartners = (
   merchantPartners.partners || []
