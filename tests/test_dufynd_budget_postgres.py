@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
@@ -104,6 +105,11 @@ def database():
             + next(
                 (ROOT / "supabase/migrations").glob("*gmail_owner_gate_persistence.sql")
             ).read_text()
+        )
+        # The exact live-sourced, narrowly scoped event replay fix is installed
+        # only in CI's disposable database, never in production by this PR.
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*purchase_event_rearm_guard.sql")).read_text()
         )
     yield
 
@@ -3101,3 +3107,213 @@ def test_mission_disabled_handler_and_public_access_fail_closed(mission_db):
         c.execute("select tick_dufynd_mission_v1()")
     with pytest.raises(psycopg.errors.RaiseException), c.transaction():
         c.execute("select start_dufynd_mission_v1('unsafe','social_publish')")
+
+
+def test_internal_purchase_event_only_wakes_named_task():
+    """Shared purchase observer must not rearm every historical generation."""
+    import psycopg
+
+    older = f"purchase-freshness:qa-old-{uuid4().hex}"
+    current = f"purchase-freshness:qa-new-{uuid4().hex}"
+    observer_source = f"purchase-freshness:qa-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (observer_source,),
+        ).fetchone()[0]
+        for task in (older, current):
+            db.execute(
+                "insert into dufynd_autonomy_tasks "
+                "(task_id,domain,title,instruction,status,worker_state,"
+                "budget_class,resource_scope,durability_policy) "
+                "values(%s,'supervisor','test','read-only verification',"
+                "'waiting_external','waiting_external','free',%s::jsonb,'durable')",
+                (task, '["db:test-purchase-event"]'),
+            )
+            db.execute(
+                "select bind_dufynd_external_wait(%s,%s,%s::jsonb)",
+                (task, oid, '["purchase.freshness.due"]'),
+            )
+        db.execute(
+            "insert into dufynd_jarvis_inbox("
+            "event_type,source_type,source_id,payload,fingerprint,related_task_ids)"
+            "values('purchase.freshness.due','internal_dependency',"
+            "%s,%s::jsonb,%s,%s::jsonb)",
+            (
+                observer_source,
+                json.dumps({"observer_id": oid, "evidence": {}}),
+                uuid4().hex,
+                json.dumps([current]),
+            ),
+        )
+        db.execute("select process_dufynd_external_events()")
+        status = dict(
+            db.execute(
+                "select task_id,status from dufynd_autonomy_tasks where task_id in (%s,%s)",
+                (older, current),
+            ).fetchall()
+        )
+        assert status[older] == "waiting_external"
+        assert status[current] == "ready"
+        wait_status = dict(
+            db.execute(
+                "select task_id,satisfied from dufynd_task_external_waits where task_id in (%s,%s)",
+                (older, current),
+            ).fetchall()
+        )
+        assert wait_status == {older: False, current: True}
+        # Same event must not generate second work, even on another cycle.
+        db.execute("select process_dufynd_external_events()")
+        assert (
+            db.execute(
+                "select status from dufynd_autonomy_tasks where task_id=%s",
+                (older,),
+            ).fetchone()[0]
+            == "waiting_external"
+        )
+        db.rollback()
+
+
+def test_released_purchase_attempt_is_not_rearmed_by_satisfied_wait():
+    """No old terminal purchase task can become ready from the broad sweep."""
+    import psycopg
+
+    task = f"purchase-freshness:qa-terminal-{uuid4().hex}"
+    observer_source = f"purchase-freshness:qa-terminal-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (observer_source,),
+        ).fetchone()[0]
+        db.execute(
+            "insert into dufynd_autonomy_tasks("
+            "task_id,domain,title,instruction,status,worker_state,"
+            "budget_class,resource_scope,durability_policy,durable_payload,released_at)"
+            "values(%s,'supervisor','test','old attempt',"
+            "'blocked','done','free',%s::jsonb,'durable',%s::jsonb,now())",
+            (
+                task,
+                '["db:test-purchase-terminal"]',
+                '{"kind":"purchase_destination_freshness_audit"}',
+            ),
+        )
+        db.execute(
+            "select bind_dufynd_external_wait(%s,%s,%s::jsonb)",
+            (task, oid, '["purchase.freshness.due"]'),
+        )
+        db.execute(
+            "update dufynd_task_external_waits set satisfied=true "
+            "where task_id=%s and observer_id=%s",
+            (task, oid),
+        )
+        db.execute("select process_dufynd_external_events()")
+        row = db.execute(
+            "select status,worker_state,released_at from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert row[0] == "blocked" and row[1] == "done"
+        assert row[2] is not None
+        db.rollback()
+
+
+def test_purchase_cleanup_backfill_is_receipt_bound_and_idempotent():
+    """Historical terminal task is cancelled, never called verified or restarted."""
+    import psycopg
+
+    task, prepared = durable_fixture(steps=1)
+    completed = take_execution(prepared["execution"])
+    assert execution_checkpoint(completed, 1)["status"] == "verifying"
+    assert finish_execution(completed)
+    assert execution_state(completed)["status"] == "completed"
+
+    with psycopg.connect(DSN) as db:
+        # Reproduce only the four historical rows' defining metadata in the
+        # disposable fixture. A real completed, fenced execution already exists.
+        db.execute(
+            "update dufynd_autonomy_tasks set status='ready',worker_state='ready',"
+            "durable_payload=%s::jsonb where task_id=%s",
+            ('{"kind":"purchase_destination_freshness_audit"}', task),
+        )
+        original = db.execute(
+            "select released_at,evidence from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert original[0] is not None
+        migration = next(
+            (ROOT / "supabase/migrations").glob("*purchase_event_rearm_guard.sql")
+        ).read_text()
+        # Reapply the exact migration deliberately; it must be repeatable.
+        db.execute(migration)
+        once = db.execute(
+            "select status,worker_state,released_at,evidence "
+            "from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert once[0] == "cancelled" and once[1] == "done"
+        assert once[2] == original[0]
+        reason = db.execute(
+            "select blocked_reason from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()[0]
+        assert reason == "superseded_completed_purchase_attempt"
+        db.execute(migration)
+        twice = db.execute(
+            "select status,worker_state,released_at,evidence "
+            "from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert once == twice
+        execution_status = db.execute(
+            "select status from dufynd_execution_runs where execution_id=%s",
+            (completed["execution_id"],),
+        ).fetchone()[0]
+        assert execution_status == "completed"
+        db.rollback()
+
+
+def test_internal_dependency_event_provenance_only_marks_named_tasks():
+    """A shared observer event must never stamp unrelated task provenance."""
+    import psycopg
+
+    older = f"purchase-freshness:qa-provenance-old-{uuid4().hex}"
+    named = f"purchase-freshness:qa-provenance-new-{uuid4().hex}"
+    source = f"purchase-freshness:qa-provenance-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (source,),
+        ).fetchone()[0]
+        for task in (older, named):
+            db.execute(
+                "insert into dufynd_autonomy_tasks("
+                "task_id,domain,title,instruction,status,worker_state,"
+                "budget_class,resource_scope,durability_policy,dependencies)"
+                "values(%s,'supervisor','test','bounded metadata provenance',"
+                "'waiting_external','waiting_external','free',"
+                "%s::jsonb,'durable',%s::jsonb)",
+                (task, '["db:test-purchase-provenance"]', json.dumps([source])),
+            )
+        event_id = db.execute(
+            "insert into dufynd_jarvis_inbox("
+            "event_type,source_type,source_id,payload,fingerprint,related_task_ids)"
+            "values('purchase.freshness.due','internal_dependency',"
+            "%s,%s::jsonb,%s,%s::jsonb) returning event_id",
+            (
+                source,
+                json.dumps({"observer_id": oid, "evidence": {}}),
+                uuid4().hex,
+                json.dumps([named]),
+            ),
+        ).fetchone()[0]
+        db.execute("select process_dufynd_external_events()")
+        provenance = dict(
+            db.execute(
+                "select task_id,last_external_event_id "
+                "from dufynd_autonomy_tasks where task_id in (%s,%s)",
+                (older, named),
+            ).fetchall()
+        )
+        assert provenance[older] is None
+        assert provenance[named] == event_id
+        # No sale, no merchant proof, and no retained changes from this test.
+        db.rollback()

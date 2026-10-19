@@ -11,6 +11,10 @@ import FragranceNoteSculpture from "@/components/FragranceNoteSculpture";
 import FragranceNotesOverview from "@/components/FragranceNotesOverview";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
+import LibreRefillGuide, {
+  LIBRE_REFILL_SEO_DESCRIPTION,
+  LIBRE_REFILL_SEO_TITLE,
+} from "@/components/LibreRefillGuide";
 import MobileOfferBar from "@/components/MobileOfferBar";
 import OfferSectionLink from "@/components/OfferSectionLink";
 import FragranceVisual from "@/components/FragranceVisual";
@@ -196,9 +200,13 @@ export async function generateMetadata({
     };
   }
 
-  const title =
-    `${fragrance.brand} ${fragrance.name} – ${fragrance.concentration} ${fragrance.volume_ml} ml`;
-  const description = descriptionFor(fragrance);
+  const isLibreEDP90 = fragrance.product_id === "SC-YSL-LIBRE-EDP-90";
+  const title = isLibreEDP90
+    ? LIBRE_REFILL_SEO_TITLE
+    : `${fragrance.brand} ${fragrance.name} – ${fragrance.concentration} ${fragrance.volume_ml} ml`;
+  const description = isLibreEDP90
+    ? LIBRE_REFILL_SEO_DESCRIPTION
+    : descriptionFor(fragrance);
   const canonical = `/duft/${fragrance.slug}`;
   const shareImage = originalPhotoFor(fragrance)?.url || null;
 
@@ -671,6 +679,14 @@ export default async function FragrancePage({
             >
               Angebote
             </OfferSectionLink>}
+            {!review && fragrance.product_id === "SC-YSL-LIBRE-EDP-90" ? (
+              <a
+                href="#libre-nachfuellbar"
+                className="rounded-xl px-3 py-2 text-[11px] font-semibold text-(--ink) transition hover:bg-(--well) sm:px-4 sm:text-[12px]"
+              >
+                Flakon oder Refill?
+              </a>
+            ) : null}
             <a
               href="#duftprofil"
               className="rounded-xl px-3 py-2 text-[11px] font-semibold text-(--ink) transition hover:bg-(--well) sm:px-4 sm:text-[12px]"
@@ -717,6 +733,10 @@ export default async function FragrancePage({
               alternativesHref={related.length ? "#alternativen" : undefined}
             />
           </div>}
+
+        {!review && fragrance.product_id === "SC-YSL-LIBRE-EDP-90" ? (
+          <LibreRefillGuide />
+        ) : null}
 
         <div
           className="dufynd-fragrance-chapter dufynd-fragrance-chapter--notes mt-5"
