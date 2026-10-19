@@ -13,6 +13,12 @@ DATA = Path("examples/retail/data")
 def test_reviewed_paths_resolve_to_exact_current_variants():
     evidence = json.loads((DATA / "dufynd_priority_purchase_evidence_20261009.json").read_text())
     store = MerchantOfferStore(DATA / "merchant_offers.json")
+    refreshed = json.loads((DATA / "dufynd_notino_offer_refresh_20261019.json").read_text())
+    current_prices = {row["offer_id"]: row["price_eur"] for row in refreshed["products"]}
+    original_18 = json.loads(
+        Path("tests/fixtures/dufynd_notino_offer_refresh_20261018.json").read_text()
+    )["offers"]
+    original_prices = {row["offer_id"]: row["price"] for row in original_18}
     current_rows = {
         row["offer_id"]: row
         for row in json.loads((DATA / "merchant_offers.json").read_text())["offers"]
@@ -31,7 +37,8 @@ def test_reviewed_paths_resolve_to_exact_current_variants():
         offer = store.eligible_offer(row["offer_id"], now=current_check)
         assert offer is not None
         assert offer.merchant_product_id == row["merchant_product_id"]
-        assert offer.price == row["regular_price_eur"]
+        assert original_prices[row["offer_id"]] == row["regular_price_eur"]
+        assert offer.price == current_prices[row["offer_id"]]
         target = urlsplit(offer_clickout_target(offer))
         assert target.hostname == "www.jdoqocy.com"
         assert target.path == "/click-101884613-12260695"

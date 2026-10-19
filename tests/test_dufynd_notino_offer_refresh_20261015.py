@@ -21,6 +21,7 @@ EVIDENCE = json.loads((DATA / "dufynd_notino_offer_refresh_20261015.json").read_
 # The mutable live catalog may have later, valid evidence; historical clock tests
 # must never travel into the future relative to their original observation.
 HISTORICAL_OFFERS = Path("tests/fixtures/dufynd_notino_offer_refresh_20261015.json")
+HISTORICAL_OCT18 = Path("tests/fixtures/dufynd_notino_offer_refresh_20261018.json")
 REFRESHED_20261018 = {
     "notino-pdm-delina-edp-75": "2026-10-18T09:38:01.133371+00:00",
     "notino-ysl-black-opium-edp-90": "2026-10-18T09:38:01.134527+00:00",
@@ -56,30 +57,23 @@ def test_exact_notino_offer_is_eligible_then_expires(verified: dict) -> None:
 
 @pytest.mark.parametrize("verified", EVIDENCE["products"], ids=lambda row: row["offer_id"])
 def test_october_18_refresh_preserves_exact_offers_and_freshness(verified: dict) -> None:
-    """Match Work47's original read-only HTTP evidence without weakening age guards."""
+    """Historical 18 October acceptance is preserved as immutable fixture, not live mutable data."""
     historical = json.loads(HISTORICAL_OFFERS.read_text(encoding="utf-8"))["offers"]
-    current = json.loads((DATA / "merchant_offers.json").read_text(encoding="utf-8"))["offers"]
+    oct18 = json.loads(HISTORICAL_OCT18.read_text(encoding="utf-8"))["offers"]
     old = [row for row in historical if row["offer_id"] == verified["offer_id"]]
-    new = [row for row in current if row["offer_id"] == verified["offer_id"]]
+    new = [row for row in oct18 if row["offer_id"] == verified["offer_id"]]
     assert len(old) == len(new) == 1
-
-    # Timestamp-only approval: variant, merchant ID, price, stock, shipping,
-    # affiliate tracking destination and all other fields are unchanged.
-    assert new[0] == {
-        **old[0],
-        "last_updated_at": REFRESHED_20261018[verified["offer_id"]],
-    }
+    assert new[0] == {**old[0], "last_updated_at": REFRESHED_20261018[verified["offer_id"]]}
     assert new[0]["product_url"] == verified["source_url"]
     assert new[0]["merchant_product_id"] == verified["merchant_product_id"]
 
     checked = datetime.fromisoformat(REFRESHED_20261018[verified["offer_id"]])
-    store = MerchantOfferStore(DATA / "merchant_offers.json")
+    store = MerchantOfferStore(HISTORICAL_OCT18)
     assert store.eligible_offer(verified["offer_id"], now=checked - timedelta(minutes=6)) is None
     assert [offer.offer_id for offer in store.offers_for(verified["product_id"], now=checked)] == [
         verified["offer_id"]
     ]
     assert store.eligible_offer(verified["offer_id"], now=checked + timedelta(hours=72)) is not None
-    assert (
-        store.eligible_offer(verified["offer_id"], now=checked + timedelta(hours=72, seconds=1))
-        is None
-    )
+    assert store.eligible_offer(
+        verified["offer_id"], now=checked + timedelta(hours=72, seconds=1)
+    ) is None

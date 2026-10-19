@@ -88,7 +88,7 @@ def test_selected_offer_keeps_variant_price_and_expiry(monkeypatch):
     offers = store.offers_for("SC-YSL-LIBRE-EDP-90", now=now)
     offer = store.eligible_offer("notino-ysl-libre-edp-90", now=now)
     assert offers == [offer]
-    assert offer.price == 132
+    assert offer.price == 130  # Exact public Notino Libre 90 ml observation, 19 Oct 2026
     assert offer.variant_label == "90 ml · Eau de Parfum · nachfüllbarer Flakon"
     expired = offer.last_updated_at + timedelta(hours=72, seconds=1)
     assert store.offers_for(offer.product_id, now=expired) == []
