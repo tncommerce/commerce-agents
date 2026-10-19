@@ -18,8 +18,12 @@ from retail.api.merchant_offers import (
 )
 
 DATA = Path("examples/retail/data")
-EVIDENCE = json.loads((DATA / "dufynd_notino_offer_refresh_20261019.json").read_text(encoding="utf-8"))
-PREVIOUS = json.loads(Path("tests/fixtures/dufynd_notino_offer_refresh_20261018.json").read_text(encoding="utf-8"))["offers"]
+EVIDENCE = json.loads(
+    (DATA / "dufynd_notino_offer_refresh_20261019.json").read_text(encoding="utf-8")
+)
+PREVIOUS = json.loads(
+    Path("tests/fixtures/dufynd_notino_offer_refresh_20261018.json").read_text(encoding="utf-8")
+)["offers"]
 CURRENT = json.loads((DATA / "merchant_offers.json").read_text(encoding="utf-8"))["offers"]
 
 
@@ -45,10 +49,14 @@ def test_exact_variant_price_and_cj_contract_are_grounded(proof: dict) -> None:
     assert before["affiliate_url"] == after["affiliate_url"]
 
     # Parse local URL only; never follow the merchant or CJ click redirect.
-    target = urlparse(offer_clickout_target(MerchantOfferStore(DATA / "merchant_offers.json").eligible_offer(
-        proof["offer_id"],
-        now=datetime.fromisoformat(EVIDENCE["freshness_at"].replace("Z", "+00:00")),
-    )))
+    target = urlparse(
+        offer_clickout_target(
+            MerchantOfferStore(DATA / "merchant_offers.json").eligible_offer(
+                proof["offer_id"],
+                now=datetime.fromisoformat(EVIDENCE["freshness_at"].replace("Z", "+00:00")),
+            )
+        )
+    )
     assert target.hostname == "www.jdoqocy.com"
     assert target.path == "/click-101884613-12260695"
     assert parse_qs(target.query)["url"] == [proof["source_url"]]
@@ -79,8 +87,13 @@ def test_observation_scope_has_only_three_preapproved_skus() -> None:
         "notino-ysl-black-opium-edp-90": ("YSL2377", 116),
         "notino-ysl-libre-edp-90": ("VZR11010", 130),
     }
-    assert {row["offer_id"]: (row["merchant_product_id"], row["price_eur"]) for row in EVIDENCE["products"]} == approved
-    assert set(row["offer_id"] for row in EVIDENCE["products"]) == set(row["offer_id"] for row in PREVIOUS)
+    assert {
+        row["offer_id"]: (row["merchant_product_id"], row["price_eur"])
+        for row in EVIDENCE["products"]
+    } == approved
+    assert set(row["offer_id"] for row in EVIDENCE["products"]) == set(
+        row["offer_id"] for row in PREVIOUS
+    )
     assert EVIDENCE["source_freshness_date"] == "2026-10-19"
     assert EVIDENCE["freshness_at"] == "2026-10-19T00:00:00Z"
     assert EVIDENCE["safeguards"]["cj_tracking_links_unchanged"] is True
