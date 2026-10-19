@@ -175,6 +175,9 @@ export default function FragranceOffers({
       if (Date.now() - lastOfferFetchStartedAtRef.current < RETURN_RECHECK_INTERVAL_MS) return;
       // The same fail-closed API fetch runs again. No clickout or measurement
       // event is emitted by this functional freshness check.
+      // Reserve the recheck immediately; pageshow and visibilitychange may both
+      // fire before React commits the reload and starts the next request.
+      lastOfferFetchStartedAtRef.current = Date.now();
       setReloadToken((current) => current + 1);
     };
     document.addEventListener("visibilitychange", recheckOnReturn);
