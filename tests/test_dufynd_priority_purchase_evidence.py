@@ -19,7 +19,9 @@ def test_reviewed_paths_resolve_to_exact_current_variants():
     }
     latest = json.loads((DATA / "dufynd_notino_offer_refresh_20261019.json").read_text())
     latest_by_offer = {row["offer_id"]: row for row in latest["products"]}
-    previous = json.loads(Path("tests/fixtures/dufynd_notino_offer_refresh_20261018.json").read_text())
+    previous = json.loads(
+        Path("tests/fixtures/dufynd_notino_offer_refresh_20261018.json").read_text()
+    )
     previous_by_offer = {row["offer_id"]: row for row in previous["offers"]}
     catalog = json.loads((DATA / "catalog.json").read_text())
     catalog_ids = {row["product_id"] for row in catalog["products"]}
