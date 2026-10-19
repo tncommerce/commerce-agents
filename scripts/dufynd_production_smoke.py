@@ -444,6 +444,7 @@ def _check_merchant_offers(
     expected_offer_id: str | None = None,
     expected_merchant_id: str | None = None,
     require_affiliate_link: bool = False,
+    allow_safe_absence: bool = False,
 ) -> SmokeCheck:
     if not product_id:
         return SmokeCheck(
@@ -480,6 +481,26 @@ def _check_merchant_offers(
         offers = payload.get("offers")
         best_offer_id = payload.get("best_offer_id")
         disclosure = payload.get("affiliate_disclosure")
+
+        # Deployment health and commercial availability are different assertions.
+        # Accept only the API's explicit, fail-closed empty contract in the
+        # deployment smoke. The default full business smoke remains strict.
+        if allow_safe_absence and offers == [] and (
+            payload.get("product_id") == product_id
+            and best_offer_id is None
+            and isinstance(disclosure, str)
+            and bool(disclosure.strip())
+        ):
+            return SmokeCheck(
+                name=name,
+                ok=True,
+                status_code=response.status_code,
+                detail=(
+                    "BUSINESS_WARNING: no eligible merchant offer; fail-closed "
+                    "empty payload is valid for deployment only. "
+                    "Rabanne purchase availability is NOT confirmed."
+                ),
+            )
 
         if not isinstance(offers, list) or not offers:
             return SmokeCheck(
@@ -679,6 +700,7 @@ def run_smoke(
     storefront_url: str,
     api_url: str,
     expected_indexing: str = "any",
+    allow_safe_rabanne_absence: bool = False,
     transport: httpx.BaseTransport | None = None,
     timeout_seconds: float = 12.0,
 ) -> SmokeReport:
@@ -769,6 +791,7 @@ def run_smoke(
                 api,
                 CRITICAL_PRODUCT_ID,
                 name="merchant_offers_rabanne_1_million",
+                allow_safe_absence=allow_safe_rabanne_absence,
             ),
             _check_scoped_affiliate_publication_gate(
                 client,
@@ -811,6 +834,15 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--allow-safe-rabanne-absence",
+        action="store_true",
+        help=(
+            "Deployment-only: accept a structurally valid empty Rabanne offers "
+            "response as a BUSINESS_WARNING. Full commercial smoke remains strict "
+            "by default; malformed/nonempty unsafe offers always fail."
+        ),
+    )
+    parser.add_argument(
         "--machine-readable",
         action="store_true",
     )
@@ -821,6 +853,7 @@ def main() -> int:
             storefront_url=args.storefront_url,
             api_url=args.api_url,
             expected_indexing=args.expected_indexing,
+            allow_safe_rabanne_absence=args.allow_safe_rabanne_absence,
         )
     except ValueError as exc:
         parser.error(str(exc))
@@ -836,7 +869,7 @@ def main() -> int:
             f"{len(report.checks)}"
         )
         for check in report.checks:
-            marker = "PASS" if check.ok else "FAIL"
+            marker = "WARN" if check.detail.startswith("BUSINESS_WARNING:") else ("PASS" if check.ok else "FAIL")
             print(f"  {marker} {check.name}: {check.detail}")
 
     return 0 if report.ok else 20
