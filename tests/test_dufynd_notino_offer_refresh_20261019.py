@@ -11,7 +11,11 @@ from urllib.parse import parse_qs, urlparse
 
 import pytest
 
-from retail.api.merchant_offers import MerchantOfferStore, customer_offer_payload, offer_clickout_target
+from retail.api.merchant_offers import (
+    MerchantOfferStore,
+    customer_offer_payload,
+    offer_clickout_target,
+)
 
 DATA = Path("examples/retail/data")
 EVIDENCE = json.loads((DATA / "dufynd_notino_offer_refresh_20261019.json").read_text(encoding="utf-8"))
