@@ -61,6 +61,7 @@ def test_private_observer_activity_fallback_covers_every_scentai_mvp_push():
     assert "after scentai-mvp changes" in bridge
     assert "--ref scentai-mvp" in bridge
 
+
 def test_observer_finalize_survives_unrelated_public_merchant_outage() -> None:
     """Never turn a fully accepted Gmail receipt into a false observer failure."""
     workflow = workflow_source()
@@ -78,8 +79,6 @@ def test_observer_finalize_survives_unrelated_public_merchant_outage() -> None:
     # Only commerce smoke is diagnostic here; finalizer remains unweakened.
     from pathlib import Path
 
-    dedicated = Path(".github/workflows/dufynd-production-smoke.yml").read_text(
-        encoding="utf-8"
-    )
+    dedicated = Path(".github/workflows/dufynd-production-smoke.yml").read_text(encoding="utf-8")
     assert "python scripts/dufynd_production_smoke.py --expected-indexing enabled" in dedicated
     assert "if python scripts/dufynd_production_smoke.py" in dedicated
