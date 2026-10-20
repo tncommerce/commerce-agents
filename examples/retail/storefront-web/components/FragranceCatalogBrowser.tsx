@@ -3,6 +3,7 @@ import { canonicalBrand } from '@/lib/brandIdentity';
 
 import {
   fragranceSearchIdentity,
+  fragranceSearchTokens,
   matchesRequestedVariant,
   normalizeFragranceSearch as normalize,
 } from "@/lib/fragranceSearchIdentity";
@@ -176,12 +177,6 @@ const PROFILE_SEARCH_TERMS: Record<
   spiciness: ["spiciness", "spicy", "spice", "wuerzig", "wurzig"],
 };
 
-function searchTokens(search: string): string[] {
-  return normalize(search)
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
 function searchDocument(
   fragrance: StaticFragrance,
 ): string {
@@ -241,7 +236,7 @@ function searchScore(
   search: string,
 ): number {
   if (!matchesRequestedVariant(fragrance, search)) return -1;
-  const tokens = searchTokens(search);
+  const tokens = fragranceSearchTokens(fragrance, search);
 
   if (!tokens.length) return 0;
 
