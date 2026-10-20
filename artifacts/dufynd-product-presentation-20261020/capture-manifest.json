@@ -1,0 +1,126 @@
+{
+  "baseline_sha": "2bb6041874e987a19a8d298a0612bbeb16247dca",
+  "capture_method": "Playwright screenshots of local full static exports. Identical approved original image bytes and empty synthetic offers in both phases. No production analytics or merchant clickouts.",
+  "assets": [
+    {
+      "url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+      "sha256": "ae756bf1af5675524ba7f0c455f1c63337acc868dea9cdafafcc7ecb287a5b57"
+    },
+    {
+      "url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+      "sha256": "25e72f57fd46750e6c06fac6f2bd316380316a98933a551adcaaf9fc620031cf"
+    },
+    {
+      "url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "sha256": "693e7bba7086b777d07579ed5931971e0d90a7ae3b7f36dd40dc2a8d726e30a4"
+    },
+    {
+      "url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "sha256": "81618e5edba3e2ef29638aa2b348a206d6abe8ee636ebc57c92ffce2bf1f55b4"
+    }
+  ],
+  "routes": {
+    "cards": "/duft?q=Yves%20Saint%20Laurent",
+    "detail": "/duft/lancome-la-vie-est-belle",
+    "comparison": "/vergleich?left=SC-YSL-LIBRE-EDP-90&right=SC-YSL-BLACK-OPIUM-EDP-90",
+    "reason": "/vergleich?left=SC-YSL-LIBRE-EDP-90&right=SC-YSL-BLACK-OPIUM-EDP-90"
+  },
+  "captures": [
+    {
+      "path": "before-cards-390.png",
+      "sha256": "0127801bd9e30049108e5a87c0d456236a0dae31d77c27bc0cb5ce216a30cc6f",
+      "phase": "before",
+      "viewport_width": 390
+    },
+    {
+      "path": "before-detail-390.png",
+      "sha256": "15d5716dc67548344863d23290c2b345b90ce9f29939928515d42db0a8801d16",
+      "phase": "before",
+      "viewport_width": 390
+    },
+    {
+      "path": "before-comparison-390.png",
+      "sha256": "abd699dfaeed6caccb264a5b84d2e4b546d1f306b1117f68c42728eb912cdbf6",
+      "phase": "before",
+      "viewport_width": 390
+    },
+    {
+      "path": "before-reason-390.png",
+      "sha256": "c84374c47602c219c6b4000f7781e3f49376b002414eff768e2d86fa1e127984",
+      "phase": "before",
+      "viewport_width": 390
+    },
+    {
+      "path": "before-detail-1440.png",
+      "sha256": "79be1d90fb8e92c9ef8a7d45430f14e34eb9ad14a438bc8e8fc32dab74926882",
+      "phase": "before",
+      "viewport_width": 1440
+    },
+    {
+      "path": "before-comparison-1440.png",
+      "sha256": "60686eb9614115e3264ea116ede3ab3ed028a57e61e7c022a327a4fd3cc8f30d",
+      "phase": "before",
+      "viewport_width": 1440
+    },
+    {
+      "path": "after-cards-390.png",
+      "sha256": "d59ba43c7676afa9d50f6673ea09404f4cb7746685a5309c393386e2704120db",
+      "phase": "after",
+      "viewport_width": 390
+    },
+    {
+      "path": "after-detail-390.png",
+      "sha256": "b10fa2ad183cd7df4b974564ef642b6aa837391f82e086d02e87432b70db045f",
+      "phase": "after",
+      "viewport_width": 390
+    },
+    {
+      "path": "after-comparison-390.png",
+      "sha256": "19aa4b35f3ce863861803feaf4f011d68eac2ed68c9d91800f05ee875617299d",
+      "phase": "after",
+      "viewport_width": 390
+    },
+    {
+      "path": "after-reason-390.png",
+      "sha256": "8dc9dc71b5131ac3ccd08b6931891efd87af1b373b935d9a2aece800cd551b7b",
+      "phase": "after",
+      "viewport_width": 390
+    },
+    {
+      "path": "after-detail-1440.png",
+      "sha256": "83c2ae06dfc0adfeda3b48bf8a437e32e6e81267bd5fd1e00ffd3e8dcfa07d34",
+      "phase": "after",
+      "viewport_width": 1440
+    },
+    {
+      "path": "after-comparison-1440.png",
+      "sha256": "cb47db6e383ca37aea7bd4be272171a357963f8eb9b2d7b56a67fcb06658e9ae",
+      "phase": "after",
+      "viewport_width": 1440
+    },
+    {
+      "path": "after-reason-1440.png",
+      "sha256": "09018ab189c2fd1780dc8b62ce6957b15f25d2751caa5caffee366c1916a9e47",
+      "phase": "after",
+      "viewport_width": 1440
+    }
+  ],
+  "after_source_sha256": {
+    "scripts/product-presentation-qa.mjs": "343ce0ef05a0c0e108f2eef59156a21f690017ade73cacb609afa3ce091e26cc",
+    "scripts/test-comparison-trust.mjs": "412831c13d1f8c15f78d3b4159a32aa736babcb97e0b2449fd6e7faa608f7445",
+    "app/product-presentation.css": "73ad7aa17ab0c25adffabe6d9e4e604f9e76e3f288e3c953f025c934c50eda75",
+    "components/FragranceVisual.tsx": "d2455710472141b3e5968726580e10aab8161578cd5580cb9995e30b9b90cb46",
+    "components/FragranceVariant.tsx": "6c21b629ebbab755cd26a27e8111f7c4ba2ece4f02c10fa3688b76185f8aed09",
+    "components/FragranceCatalogBrowser.tsx": "87bf3041f1b78eda8dcefb1885fe987ada8d2ec025425cdbd578182d424f1200",
+    "components/FragranceDetailPage.tsx": "1a568d6267e1386ad651ed3d429528abe660df7dd77b648562bb9d5aea76ec80",
+    "components/FragranceComparisonPicker.tsx": "25134cdcf53427a5a950443b60c34e708e3c85fc248a11468f0e8312e97c1c9c",
+    "components/FragranceComparisonEvidence.tsx": "e850cd712e18caa67e815f8fe2732eb663e6773ebc28e9913f90daad8f0d9e10",
+    "lib/generated/public-fragrances.json": "5af3fa0a40556b13db1970eb9b05895fc3818eca4a43279155ae809d25587410",
+    "app/layout.tsx": "7b3f327254be5fba95cf84ddb1b33a5b6941323791cfa6467ab5f3559d25cc72",
+    "scripts/release-gate.mjs": "c6ca4765c8e13120a56d0df68242cef488d89ebdd249721d6d6fff035ad81aac",
+    "scripts/dufynd-visual-qa.mjs": "a39481bbd7d3be4fce1f4357ac5e812fc66375c675480ce11386a43dce03d363",
+    "lib/generated/review-build-fingerprint.json": "bb588fe9419fd194493b77a5e00ef27c56f6efd3ab3ba43f2831279ce1c460d0"
+  },
+  "same_catalog_data_sha256": "5af3fa0a40556b13db1970eb9b05895fc3818eca4a43279155ae809d25587410",
+  "qa_image_replay": "Existing approved source bytes replayed locally because the sandbox network does not reliably load the source hosts. No claim of a fresh merchant check."
+}

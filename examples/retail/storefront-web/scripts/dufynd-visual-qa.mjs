@@ -1,3 +1,4 @@
+import { verifyProductPresentation } from "./product-presentation-qa.mjs";
 import { verifyMobileDiscovery } from "./mobile-discovery-qa.mjs";
 import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
@@ -289,6 +290,11 @@ const report = {
 };
 
 try {
+  try {
+    const results = await verifyProductPresentation(browser, baseUrl, outputDir);
+    report.checks.push({ label: "product-presentation", status: "passed", results });
+  } catch (error) { report.failures.push({ label: "product-presentation", message: String(error) }); }
+
   try {
     const results = await verifyMobileDiscovery(browser, baseUrl, outputDir);
     report.checks.push({ label: "mobile-discovery-journey", status: "passed", results });

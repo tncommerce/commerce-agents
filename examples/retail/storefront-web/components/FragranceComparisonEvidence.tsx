@@ -89,13 +89,15 @@ export default function FragranceComparisonEvidence({
     allDocumentedNotes(left),
     allDocumentedNotes(right),
   ).slice(0, 5);
+  const leftNotes = exclusiveTerms(allDocumentedNotes(left), allDocumentedNotes(right)).slice(0, 5);
+  const rightNotes = exclusiveTerms(allDocumentedNotes(right), allDocumentedNotes(left)).slice(0, 5);
   const hasDocumentedOverlap =
     sharedAccords.length > 0 || sharedNotes.length > 0;
 
   return (
     <section
       aria-labelledby="comparison-evidence-heading"
-      className="mt-4 overflow-hidden rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
+      className="dufynd-comparison-evidence mt-4 overflow-hidden rounded-2xl border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
       data-dufynd-comparison-evidence
     >
       <div className="max-w-2xl">
@@ -152,10 +154,10 @@ export default function FragranceComparisonEvidence({
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         {(
           [
-            { key: "left", fragrance: left, terms: leftOnly },
-            { key: "right", fragrance: right, terms: rightOnly },
+            { key: "left", fragrance: left, terms: leftOnly, notes: leftNotes },
+            { key: "right", fragrance: right, terms: rightOnly, notes: rightNotes },
           ] as const
-        ).map(({ key, fragrance, terms }) => (
+        ).map(({ key, fragrance, terms, notes }) => (
           <div
             key={key}
             className="rounded-xl border border-(--line) p-3.5"
@@ -163,6 +165,7 @@ export default function FragranceComparisonEvidence({
             <h4 className="text-[12px] font-semibold text-(--ink)">
               {fragrance.name}: eigene Akzente
             </h4>
+            <p className="dufynd-evidence-label">Zusätzlich dokumentierte Akkorde</p>
             {terms.length ? (
               <EvidenceChips
                 terms={terms}
@@ -174,10 +177,27 @@ export default function FragranceComparisonEvidence({
                 Keine zusätzlichen Akkorde in diesem Datenausschnitt.
               </p>
             )}
+            <p className="dufynd-evidence-label">Weitere dokumentierte Noten</p>
+            {notes.length ? <EvidenceChips terms={notes}
+              label={`Zusätzlich für ${fragrance.name} dokumentierte Noten`}
+              formatter={noteLabel} /> : <p className="mt-2 text-[11px] leading-5 text-(--ink-soft)">
+                Keine weiteren Noten in diesem Datenausschnitt.
+              </p>}
           </div>
         ))}
       </div>
 
+      <p className="dufynd-evidence-limit">
+        Gemeinsame Angaben belegen keinen identischen Geruch.
+        Nicht genannte Noten sind nicht sicher ausgeschlossen.
+      </p>
+      <details className="dufynd-evidence-method">
+        <summary>Datenbasis und Grenzen</summary>
+      <p className="mt-3 text-[11px] leading-5 text-(--ink-soft)">
+        Grundlage: die hinterlegten Noten und Akkorde dieser Varianten.
+        Verglichen werden exakte Angaben, keine gemessene Geruchsähnlichkeit.
+        Zusätzlich dokumentiert bedeutet nicht, dass eine Note bei der Alternative fehlt.
+      </p>
       <p className="mt-3 text-[11px] leading-5 text-(--ink-soft)">
         {hasDocumentedOverlap
           ? "Gemeinsame Angaben sind Orientierungspunkte, kein Beweis für identischen Duft oder eine bestätigte Dupe-Beziehung."
@@ -185,6 +205,7 @@ export default function FragranceComparisonEvidence({
         {" "}Die Notenlisten können unterschiedlich vollständig sein.
         Händlerangebote und aktuelle Preise werden separat geprüft.
       </p>
+      </details>
     </section>
   );
 }

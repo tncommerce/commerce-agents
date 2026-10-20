@@ -12,6 +12,7 @@ import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
+import FragranceVariant from "@/components/FragranceVariant";
 import FragranceVisual from "@/components/FragranceVisual";
 import { accordLabel } from "@/lib/accordLabels";
 import {
@@ -1302,6 +1303,7 @@ export default function FragranceCatalogBrowser({
                       {fragrance.name}
                     </h2>
 
+                    {isPublishedRc1 ? (
                     <div className="mt-2 flex flex-wrap gap-1.5 text-[10.5px] text-(--ink-soft)">
                       <span>
                         {fragrance.concentration}
@@ -1319,6 +1321,13 @@ export default function FragranceCatalogBrowser({
                         </>
                       ) : null}
                     </div>
+
+                    ) : (
+                    <div className="mt-3">
+                      <FragranceVariant concentration={fragrance.concentration} volume={fragrance.volume_ml} />
+                      {ratingLabel(fragrance) ? <span>{ratingLabel(fragrance)}</span> : null}
+                    </div>
+                    )}
 
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {fragrance.accords

@@ -105,3 +105,28 @@ assert.equal(index.twitter.title, index.title);
 assert.equal(index.openGraph.url, "https://dufynd.example/vergleich");
 assert.equal(index.twitter.description, index.description);
 console.log("Comparison trust: pair pages, free picker, withheld/partial/zero values and hub/social metadata PASS");
+
+// Evidence is independent of merchant availability. Missing notes must not become
+// invented differences; normalization must not imply unsupported synonym matches.
+const evidenceModule = { exports: {} };
+vm.runInNewContext(compile("../components/FragranceComparisonEvidence.tsx"), {
+  module: evidenceModule, exports: evidenceModule.exports,
+  require(name) {
+    if (name === "react/jsx-runtime") return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
+    if (name === "@/lib/accordLabels") return { accordLabel: term => term };
+    if (name === "@/lib/noteLabels") return { noteLabel: term => term };
+    throw new Error(`Unexpected evidence dependency: ${name}`);
+  },
+});
+const evidenceFragrance = (name, key = []) => ({ name, accords: [], notes: { top: [], heart: [], base: [], key, supporting: [] } });
+const evidenceNodes = (left, right) => nodes(evidenceModule.exports.default({ left, right }));
+const insufficient = evidenceNodes(evidenceFragrance("Left"), evidenceFragrance("Right"));
+assert.ok(insufficient.some(n => typeof n === "string" && n.includes("Keine übereinstimmende Note in den vorhandenen Notenlisten")));
+assert.ok(insufficient.some(n => typeof n === "string" && n.includes("Das schließt einen ähnlichen Dufteindruck nicht aus")));
+const documented = evidenceNodes(evidenceFragrance("Left", ["Vanilla", "vanilla", "coffee", "Moroccan orange blossom"]), evidenceFragrance("Right", [" VANILLA ", "jasmine", "orange blossom"]));
+const terms = label => nodes(documented.find(n => n?.type === "ul" && n.props["aria-label"] === label)).filter(n => n?.type === "li").map(n => n.props.children);
+assert.deepEqual(terms("Dokumentierte gemeinsame Duftnoten"), ["Vanilla"]);
+assert.deepEqual(terms("Zusätzlich für Left dokumentierte Noten"), ["coffee", "Moroccan orange blossom"]);
+assert.deepEqual(terms("Zusätzlich für Right dokumentierte Noten"), ["jasmine", "orange blossom"]);
+assert.ok(documented.some(n => typeof n === "string" && n.includes("Nicht genannte Noten sind nicht sicher ausgeschlossen")));
+console.log("Comparison evidence: missing data, deduplication, exact overlap and non-inferred synonyms PASS");
