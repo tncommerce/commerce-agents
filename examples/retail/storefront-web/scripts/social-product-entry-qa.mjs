@@ -124,7 +124,7 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
           await merchant.waitFor();
           assert.equal(await page.locator("[data-offer-price-basis]").count(), 0);
           assert.match(await section.innerText(), /Artikelpreis · Versand beim Händler prüfen/);
-          offers = [{ ...offer }, { ...offer, offer_id: "qa-second", merchant_name: "QA second", total_price: 100 }];
+          offers = [{ ...offer }, { ...offer, offer_id: "qa-second", merchant_name: "QA second", total_price: 100, clickout_path: "/api/clickout/qa-second" }];
           await page.reload();
           await merchant.waitFor();
           assert.match(await section.innerText(), /Bester Gesamtpreis · hier gelistet/i);
@@ -162,8 +162,8 @@ export async function verifyFirstMoneyLandingStates(browser, baseUrl, outputDir)
         }
         if (url.pathname === `/api/merchant-offers/${productId}`) {
           if (mode === "error") return route.fulfill({ status: 503, body: "isolated unavailable fixture" });
-          if (mode === "empty") return route.fulfill({ json: { product_id: productId, offers: [], best_offer_id: null } });
-          if (mode === "recovery") return route.fulfill({ json: { product_id: productId, offers: [offer], best_offer_id: offerId } });
+          if (mode === "empty") return route.fulfill({ json: { product_id: productId, offers: [], best_offer_id: null, affiliate_disclosure: "QA fixture" } });
+          if (mode === "recovery") return route.fulfill({ json: { product_id: productId, offers: [offer], best_offer_id: offerId, affiliate_disclosure: "QA fixture" } });
           if (!attempted) {
             attempted = true;
             evidence.read_at = new Date().toISOString();

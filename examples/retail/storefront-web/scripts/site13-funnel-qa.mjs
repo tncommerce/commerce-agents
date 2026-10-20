@@ -32,7 +32,7 @@ export async function verifySite13Funnel(browser, baseUrl) {
             }
             if (url.pathname === `/api/merchant-offers/${productId}`) {
               if (state === "error") return route.fulfill({ status: 503, json: {} });
-              return route.fulfill({ json: { product_id: productId, best_offer_id: offer.offer_id, offers: state === "empty" ? [] : [offer], affiliate_disclosure: "Isolated QA fixture" } });
+              return route.fulfill({ json: { product_id: productId, best_offer_id: state === "empty" ? null : offer.offer_id, offers: state === "empty" ? [] : [offer], affiliate_disclosure: "Isolated QA fixture" } });
             }
             if (url.pathname.startsWith("/api/") || url.origin !== origin) {
               if (url.pathname.startsWith("/api/")) forbidden.push(url.pathname);

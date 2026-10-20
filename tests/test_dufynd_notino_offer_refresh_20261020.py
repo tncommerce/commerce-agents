@@ -1,0 +1,86 @@
+"""Fresh primary observations preserve the three existing paths and age guards."""
+
+import json
+from datetime import datetime, timedelta
+from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
+
+import pytest
+from pydantic import ValidationError
+
+from retail.api.merchant_offers import (
+    MerchantOfferStore,
+    customer_offer_payload,
+    offer_clickout_target,
+)
+
+DATA = Path("examples/retail/data")
+EVIDENCE = json.loads((DATA / "dufynd_notino_offer_refresh_20261020.json").read_text())
+PREVIOUS = json.loads(Path("tests/fixtures/dufynd_notino_offer_refresh_20261019.json").read_text())
+
+
+@pytest.mark.parametrize("verified", EVIDENCE["products"], ids=lambda row: row["offer_id"])
+def test_current_observation_preserves_exact_path_and_72_hour_boundary(verified):
+    before = next(row for row in PREVIOUS["offers"] if row["offer_id"] == verified["offer_id"])
+    current = next(
+        row
+        for row in json.loads((DATA / "merchant_offers.json").read_text())["offers"]
+        if row["offer_id"] == verified["offer_id"]
+    )
+    assert current == {
+        **before,
+        "price": verified["price_eur"],
+        "last_updated_at": verified["observed_at"],
+    }
+    assert current["product_id"] == verified["product_id"]
+    assert current["merchant_product_id"] == verified["merchant_product_id"]
+    assert current["product_url"] == verified["product_url"]
+    assert verified["availability_label"] == "Verfügbar"
+    assert verified["order_button_enabled"] is True
+    assert verified["delivery_country"] == "DE"
+    assert verified["presentation"] != "refill"
+    checked = datetime.fromisoformat(verified["observed_at"].replace("Z", "+00:00"))
+    expiry = datetime.fromisoformat(verified["expires_at"].replace("Z", "+00:00"))
+    assert expiry - checked == timedelta(hours=72)
+    store = MerchantOfferStore(DATA / "merchant_offers.json")
+    offer = store.eligible_offer(verified["offer_id"], now=checked)
+    assert offer is not None
+    assert store.offers_for(verified["product_id"], now=checked) == [offer]
+    public = customer_offer_payload(offer)
+    assert public["price"] == verified["price_eur"]
+    assert public["shipping_cost"] == verified["shipping_cost_eur"] == 0
+    assert public["total_price"] == verified["total_price_eur"] == verified["price_eur"]
+    target = urlsplit(offer_clickout_target(offer))
+    assert target.hostname == "www.jdoqocy.com"
+    assert target.path == "/click-101884613-12260695"
+    assert parse_qs(target.query)["url"] == [verified["product_url"]]
+    assert store.eligible_offer(offer.offer_id, now=checked - timedelta(minutes=6)) is None
+    assert store.eligible_offer(offer.offer_id, now=expiry) is not None
+    assert store.eligible_offer(offer.offer_id, now=expiry + timedelta(seconds=1)) is None
+    assert store.offers_for(offer.product_id, now=expiry + timedelta(seconds=1)) == []
+
+
+@pytest.mark.parametrize("verified", EVIDENCE["products"], ids=lambda row: row["offer_id"])
+@pytest.mark.parametrize(
+    "invalid", ["out_of_stock", "currency", "wrong_product", "missing_timestamp"]
+)
+def test_invalid_offer_cannot_supply_the_requested_product(tmp_path, verified, invalid):
+    row = next(dict(row) for row in PREVIOUS["offers"] if row["offer_id"] == verified["offer_id"])
+    row["last_updated_at"] = verified["observed_at"]
+    checked = datetime.fromisoformat(verified["observed_at"].replace("Z", "+00:00"))
+    if invalid == "out_of_stock":
+        row["in_stock"] = False
+    elif invalid == "currency":
+        row["currency"] = "USD"
+    elif invalid == "wrong_product":
+        row["product_id"] = "SC-SYNTHETIC-WRONG-PRODUCT"
+    else:
+        del row["last_updated_at"]
+    fixture = tmp_path / "invalid-offer.json"
+    fixture.write_text(json.dumps({"offers": [row]}))
+    store = MerchantOfferStore(fixture)
+    if invalid == "missing_timestamp":
+        with pytest.raises(ValidationError):
+            store.offers_for(verified["product_id"], now=checked)
+    else:
+        assert store.offers_for(verified["product_id"], now=checked) == []

@@ -228,7 +228,7 @@ export default function FragranceVisual({
       data-dufynd-visual-world={world}
       data-dufynd-image-kind={cutoutUrl && !whiteMatte ? "cutout" : "photograph"}
       data-dufynd-image-matte={whiteMatte ? "white" : undefined}
-      data-dufynd-photo-state={variant === "card" && mode === "cutout" ? (imageReady ? "loaded" : "loading") : undefined}
+      data-dufynd-photo-state={mode === "cutout" ? (imageReady ? "loaded" : "loading") : undefined}
       className={`dufynd-product-stage ${catalogClass} ${className}`}
       style={{
         ...stageStyle(world, variant),
@@ -237,7 +237,7 @@ export default function FragranceVisual({
       onPointerMove={variant === "hero" ? updatePointer : undefined}
       onPointerLeave={variant === "hero" ? resetPointer : undefined}
     >
-      {variant === "card" && mode === "cutout" && !imageReady ? (
+      {mode === "cutout" && !imageReady ? (
         <div className="dufynd-photo-loading-indicator" aria-hidden="true">
           <span>DUFYND / PRODUKTFOTO</span>
           <strong>Originalaufnahme wird geladen</strong>

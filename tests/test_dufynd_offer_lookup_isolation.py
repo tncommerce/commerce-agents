@@ -89,7 +89,7 @@ def test_selected_offer_keeps_variant_price_and_expiry(monkeypatch):
     offer = store.eligible_offer("notino-ysl-libre-edp-90", now=now)
     assert offers == [offer]
     merchant_evidence = json.loads(
-        Path("examples/retail/data/dufynd_notino_offer_refresh_20261019.json").read_text()
+        Path("examples/retail/data/dufynd_notino_offer_refresh_20261020.json").read_text()
     )
     verified = next(
         row for row in merchant_evidence["products"] if row["offer_id"] == offer.offer_id

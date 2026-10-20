@@ -1,0 +1,139 @@
+{
+  "kind": "local_data_bound_replay_not_production",
+  "merchant_offers_sha256": "7a04d2862806a3a263ba378ec3794652c953a8686abc766ac90af32ae33a1493",
+  "widths": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "results": [
+    {
+      "width": 320,
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "offer_id": "notino-pdm-delina-edp-75",
+      "variant": "75 ml · Eau de Parfum",
+      "price": 285,
+      "shipping": 0,
+      "total": 285,
+      "status": "passed"
+    },
+    {
+      "width": 320,
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "offer_id": "notino-ysl-black-opium-edp-90",
+      "variant": "90 ml · Eau de Parfum",
+      "price": 116,
+      "shipping": 0,
+      "total": 116,
+      "status": "passed"
+    },
+    {
+      "width": 320,
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "offer_id": "notino-ysl-libre-edp-90",
+      "variant": "90 ml · Eau de Parfum · nachfüllbarer Flakon",
+      "price": 130,
+      "shipping": 0,
+      "total": 130,
+      "status": "passed"
+    },
+    {
+      "width": 390,
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "offer_id": "notino-pdm-delina-edp-75",
+      "variant": "75 ml · Eau de Parfum",
+      "price": 285,
+      "shipping": 0,
+      "total": 285,
+      "status": "passed"
+    },
+    {
+      "width": 390,
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "offer_id": "notino-ysl-black-opium-edp-90",
+      "variant": "90 ml · Eau de Parfum",
+      "price": 116,
+      "shipping": 0,
+      "total": 116,
+      "status": "passed"
+    },
+    {
+      "width": 390,
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "offer_id": "notino-ysl-libre-edp-90",
+      "variant": "90 ml · Eau de Parfum · nachfüllbarer Flakon",
+      "price": 130,
+      "shipping": 0,
+      "total": 130,
+      "status": "passed"
+    },
+    {
+      "width": 768,
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "offer_id": "notino-pdm-delina-edp-75",
+      "variant": "75 ml · Eau de Parfum",
+      "price": 285,
+      "shipping": 0,
+      "total": 285,
+      "status": "passed"
+    },
+    {
+      "width": 768,
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "offer_id": "notino-ysl-black-opium-edp-90",
+      "variant": "90 ml · Eau de Parfum",
+      "price": 116,
+      "shipping": 0,
+      "total": 116,
+      "status": "passed"
+    },
+    {
+      "width": 768,
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "offer_id": "notino-ysl-libre-edp-90",
+      "variant": "90 ml · Eau de Parfum · nachfüllbarer Flakon",
+      "price": 130,
+      "shipping": 0,
+      "total": 130,
+      "status": "passed"
+    },
+    {
+      "width": 1440,
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "offer_id": "notino-pdm-delina-edp-75",
+      "variant": "75 ml · Eau de Parfum",
+      "price": 285,
+      "shipping": 0,
+      "total": 285,
+      "status": "passed"
+    },
+    {
+      "width": 1440,
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "offer_id": "notino-ysl-black-opium-edp-90",
+      "variant": "90 ml · Eau de Parfum",
+      "price": 116,
+      "shipping": 0,
+      "total": 116,
+      "status": "passed"
+    },
+    {
+      "width": 1440,
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "offer_id": "notino-ysl-libre-edp-90",
+      "variant": "90 ml · Eau de Parfum · nachfüllbarer Flakon",
+      "price": 130,
+      "shipping": 0,
+      "total": 130,
+      "status": "passed"
+    }
+  ],
+  "negative_cases": [
+    "empty",
+    "HTTP_503",
+    "wrong_product"
+  ],
+  "analytics_requests": 0,
+  "merchant_clickouts": 0
+}

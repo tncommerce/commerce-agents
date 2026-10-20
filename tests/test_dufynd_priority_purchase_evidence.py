@@ -17,7 +17,7 @@ def test_reviewed_paths_resolve_to_exact_current_variants():
         row["offer_id"]: row
         for row in json.loads((DATA / "merchant_offers.json").read_text())["offers"]
     }
-    latest = json.loads((DATA / "dufynd_notino_offer_refresh_20261019.json").read_text())
+    latest = json.loads((DATA / "dufynd_notino_offer_refresh_20261020.json").read_text())
     latest_by_offer = {row["offer_id"]: row for row in latest["products"]}
     previous = json.loads(
         Path("tests/fixtures/dufynd_notino_offer_refresh_20261018.json").read_text()
@@ -38,7 +38,7 @@ def test_reviewed_paths_resolve_to_exact_current_variants():
         assert offer is not None
         assert offer.merchant_product_id == row["merchant_product_id"]
         # Historical Work39 price evidence is immutable; new current price must
-        # match the exact 19 October primary merchant observation instead.
+        # match the exact 20 October primary merchant observation instead.
         assert previous_by_offer[row["offer_id"]]["price"] == row["regular_price_eur"]
         assert offer.price == latest_by_offer[row["offer_id"]]["price_eur"]
         assert offer.merchant_product_id == latest_by_offer[row["offer_id"]]["merchant_product_id"]

@@ -1,0 +1,73 @@
+/* Public presentation only: complete source pixels, no claim of physical scale.
+   Private photo reviews and the Rabanne detail page keep their existing layout. */
+.dufynd-product-variant { display:flex; flex-wrap:wrap; gap:12px 22px; margin:16px 0 0; color:#294737; }
+.dufynd-product-variant > div { min-width:0; }
+.dufynd-product-variant dt { font-size:9px; line-height:1.5; letter-spacing:.09em; text-transform:uppercase; color:#6a7368; }
+.dufynd-product-variant dd { margin:4px 0 0; font-size:14px; line-height:1.5; font-weight:550; }
+.dufynd-product-variant > div + div { border-left:1px solid #d9dfd5; padding-left:22px; }
+.dufynd-product-context { margin:12px 0 0; font-size:12px; color:#687464; }
+.dufynd-catalog-card[data-original-photo="true"] { border-radius:12px; box-shadow:none; border-color:#d8ddd4; }
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage { height:300px; min-height:300px; }
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-product-object { inset:10% 16% 12% !important; }
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-product-image { filter:none !important; }
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-body { padding:22px 22px 18px; background:#fffefa; }
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-body h2 { font-size:29px; line-height:1.15; margin-top:6px; }
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-accord { background:transparent; border:0; padding:0; font-size:12px; color:#667360; }
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-accord + .dufynd-catalog-card-accord::before { content:"·"; margin-right:6px; }
+.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-original-photo-badge { border:0; background:transparent; box-shadow:none; font-size:9px; letter-spacing:.06em; color:#64715e; right:18px; bottom:14px; }
+.dufynd-catalog-card-stage:has([data-dufynd-visual-state="unavailable"]) .dufynd-catalog-original-photo-badge { display:none; }
+.dufynd-catalog-card .dufynd-product-variant { margin:0; }
+.dufynd-catalog-card .dufynd-product-variant dd { font-size:13px; }
+.dufynd-detail-page [data-dufynd-product-presentation] { border-radius:16px !important; border-color:#d5ddd1 !important; box-shadow:none !important; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-fragrance-identity { padding:26px 24px 22px !important; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-fragrance-identity h1 { font-size:clamp(32px,4vw,48px); line-height:1.08; letter-spacing:-.035em; overflow-wrap:anywhere; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell { min-height:300px; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-product-object { inset:10% 14% !important; transform:none !important; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-product-float { animation:none !important; transform:none !important; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-product-image { object-fit:contain !important; transform:none !important; filter:none !important; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy { padding:22px 24px 26px !important; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy :is(a,button) { min-height:44px; display:inline-flex; align-items:center; justify-content:center; }
+.dufynd-detail-page [data-dufynd-product-presentation][data-dufynd-photo-hold] .dufynd-fragrance-stage-shell { min-height:220px; }
+.dufynd-detail-page [data-dufynd-product-presentation] .dufynd-neutral-visual-copy strong { font-size:24px; line-height:1.2; max-width:28ch; }
+.dufynd-comparison-picker .dufynd-comparison-live-stage { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
+.dufynd-comparison-picker .dufynd-comparison-live-stage::before,
+.dufynd-comparison-picker .dufynd-comparison-live-stage::after,
+.dufynd-comparison-picker .dufynd-comparison-axis { display:none; }
+.dufynd-comparison-picker .dufynd-comparison-product-card { border:1px solid #d6ddd1; background:#fffefa; border-radius:12px; box-shadow:none; color:#294737; min-width:0; }
+.dufynd-comparison-picker .dufynd-comparison-product-card > div:last-child { background:#fffefa; color:#294737; padding:16px; }
+.dufynd-comparison-picker .dufynd-comparison-product-card > div:last-child > div:first-child { color:#677361; font-size:9px; line-height:1.6; }
+.dufynd-comparison-picker .dufynd-comparison-product-card > div:last-child > div:nth-child(2) { color:#294737; font-family:var(--font-editorial),Georgia,serif; font-size:24px; line-height:1.15; font-weight:400; }
+.dufynd-comparison-picker .dufynd-comparison-product-visual { height:190px; background:#fff !important; border-bottom:1px solid #e9ece4; }
+.dufynd-comparison-picker .dufynd-product-object { inset:12% 14% !important; transform:none !important; }
+.dufynd-comparison-picker .dufynd-product-image { object-fit:contain; transform:none !important; filter:none !important; }
+.dufynd-comparison-picker .dufynd-product-variant { gap:10px; }
+.dufynd-comparison-picker .dufynd-product-variant dd { font-size:12px; }
+.dufynd-comparison-picker .dufynd-product-variant > div + div { padding-left:0; border:0; }
+.dufynd-comparison-evidence { padding:24px; border-radius:14px; box-shadow:none; background:#fffefa; border-color:#d6ddd1; }
+.dufynd-comparison-evidence h3 { font-family:var(--font-editorial),Georgia,serif; font-weight:400; font-size:28px; line-height:1.15; color:#294737; }
+.dufynd-comparison-evidence h4 { font-size:13px; line-height:1.5; color:#294737; }
+.dufynd-comparison-evidence > .grid > div { border-radius:8px; background:#f5f6f0; border:0; padding:18px; }
+.dufynd-comparison-evidence > .grid + .grid > div { background:transparent; border:1px solid #dce1d6; }
+.dufynd-comparison-evidence ul { gap:5px 14px; }
+.dufynd-comparison-evidence li { padding:0; border:0; border-radius:0; background:transparent; font-size:13px; line-height:1.7; }
+.dufynd-evidence-label { margin:14px 0 0; font-size:10px; line-height:1.5; color:#697462; }
+.dufynd-evidence-method { padding-top:16px; border-top:1px solid #dce1d6; }
+.dufynd-comparison-picker :is(a,button,select):focus-visible,
+[data-dufynd-product-presentation] :is(a,button):focus-visible { outline:2px solid #386047; outline-offset:4px; }
+@media(max-width:479px) {
+ .dufynd-comparison-picker .dufynd-comparison-product-visual { height:156px; }
+ .dufynd-comparison-picker .dufynd-comparison-product-card > div:last-child { padding:12px; }
+ .dufynd-comparison-picker .dufynd-comparison-product-card > div:last-child > div:nth-child(2) { font-size:21px; }
+ .dufynd-comparison-evidence { padding:18px; }
+}
+@media(min-width:1024px) {
+ .dufynd-detail-page [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell { min-height:520px; }
+ .dufynd-detail-page [data-dufynd-product-presentation] .dufynd-fragrance-identity { padding:38px 34px 18px !important; }
+ .dufynd-detail-page [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy { padding:16px 34px 34px !important; }
+}
+.dufynd-evidence-limit { font-size:12px; line-height:1.7; color:#576552; margin-top:18px; }
+.dufynd-evidence-method { margin-top:16px; padding-top:0; }
+.dufynd-evidence-method summary { min-height:44px; padding:13px 0; cursor:pointer; font-size:12px; font-weight:550; color:#294737; }
+.dufynd-evidence-method summary:focus-visible { outline:2px solid #386047; outline-offset:3px; }
+.dufynd-comparison-picker .dufynd-comparison-product-card:hover { transform:none; border-color:#789074; box-shadow:none; }
+.dufynd-comparison-picker .dufynd-comparison-product-card > div:last-child > div:nth-child(2) { min-height:2.3em; }

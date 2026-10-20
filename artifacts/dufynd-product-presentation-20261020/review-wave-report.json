@@ -1,0 +1,82 @@
+[
+  {
+    "width": 320,
+    "status": "passed",
+    "review_pages": 41,
+    "checks": [
+      "public_metrics",
+      "honest_catalog_visuals",
+      "brand_counts",
+      "early_search",
+      "original_selection_navigation",
+      "exact_review_pages",
+      "early_art",
+      "metadata",
+      "review_navigation",
+      "no_offers",
+      "noindex",
+      "no_overflow",
+      "no_page_errors"
+    ]
+  },
+  {
+    "width": 390,
+    "status": "passed",
+    "review_pages": 41,
+    "checks": [
+      "public_metrics",
+      "honest_catalog_visuals",
+      "brand_counts",
+      "early_search",
+      "original_selection_navigation",
+      "exact_review_pages",
+      "early_art",
+      "metadata",
+      "review_navigation",
+      "no_offers",
+      "noindex",
+      "no_overflow",
+      "no_page_errors"
+    ]
+  },
+  {
+    "width": 768,
+    "status": "passed",
+    "review_pages": 41,
+    "checks": [
+      "public_metrics",
+      "honest_catalog_visuals",
+      "brand_counts",
+      "early_search",
+      "original_selection_navigation",
+      "exact_review_pages",
+      "early_art",
+      "metadata",
+      "review_navigation",
+      "no_offers",
+      "noindex",
+      "no_overflow",
+      "no_page_errors"
+    ]
+  },
+  {
+    "width": 1440,
+    "status": "passed",
+    "review_pages": 41,
+    "checks": [
+      "public_metrics",
+      "honest_catalog_visuals",
+      "brand_counts",
+      "early_search",
+      "original_selection_navigation",
+      "exact_review_pages",
+      "early_art",
+      "metadata",
+      "review_navigation",
+      "no_offers",
+      "noindex",
+      "no_overflow",
+      "no_page_errors"
+    ]
+  }
+]

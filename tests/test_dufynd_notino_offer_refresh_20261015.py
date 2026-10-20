@@ -22,6 +22,7 @@ EVIDENCE = json.loads((DATA / "dufynd_notino_offer_refresh_20261015.json").read_
 # must never travel into the future relative to their original observation.
 HISTORICAL_OFFERS = Path("tests/fixtures/dufynd_notino_offer_refresh_20261015.json")
 HISTORICAL_OCT18 = Path("tests/fixtures/dufynd_notino_offer_refresh_20261018.json")
+HISTORICAL_OCT19 = Path("tests/fixtures/dufynd_notino_offer_refresh_20261019.json")
 EVIDENCE_OCT19 = json.loads((DATA / "dufynd_notino_offer_refresh_20261019.json").read_text())
 REFRESHED_20261018 = {
     "notino-pdm-delina-edp-75": "2026-10-18T09:38:01.133371+00:00",
@@ -99,7 +100,7 @@ def test_october_19_refresh_preserves_exact_variant_and_current_primary_evidence
     )
     current = next(
         row
-        for row in json.loads((DATA / "merchant_offers.json").read_text())["offers"]
+        for row in json.loads(HISTORICAL_OCT19.read_text())["offers"]
         if row["offer_id"] == verified["offer_id"]
     )
     assert current == {
@@ -116,7 +117,7 @@ def test_october_19_refresh_preserves_exact_variant_and_current_primary_evidence
     assert current["network"] == "CJ Affiliate"
     assert EVIDENCE_OCT19["affiliate_links_reverified"] is False
     checked = datetime.fromisoformat(EVIDENCE_OCT19["observed_at"].replace("Z", "+00:00"))
-    store = MerchantOfferStore(DATA / "merchant_offers.json")
+    store = MerchantOfferStore(HISTORICAL_OCT19)
     assert store.eligible_offer(verified["offer_id"], now=checked) is not None
     assert (
         store.eligible_offer(verified["offer_id"], now=checked + timedelta(hours=72, seconds=1))

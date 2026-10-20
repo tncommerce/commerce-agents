@@ -20,10 +20,12 @@ const fixture = {
   in_stock:true,variant_label:'100 ml · Eau de Toilette',
   clickout_path:'/api/clickout/qa-offer',affiliate_link:true,last_updated_at:'2026-10-12T19:58:00Z',
 };
-function render({offers=[fixture],focusedLanding=false,ready=true,error=false,loading=false}={}) {
+function render({offers=[fixture],focusedLanding=false,ready=true,error=false,loading=false,responseProductId='SC-QA',responseReloadToken=0}={}) {
   let stateIndex = 0;
   const payload={offers,product_id:'SC-QA',best_offer_id:'qa-offer',affiliate_disclosure:'QA'};
-  const states=[loading?undefined:payload,error,0,ready];
+  // Seed the atomic request-bound state, not a pre-hardening bare payload.
+  const response={productId:responseProductId,reloadToken:responseReloadToken,payload};
+  const states=[loading?undefined:response,error,0,ready];
   const source=compile('../components/FragranceOffers.tsx',(id)=>{
     if(id==='react')return {...require('react'),useState:()=>[states[stateIndex++],()=>{}],useEffect:()=>{},useRef:()=>({current:null})};
     if(id==='react/jsx-runtime')return require(id);
@@ -37,7 +39,7 @@ function render({offers=[fixture],focusedLanding=false,ready=true,error=false,lo
       subscribeMeasurement:()=>{throw Error('No browser subscriptions in isolated SSR presentation')},
     };
     if(id==='@/lib/officialProductPages')return {OFFICIAL_PRODUCT_PAGES:{}};
-    if(id==='@/components/AcquisitionInternalLink')return {__esModule:true,default:({children,...props})=>require('react').createElement('a',props,children)};
+    if(id==='@/components/AcquisitionInternalLink' || id==='@/components/CatalogReturnLink')return {__esModule:true,default:({children,...props})=>require('react').createElement('a',props,children)};
     if(id.endsWith('.module.css'))return {__esModule:true,default:new Proxy({}, {get:(_,key)=>String(key)})};
     throw Error('Unexpected dependency '+id);
   });
@@ -70,6 +72,10 @@ const external=render({offers:[{...fixture,affiliate_link:false}]});
 assert.doesNotMatch(external,/sponsored|Werbung · Partnerlink/);assert.match(external,/keine Provision/);cases++;
 for(const state of [{loading:true},{error:true},{offers:[]}]) {
  const html=render(state);assert.doesNotMatch(html,/href="\/api\/clickout|44,00/);cases++;
+}
+for(const state of [{responseProductId:'SC-OTHER'},{responseReloadToken:1}]) {
+ const html=render(state);assert.match(html,/data-offer-state="loading"/);
+ assert.doesNotMatch(html,/href="\/api\/clickout|data-offer-breakdown|44,00/);cases++;
 }
 
 // Regression: editorial homepage spotlights cannot claim a live merchant offer.
