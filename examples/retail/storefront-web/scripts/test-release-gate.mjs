@@ -10,6 +10,7 @@ assert.equal(check().indexing_approved,false,'Indexing is separate');
 assert.equal(check(f,p,qa,null).eligible,false);
 for(const key of ['variant_approved','illustration_approved','publication_approved'])assert.equal(check(f,p,qa,{...approval,[key]:false}).eligible,false);
 assert.equal(check({...f,volume_ml:50}).eligible,false);
+assert.equal(check({...f,notes_source:{url:''}}).eligible,false,'Missing source cannot publish');
 assert.equal(check(f,{...p,headline:'changed design'}).eligible,false);
 assert.equal(check(f,p,{...qa,widths:[390,1440]}).eligible,false);
 assert.equal(check(f,p,qa,{...approval,qa_sha256:'stale'}).eligible,false);

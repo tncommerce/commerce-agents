@@ -5,17 +5,19 @@ import {rendererDigest} from './release-gate.mjs';
 const root=fileURLToPath(new URL('../out',import.meta.url));
 const reviewPhotos=JSON.parse(readFileSync(new URL('../../data/dufynd_photo_integration_review.json',import.meta.url),'utf8')).items;
 const built=JSON.parse(readFileSync(new URL('../lib/generated/review-build-fingerprint.json',import.meta.url),'utf8'));
+const pilots=JSON.parse(readFileSync(new URL('../../data/dufynd_release_pilots.json',import.meta.url),'utf8')).pilots;
+const released=JSON.parse(readFileSync(new URL('../lib/generated/released-profiles.json',import.meta.url),'utf8')).profiles;
+const privateIds=pilots.filter(p=>!released.some(r=>r.product_id===p.product_id)).map(p=>p.product_id);
 if(built.renderer_sha256!==rendererDigest())throw new Error('Render sources changed during build');
 function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(path.join(dir,d.name)):[path.join(dir,d.name)]);}
 for(const file of walk(root).filter(f=>/\.(js|html|txt)$/.test(f))) {
  const text=readFileSync(file,'utf8').replaceAll('\\"','"');
+ if(process.env.DUFYND_CATALOG_REVIEW!=='1' && privateIds.some(id=>text.includes(id))) throw Error(`Private qualified profile leaked into public payload: ${path.relative(root,file)}`);
  if(process.env.DUFYND_CATALOG_REVIEW!=='1' && reviewPhotos.some(p=>text.includes(p.image_sha256)||text.includes(p.image_url))) throw Error(`Private merchant photo leaked into normal export: ${path.relative(root,file)}`);
  if(/"source"\s*:\s*"Parfumo"\s*,\s*"rating_10"\s*:\s*\d/.test(text)) throw new Error(`Blocked community data in public export: ${path.relative(root,file)}`);
 }
 if(process.env.DUFYND_CATALOG_REVIEW!=='1' && existsSync(path.join(root,'review'))) throw new Error('Review routes leaked into normal export');
 if(process.env.DUFYND_CATALOG_REVIEW!=='1' && existsSync(path.join(root,'__review-photos'))) throw new Error('Merchant review photos leaked into normal export');
-const pilots=JSON.parse(readFileSync(new URL('../../data/dufynd_release_pilots.json',import.meta.url),'utf8')).pilots;
-const released=JSON.parse(readFileSync(new URL('../lib/generated/released-profiles.json',import.meta.url),'utf8')).profiles;
 const sitemap=readFileSync(path.join(root,'sitemap.xml'),'utf8');
 for(const p of pilots){
  const approved=released.find(r=>r.product_id===p.product_id);

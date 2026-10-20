@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict';
 import {photoIntegrationQa} from './photo-integration-qa.mjs';
+import {qualifiedReviewQa} from './qualified-review-qa.mjs';
 import {publicCount} from './public-catalog-summary.mjs';
 import {rendererDigest,renderDigest} from './release-gate.mjs';
 import {chromium} from 'playwright';
-import {readFileSync,mkdirSync,writeFileSync,existsSync} from 'node:fs';
+import {readFileSync,mkdirSync,writeFileSync,existsSync,mkdtempSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 const base=process.env.QA_BASE_URL || 'http://127.0.0.1:3013';
 const out=process.env.QA_OUTPUT || '/tmp/dufynd-release-qa';
 mkdirSync(out,{recursive:true});
@@ -15,6 +18,7 @@ const builtRenderer=JSON.parse(readFileSync(new URL('../lib/generated/review-bui
 assert.equal(rendererDigest(),builtRenderer,'Source changed after build: rebuild before certifying screenshots');
 const browser=await chromium.launch({headless:true});
 try {
+await qualifiedReviewQa(browser,{base,out,pilots,facts});
 for(const width of [320,390,768,1440]) {
  const page=await browser.newPage({viewport:{width,height:900},reducedMotion:'reduce'});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -128,7 +132,9 @@ for(const width of [320,390,768,1440]) {
  }
  assert.deepEqual(errors,[]);report.push({width,status:'passed',review_pages:pilots.length,checks:['public_metrics','honest_catalog_visuals','brand_counts','early_search','original_selection_navigation','exact_review_pages','early_art','metadata','review_navigation','no_offers','noindex','no_overflow','no_page_errors']});await page.close();
 }
-await photoIntegrationQa(browser,{base,out});
+// Merchant-only captures must never enter the public CI upload directory.
+await photoIntegrationQa(browser,{base,out:mkdtempSync(join(tmpdir(),'dufynd-private-photo-qa-'))});
+assert.equal(existsSync(`${out}/photo-integration`),false,'Merchant-only captures cannot enter the public artifact directory');
 }finally{await browser.close();}
 assert.equal(rendererDigest(),builtRenderer,'Source changed during browser QA: do not certify mixed revisions');
 writeFileSync(`${out}/report.json`,JSON.stringify(report,null,2));

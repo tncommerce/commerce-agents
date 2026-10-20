@@ -1,0 +1,406 @@
+{
+  "public_activations": 0,
+  "profiles": 5,
+  "checks": [
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "width": 320,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "width": 320,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "width": 320,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "width": 320,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "width": 320,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "width": 390,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "width": 390,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "width": 390,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "width": 390,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "width": 390,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "width": 768,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "width": 768,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "width": 768,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "width": 768,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "width": 768,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "width": 1440,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "width": 1440,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "width": 1440,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "width": 1440,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "width": 1440,
+      "passed": true,
+      "image": "IMAGE_HOLD",
+      "checks": [
+        "exact_variant",
+        "source_date",
+        "honest_fallback",
+        "search_and_brand",
+        "keyboard_focus",
+        "touch_target",
+        "exact_pair",
+        "documented_comparison",
+        "back_restores_selection",
+        "empty_search",
+        "no_overflow",
+        "no_api_or_tracking"
+      ]
+    }
+  ]
+}
