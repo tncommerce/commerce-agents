@@ -682,7 +682,9 @@ def test_safe_empty_contract_requires_explicit_null_best_offer_id() -> None:
         (CRITICAL_PRODUCT_ID, {"require_affiliate_link": True}),
     ],
 )
-def test_absence_cannot_waive_another_product_or_required_affiliate(product_id, requirements) -> None:
+def test_absence_cannot_waive_another_product_or_required_affiliate(
+    product_id, requirements
+) -> None:
     from scripts.dufynd_production_smoke import _check_merchant_offers
 
     def handler(request: httpx.Request) -> httpx.Response:

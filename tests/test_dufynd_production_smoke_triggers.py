@@ -20,7 +20,9 @@ def test_dufynd_production_smoke_requires_search_indexing_in_production() -> Non
     workflow = WORKFLOW.read_text(encoding="utf-8")
     assert "branches: [scentai-mvp]" in workflow
     invocation = "if python scripts/dufynd_production_smoke.py"
-    assert invocation + " --expected-indexing enabled --allow-safe-rabanne-absence; then" in workflow
+    assert (
+        invocation + " --expected-indexing enabled --allow-safe-rabanne-absence; then" in workflow
+    )
     assert "if python scripts/dufynd_production_smoke.py; then" not in workflow
     # We do not change the observer read/ack/finalize or add a new schedule.
 
