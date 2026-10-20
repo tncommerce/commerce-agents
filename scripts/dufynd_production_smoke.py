@@ -21,6 +21,7 @@ class SmokeCheck:
     ok: bool
     status_code: int | None
     detail: str
+    warning_code: str | None = None
 
 
 @dataclass
@@ -34,8 +35,17 @@ class SmokeReport:
         return all(check.ok for check in self.checks)
 
     def to_dict(self) -> dict[str, Any]:
+        # `ok` retains the selected policy's exit semantics. A deployment-only
+        # warning is deliberately NOT counted as a passed commerce check.
+        warnings = sum(check.ok and check.warning_code is not None for check in self.checks)
+        passed = sum(check.ok and check.warning_code is None for check in self.checks)
+        failed = sum(not check.ok for check in self.checks)
         return {
             "ok": self.ok,
+            "status": "failed" if failed else ("degraded" if warnings else "passed"),
+            "passed_checks": passed,
+            "warning_checks": warnings,
+            "failed_checks": failed,
             "storefront_url": self.storefront_url,
             "api_url": self.api_url,
             "checks": [asdict(check) for check in self.checks],
@@ -444,6 +454,7 @@ def _check_merchant_offers(
     expected_offer_id: str | None = None,
     expected_merchant_id: str | None = None,
     require_affiliate_link: bool = False,
+    allow_safe_absence: bool = False,
 ) -> SmokeCheck:
     if not product_id:
         return SmokeCheck(
@@ -477,9 +488,48 @@ def _check_merchant_offers(
                 detail="Merchant offers did not return JSON.",
             )
 
+        if not isinstance(payload, dict):
+            return SmokeCheck(
+                name=name,
+                ok=False,
+                status_code=response.status_code,
+                detail="Merchant offers must return a JSON object.",
+            )
+
         offers = payload.get("offers")
         best_offer_id = payload.get("best_offer_id")
         disclosure = payload.get("affiliate_disclosure")
+
+        # Deployment health and commercial availability are different assertions.
+        # Accept only the API's explicit, fail-closed empty contract in the
+        # deployment smoke. The default full business smoke remains strict.
+        if (
+            allow_safe_absence
+            and product_id == CRITICAL_PRODUCT_ID
+            and expected_offer_id is None
+            and expected_merchant_id is None
+            and not require_affiliate_link
+            and response.status_code == 200
+            and "best_offer_id" in payload
+            and offers == []
+            and (
+                payload.get("product_id") == product_id
+                and best_offer_id is None
+                and isinstance(disclosure, str)
+                and bool(disclosure.strip())
+            )
+        ):
+            return SmokeCheck(
+                name=name,
+                ok=True,
+                status_code=response.status_code,
+                detail=(
+                    "BUSINESS_WARNING: no eligible merchant offer; fail-closed "
+                    "empty payload is valid for deployment only. "
+                    "Rabanne purchase availability is NOT confirmed."
+                ),
+                warning_code="no_eligible_rabanne_offer",
+            )
 
         if not isinstance(offers, list) or not offers:
             return SmokeCheck(
@@ -679,6 +729,7 @@ def run_smoke(
     storefront_url: str,
     api_url: str,
     expected_indexing: str = "any",
+    allow_safe_rabanne_absence: bool = False,
     transport: httpx.BaseTransport | None = None,
     timeout_seconds: float = 12.0,
 ) -> SmokeReport:
@@ -769,6 +820,7 @@ def run_smoke(
                 api,
                 CRITICAL_PRODUCT_ID,
                 name="merchant_offers_rabanne_1_million",
+                allow_safe_absence=allow_safe_rabanne_absence,
             ),
             _check_scoped_affiliate_publication_gate(
                 client,
@@ -811,6 +863,15 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--allow-safe-rabanne-absence",
+        action="store_true",
+        help=(
+            "Deployment-only: accept a structurally valid empty Rabanne offers "
+            "response as a BUSINESS_WARNING. Full commercial smoke remains strict "
+            "by default; malformed/nonempty unsafe offers always fail."
+        ),
+    )
+    parser.add_argument(
         "--machine-readable",
         action="store_true",
     )
@@ -821,6 +882,7 @@ def main() -> int:
             storefront_url=args.storefront_url,
             api_url=args.api_url,
             expected_indexing=args.expected_indexing,
+            allow_safe_rabanne_absence=args.allow_safe_rabanne_absence,
         )
     except ValueError as exc:
         parser.error(str(exc))
@@ -832,11 +894,18 @@ def main() -> int:
         print(
             "DUFYND production smoke | "
             f"ok={payload['ok']} | "
-            f"checks={sum(check.ok for check in report.checks)}/"
-            f"{len(report.checks)}"
+            f"status={payload['status']} | "
+            f"passed={payload['passed_checks']} | "
+            f"warnings={payload['warning_checks']} | "
+            f"failed={payload['failed_checks']} | "
+            f"total={len(report.checks)}"
         )
         for check in report.checks:
-            marker = "PASS" if check.ok else "FAIL"
+            marker = (
+                "WARN"
+                if check.ok and check.warning_code is not None
+                else ("PASS" if check.ok else "FAIL")
+            )
             print(f"  {marker} {check.name}: {check.detail}")
 
     return 0 if report.ok else 20
