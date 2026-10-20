@@ -21,6 +21,7 @@ class SmokeCheck:
     ok: bool
     status_code: int | None
     detail: str
+    warning_code: str | None = None
 
 
 @dataclass
@@ -34,8 +35,17 @@ class SmokeReport:
         return all(check.ok for check in self.checks)
 
     def to_dict(self) -> dict[str, Any]:
+        # `ok` retains the selected policy's exit semantics. A deployment-only
+        # warning is deliberately NOT counted as a passed commerce check.
+        warnings = sum(check.ok and check.warning_code is not None for check in self.checks)
+        passed = sum(check.ok and check.warning_code is None for check in self.checks)
+        failed = sum(not check.ok for check in self.checks)
         return {
             "ok": self.ok,
+            "status": "failed" if failed else ("degraded" if warnings else "passed"),
+            "passed_checks": passed,
+            "warning_checks": warnings,
+            "failed_checks": failed,
             "storefront_url": self.storefront_url,
             "api_url": self.api_url,
             "checks": [asdict(check) for check in self.checks],
@@ -478,6 +488,14 @@ def _check_merchant_offers(
                 detail="Merchant offers did not return JSON.",
             )
 
+        if not isinstance(payload, dict):
+            return SmokeCheck(
+                name=name,
+                ok=False,
+                status_code=response.status_code,
+                detail="Merchant offers must return a JSON object.",
+            )
+
         offers = payload.get("offers")
         best_offer_id = payload.get("best_offer_id")
         disclosure = payload.get("affiliate_disclosure")
@@ -487,6 +505,12 @@ def _check_merchant_offers(
         # deployment smoke. The default full business smoke remains strict.
         if (
             allow_safe_absence
+            and product_id == CRITICAL_PRODUCT_ID
+            and expected_offer_id is None
+            and expected_merchant_id is None
+            and not require_affiliate_link
+            and response.status_code == 200
+            and "best_offer_id" in payload
             and offers == []
             and (
                 payload.get("product_id") == product_id
@@ -504,6 +528,7 @@ def _check_merchant_offers(
                     "empty payload is valid for deployment only. "
                     "Rabanne purchase availability is NOT confirmed."
                 ),
+                warning_code="no_eligible_rabanne_offer",
             )
 
         if not isinstance(offers, list) or not offers:
@@ -869,13 +894,16 @@ def main() -> int:
         print(
             "DUFYND production smoke | "
             f"ok={payload['ok']} | "
-            f"checks={sum(check.ok for check in report.checks)}/"
-            f"{len(report.checks)}"
+            f"status={payload['status']} | "
+            f"passed={payload['passed_checks']} | "
+            f"warnings={payload['warning_checks']} | "
+            f"failed={payload['failed_checks']} | "
+            f"total={len(report.checks)}"
         )
         for check in report.checks:
             marker = (
                 "WARN"
-                if check.detail.startswith("BUSINESS_WARNING:")
+                if check.ok and check.warning_code is not None
                 else ("PASS" if check.ok else "FAIL")
             )
             print(f"  {marker} {check.name}: {check.detail}")
