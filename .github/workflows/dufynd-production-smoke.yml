@@ -44,8 +44,8 @@ jobs:
           for attempt in $(seq 1 "$attempts"); do
             echo "DUFYND production smoke attempt $attempt/$attempts"
 
-            if python scripts/dufynd_production_smoke.py --expected-indexing enabled; then
-              echo "DUFYND production smoke passed."
+            if python scripts/dufynd_production_smoke.py --expected-indexing enabled --allow-safe-rabanne-absence; then
+              echo "Technische Deployment-Prüfung abgeschlossen; Geschäftswarnungen bleiben maßgeblich."
               exit 0
             fi
 

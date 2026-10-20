@@ -535,3 +535,292 @@ def test_smoke_accepts_hidden_notino_eclaire_while_publication_gate_is_closed() 
     assert check.ok is True
     assert check.status_code == 404
     assert "publication-gated" in check.detail
+
+
+def test_deployment_smoke_accepts_only_safe_empty_rabanne_offer_with_explicit_warning() -> None:
+    """A merchant-side outage must not turn a healthy deployment into a failed deploy."""
+    empty = {
+        "product_id": CRITICAL_PRODUCT_ID,
+        "best_offer_id": None,
+        "offers": [],
+        "affiliate_disclosure": "Affiliate disclosure",
+    }
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        expected_indexing="disabled",
+        allow_safe_rabanne_absence=True,
+        transport=transport(offers_payload=empty),
+    )
+    assert report.ok is True
+    assert len(report.checks) == 18
+    check = next(
+        check for check in report.checks if check.name == "merchant_offers_rabanne_1_million"
+    )
+    assert check.ok is True
+    assert "BUSINESS_WARNING" in check.detail
+    assert "NOT confirmed" in check.detail
+    assert check.status_code == 200
+
+
+@pytest.mark.parametrize(
+    "malformed",
+    [
+        {
+            "product_id": CRITICAL_PRODUCT_ID,
+            "best_offer_id": "stale-offer",
+            "offers": [],
+            "affiliate_disclosure": "Disclosure",
+        },
+        {
+            "product_id": "SC-WRONG",
+            "best_offer_id": None,
+            "offers": [],
+            "affiliate_disclosure": "Disclosure",
+        },
+        {
+            "product_id": CRITICAL_PRODUCT_ID,
+            "best_offer_id": None,
+            "offers": [],
+            "affiliate_disclosure": "",
+        },
+        {
+            "product_id": CRITICAL_PRODUCT_ID,
+            "best_offer_id": None,
+            "offers": ["malformed"],
+            "affiliate_disclosure": "Disclosure",
+        },
+    ],
+)
+def test_deployment_smoke_still_rejects_malformed_or_unsafe_offers(malformed: dict) -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        allow_safe_rabanne_absence=True,
+        transport=transport(offers_payload=malformed),
+    )
+    assert report.ok is False
+    assert any(c.name == "merchant_offers_rabanne_1_million" and not c.ok for c in report.checks)
+
+
+def test_deployment_smoke_does_not_waive_indexing_or_route_regressions() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        expected_indexing="enabled",
+        allow_safe_rabanne_absence=True,
+        transport=transport(
+            robots_text="User-agent: *\\nDisallow: /\\n",
+            offers_payload={
+                "product_id": CRITICAL_PRODUCT_ID,
+                "best_offer_id": None,
+                "offers": [],
+                "affiliate_disclosure": "Disclosure",
+            },
+        ),
+    )
+    assert report.ok is False
+    assert any(c.name == "robots_policy" and not c.ok for c in report.checks)
+
+
+# Regression: deployment-only absence must never masquerade as a confirmed offer.
+def _safe_empty_offer(product_id: str = CRITICAL_PRODUCT_ID) -> dict:
+    return {
+        "product_id": product_id,
+        "offers": [],
+        "best_offer_id": None,
+        "affiliate_disclosure": "Affiliate disclosure",
+    }
+
+
+@pytest.mark.parametrize("body", [None, [], [1], True, 1, "invalid"])
+@pytest.mark.parametrize("allow_absence", [False, True])
+def test_non_object_offer_json_returns_failed_check_not_exception(body, allow_absence) -> None:
+    import json
+
+    original = transport()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == f"/api/merchant-offers/{CRITICAL_PRODUCT_ID}":
+            return httpx.Response(
+                200, content=json.dumps(body), headers={"content-type": "application/json"}
+            )
+        return original.handle_request(request)
+
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        allow_safe_rabanne_absence=allow_absence,
+        transport=httpx.MockTransport(handler),
+    )
+    assert report.ok is False
+    assert len(report.checks) == 18
+    check = next(c for c in report.checks if c.name == "merchant_offers_rabanne_1_million")
+    assert check.ok is False
+    assert "JSON object" in check.detail
+
+
+def test_safe_empty_contract_requires_explicit_null_best_offer_id() -> None:
+    empty = _safe_empty_offer()
+    del empty["best_offer_id"]
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        allow_safe_rabanne_absence=True,
+        transport=transport(offers_payload=empty),
+    )
+    assert report.ok is False
+
+
+@pytest.mark.parametrize(
+    "product_id, requirements",
+    [
+        (NOTINO_ECLAIRE_PRODUCT_ID, {}),
+        ("SC-OTHER", {}),
+        (CRITICAL_PRODUCT_ID, {"expected_offer_id": "required-offer"}),
+        (CRITICAL_PRODUCT_ID, {"expected_merchant_id": "required-merchant"}),
+        (CRITICAL_PRODUCT_ID, {"require_affiliate_link": True}),
+    ],
+)
+def test_absence_cannot_waive_another_product_or_required_affiliate(
+    product_id, requirements
+) -> None:
+    from scripts.dufynd_production_smoke import _check_merchant_offers
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        assert request.method == "GET"
+        assert request.url.path == f"/api/merchant-offers/{product_id}"
+        return httpx.Response(200, json=_safe_empty_offer(product_id))
+
+    with httpx.Client(transport=httpx.MockTransport(handler)) as client:
+        check = _check_merchant_offers(
+            client,
+            "https://api.dufynd.test",
+            product_id,
+            allow_safe_absence=True,
+            **requirements,
+        )
+    assert check.ok is False
+
+
+@pytest.mark.parametrize("status", [201, 202, 206, 302, 404, 500, 503])
+def test_empty_warning_requires_completed_http_200_contract(status) -> None:
+    original = transport()
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.path == f"/api/merchant-offers/{CRITICAL_PRODUCT_ID}":
+            return httpx.Response(status, json=_safe_empty_offer())
+        return original.handle_request(request)
+
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        allow_safe_rabanne_absence=True,
+        transport=httpx.MockTransport(handler),
+    )
+    assert report.ok is False
+
+
+@pytest.mark.parametrize("path", ["/start", CRITICAL_PRODUCT_PATH, "/duftfinder", "/vergleich"])
+def test_safe_absence_never_waives_a_broken_customer_route(path) -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        allow_safe_rabanne_absence=True,
+        transport=transport(offers_payload=_safe_empty_offer(), broken_storefront_path=path),
+    )
+    assert report.ok is False
+    assert any(not c.ok and c.status_code == 404 for c in report.checks)
+
+
+def test_safe_absence_does_not_waive_real_noindex_policy() -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        expected_indexing="enabled",
+        allow_safe_rabanne_absence=True,
+        transport=transport(
+            offers_payload=_safe_empty_offer(), robots_text="User-agent: *\nDisallow: /\n"
+        ),
+    )
+    assert report.ok is False
+    check = next(c for c in report.checks if c.name == "robots_policy")
+    assert "reports indexing disabled" in check.detail
+
+
+@pytest.mark.parametrize("broken", [False, True])
+def test_deployment_report_counts_absence_as_warning_not_pass(broken) -> None:
+    report = run_smoke(
+        storefront_url="https://dufynd.de",
+        api_url="https://api.dufynd.test",
+        allow_safe_rabanne_absence=True,
+        transport=transport(
+            offers_payload=_safe_empty_offer(),
+            broken_storefront_path="/vergleich" if broken else None,
+        ),
+    )
+    payload = report.to_dict()
+    assert payload["ok"] is (not broken)
+    assert payload["status"] == ("failed" if broken else "degraded")
+    assert payload["passed_checks"] == (16 if broken else 17)
+    assert payload["warning_checks"] == 1
+    assert payload["failed_checks"] == int(broken)
+    assert len(payload["checks"]) == 18
+    check = next(c for c in payload["checks"] if c["name"] == "merchant_offers_rabanne_1_million")
+    assert check["warning_code"] == "no_eligible_rabanne_offer"
+    assert "NOT confirmed" in check["detail"]
+
+
+def test_normal_and_strict_failure_reports_have_no_warning() -> None:
+    for empty in (False, True):
+        report = run_smoke(
+            storefront_url="https://dufynd.de",
+            api_url="https://api.dufynd.test",
+            transport=transport(offers_payload=_safe_empty_offer() if empty else None),
+        )
+        payload = report.to_dict()
+        assert payload["status"] == ("failed" if empty else "passed")
+        assert payload["passed_checks"] == (17 if empty else 18)
+        assert payload["failed_checks"] == int(empty)
+        assert payload["warning_checks"] == 0
+
+
+@pytest.mark.parametrize("machine_readable", [False, True])
+@pytest.mark.parametrize("allow_absence", [False, True])
+def test_cli_keeps_strict_default_and_exposes_degradation(
+    monkeypatch, capsys, machine_readable, allow_absence
+) -> None:
+    import json
+    import sys
+
+    from scripts import dufynd_production_smoke as smoke
+
+    real_run = smoke.run_smoke
+    calls = []
+
+    def isolated_run(**kwargs):
+        calls.append(kwargs)
+        return real_run(**kwargs, transport=transport(offers_payload=_safe_empty_offer()))
+
+    monkeypatch.setattr(smoke, "run_smoke", isolated_run)
+    args = ["dufynd_production_smoke.py", "--api-url", "https://api.dufynd.test"]
+    if machine_readable:
+        args.append("--machine-readable")
+    if allow_absence:
+        args.append("--allow-safe-rabanne-absence")
+    monkeypatch.setattr(sys, "argv", args)
+    assert smoke.main() == (0 if allow_absence else 20)
+    assert len(calls) == 1
+    assert calls[0]["allow_safe_rabanne_absence"] is allow_absence
+    stdout = capsys.readouterr().out
+    if machine_readable:
+        data = json.loads(stdout)
+        assert data["status"] == ("degraded" if allow_absence else "failed")
+        assert data["warning_checks"] == int(allow_absence)
+    else:
+        assert "checks=18/18" not in stdout
+        assert "status=" + ("degraded" if allow_absence else "failed") in stdout
+        assert "warnings=" + str(int(allow_absence)) in stdout
+        if allow_absence:
+            assert "WARN merchant_offers_rabanne_1_million" in stdout
+            assert "NOT confirmed" in stdout
