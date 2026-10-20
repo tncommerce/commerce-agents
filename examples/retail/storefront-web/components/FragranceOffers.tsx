@@ -153,7 +153,8 @@ export default function FragranceOffers({
     void fetchMerchantOffers(productId)
       .then((value) => {
         if (!active) return;
-        if (value === null) {
+        // Reject a response for a different fragrance; never reuse its purchase links.
+        if (value === null || value.product_id !== productId) {
           setLoadError(true);
           setPayload(null);
           return;
@@ -237,7 +238,9 @@ export default function FragranceOffers({
     };
   }, [analyticsSurface, payload, productId]);
 
-  if (payload === undefined) {
+  // Product props can change before the passive fetch effect clears old data.
+  // Never render the previous fragrance's offer or CTA in that intermediate render.
+  if (payload === undefined || (payload !== null && payload.product_id !== productId)) {
     return (
       <section
         className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
