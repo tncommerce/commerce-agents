@@ -18,6 +18,7 @@ import LibreRefillGuide, {
 } from "@/components/LibreRefillGuide";
 import MobileOfferBar from "@/components/MobileOfferBar";
 import OfferSectionLink from "@/components/OfferSectionLink";
+import FragranceVariant from "@/components/FragranceVariant";
 import FragranceVisual from "@/components/FragranceVisual";
 import ImageAttribution from "@/components/ImageAttribution";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
@@ -413,6 +414,7 @@ export default async function FragrancePage({
 
         <section
           data-product-id={fragrance.product_id}
+          data-dufynd-product-presentation={!review && !offerOnlyPricing || undefined}
           data-dufynd-photo-hold={!heroIsProductTruth || undefined}
           data-merchant-photo-review={review ? "top-parfuemerie" : undefined}
           data-dufynd-studio-photo={heroIsProductTruth && ["merchant_feed", "licensed"].includes(heroVisual?.provenance || "") ? true : undefined}
@@ -446,6 +448,12 @@ export default async function FragrancePage({
               <h1 className="mt-1.5 text-[32px] font-semibold leading-[1.05] tracking-[-0.045em] sm:text-[46px]">
                 {fragrance.name}
               </h1>
+              {!review && !offerOnlyPricing ? <>
+                <FragranceVariant concentration={fragrance.concentration} volume={fragrance.volume_ml} />
+                <p className="dufynd-product-context">
+                  {[targetGroupLabel(fragrance.target_groups), fragrance.release_year ? `Seit ${fragrance.release_year}` : null].filter(Boolean).join(" · ")}
+                </p>
+              </> : <>
               <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:gap-2 sm:text-[12px]">
                 <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
                   {fragrance.concentration}
@@ -464,15 +472,11 @@ export default async function FragrancePage({
                   </span>
                 ) : null}
               </div>
+              </>}
+
               {fragrance.accords.length ? (
                 <p className="mt-3 text-[11px] leading-4 text-(--ink-soft) sm:text-[12px]">
                   Duftcharakter: {fragrance.accords.slice(0, 3).map(accordLabel).join(" · ")}
-                </p>
-              ) : null}
-              {!review && !offerOnlyPricing && fragrance.market.reference_price_eur != null ? (
-                <p className="mt-2 text-[11px] leading-4 text-(--ink-soft)">
-                  Preisreferenz {formatPrice(fragrance.market.reference_price_eur)}
-                  {checkedAt ? ` · Stand ${checkedAt}` : ""} · aktuelle Angebote separat prüfen
                 </p>
               ) : null}
               {fragrance.community.rating_10 != null ? (
@@ -717,6 +721,13 @@ export default async function FragrancePage({
             className="dufynd-fragrance-journey-axis"
           />
 
+          {!review && !offerOnlyPricing && <div
+            className="dufynd-fragrance-chapter dufynd-fragrance-chapter--notes mt-5"
+            data-dufynd-chapter="duftnoten"
+          >
+            <FragranceNotesOverview notes={fragrance.notes} />
+          </div>}
+
           {!review && <div
             id="angebote"
             className="dufynd-fragrance-chapter dufynd-fragrance-chapter--offers mt-5 scroll-mt-24"
@@ -739,12 +750,14 @@ export default async function FragrancePage({
           <LibreRefillGuide />
         ) : null}
 
+        {(review || offerOnlyPricing) && <>
         <div
           className="dufynd-fragrance-chapter dufynd-fragrance-chapter--notes mt-5"
           data-dufynd-chapter="duftnoten"
         >
           <FragranceNotesOverview notes={fragrance.notes} />
         </div>
+        </>}
         <div
           className="dufynd-fragrance-chapter dufynd-fragrance-chapter--profile mt-5"
           data-dufynd-chapter="verstehen"

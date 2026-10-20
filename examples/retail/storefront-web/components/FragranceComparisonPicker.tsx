@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import FragranceComparisonEvidence from "@/components/FragranceComparisonEvidence";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceModel3D from "@/components/FragranceModel3D";
+import FragranceVariant from "@/components/FragranceVariant";
 import FragranceVisual from "@/components/FragranceVisual";
 import { appendAcquisitionAttribution, trackAnalyticsEvent } from "@/lib/analytics";
 import { accordLabel } from "@/lib/accordLabels";
@@ -186,9 +187,7 @@ function ProductMiniHeader({
         <div className="mt-1 text-[15px] font-semibold leading-5 text-(--ink)">
           {fragrance.name}
         </div>
-        <div className="mt-1 text-[10.5px] text-(--ink-soft)">
-          {fragrance.concentration} · {fragrance.volume_ml} ml
-        </div>
+        <FragranceVariant concentration={fragrance.concentration} volume={fragrance.volume_ml} />
       </div>
     </a>
   );
@@ -419,6 +418,8 @@ export default function FragranceComparisonPicker({
             <ProductMiniHeader fragrance={right} side="right" context={context} />
           </div>
 
+          <FragranceComparisonEvidence left={left} right={right} />
+
           <div
             role="table"
             aria-label={`Freier Duftvergleich ${left.name} und ${right.name}`}
@@ -517,7 +518,6 @@ export default function FragranceComparisonPicker({
             Die DUFYND-Profilachsen sind redaktionelle Merkmale.
           </p>
 
-          <FragranceComparisonEvidence left={left} right={right} />
 
           <section className="dufynd-comparison-dna-stage relative mt-4 overflow-hidden rounded-2xl border border-[#d9bd82]/20 bg-[#15120f] p-4 text-white shadow-[0_18px_55px_-34px_rgba(36,24,8,0.9)] sm:p-5">
             <div
