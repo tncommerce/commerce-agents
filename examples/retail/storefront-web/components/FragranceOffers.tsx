@@ -18,6 +18,10 @@ import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
 import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import styles from "./FragranceOffers.module.css";
 
+// A backgrounded buyer tab may outlive the server's verified-offer window.
+// Recheck only when the tab returns, never with an extra polling interval.
+const RETURN_RECHECK_INTERVAL_MS = 5 * 60 * 1000;
+
 function OfferRecoveryLinks({ alternativesHref }: { alternativesHref?: string }) {
   return (
     <nav aria-label="Weitere Wege zum passenden Duft" className="mt-4 flex flex-wrap gap-2">
@@ -89,15 +93,21 @@ export default function FragranceOffers({
   /** Compact commerce presentation for the existing first-money product page. */
   focusedLanding?: boolean;
 }) {
-  const [payload, setPayload] = useState<
-    MerchantOffersPayload | null | undefined
-  >(undefined);
+  // Bind each settled result (including errors) atomically to the request that
+  // produced it. A tab-return state update renders before passive effects run.
+  const [response, setResponse] = useState<{
+    productId: string;
+    reloadToken: number;
+    payload: MerchantOffersPayload | null | undefined;
+  } | undefined>(undefined);
+  const payload = response?.payload;
   const [loadError, setLoadError] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
   const [clickoutSessionReady, setClickoutSessionReady] = useState(false);
   const trackedDetailViewRef = useRef<string | null>(null);
   const offerSectionRef = useRef<HTMLElement | null>(null);
   const trackedOfferViewRef = useRef<string | null>(null);
+  const lastOfferFetchStartedAtRef = useRef(0);
 
   // Consent can change after this product mounted. Observe that choice without
   // re-fetching the functional offers or replaying pre-consent shopping actions.
@@ -141,13 +151,18 @@ export default function FragranceOffers({
 
   useEffect(() => {
     let active = true;
+    const setPayload = (value: MerchantOffersPayload | null | undefined) => {
+      setResponse({ productId, reloadToken, payload: value });
+    };
     setLoadError(false);
     setPayload(undefined);
+    lastOfferFetchStartedAtRef.current = Date.now();
 
     void fetchMerchantOffers(productId)
       .then((value) => {
         if (!active) return;
-        if (value === null) {
+        // Reject a response for a different fragrance; never reuse its purchase links.
+        if (value === null || value.product_id !== productId) {
           setLoadError(true);
           setPayload(null);
           return;
@@ -162,6 +177,25 @@ export default function FragranceOffers({
 
     return () => { active = false; };
   }, [analyticsSurface, productId, reloadToken, trackProductOpen]);
+
+  useEffect(() => {
+    const recheckOnReturn = () => {
+      if (document.visibilityState !== "visible") return;
+      if (Date.now() - lastOfferFetchStartedAtRef.current < RETURN_RECHECK_INTERVAL_MS) return;
+      // The same fail-closed API fetch runs again. No clickout or measurement
+      // event is emitted by this functional freshness check.
+      // Reserve the recheck immediately; pageshow and visibilitychange may both
+      // fire before React commits the reload and starts the next request.
+      lastOfferFetchStartedAtRef.current = Date.now();
+      setReloadToken((current) => current + 1);
+    };
+    document.addEventListener("visibilitychange", recheckOnReturn);
+    window.addEventListener("pageshow", recheckOnReturn);
+    return () => {
+      document.removeEventListener("visibilitychange", recheckOnReturn);
+      window.removeEventListener("pageshow", recheckOnReturn);
+    };
+  }, []);
 
   useEffect(() => {
     const section = offerSectionRef.current;
@@ -212,7 +246,11 @@ export default function FragranceOffers({
     };
   }, [analyticsSurface, payload, productId]);
 
-  if (payload === undefined) {
+  // Product props can change before the passive fetch effect clears old data.
+  // Never render the previous fragrance's offer or CTA in that intermediate render.
+  if (payload === undefined || response?.productId !== productId ||
+      response?.reloadToken !== reloadToken ||
+      (payload !== null && payload.product_id !== productId)) {
     return (
       <section
         className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}

@@ -1,3 +1,4 @@
+import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { verifyBrandDiscovery } from "./brand-discovery-qa.mjs";
 import { verifyNoteSculpture } from "./note-sculpture-qa.mjs";
@@ -1683,12 +1684,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-TIMEOUT-RECOVERY",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-timeout-recovery-offer",
             offers: [
               {
                 offer_id: "qa-timeout-recovery-offer",
-                product_id: "SC-QA-TIMEOUT-RECOVERY",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-timeout-merchant",
                 merchant_name: "QA Timeout Merchant",
                 merchant_product_id: "qa-timeout-sku",
@@ -1827,10 +1828,14 @@ try {
         status: 200,
         contentType: "application/json",
         body: JSON.stringify({
-          product_id: "SC-QA-SESSION-TIMEOUT",
+          product_id: offerFixtureProductId(route),
           best_offer_id: "qa-session-timeout-offer",
+          affiliate_disclosure: "Isolated QA session timeout fixture",
           offers: [{
             offer_id: "qa-session-timeout-offer",
+            product_id: offerFixtureProductId(route),
+            merchant_id: "qa-session-timeout-merchant",
+            in_stock: true,
             merchant_name: "QA Session Timeout Merchant",
             price: 99,
             total_price: 99,
@@ -1927,12 +1932,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-ATTRIBUTION",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-attribution-offer",
             offers: [
               {
                 offer_id: "qa-attribution-offer",
-                product_id: "SC-QA-ATTRIBUTION",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-merchant",
                 merchant_name: "QA Merchant",
                 merchant_product_id: "qa-sku",
@@ -2091,12 +2096,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-OFFER-IMPRESSION",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-offer-impression-offer",
             offers: [
               {
                 offer_id: "qa-offer-impression-offer",
-                product_id: "SC-QA-OFFER-IMPRESSION",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-merchant",
                 merchant_name: "QA Merchant",
                 merchant_product_id: "qa-offer-impression-sku",
@@ -2204,12 +2209,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-ATTRIBUTION-NAV",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-attribution-nav-offer",
             offers: [
               {
                 offer_id: "qa-attribution-nav-offer",
-                product_id: "SC-QA-ATTRIBUTION-NAV",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-merchant",
                 merchant_name: "QA Merchant",
                 merchant_product_id: "qa-nav-sku",
@@ -2352,12 +2357,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-SESSION-CORRELATION",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-session-correlation-offer",
             offers: [
               {
                 offer_id: "qa-session-correlation-offer",
-                product_id: "SC-QA-SESSION-CORRELATION",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-merchant",
                 merchant_name: "QA Merchant",
                 merchant_product_id: "qa-session-sku",

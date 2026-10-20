@@ -4,24 +4,33 @@ import assert from "node:assert/strict";
 export async function verifyOfferRecovery(browser, baseUrl) {
   let cases = 0;
   for (const width of [320, 390, 1440]) {
-    for (const mode of ["empty", "error", "available"]) {
+    for (const mode of ["empty", "error", "available", "wrong-product"]) {
       const context = await browser.newContext({ viewport: { width, height: 844 } });
       try {
         const page = await context.newPage();
         await page.route("**/api/**", (route) => route.fulfill({ json: {} }));
         await page.route("**/api/session", (route) => route.fulfill({ json: { session_id: "qa-offer-recovery-session" } }));
+        // Happy-path fixtures must satisfy the same public response contract as
+        // production. The wrong-product fixture deliberately violates row identity.
         await page.route("**/api/merchant-offers/**", (route) => mode === "error"
           ? route.fulfill({ status: 503, body: "unavailable" })
           : route.fulfill({ json: {
-            product_id: "SC-XERJOFF-NAXOS-100", best_offer_id: "qa-offer",
-            offers: mode === "available" ? [{
-              offer_id: "qa-offer", merchant_name: "QA Merchant", price: 99, total_price: 99,
+            product_id: "SC-XERJOFF-NAXOS-100", best_offer_id: mode === "empty" ? null : "qa-offer",
+            affiliate_disclosure: "Isolated QA fixture only",
+            offers: mode === "available" || mode === "wrong-product" ? [{
+              offer_id: "qa-offer", product_id: mode === "wrong-product" ? "SC-YSL-LIBRE-EDP-90" : "SC-XERJOFF-NAXOS-100",
+              merchant_id: "qa-merchant", merchant_name: "QA Merchant", price: 99, total_price: 99,
               currency: "EUR", in_stock: true, affiliate_link: false,
               clickout_path: "/api/clickout/qa-offer", last_updated_at: "2026-10-08T10:00:00Z",
             }] : [],
           } }));
         await page.goto(`${baseUrl}/duft/xerjoff-naxos?src=instagram&cmp=qa_recovery&content=qa_final`);
         await chooseMeasurement(page, "granted");
+        const expectedState = mode === "wrong-product" ? "error" : mode;
+        await page.locator(`[data-offer-state="${expectedState}"]`).waitFor();
+        if (mode !== "available") {
+          assert.equal(await page.locator('a[href*="/api/clickout/"]').count(), 0, "invalid or empty responses must not expose purchase links");
+        }
         if (width < 640) {
           const stage = await page.locator(".dufynd-fragrance-stage-shell").boundingBox();
           assert.ok(stage.height <= Math.max(220, Math.min(width * 0.62, 258)) + 1, "later CSS overrides must not undo the compact mobile stage");
