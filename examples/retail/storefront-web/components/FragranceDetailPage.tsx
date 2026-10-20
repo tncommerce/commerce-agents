@@ -1,3 +1,4 @@
+import CatalogReturnLink from "@/components/CatalogReturnLink";
 import type { Metadata } from "next";
 import {RELEASED_PROFILES} from '@/lib/releasedProfileCatalog';
 import {RELEASE_PILOTS} from '@/lib/releasePilots';
@@ -401,9 +402,9 @@ export default async function FragrancePage({
             DUFYND
           </AcquisitionInternalLink>
           <span className="px-2">/</span>
-          <AcquisitionInternalLink href="/duft" className="hover:underline">
+          <CatalogReturnLink href="/duft" className="inline-flex min-h-11 items-center hover:underline">
             Düfte
-          </AcquisitionInternalLink>
+          </CatalogReturnLink>
           <span className="px-2">/</span>
           <span className="text-(--ink)">
             {fragrance.brand} {fragrance.name}

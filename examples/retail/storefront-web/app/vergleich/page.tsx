@@ -1,3 +1,4 @@
+import CatalogReturnLink from "@/components/CatalogReturnLink";
 import type { Metadata } from "next";
 
 import AcquisitionAnalytics from "@/components/AcquisitionAnalytics";
@@ -82,12 +83,12 @@ export default function ComparisonIndexPage() {
               DUFYND
             </span>
           </AcquisitionInternalLink>
-          <AcquisitionInternalLink
+          <CatalogReturnLink
             href="/duft"
-            className="rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink)"
+            className="inline-flex min-h-11 items-center rounded-xl border border-(--line) px-3 py-2 text-[12px] font-semibold text-(--ink)"
           >
             Duftkatalog
-          </AcquisitionInternalLink>
+          </CatalogReturnLink>
         </div>
       </header>
 

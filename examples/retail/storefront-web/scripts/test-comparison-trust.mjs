@@ -32,7 +32,7 @@ function load(leftCommunity = emptyCommunity, rightCommunity = emptyCommunity, c
   };
   const mod = { exports: {} };
   const jsx = (type, props) => ({ type, props });
-  const states = ["Left", "Right", true, "", ""];
+  const states = ["Left", "Right", true, "", "", ""];
   vm.runInNewContext(code, {
     module: mod, exports: mod.exports,
     require(name) {
@@ -41,6 +41,7 @@ function load(leftCommunity = emptyCommunity, rightCommunity = emptyCommunity, c
         useMemo: (fn) => fn(), useEffect: () => {}, useRef: (current) => ({ current }),
         useState: () => [states.shift(), () => {}],
       };
+      if (name === "@/lib/catalogJourney") return { withCatalogContext: (url) => url };
       if (name === "@/lib/site") return { SITE_URL: "https://dufynd.example" };
       if (name === "@/lib/analytics") return { appendAcquisitionAttribution: (url) => url };
       if (name === "@/lib/fragranceCatalog") return {

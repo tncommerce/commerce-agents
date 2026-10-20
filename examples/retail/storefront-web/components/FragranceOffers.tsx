@@ -1,4 +1,5 @@
 "use client";
+import CatalogReturnLink from "@/components/CatalogReturnLink";
 
 import { useEffect, useRef, useState } from "react";
 import { formatMoney } from "web-shared";
@@ -15,7 +16,6 @@ import {
 import { measurementAllowed, subscribeMeasurement } from "@/lib/measurementConsent";
 import type { MerchantOffersPayload } from "@/lib/types";
 import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
-import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import styles from "./FragranceOffers.module.css";
 
 // A backgrounded buyer tab may outlive the server's verified-offer window.
@@ -30,9 +30,9 @@ function OfferRecoveryLinks({ alternativesHref }: { alternativesHref?: string })
           Ähnliche Düfte entdecken
         </a>
       ) : null}
-      <AcquisitionInternalLink href="/duft" className="inline-flex min-h-11 items-center rounded-xl border border-(--line-strong) px-4 py-2 text-[12px] font-semibold text-(--accent-ink)">
+      <CatalogReturnLink href="/duft" className="inline-flex min-h-11 items-center rounded-xl border border-(--line-strong) px-4 py-2 text-[12px] font-semibold text-(--accent-ink)">
         Weitere Düfte & Angebote entdecken
-      </AcquisitionInternalLink>
+      </CatalogReturnLink>
     </nav>
   );
 }
