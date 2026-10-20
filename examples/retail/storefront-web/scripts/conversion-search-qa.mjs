@@ -1,5 +1,6 @@
 import { emptyOfferFixture } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
+import { verifyCompactFragranceSearch } from "./compact-fragrance-search-qa.mjs";
 import assert from 'node:assert/strict';
 
 // Route readiness is verified by the semantic headings and controls below.
@@ -180,6 +181,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
     } finally {await context.close();}
   }
   cases.push(...await verifyProductNameAliases(browser, baseUrl, outputDir));
+  cases.push(...await verifyCompactFragranceSearch(browser, baseUrl, outputDir));
   return cases;
 }
 

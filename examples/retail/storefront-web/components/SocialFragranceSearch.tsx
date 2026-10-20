@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useRef, useState } from "react";
 
 import {
   fragranceSearchIdentity,
+  fragranceSearchTokens,
   matchesRequestedVariant,
   normalizeFragranceSearch as normalize,
 } from "@/lib/fragranceSearchIdentity";
@@ -40,7 +41,7 @@ export default function SocialFragranceSearch({
     return fragrances
       .filter((fragrance) =>
         matchesRequestedVariant(fragrance, query) &&
-        normalizedQuery.split(" ").every((token) => fragranceSearchIdentity(fragrance).includes(token)),
+        fragranceSearchTokens(fragrance, query).every((token) => fragranceSearchIdentity(fragrance).includes(token)),
       )
       .slice(0, 5);
   }, [fragrances, normalizedQuery, query]);
