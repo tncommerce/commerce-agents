@@ -1,0 +1,53 @@
+{
+  "production_base": "4adca15a7be87cfa8578acdea2fd48a72205daf5",
+  "previous_feature_head": "2686e9d324c09f1369bc6c5affb56e0743adb720",
+  "source_sha256": {
+    "examples/retail/data/merchant_offers.json": "7a04d2862806a3a263ba378ec3794652c953a8686abc766ac90af32ae33a1493",
+    "examples/retail/data/dufynd_notino_offer_refresh_20261020.json": "7643887be40b83d8db44ac1107b2c3d6c3ac4224605943050c1f0c3522b9acf8",
+    "examples/retail/storefront-web/scripts/notino-refresh-qa.mjs": "9475deae789d37021ed222ff32a02589ee1a8e854573d5256f613a82f64294b9",
+    "examples/retail/storefront-web/components/FragranceOffers.tsx": "3cf63cc69fec119103ea5049348a8130c11bef52f3c440a80f9b8cb6618b3751",
+    "examples/retail/storefront-web/lib/api.ts": "7cccda97ac12b50a8060f6bd1f6807f88693a4543fe252d5883a6ba071255602",
+    "examples/package-lock.json": "0921a68fe17e601ecb4d8683d1ed9ce5ca8b8a4e6f2d4ca645c2d759a4cbe4fd"
+  },
+  "checks": {
+    "python": {
+      "passed": 3610,
+      "skipped": 205
+    },
+    "targeted_python_passed": 72,
+    "lint": "passed",
+    "format": "passed",
+    "repository_consistency": "passed",
+    "storefront_full_build": "passed",
+    "offer_contract_cases": 50,
+    "offer_return_revalidation_cases": 19,
+    "attribution_boundary_cases": 213,
+    "consent_scenario_groups": 19,
+    "local_offer_widths": [
+      320,
+      390,
+      768,
+      1440
+    ],
+    "positive_offer_views": 12,
+    "negative_offer_views": 36,
+    "production_analytics": 0,
+    "merchant_clickouts": 0
+  },
+  "snapshot_regeneration": {
+    "generator": "scripts/refresh_scentai_jarvis_state.py:refresh_state",
+    "offline": true,
+    "generated_at_preserved": true,
+    "production_input_rebuild_matches_original_snapshots": true,
+    "allowed_changed_fields": [
+      "source_fingerprint_sha256"
+    ],
+    "files": [
+      "scentai_release_01_gate_status.json",
+      "scentai_release_pipeline_status.json",
+      "scentai_jarvis_operations_status.json",
+      "scentai_jarvis_master_status.json"
+    ]
+  },
+  "limitation": "Local data-bound replay, not a deployed offer, merchant transaction, commission, or automatic ongoing refresh."
+}

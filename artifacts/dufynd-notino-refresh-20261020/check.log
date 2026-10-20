@@ -1,0 +1,59 @@
+shopping-agent/skills/
+  ✓ 5 skills load, frontmatter valid
+merchant-agent/skills/
+  ✓ 5 skills load, frontmatter valid
+
+examples/retail/data/ (storefront)
+  ✓ retail: 125 products (21 variants), 2 users, 6 orders, 4 policies, 3 seeded memory facts validate
+examples/travel/data/ (storefront)
+  ✓ travel: 56 products (0 variants), 2 users, 4 orders, 8 policies, 3 seeded memory facts validate
+examples/telecom/data/ (storefront)
+  ✓ telecom: 25 products (4 variants), 2 users, 6 orders, 11 policies, 3 seeded memory facts validate
+examples/entertainment/data/ (storefront)
+  ✓ entertainment: 20 products (0 variants), 2 users, 2 orders, 9 policies, 3 seeded memory facts validate
+
+examples/entertainment/data/ (ticketing)
+  ✓ 20 inventory rows, 4 venues, 4 wallet tickets validate
+
+examples/retail/data/ (merchant)
+  ✓ 90 metric days, 28 inventory rows, 5 campaigns, 5 issues validate
+examples/travel/data/ (supplier)
+  ✓ 90 metric days, 5 occupancy listings, 4 campaigns, 6 issues validate
+examples/telecom/data/ (commercial-ops)
+  ✓ 90 metric days, 8 plan series, 5 cohorts, 13 inventory rows, 5 campaigns, 6 issues validate
+examples/entertainment/data/ (box-office)
+  ✓ 90 metric days, 6 events / 16 tier histories, 5 campaigns, 6 issues validate
+
+scripts/ vertical tables
+  ✓ all 4 verticals in every table
+
+package versions and cross-package pins
+  ✓ 7 packages at 0.1.0.dev0; 10 sibling pins exact
+
+plugin marketplace and Managed Agent manifests
+  ✓ marketplace.json parses and paths resolve
+  ✓ shopping-agent/managed-agents/shopping-agent/agent.yaml resolves to a /v1/agents body
+  ✓ merchant-agent/managed-agents/merchant-agent/agent.yaml resolves to a /v1/agents body
+
+managed-agents system.md vs the prompt builders
+  ✓ shopping-agent/managed-agents/shopping-agent/system.md: every builder rule present or declared
+  ✓ merchant-agent/managed-agents/merchant-agent/system.md: every builder rule present or declared
+
+managed-agents READMEs vs agent.yaml
+  ✓ shopping-agent: README counts, tool lists, and server table match agent.yaml
+  ✓ merchant-agent: README counts, tool lists, and server table match agent.yaml
+
+managed-agents custom tool descriptions vs the registries
+  ✓ shopping-agent: 7 custom tool descriptions match the registry
+  ✓ merchant-agent: 4 custom tool descriptions match the registry
+
+SCENTAI Jarvis operations status
+  ✓ SCENTAI Jarvis operations snapshot matches source state
+
+SCENTAI Jarvis state graph
+  ✓ SCENTAI Jarvis derived state graph matches source-of-truth
+
+SCENTAI pilot production contract
+  ✓ SCENTAI Pilot Batch 01 contract is internally consistent (5 pilots, 15 tracked links)
+
+check.py: clean
