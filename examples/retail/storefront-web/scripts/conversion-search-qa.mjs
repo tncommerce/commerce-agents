@@ -1,3 +1,4 @@
+import { emptyOfferFixture } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 
@@ -12,7 +13,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
     await context.route('**/api/session',r=>r.fulfill({json:{session_id:'qa-conversion-search-session'}}));
     await context.route((url) => url.pathname === '/api/analytics/events',async r=>{const event=r.request().postDataJSON();events.push(event);if(event.event==='catalog_search') await new Promise(resolve=>setTimeout(resolve,150));return r.fulfill({json:{ok:true}}).catch(()=>{});});
     await context.route('**/api/clickout/**',r=>{throw new Error('Conversion QA must never trigger a clickout');});
-    await context.route('**/api/merchant-offers/**',r=>r.fulfill({json:{offers:[],best_offer_id:null}}));
+    await context.route('**/api/merchant-offers/**',r=>r.fulfill({json:emptyOfferFixture(r)}));
     const page=await context.newPage();
     try {
       await page.goto(`${baseUrl}/?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
@@ -195,7 +196,7 @@ export async function verifyProductNameAliases(browser, baseUrl, outputDir) {
       if(url.pathname==='/api/session') return route.fulfill({json:{session_id:'qa-rc1-alias-session'}});
       if(url.pathname==='/api/analytics/events') {events.push(request.postDataJSON());return route.fulfill({json:{ok:true}});}
       if(url.pathname==='/api/products') return route.fulfill({json:{products:[]}});
-      if(url.pathname.startsWith('/api/merchant-offers/')) return route.fulfill({json:{offers:[],best_offer_id:null}});
+      if(url.pathname.startsWith('/api/merchant-offers/')) return route.fulfill({json:emptyOfferFixture(route)});
       return route.fulfill({status:503,json:{detail:'Isolated alias QA fixture'}});
     });
     const page=await context.newPage();
