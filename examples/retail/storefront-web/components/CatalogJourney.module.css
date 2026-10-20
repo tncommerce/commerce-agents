@@ -5,7 +5,7 @@
 .activeFilters button { min-height: 44px; max-width: 100%; white-space: normal; overflow-wrap: anywhere; text-align: left; font-size: 12px; }
 .filterAction { min-height: 44px; padding: 8px 0; font-size: 12px; font-weight: 600; color: var(--accent-ink); text-decoration: underline; text-underline-offset: 4px; }
 .showResults { width: 100%; min-height: 48px; margin-top: 12px; border-radius: 8px; background: var(--ink); color: var(--surface); font-size: 14px; font-weight: 600; }
-.resultsAnchor { scroll-margin-top: 12px; }
+.resultsAnchor { scroll-margin-top: 12px; margin-top: 24px; font-size: 16px; line-height: 1.5; font-weight: 600; }
 .resultsAnchor:focus-visible { outline: 2px solid var(--accent-ink); }
 .compareTray { position: sticky; bottom: max(12px, env(safe-area-inset-bottom)); z-index: 30; margin-top: 20px; padding: 0 12px 12px; border: 1px solid #d4cbbb; border-radius: 12px; color: #24231f; background: #fffdf8; box-shadow: 0 12px 40px -12px #24231f50; }
 .trayHeading { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; }

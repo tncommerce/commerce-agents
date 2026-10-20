@@ -1167,7 +1167,9 @@ export default function FragranceCatalogBrowser({
         </div>
       ) : null}
 
-      <div id="catalog-results" tabIndex={-1} className={styles.resultsAnchor} aria-label={`${filtered.length} passende Düfte`} />
+      <h2 id="catalog-results" tabIndex={-1} className={styles.resultsAnchor}>
+        {filtered.length} {filtered.length === 1 ? "passender Duft" : "passende Düfte"}
+      </h2>
       <details className="dufynd-brand-directory">
         <summary>Marken A–Z <span>· {brands.length} Marken entdecken</span></summary>
         <nav aria-label="Marken A–Z">
@@ -1514,7 +1516,7 @@ export default function FragranceCatalogBrowser({
                   aria-label={`${fragrance.brand} ${fragrance.name} ${fragrance.concentration} ${fragrance.volume_ml} ml aus Vergleich entfernen`}>
                   <span className={styles.slotBrand}>{fragrance.brand}</span>
                   <strong>{fragrance.name}</strong>
-                  <span>{fragrance.concentration} · {fragrance.volume_ml} ml</span>
+                  <span>{fragrance.concentration} · {fragrance.volume_ml}&nbsp;ml</span>
                   <span className={styles.remove} aria-hidden="true">×</span>
                 </button>
               ))}

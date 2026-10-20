@@ -70,6 +70,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
         return url.href;
       };
       const catalogUrl=normalizedUrl(page.url());
+      await page.evaluate(() => { window.qaCatalogDocument = "synthetic-catalog-action"; });
       // Exercise the exact card after adding its offer CTA: these actions must
       // remain independent, operable and in-bounds even at the 320px minimum.
       const save=rc1Card.getByRole('button',{name:'♡ Merken',exact:true});
@@ -81,7 +82,10 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       const selected=rc1Card.getByRole('button',{name:'Rabanne 1 Million aus Vergleich entfernen',exact:true});
       await selected.waitFor({state:'visible'});
       assert.equal(await selected.getAttribute('aria-pressed'),'true');
-      assert.equal(normalizedUrl(page.url()),catalogUrl,'Save/compare must not navigate to the profile or merchant');
+      const selectedCatalogUrl=new URL(catalogUrl);
+      selectedCatalogUrl.searchParams.set('compare','SC-RABANNE-1-MILLION-EDT-100');
+      assert.equal(normalizedUrl(page.url()),normalizedUrl(selectedCatalogUrl.href),'Save/compare only updates the functional selection parameter');
+      assert.equal(await page.evaluate(() => window.qaCatalogDocument),'synthetic-catalog-action','Save/compare must not navigate to the profile or merchant');
       const actionLayout=await rc1Card.evaluate(card=>{
         const box=element=>{const b=element.getBoundingClientRect();return {left:b.left,right:b.right,top:b.top,bottom:b.bottom,width:b.width,height:b.height};};
         return {

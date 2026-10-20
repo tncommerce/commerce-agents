@@ -53,6 +53,7 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       await search.press("Enter");
       await page.waitForFunction(() => document.activeElement?.id === "catalog-results");
       assert.equal(await page.locator("#catalog-results").evaluate(el => el === document.activeElement), true, "search key moves focus to results");
+      assert.ok((await page.locator("#catalog-results").boundingBox()).height >= 24, "keyboard results focus has a visible heading");
       if (width < 768) assert.equal(await page.locator("#catalog-filter-panel").isVisible(), false);
       const cards = page.locator(".dufynd-catalog-card");
       assert.equal(await cards.count(), 2);
@@ -62,7 +63,7 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       const tray = page.getByRole("complementary", { name: "Duftvergleich vorbereiten" });
       const rect = await tray.boundingBox();
       assert.ok(rect.y >= 0 && rect.y + rect.height <= 900, `comparison controls stay in viewport at ${width}`);
-      assert.match(await tray.textContent(), /Eau de Parfum · 90 ml/);
+      assert.match(await tray.textContent(), /Eau de Parfum · 90\sml/);
       await page.screenshot({ path: path.join(outputDir, `mobile-discovery-selection-${width}.png`) });
       const productLink = cards.nth(1).locator("a.group");
       const detailUrl = new URL(await productLink.getAttribute("href"), baseUrl).href;
@@ -154,7 +155,7 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
         assert.equal(new URL(await recoveryLink.getAttribute("href"), baseUrl).searchParams.get("q"), "Yves Saint Laurent");
       }
       assert.deepEqual(errors, []);
-      results.push({ width, cases: 13, comparisonTray: rect, offerStates: ["empty", "error", "wrong-product", "synthetic-available"] });
+      results.push({ width, cases: 13, attributionWithContext: width === 390, comparisonTray: rect, offerStates: ["empty", "error", "wrong-product", "synthetic-available"] });
     } finally { await context.close(); }
   }
   const event = process.env.GITHUB_EVENT_PATH
