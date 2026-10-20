@@ -93,9 +93,14 @@ export default function FragranceOffers({
   /** Compact commerce presentation for the existing first-money product page. */
   focusedLanding?: boolean;
 }) {
-  const [payload, setPayload] = useState<
-    MerchantOffersPayload | null | undefined
-  >(undefined);
+  // Bind each settled result (including errors) atomically to the request that
+  // produced it. A tab-return state update renders before passive effects run.
+  const [response, setResponse] = useState<{
+    productId: string;
+    reloadToken: number;
+    payload: MerchantOffersPayload | null | undefined;
+  } | undefined>(undefined);
+  const payload = response?.payload;
   const [loadError, setLoadError] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
   const [clickoutSessionReady, setClickoutSessionReady] = useState(false);
@@ -146,6 +151,9 @@ export default function FragranceOffers({
 
   useEffect(() => {
     let active = true;
+    const setPayload = (value: MerchantOffersPayload | null | undefined) => {
+      setResponse({ productId, reloadToken, payload: value });
+    };
     setLoadError(false);
     setPayload(undefined);
     lastOfferFetchStartedAtRef.current = Date.now();
@@ -240,7 +248,9 @@ export default function FragranceOffers({
 
   // Product props can change before the passive fetch effect clears old data.
   // Never render the previous fragrance's offer or CTA in that intermediate render.
-  if (payload === undefined || (payload !== null && payload.product_id !== productId)) {
+  if (payload === undefined || response?.productId !== productId ||
+      response?.reloadToken !== reloadToken ||
+      (payload !== null && payload.product_id !== productId)) {
     return (
       <section
         className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}

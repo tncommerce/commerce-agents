@@ -133,6 +133,7 @@ function makeHarness(input = source, { consent = false, productId = PRODUCT_A } 
     consent(value) { consent = value; for (const callback of [...subscribers]) callback(); },
     changeProduct(id) { props = { productId: id }; render(); commit(); },
     renderProductBeforeEffects(id) { props = { productId: id }; render(); return tree; },
+    renderPendingBeforeEffects() { render(); return tree; },
     async resolve(index, value) { requests[index].resolve(value); await flush(); },
     async reject(index) { requests[index].reject(new Error('fixture unavailable')); await flush(); },
     unmount() { for (const slot of slots) if (slot.kind === 'effect') slot.cleanup?.(); mounted = false; },
@@ -240,6 +241,22 @@ test('wrong-product API response cannot become a purchase option', async () => {
   const h = makeHarness(); await h.resolve(0, offerPayload(PRODUCT_B));
   assert.equal(h.state, 'error', 'Mismatched response was treated as available');
   assert.equal(merchantLinks(h.tree).length, 0); h.unmount();
+});
+
+test('return render hides old merchant CTA before the passive fetch effect', async () => {
+  const h = makeHarness(); await h.resolve(0, offerPayload(PRODUCT_A));
+  h.advance(); h.emit('window', 'pageshow');
+  const firstRender = h.renderPendingBeforeEffects();
+  assert.equal(firstRender.props['data-offer-state'], 'loading');
+  assert.equal(merchantLinks(firstRender).length, 0, 'Return render still exposes the old quote');
+  h.unmount();
+});
+test('new product render cannot inherit the previous product error state', async () => {
+  const h = makeHarness(); await h.resolve(0, null); assert.equal(h.state, 'error');
+  const firstRender = h.renderProductBeforeEffects(PRODUCT_B);
+  assert.equal(firstRender.props['data-offer-state'], 'loading');
+  assert.equal(merchantLinks(firstRender).length, 0);
+  h.unmount();
 });
 
 const results = [];
