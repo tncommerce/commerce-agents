@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import path from "node:path";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
 
@@ -20,7 +21,7 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       const url = new URL(route.request().url());
       assert.ok(!url.pathname.includes("/clickout/"), "QA never performs merchant clickouts");
       if (/\/api\/(analytics|session)/.test(url.pathname)) measurementRequests.push(url.pathname);
-      if (!url.pathname.startsWith("/api/merchant-offers/")) return route.fulfill({ json: {} });
+      if (!url.pathname.startsWith("/api/merchant-offers/")) return route.fulfill({ json: url.pathname === "/api/session" ? { session_id: "synthetic-mobile-session" } : {} });
       if (mode === "error") return route.fulfill({ status: 503, body: "Synthetic QA failure" });
       const productId = offerFixtureProductId(route);
       return route.fulfill({ json: {
@@ -126,9 +127,56 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       assert.equal(await page.locator(".dufynd-catalog-card").count(), 2, "failed images retain usable exact product cards");
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       assert.deepEqual(measurementRequests, [], "denied measurement creates no analytics/session requests");
+      if (width === 390) {
+        const contextual = new URL(`/vergleich?left=SC-YSL-LIBRE-EDP-90&right=SC-YSL-BLACK-OPIUM-EDP-90&src=instagram&cmp=synthetic_mobile&content=qa`, baseUrl);
+        contextual.searchParams.set("catalog", `${nested}&sid=must-not-nest&cmp=must-not-nest`);
+        // Consent is granted before a new attributed entry. A previous denial
+        // must never be retroactively converted into acquisition consent.
+        await chooseMeasurement(page, "granted");
+        await page.goto(contextual.href);
+        const returnLink = page.locator("header").getByRole("link", { name: "← Zurück zu deiner Auswahl", exact: true });
+        await page.waitForFunction(() => document.querySelector('header a[href*="/duft?"]')?.getAttribute("href")?.includes("cmp=synthetic_mobile"));
+        const attributed = new URL(await returnLink.getAttribute("href"), baseUrl);
+        assert.equal(attributed.searchParams.get("cmp"), "synthetic_mobile");
+        assert.equal(attributed.searchParams.get("q"), "Yves Saint Laurent");
+        const detail = page.locator('[data-dufynd-comparison-side="left"]');
+        const target = new URL(await detail.getAttribute("href"), baseUrl);
+        assert.equal(target.searchParams.get("cmp"), "synthetic_mobile");
+        assert.equal(new URLSearchParams(target.searchParams.get("catalog")).has("sid"), false);
+        assert.equal(new URLSearchParams(target.searchParams.get("catalog")).has("cmp"), false);
+        await detail.click();
+        await page.locator('[data-offer-state="empty"]').waitFor();
+        const recoveryLink = page.getByRole("navigation", { name: "Weitere Wege zum passenden Duft" }).getByRole("link", { name: "← Zurück zu deiner Auswahl", exact: true });
+        await page.waitForFunction(() => document.querySelector('nav[aria-label="Weitere Wege zum passenden Duft"] a')?.getAttribute("href")?.includes("cmp=synthetic_mobile"));
+        assert.equal(new URL(await recoveryLink.getAttribute("href"), baseUrl).searchParams.get("cmp"), "synthetic_mobile");
+        await chooseMeasurement(page, "denied");
+        await page.waitForFunction(() => !document.querySelector('nav[aria-label="Weitere Wege zum passenden Duft"] a')?.getAttribute("href")?.includes("cmp="));
+        assert.equal(new URL(await recoveryLink.getAttribute("href"), baseUrl).searchParams.get("q"), "Yves Saint Laurent");
+      }
       assert.deepEqual(errors, []);
       results.push({ width, cases: 13, comparisonTray: rect, offerStates: ["empty", "error", "wrong-product", "synthetic-available"] });
     } finally { await context.close(); }
   }
+  const event = process.env.GITHUB_EVENT_PATH
+    ? JSON.parse(await readFile(process.env.GITHUB_EVENT_PATH, "utf8")) : null;
+  const sources = [];
+  for (const file of ["../components/FragranceCatalogBrowser.tsx", "../components/CatalogJourney.module.css", "../components/CatalogReturnLink.tsx", "../components/FragranceComparisonPicker.tsx", "../components/FragranceDetailPage.tsx", "../components/FragranceOffers.tsx", "../lib/catalogJourney.ts", "mobile-discovery-qa.mjs"]) {
+    const bytes = await readFile(new URL(file, import.meta.url));
+    sources.push({ file, sha256: createHash("sha256").update(bytes).digest("hex") });
+  }
+  const screenshots = [];
+  for (const { width } of results) {
+    for (const view of ["filters", "selection", "empty", "comparison", "long-name"]) {
+      const file = `mobile-discovery-${view}-${width}.png`;
+      screenshots.push({ file, width, sha256: createHash("sha256").update(await readFile(path.join(outputDir, file))).digest("hex") });
+    }
+  }
+  await writeFile(path.join(outputDir, "mobile-discovery-evidence.json"), JSON.stringify({
+    feature_sha: event?.pull_request?.head?.sha || process.env.QA_SOURCE_SHA || process.env.GITHUB_SHA || null,
+    checkout_sha: process.env.GITHUB_SHA || process.env.QA_SOURCE_SHA || null,
+    run_id: process.env.GITHUB_RUN_ID || null,
+    data: "Existing public catalog; synthetic QA offers only; no merchant clickouts",
+    sources, screenshots, results,
+  }, null, 2));
   return results;
 }

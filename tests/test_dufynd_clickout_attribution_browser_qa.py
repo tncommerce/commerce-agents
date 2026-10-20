@@ -179,7 +179,10 @@ def test_comparison_product_links_preserve_acquisition_attribution() -> None:
     assert "qa_comparison_campaign" in source
     assert "qa_comparison_content" in source
     assert "free comparison product navigation lost acquisition attribution" in source
-    assert "appendAcquisitionAttribution(`/duft/${fragrance.slug}`)" in picker_source
+    assert (
+        "appendAcquisitionAttribution(withCatalogContext(`/duft/${fragrance.slug}`, context))"
+        in picker_source
+    )
     assert 'source="comparison" trackPageView={false}' in comparison_page_source
 
 
@@ -259,7 +262,17 @@ def test_product_detail_internal_links_preserve_acquisition_attribution() -> Non
     assert "qa_product_detail_content" in source
     assert "product detail navigation lost acquisition attribution" in source
     assert "AcquisitionInternalLink" in detail_source
-    assert '<AcquisitionInternalLink href="/duft" className="hover:underline">' in detail_source
+    assert '<CatalogReturnLink href="/duft"' in detail_source
+    return_link = Path("examples/retail/storefront-web/components/CatalogReturnLink.tsx").read_text(
+        encoding="utf-8"
+    )
+    # Functional return state still delegates every click/consent change to the
+    # same acquisition-aware link, including its ordinary no-context fallback.
+    assert 'import AcquisitionInternalLink from "./AcquisitionInternalLink"' in return_link
+    assert (
+        "<AcquisitionInternalLink {...props} href={context ? catalogReturnHref(context) : props.href}>"
+        in return_link
+    )
     assert (
         '<AcquisitionInternalLink href="/transparenz" className="hover:underline">' in detail_source
     )
