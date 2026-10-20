@@ -22,7 +22,7 @@
     "test:fragrance-search": "node scripts/test-fragrance-search-identity.mjs",
     "test:acquisition-entry": "node scripts/test-acquisition-entry.mjs",
     "postbuild": "npm run test:offer-presentation && node scripts/export-review-pages.mjs && node scripts/verify-public-export.mjs",
-    "test:offer-return-revalidation": "node scripts/test-offer-return-revalidation.mjs"
+    "test:offer-return-revalidation": "node scripts/test-offer-return-revalidation.mjs && node scripts/capture-offer-qa-source.mjs"
   },
   "dependencies": {
     "next": "16.3.6",
