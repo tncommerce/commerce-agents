@@ -39,7 +39,7 @@ function render({offers=[fixture],focusedLanding=false,ready=true,error=false,lo
       subscribeMeasurement:()=>{throw Error('No browser subscriptions in isolated SSR presentation')},
     };
     if(id==='@/lib/officialProductPages')return {OFFICIAL_PRODUCT_PAGES:{}};
-    if(id==='@/components/AcquisitionInternalLink')return {__esModule:true,default:({children,...props})=>require('react').createElement('a',props,children)};
+    if(id==='@/components/AcquisitionInternalLink' || id==='@/components/CatalogReturnLink')return {__esModule:true,default:({children,...props})=>require('react').createElement('a',props,children)};
     if(id.endsWith('.module.css'))return {__esModule:true,default:new Proxy({}, {get:(_,key)=>String(key)})};
     throw Error('Unexpected dependency '+id);
   });

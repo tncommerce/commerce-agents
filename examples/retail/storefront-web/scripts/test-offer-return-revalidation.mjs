@@ -92,6 +92,7 @@ function makeHarness(input = source, { consent = false, productId = PRODUCT_A } 
     },
     '@/lib/officialProductPages': { OFFICIAL_PRODUCT_PAGES: {} },
     '@/components/AcquisitionInternalLink': { default: () => null },
+    '@/components/CatalogReturnLink': { default: () => null },
     './FragranceOffers.module.css': { default: {} },
   };
   const module = { exports: {} };

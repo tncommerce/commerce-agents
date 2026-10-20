@@ -1,3 +1,4 @@
+import { verifyMobileDiscovery } from "./mobile-discovery-qa.mjs";
 import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { verifyBrandDiscovery } from "./brand-discovery-qa.mjs";
@@ -288,6 +289,10 @@ const report = {
 };
 
 try {
+  try {
+    const results = await verifyMobileDiscovery(browser, baseUrl, outputDir);
+    report.checks.push({ label: "mobile-discovery-journey", status: "passed", results });
+  } catch (error) { report.failures.push({ label: "mobile-discovery-journey", message: String(error) }); }
   try {
     const results = await verifyWowExperience(browser, baseUrl, outputDir);
     report.checks.push({ label: "wow22-experience", status: "passed", results });
