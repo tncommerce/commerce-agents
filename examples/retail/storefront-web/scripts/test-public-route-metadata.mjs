@@ -8,6 +8,7 @@ import path from "node:path";
 
 const root = fileURLToPath(new URL("../out/", import.meta.url));
 const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://dufynd.de";
+const siteIndexable = process.env.NEXT_PUBLIC_SITE_INDEXABLE === "true";
 const cases = [
   {
     route: "/duft",
@@ -111,7 +112,10 @@ for (const row of cases) {
   assert.equal(meta(head, "name", "twitter:description", row.route), row.description);
   checks++;
   const robots = meta(head, "name", "robots", row.route);
-  assert.equal(robots.includes("noindex"), Boolean(row.noindex),
+  // In the CI/review static export, all public pages intentionally remain noindex.
+  // Production indexing is separately controlled by NEXT_PUBLIC_SITE_INDEXABLE.
+  const expectedNoindex = Boolean(row.noindex) || !siteIndexable;
+  assert.equal(robots.includes("noindex"), expectedNoindex,
     `${row.route}: robots indexing policy changed`);
   checks++;
 }
