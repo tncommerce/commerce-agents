@@ -105,9 +105,9 @@ def setup_case(
     db.execute(f"DELETE FROM {SCHEMA}.dufynd_autonomy_tasks")
     db.execute(
         f"""UPDATE {SCHEMA}.signals SET
-            fm=jsonb_build_object('next_evidence',%s),
-            audit=jsonb_build_object('decision',%s),
-            queue=jsonb_build_object('state',%s) WHERE singleton""",
+            fm=jsonb_build_object('next_evidence',%s::text),
+            audit=jsonb_build_object('decision',%s::text),
+            queue=jsonb_build_object('state',%s::text) WHERE singleton""",
         (signal, decision, queue_state),
     )
     day = db.execute("SELECT to_char(now() at time zone 'UTC','YYYYMMDD')").fetchone()[0]
