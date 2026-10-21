@@ -16,7 +16,6 @@ from scripts.check_dufynd_awin_original_photo_bytes import (
     check_original_photo_bytes,
 )
 
-
 NOW = datetime(2026, 10, 21, 18, 0, tzinfo=UTC)
 
 
@@ -35,25 +34,31 @@ def fixture():
     }
     readiness = {
         "provider": "awin-top-parfuemerie-de",
-        "products": [{
-            "product_id": PRODUCT_ID,
-            "mapped": True,
-            "feed_image_candidate_count": 1,
-            "mapped_offer_count": 1,
-            "offer_evidence": [{
-                "merchant_product_id": SKU,
-                "merchant_id": "top-parfuemerie",
-                "tracking_verified": False,
-                "activation_allowed": False,
-            }],
-        }],
+        "products": [
+            {
+                "product_id": PRODUCT_ID,
+                "mapped": True,
+                "feed_image_candidate_count": 1,
+                "mapped_offer_count": 1,
+                "offer_evidence": [
+                    {
+                        "merchant_product_id": SKU,
+                        "merchant_id": "top-parfuemerie",
+                        "tracking_verified": False,
+                        "activation_allowed": False,
+                    }
+                ],
+            }
+        ],
     }
-    registry = [{
-        "product_id": PRODUCT_ID,
-        "url": SOURCE_URL,
-        "volume_ml": 90,
-        "rights_basis_id": RIGHTS_BASIS,
-    }]
+    registry = [
+        {
+            "product_id": PRODUCT_ID,
+            "url": SOURCE_URL,
+            "volume_ml": 90,
+            "rights_basis_id": RIGHTS_BASIS,
+        }
+    ]
     return buffer.getvalue(), metadata, readiness, registry
 
 
@@ -77,9 +82,14 @@ def test_valid_file_produces_only_private_fingerprint():
     assert report["registered_source_url"] == SOURCE_URL
     assert report["official_awin_feed_checked_at"].startswith("2026-10-21")
     assert report["current_feed_candidate_count"] == 1
-    for gate in ("image_origin_attested", "byte_match_to_owner_approved_source",
-                 "exact_current_feed_image_url_verified", "public_image_approval",
-                 "public_rehosting_authorized", "offer_activation_authorized"):
+    for gate in (
+        "image_origin_attested",
+        "byte_match_to_owner_approved_source",
+        "exact_current_feed_image_url_verified",
+        "public_image_approval",
+        "public_rehosting_authorized",
+        "offer_activation_authorized",
+    ):
         assert report[gate] is False
     assert report["new_spend_usd"] == 0
 
@@ -158,13 +168,19 @@ def test_registry_identity_rights_and_variant_cannot_drift(field, value):
         call(registry=registry)
 
 
-@pytest.mark.parametrize("source", [
-    b"not-an-image",
-    b"\x89PNG\r\n\x1a\n" + b"A" * 64,
-    b"\x89PNG\r\n\x1a\n" + b"A" * (5 * 1024 * 1024 + 1),
-])
+@pytest.mark.parametrize(
+    "source",
+    [
+        b"not-an-image",
+        b"\x89PNG\r\n\x1a\n" + b"A" * 64,
+        b"\x89PNG\r\n\x1a\n" + b"A" * (5 * 1024 * 1024 + 1),
+    ],
+)
 def test_invalid_corrupt_oversized_image_data_cannot_pass(source):
-    with pytest.raises(ValueError, match="original_format_not_png|photo_png_integrity_failed|photo_bytes_absent_or_out_of_bounds"):
+    with pytest.raises(
+        ValueError,
+        match="original_format_not_png|photo_png_integrity_failed|photo_bytes_absent_or_out_of_bounds",
+    ):
         call(image=source)
 
 

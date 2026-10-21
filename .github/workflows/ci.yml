@@ -27,10 +27,6 @@ jobs:
           cache: pip
       - name: Install
         run: pip install -r requirements-dev.txt
-      - name: Show required Ruff source diff (diagnostic only)
-        run: |
-          ruff check --select I --diff scripts/check_dufynd_awin_original_photo_bytes.py tests/test_dufynd_awin_original_photo_bytes.py || true
-          ruff format --diff scripts/check_dufynd_awin_original_photo_bytes.py tests/test_dufynd_awin_original_photo_bytes.py || true
       - name: Lint
         run: ruff check .
       - name: Format

@@ -19,10 +19,7 @@ from PIL import Image, UnidentifiedImageError
 
 PRODUCT_ID = "SC-YSL-LIBRE-EDP-90"
 SKU = "856448"
-SOURCE_URL = (
-    "https://www.topparfuemerie.de/media/catalog/product/"
-    "8/5/856448_3614272648425_051.png"
-)
+SOURCE_URL = "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png"
 RIGHTS_BASIS = "awin_top_parfuemerie_feed_materials_20260928"
 MAX_IMAGE_BYTES = 5 * 1024 * 1024
 MAX_FEED_AGE = timedelta(days=7)
@@ -70,16 +67,12 @@ def check_original_photo_bytes(
     checked_at = _checked_at(str(metadata.get("checked_at") or ""), now)
 
     _require(readiness.get("provider") == "awin-top-parfuemerie-de", "feed_provider_mismatch")
-    products = [
-        p for p in readiness.get("products", [])
-        if p.get("product_id") == PRODUCT_ID
-    ]
+    products = [p for p in readiness.get("products", []) if p.get("product_id") == PRODUCT_ID]
     _require(len(products) == 1, "libre_product_not_unique")
     product = products[0]
     _require(product.get("mapped") is True, "libre_not_mapped")
     _require(
-        product.get("feed_image_candidate_count") == 1
-        and product.get("mapped_offer_count") == 1,
+        product.get("feed_image_candidate_count") == 1 and product.get("mapped_offer_count") == 1,
         "libre_feed_candidate_not_unique",
     )
     evidence = product.get("offer_evidence") or []
@@ -157,7 +150,8 @@ def main() -> int:
     parser.add_argument("--feed-metadata", type=Path, required=True)
     parser.add_argument("--release-readiness", type=Path, required=True)
     parser.add_argument(
-        "--approved-registry", type=Path,
+        "--approved-registry",
+        type=Path,
         default=Path("examples/retail/storefront-web/lib/generated/original-photos.json"),
     )
     args = parser.parse_args()
