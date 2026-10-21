@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
 
 import AcquisitionLanding from "@/components/AcquisitionLanding";
+import { SITE_URL } from "@/lib/site";
+
+const title = "Parfum-Geschenkberater – Duft als Geschenk finden";
+const description =
+  "Finde mit DUFYND ein Parfumgeschenk anhand von Person, Anlass, Budget und bekannten Duftvorlieben.";
 
 export const metadata: Metadata = {
-  title: "Parfum-Geschenkberater – Duft als Geschenk finden",
-  description:
-    "Finde mit DUFYND ein Parfumgeschenk anhand von Person, Anlass, Budget und bekannten Duftvorlieben.",
+  title,
+  description,
   alternates: {
     canonical: "/parfum-geschenkberater",
   },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "DUFYND",
+    url: `${SITE_URL}/parfum-geschenkberater`,
+    title,
+    description,
+  },
+  twitter: { card: "summary", title, description },
 };
 
 export default function ParfumGeschenkberaterPage() {

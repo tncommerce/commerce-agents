@@ -5,17 +5,30 @@ import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import FragranceCatalogBrowser from "@/components/FragranceCatalogBrowser";
 import DiscoveryIntro from "@/components/DiscoveryIntro";
 import FragranceVariantLinks from "@/components/FragranceVariantLinks";
+import { SITE_URL } from "@/lib/site";
 import {
   LIVE_FRAGRANCES,
 } from "@/lib/fragranceCatalog";
 
+const title = "Parfums entdecken";
+const description =
+  "Entdecke den unabhängigen DUFYND Duftkatalog mit exakten Varianten, dokumentierten Duftnoten und separat geprüften Händlerangeboten.";
+
 export const metadata: Metadata = {
-  title: "Parfums entdecken",
-  description:
-    "Entdecke den unabhängigen DUFYND Duftkatalog mit exakten Varianten, dokumentierten Duftnoten und separat geprüften Händlerangeboten.",
+  title,
+  description,
   alternates: {
     canonical: "/duft",
   },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "DUFYND",
+    url: `${SITE_URL}/duft`,
+    title,
+    description,
+  },
+  twitter: { card: "summary", title, description },
 };
 
 export default function FragranceIndexPage() {
