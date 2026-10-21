@@ -1,4 +1,5 @@
 import { verifyProductPresentation } from "./product-presentation-qa.mjs";
+import { watchApprovedPhotoRequests, explainMissingApprovedPhoto } from "./approved-photo-network-evidence.mjs";
 import { verifyMobileDiscovery } from "./mobile-discovery-qa.mjs";
 import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
@@ -528,6 +529,7 @@ try {
       reducedMotion: "reduce",
     });
     const page = await context.newPage();
+    const photoEvidence = watchApprovedPhotoRequests(page);
 
     for (const target of routes) {
       const label = `${target.name}-${viewport.name}`;
@@ -1299,8 +1301,14 @@ try {
           ...diagnostics,
         });
       } catch (error) {
-        const message =
+        const originalMessage =
           error instanceof Error ? error.message : String(error);
+        const photoDiagnostic = target.name === "home"
+          ? await explainMissingApprovedPhoto(page, photoEvidence, "SC-YSL-LIBRE-EDP-90")
+          : null;
+        const message = photoDiagnostic
+          ? `${originalMessage}; approved_photo_evidence=${JSON.stringify(photoDiagnostic)}`
+          : originalMessage;
         report.failures.push({ label, url, message });
         report.checks.push({ label, status: "failed", message });
 
