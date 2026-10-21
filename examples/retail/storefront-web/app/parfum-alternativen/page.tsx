@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
 
 import AcquisitionLanding from "@/components/AcquisitionLanding";
+import { SITE_URL } from "@/lib/site";
+
+const title = "Parfum-Alternativen finden & vergleichen";
+const description =
+  "Finde mit DUFYND Parfum-Alternativen und vergleiche Duftrichtung, Performance, Community-Daten und Preis.";
 
 export const metadata: Metadata = {
-  title: "Parfum-Alternativen finden & vergleichen",
-  description:
-    "Finde mit DUFYND Parfum-Alternativen und vergleiche Duftrichtung, Performance, Community-Daten und Preis.",
+  title,
+  description,
   alternates: {
     canonical: "/parfum-alternativen",
   },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "DUFYND",
+    url: `${SITE_URL}/parfum-alternativen`,
+    title,
+    description,
+  },
+  twitter: { card: "summary", title, description },
 };
 
 export default function ParfumAlternativenPage() {
