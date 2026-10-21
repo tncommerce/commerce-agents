@@ -8,7 +8,6 @@ from io import BytesIO
 
 import pytest
 from PIL import Image
-
 from scripts.check_dufynd_awin_original_photo_bytes import (
     PRODUCT_ID,
     RIGHTS_BASIS,
