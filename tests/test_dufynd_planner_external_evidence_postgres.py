@@ -16,9 +16,7 @@ import pytest
 DSN = os.getenv("DUFYND_TEST_DATABASE_URL")
 pytestmark = pytest.mark.skipif(not DSN, reason="dedicated disposable PostgreSQL required")
 ROOT = Path(__file__).resolve().parents[1]
-MIGRATION = (
-    ROOT / "supabase/migrations/20261021130229_jarvis_planner_external_signal_truth.sql"
-)
+MIGRATION = ROOT / "supabase/migrations/20261021130229_jarvis_planner_external_signal_truth.sql"
 LEGACY = ROOT / "supabase/migrations/20261007064000_jarvis_measurement_continuity_v1.sql"
 
 DEFAULT_QUEUE = {
@@ -43,18 +41,20 @@ def set_case(db, key: str, value: dict) -> None:
     )
 
 
-def configure(db, *, next_evidence="merchant_clickout",
-              decision="qualified_traffic_present_no_clickout",
-              queue=None) -> None:
+def configure(
+    db,
+    *,
+    next_evidence="merchant_clickout",
+    decision="qualified_traffic_present_no_clickout",
+    queue=None,
+) -> None:
     set_case(db, "fm", {"next_evidence": next_evidence, "publication_verified": False})
     set_case(db, "audit", {"decision": decision, "clickout_is_sale": False})
     set_case(db, "queue", queue or DEFAULT_QUEUE)
 
 
 def seed_completed_daily_work(db, *, omit=(), measurement=False) -> None:
-    today = db.execute(
-        "SELECT to_char(now() AT TIME ZONE 'UTC','YYYYMMDD')"
-    ).fetchone()[0]
+    today = db.execute("SELECT to_char(now() AT TIME ZONE 'UTC','YYYYMMDD')").fetchone()[0]
     identifiers = {
         "content_queue": f"bizplan:zero-budget-content-queue:{today}",
         "content_packet": f"bizplan:content-packet:planner-fixture:{today}",
@@ -75,15 +75,11 @@ def seed_completed_daily_work(db, *, omit=(), measurement=False) -> None:
 
 
 def read_exhaustion(db) -> dict:
-    return db.execute(
-        "SELECT public.read_dufynd_safe_work_exhaustion_v1()"
-    ).fetchone()[0]
+    return db.execute("SELECT public.read_dufynd_safe_work_exhaustion_v1()").fetchone()[0]
 
 
 def run_planner(db) -> dict:
-    return db.execute(
-        "SELECT public.plan_dufynd_free_work_v1()"
-    ).fetchone()[0]
+    return db.execute("SELECT public.plan_dufynd_free_work_v1()").fetchone()[0]
 
 
 @pytest.fixture
@@ -179,9 +175,7 @@ def test_old_live_definition_reproduces_the_merchant_clickout_planner_gap(db):
 
 def test_merchant_clickout_awaited_without_fake_measurement_or_new_tasks(db):
     seed_completed_daily_work(db)
-    before = db.execute(
-        "SELECT count(*) FROM public.dufynd_autonomy_tasks"
-    ).fetchone()[0]
+    before = db.execute("SELECT count(*) FROM public.dufynd_autonomy_tasks").fetchone()[0]
     audit = read_exhaustion(db)
     assert audit["measurement_done"] is False
     assert audit["measurement_work_due"] is False
@@ -201,9 +195,7 @@ def test_merchant_clickout_awaited_without_fake_measurement_or_new_tasks(db):
         assert outcome["queue"]["waiting_external_count"] == 14
         assert outcome["master_action_required"] is False
         assert outcome["new_spend_usd"] == 0
-    after = db.execute(
-        "SELECT count(*) FROM public.dufynd_autonomy_tasks"
-    ).fetchone()[0]
+    after = db.execute("SELECT count(*) FROM public.dufynd_autonomy_tasks").fetchone()[0]
     assert after == before, "Planner generated artificial tasks in the wait state"
     saved = db.execute(
         "SELECT value FROM public.dufynd_master_status WHERE key='jarvis.planner_v1'"
@@ -214,7 +206,8 @@ def test_merchant_clickout_awaited_without_fake_measurement_or_new_tasks(db):
 def test_network_transaction_stage_does_not_claim_a_sale(db):
     seed_completed_daily_work(db)
     configure(
-        db, next_evidence="affiliate_transaction_evidence",
+        db,
+        next_evidence="affiliate_transaction_evidence",
         decision="attributed_clickout_signal_present",
     )
     status = read_exhaustion(db)
@@ -230,8 +223,9 @@ def test_network_transaction_stage_does_not_claim_a_sale(db):
 
 def test_qualified_distribution_wait_keeps_legacy_action_after_diagnostic(db):
     seed_completed_daily_work(db, measurement=True)
-    configure(db, next_evidence="qualified_session",
-              decision="waiting_for_qualified_distribution_signal")
+    configure(
+        db, next_evidence="qualified_session", decision="waiting_for_qualified_distribution_signal"
+    )
     status = read_exhaustion(db)
     assert status["measurement_work_due"] is True
     assert status["measurement_done"] is True
@@ -243,8 +237,9 @@ def test_qualified_distribution_wait_keeps_legacy_action_after_diagnostic(db):
 
 def test_due_but_unfinished_measurement_never_becomes_market_wait(db):
     seed_completed_daily_work(db, measurement=False)
-    configure(db, next_evidence="qualified_session",
-              decision="waiting_for_qualified_distribution_signal")
+    configure(
+        db, next_evidence="qualified_session", decision="waiting_for_qualified_distribution_signal"
+    )
     status = read_exhaustion(db)
     assert status["measurement_work_due"] is True
     assert status["measurement_done"] is False
@@ -266,7 +261,9 @@ def test_due_but_unfinished_measurement_never_becomes_market_wait(db):
     ],
 )
 def test_unverified_or_conflicting_evidence_fails_closed(
-    db, next_evidence, decision,
+    db,
+    next_evidence,
+    decision,
 ):
     seed_completed_daily_work(db)
     configure(db, next_evidence=next_evidence, decision=decision)
@@ -294,7 +291,8 @@ def test_ready_leased_or_owner_gated_work_takes_precedence(db, queue, expected):
     status = read_exhaustion(db)
     assert status["safe_internal_work_exhausted"] is False
     assert status["reason"] in (
-        "certified_work_available", "certified_work_in_progress",
+        "certified_work_available",
+        "certified_work_in_progress",
         "owner_approval_required",
     )
     result = run_planner(db)
@@ -314,24 +312,18 @@ def test_missing_content_work_cannot_be_declared_exhausted(db):
 def test_purchase_wake_wins_when_it_discovers_real_queue_work(db):
     seed_completed_daily_work(db)
     set_case(db, "wake", {"make_ready": True})
-    before = db.execute(
-        "SELECT count(*) FROM public.dufynd_autonomy_tasks"
-    ).fetchone()[0]
+    before = db.execute("SELECT count(*) FROM public.dufynd_autonomy_tasks").fetchone()[0]
     outcome = run_planner(db)
     assert outcome["state"] == "work_replenished"
     assert outcome["action"] == "purchase_freshness_wake"
     assert outcome["queue"]["state"] == "work_available"
-    after = db.execute(
-        "SELECT count(*) FROM public.dufynd_autonomy_tasks"
-    ).fetchone()[0]
+    after = db.execute("SELECT count(*) FROM public.dufynd_autonomy_tasks").fetchone()[0]
     assert before == after  # Synthetic queue state in disposable fixture only.
 
 
 def test_permissions_and_idempotent_migration_preserve_isolated_acl(db):
     db.execute(MIGRATION.read_text(encoding="utf-8"))
-    for function in (
-        "read_dufynd_safe_work_exhaustion_v1", "plan_dufynd_free_work_v1"
-    ):
+    for function in ("read_dufynd_safe_work_exhaustion_v1", "plan_dufynd_free_work_v1"):
         signature = f"public.{function}()"
         for blocked in ("anon", "authenticated"):
             assert not db.execute(
@@ -342,9 +334,9 @@ def test_permissions_and_idempotent_migration_preserve_isolated_acl(db):
             "SELECT has_function_privilege('service_role',%s,'EXECUTE')",
             (signature,),
         ).fetchone()[0]
-        source = db.execute(
-            "SELECT pg_get_functiondef(%s::regprocedure)", (signature,)
-        ).fetchone()[0]
+        source = db.execute("SELECT pg_get_functiondef(%s::regprocedure)", (signature,)).fetchone()[
+            0
+        ]
         assert "SET search_path TO 'public'" in source
         assert "SECURITY DEFINER" not in source
 
