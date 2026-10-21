@@ -225,7 +225,8 @@ export default function FragranceOffers({
         });
       };
       if (typeof IntersectionObserver === "undefined") {
-        trackImpression();
+        // No viewport proof: do not report an offer impression merely because
+        // offers loaded. Shopping and navigation remain fully functional.
         return;
       }
       observer = new IntersectionObserver(([entry]) => {
