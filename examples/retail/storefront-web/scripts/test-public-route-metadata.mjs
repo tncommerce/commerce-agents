@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 import path from "node:path";
 
 const root = fileURLToPath(new URL("../out/", import.meta.url));
-const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\\/$/, "") || "https://dufynd.de";
+const origin = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://dufynd.de";
 const cases = [
   {
     route: "/duft",
@@ -55,15 +55,15 @@ function exportedHtml(route) {
 
 function headFor(route) {
   const html = exportedHtml(route);
-  const match = html.match(/<head(?:\\s[^>]*)?>([\\s\\S]*?)<\\/head>/i);
+  const match = html.match(/<head(?:\s[^>]*)?>([\s\S]*?)<\/head>/i);
   assert.ok(match, `Missing initial HTML head ${route}`);
   return match[1];
 }
 
 function attr(tag, name) {
-  const pattern = new RegExp(`(?:^|\\s)${name}=(?:\\\"([^\\\"]*)\\\"|'([^']*)')`, "i");
-  const m = tag.match(pattern);
-  return m ? m[1] ?? m[2] : null;
+  const match = [...tag.matchAll(/([A-Za-z_:][-A-Za-z0-9_:]*)\s*=\s*(?:"([^"]*)"|'([^']*)')/g)]
+    .find((candidate) => candidate[1].toLowerCase() === name.toLowerCase());
+  return match ? match[2] ?? match[3] : null;
 }
 
 function decode(value) {
@@ -83,20 +83,20 @@ function uniqueTag(head, pattern, attribute, selector, route) {
 }
 
 function meta(head, attribute, selector, route) {
-  return decode(attr(uniqueTag(head, /<meta\\b[^>]*>/gi, attribute, selector, route), "content"));
+  return decode(attr(uniqueTag(head, /<meta\b[^>]*>/gi, attribute, selector, route), "content"));
 }
 
 let checks = 0;
 for (const row of cases) {
   const head = headFor(row.route);
-  const titleTags = [...head.matchAll(/<title\\b[^>]*>([\\s\\S]*?)<\\/title>/gi)];
+  const titleTags = [...head.matchAll(/<title\b[^>]*>([\s\S]*?)<\/title>/gi)];
   assert.equal(titleTags.length, 1, `${row.route}: exactly one title expected`);
   assert.ok(decode(titleTags[0][1]).startsWith(row.title), `${row.route}: route-specific document title missing`);
   checks++;
   assert.equal(meta(head, "name", "description", row.route), row.description,
     `${row.route}: route-specific meta description missing`);
   checks++;
-  const canonical = uniqueTag(head, /<link\\b[^>]*>/gi, "rel", "canonical", row.route);
+  const canonical = uniqueTag(head, /<link\b[^>]*>/gi, "rel", "canonical", row.route);
   assert.equal(attr(canonical, "href"), origin + row.route, `${row.route}: canonical mismatch`);
   checks++;
   assert.equal(meta(head, "property", "og:title", row.route), row.title,
