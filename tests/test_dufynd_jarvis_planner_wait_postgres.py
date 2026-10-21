@@ -4,6 +4,7 @@ Runs exclusively against DUFYND_TEST_DATABASE_URL (CI's disposable Postgres).
 A private fixture schema isolates all data/functions; no production writes,
 no cron mutation and no external service calls are made.
 """
+
 from __future__ import annotations
 
 import os
@@ -14,7 +15,9 @@ import pytest
 DSN = os.getenv("DUFYND_TEST_DATABASE_URL")
 pytestmark = pytest.mark.skipif(not DSN, reason="disposable PostgreSQL required")
 ROOT = Path(__file__).resolve().parents[1]
-MIGRATION = ROOT / "supabase/migrations/20261021133000_dufynd_jarvis_planner_external_buyer_signal.sql"
+MIGRATION = (
+    ROOT / "supabase/migrations/20261021133000_dufynd_jarvis_planner_external_buyer_signal.sql"
+)
 SCHEMA = "jarvis_planner_fixture"
 
 
@@ -69,7 +72,7 @@ def database():
             setup.execute(
                 f"CREATE FUNCTION {SCHEMA}.{name}() RETURNS {signature} "
                 "LANGUAGE sql STABLE AS "
-                "'SELECT ''{\"state\":\"planner_gap\",\"created\":false,\"business_next_move\":\"social_publication_readiness\"}''::jsonb'"
+                '\'SELECT \'\'{"state":"planner_gap","created":false,"business_next_move":"social_publication_readiness"}\'\'::jsonb\''
             )
         setup.execute(isolated)
     try:
@@ -130,15 +133,11 @@ def setup_case(
 
 
 def exhaustion(db):
-    return db.execute(
-        f"SELECT {SCHEMA}.read_dufynd_safe_work_exhaustion_v1()"
-    ).fetchone()[0]
+    return db.execute(f"SELECT {SCHEMA}.read_dufynd_safe_work_exhaustion_v1()").fetchone()[0]
 
 
 def plan(db):
-    return db.execute(
-        f"SELECT {SCHEMA}.plan_dufynd_free_work_v1()"
-    ).fetchone()[0]
+    return db.execute(f"SELECT {SCHEMA}.plan_dufynd_free_work_v1()").fetchone()[0]
 
 
 def test_current_production_gap_becomes_truthful_external_buyer_wait(db):
@@ -154,15 +153,19 @@ def test_current_production_gap_becomes_truthful_external_buyer_wait(db):
     assert result["reason"] == "genuine_merchant_clickout_required"
     assert result["new_spend_usd"] == 0
     assert result["master_action_required"] is False
-    assert db.execute(
-        f"SELECT count(*) FROM {SCHEMA}.dufynd_autonomy_tasks WHERE status='ready'"
-    ).fetchone()[0] == 0
+    assert (
+        db.execute(
+            f"SELECT count(*) FROM {SCHEMA}.dufynd_autonomy_tasks WHERE status='ready'"
+        ).fetchone()[0]
+        == 0
+    )
 
 
 @pytest.mark.parametrize("missing", ["content", "ready", "owner"])
 def test_real_internal_work_or_gate_prevents_false_exhaustion(db, missing):
     setup_case(
-        db, content_done=missing != "content",
+        db,
+        content_done=missing != "content",
         executable=missing == "ready",
         owner_gate=missing == "owner",
     )
@@ -174,7 +177,8 @@ def test_real_internal_work_or_gate_prevents_false_exhaustion(db, missing):
 
 def test_qualified_distribution_wait_preserves_original_requirement(db):
     setup_case(
-        db, signal="qualified_session",
+        db,
+        signal="qualified_session",
         decision="waiting_for_qualified_distribution_signal",
         measurement_done=True,
     )
@@ -188,7 +192,8 @@ def test_qualified_distribution_wait_preserves_original_requirement(db):
 
 def test_distribution_wait_needs_completed_measurement(db):
     setup_case(
-        db, signal="qualified_session",
+        db,
+        signal="qualified_session",
         decision="waiting_for_qualified_distribution_signal",
         measurement_done=False,
     )
@@ -215,9 +220,7 @@ def test_deterministic_replay_preserves_outcome_without_extra_tasks(db):
     second = plan(db)
     assert first["state"] == second["state"] == "waiting_buyer_signal"
     assert first["reason"] == second["reason"]
-    assert db.execute(
-        f"SELECT count(*) FROM {SCHEMA}.dufynd_autonomy_tasks"
-    ).fetchone()[0] == 3
+    assert db.execute(f"SELECT count(*) FROM {SCHEMA}.dufynd_autonomy_tasks").fetchone()[0] == 3
     saved = db.execute(
         f"SELECT value->>'state' FROM {SCHEMA}.dufynd_master_status WHERE key='jarvis.planner_v1'"
     ).fetchone()[0]
