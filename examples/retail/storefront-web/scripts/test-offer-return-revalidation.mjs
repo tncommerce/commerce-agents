@@ -344,8 +344,8 @@ const mutants = [
   { name: 'missing functional reload dependency', text: source.replace(dependencyAnchor, dependencyAnchor.replace('productId, reloadToken,', 'productId,')), run: realReload },
   { name: 'old response guard removed', text: source.replace('      .then((value) => {\n        if (!active) return;', '      .then((value) => {'), run: lateReply },
   { name: 'unsupported observer falsely counts an impression',
-    text: source.replace('if (typeof IntersectionObserver === "undefined") {\n        return;',
-                         'if (typeof IntersectionObserver === "undefined") {\n        trackImpression();\n        return;'),
+    text: source.replace('if (typeof IntersectionObserver === "undefined") {\n        // No viewport proof:',
+                         'if (typeof IntersectionObserver === "undefined") {\n        trackImpression();\n        // No viewport proof:'),
     run: assertNoSyntheticOfferImpression },
 ];
 const mutationResults = [];
