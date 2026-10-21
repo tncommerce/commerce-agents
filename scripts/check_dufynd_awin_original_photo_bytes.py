@@ -8,10 +8,10 @@ public assets, and never activates affiliate products or merchant offers.
 from __future__ import annotations
 
 import argparse
+import json
 from datetime import UTC, datetime, timedelta
 from hashlib import sha256
 from io import BytesIO
-import json
 from pathlib import Path
 from urllib.parse import urlsplit
 
