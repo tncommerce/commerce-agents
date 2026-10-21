@@ -22,7 +22,7 @@ def test_social_start_route_is_explicitly_noindex() -> None:
     assert 'canonical: "/start"' in source
     assert "robots: {" in source
     assert "index: false" in source
-    assert 'import { SITE_INDEXABLE } from "@/lib/site";' in source
+    assert 'import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";' in source
     assert "follow: SITE_INDEXABLE" in source
 
 
