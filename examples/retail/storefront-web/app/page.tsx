@@ -178,7 +178,6 @@ export default function StorefrontPage() {
           home={(
             <HomeView
               shopperName={shopper.name}
-              sessionSettled={session.settled === true}
             />
           )}
         />
