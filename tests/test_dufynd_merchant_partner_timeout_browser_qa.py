@@ -31,6 +31,7 @@ def test_partner_timeout_preserves_session_and_mobile_retry_coverage() -> None:
     assert "QA Partner Timeout Recovery" in timeout_qa
     assert 'state: "visible", timeout: 12_000' in timeout_qa
 
+
 def test_partner_navigation_does_not_wait_for_advisor_session() -> None:
     """Public merchant entry needs an eligible offer, not an advisor session."""
     discovery_source = DISCOVERY.read_text(encoding="utf-8")
