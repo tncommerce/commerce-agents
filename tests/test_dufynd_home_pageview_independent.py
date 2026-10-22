@@ -30,7 +30,9 @@ def test_actual_browser_qa_proves_advisor_independence() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
     assert 'label: "home-pageview-advisor-independent"' in source
     assert "advisorSessionGate" in source
-    assert "await advisorSessionStarted;" in source
+    assert 'new Error("advisor session request never began")' in source
+    assert "advisorSessionStarted," in source
+    assert "await advisorSessionStarted;" not in source
     assert 'await chooseMeasurement(homePageViewPage, "granted")' in source
     assert "firstPageViewObserved" in source
     assert "qa_home_pageview_independent" in source
