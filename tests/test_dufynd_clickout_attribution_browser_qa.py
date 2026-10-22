@@ -94,7 +94,7 @@ def test_clickout_waits_for_first_party_analytics_session() -> None:
     assert "export async function ensureAnalyticsSession" in analytics_source
 
 
-def test_merchant_discovery_waits_for_storefront_session() -> None:
+def test_merchant_discovery_does_not_wait_for_storefront_session() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
     merchant_source = Path(
         "examples/retail/storefront-web/components/MerchantDiscovery.tsx"
@@ -106,29 +106,24 @@ def test_merchant_discovery_waits_for_storefront_session() -> None:
 
     assert 'label: "merchant-discovery-session-correlation"' in source
     assert "qa-partner-session-1234567890" in source
-    assert "setTimeout(resolve, 1200)" in source
-    assert (
-        "merchant discovery clickout became actionable before storefront session correlation completed"
-        in source
-    )
+    assert "await partnerSessionRequested;" in source
+    assert "await partnerSessionGate;" in source
+    assert "merchant CTA still waits for unrelated advisor session" in source
     assert 'clickoutUrl.searchParams.get("sid") === expectedPartnerSessionId' in source
     assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
-    assert "data-partner-clickout-preparing" in merchant_source
-    assert "sessionSettled ? (" in merchant_source
-    assert "<MerchantDiscovery sessionSettled={sessionSettled} />" in home_source
-    assert "sessionSettled={session.settled === true}" in page_source
+    assert "data-partner-clickout-preparing" not in merchant_source
+    assert "sessionSettled" not in merchant_source
+    assert "<MerchantDiscovery />" in home_source
+    assert "sessionSettled=" not in page_source
 
 
-def test_merchant_discovery_fails_open_after_session_attempt_settles() -> None:
+def test_merchant_discovery_remains_actionable_after_session_failure() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
     session_source = SESSION.read_text(encoding="utf-8")
 
     assert 'label: "merchant-discovery-session-failure-fallback"' in source
     assert '"QA session unavailable"' in source
-    assert (
-        "merchant discovery fail-open link became actionable before session initialization settled"
-        in source
-    )
+    assert "merchant CTA blocked despite valid partner payload during advisor error" in source
     assert '!/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "")' in source
     assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
     assert "settled?: boolean" in session_source
