@@ -70,27 +70,32 @@ def test_acquisition_attribution_survives_internal_navigation() -> None:
     assert 'navClickoutUrl.searchParams.get("content") !== "qa_navigation_content"' in source
 
 
-def test_clickout_waits_for_first_party_analytics_session() -> None:
+def test_verified_clickout_is_not_blocked_by_optional_analytics_session() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
 
     assert 'label: "merchant-clickout-session-correlation"' in source
     assert '"**/api/session"' in source
     assert "qa-clickout_session-1234567890" in source
-    assert "setTimeout(resolve, 1200)" in source
+    assert "await sessionGate;" in source
     assert 'clickoutUrl.searchParams.get("sid") === expectedSessionId' in source
     assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
     assert '!/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "")' in source
     assert "merchant clickout did not correlate acquisition and analytics session context" in source
     assert (
-        "merchant clickout became actionable before analytics session correlation completed"
-        in source
+        "verified merchant clickout unavailable while optional analytics session pending" in source
     )
+    assert "merchant clickout blocked on optional analytics session" in source
 
     offers_source = FRAGRANCE_OFFERS.read_text(encoding="utf-8")
     analytics_source = ANALYTICS.read_text(encoding="utf-8")
-    assert "ensureAnalyticsSession" in offers_source
-    assert "data-clickout-preparing" in offers_source
-    assert "clickoutSessionReady ? (" in offers_source
+    assert "ensureAnalyticsSession" not in offers_source
+    assert "data-clickout-preparing" not in offers_source
+    assert "clickoutSessionReady" not in offers_source
+    assert (
+        "href={appendAcquisitionAttribution(merchantClickoutUrl(offer.clickout_path))}"
+        in offers_source
+    )
+    assert 'trackAnalyticsEvent("merchant_clickout"' in offers_source
     assert "export async function ensureAnalyticsSession" in analytics_source
 
 

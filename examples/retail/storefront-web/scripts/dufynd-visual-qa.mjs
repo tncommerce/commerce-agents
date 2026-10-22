@@ -1866,11 +1866,10 @@ try {
     await chooseMeasurement(sessionTimeoutPage, "granted");
     const offers = sessionTimeoutPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 5_000 });
-    await offers.locator("[data-clickout-preparing]").waitFor({
-      state: "visible", timeout: 5_000,
-    });
     const clickout = offers.getByRole("link", { name: "Bei QA Session Timeout Merchant ansehen" });
-    await clickout.waitFor({ state: "visible", timeout: 12_000 });
+    // A consented, valid offer must be immediately actionable even while
+    // the optional session POST is deliberately stalled for 8.5 seconds.
+    await clickout.waitFor({ state: "visible", timeout: 5_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await clickout.getAttribute("href"));
     const measurementSid = failOpenUrl.searchParams.get("sid");
@@ -1885,7 +1884,7 @@ try {
       throw new Error("session timeout fail-open lost independent measurement or acquisition context");
     }
     if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
-      throw new Error("stalled session kept a loaded merchant offer blocked");
+      throw new Error("optional analytics session hid an eligible merchant link");
     }
     sessionRecoveryAllowed = true;
     await sessionTimeoutPage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
@@ -2336,12 +2335,15 @@ try {
     deviceScaleFactor: 1,
     reducedMotion: "reduce",
   });
+  // Released in finally even when the pre-session CTA assertion fails.
+  let releaseClickoutSession;
+  const sessionGate = new Promise((resolve) => { releaseClickoutSession = resolve; });
   try {
     const clickoutSessionPage = await clickoutSessionContext.newPage();
     const expectedSessionId = "qa-clickout_session-1234567890";
 
     await clickoutSessionPage.route("**/api/session", async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await sessionGate;
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -2411,17 +2413,18 @@ try {
     const offers = clickoutSessionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
-    const preparing = offers.locator("[data-clickout-preparing]").first();
-    await preparing.waitFor({ state: "visible", timeout: 5_000 });
-    if (
-      (await offers.locator('a[href*="/api/clickout/"]').count()) !== 0
-    ) {
+    // No response is released from /api/session yet. The verified-offer
+    // link must already exist while optional measurement transport is blocked.
+    const clickout = offers.locator('a[href*="/api/clickout/"]').first();
+    if ((await clickout.count()) !== 1) {
       throw new Error(
-        "merchant clickout became actionable before analytics session correlation completed",
+        "verified merchant clickout unavailable while optional analytics session pending",
       );
     }
-
-    const clickout = offers.locator('a[href*="/api/clickout/"]').first();
+    if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
+      throw new Error("merchant clickout blocked on optional analytics session");
+    }
+    releaseClickoutSession();
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
 
     await clickoutSessionPage.waitForFunction(
@@ -2473,6 +2476,7 @@ try {
       message,
     });
   } finally {
+    releaseClickoutSession?.();
     await clickoutSessionContext.close();
   }
 

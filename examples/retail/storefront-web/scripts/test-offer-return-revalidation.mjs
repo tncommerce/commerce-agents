@@ -82,7 +82,7 @@ function makeHarness(input = source, { consent = false, productId = PRODUCT_A } 
       merchantClickoutUrl: (path) => path,
     },
     '@/lib/analytics': {
-      appendAcquisitionAttribution: (href) => href,
+      appendAcquisitionAttribution: (href) => consent ? `${href}?measurement=granted-v1` : href,
       ensureAnalyticsSession: async () => { sessionCalls += 1; return null; },
       trackAnalyticsEvent: async (event, payload) => { analytics.push({ event, payload }); },
     },
@@ -154,6 +154,30 @@ test('initial functional load requires no consent', async () => {
   assert.equal(h.state, 'loading'); await h.resolve(0, offerPayload());
   assert.equal(h.state, 'available'); assert.equal(merchantLinks(h.tree).length, 1);
   assert.equal(h.analytics.length, 0); assert.equal(h.sessionCalls, 0); h.unmount();
+});
+test('verified merchant CTA remains available while consented analytics session is optional', async () => {
+  const h = makeHarness(source, { consent: true });
+  await h.resolve(0, offerPayload());
+  assert.equal(h.state, 'available');
+  assert.equal(merchantLinks(h.tree).length, 1, 'Verified buying cannot wait on optional analytics transport');
+  assert.equal(nodes(h.tree, n => n.props?.['data-clickout-preparing']).length, 0);
+  assert.equal(h.sessionCalls, 0, 'Component must not block buying on session creation');
+  assert.ok(h.analytics.every(event => event.event !== 'merchant_clickout'), 'No clickout before real action');
+  h.unmount();
+});
+test('consent changes never replace a verified CTA with a blocked placeholder', async () => {
+  const h = makeHarness();
+  await h.resolve(0, offerPayload());
+  assert.ok(!merchantLinks(h.tree)[0].props.href.includes('measurement='));
+  h.consent(true); await h.flush();
+  assert.equal(merchantLinks(h.tree).length, 1);
+  assert.ok(merchantLinks(h.tree)[0].props.href.endsWith('?measurement=granted-v1'), 'Consent grant must decorate active merchant href without an API session');
+  assert.equal(h.sessionCalls, 0);
+  h.consent(false); await h.flush();
+  assert.equal(merchantLinks(h.tree).length, 1);
+  assert.ok(!merchantLinks(h.tree)[0].props.href.includes('measurement='), 'Withdrawal must immediately strip optional tracking from merchant href');
+  assert.equal(nodes(h.tree, n => n.props?.['data-clickout-preparing']).length, 0);
+  h.unmount();
 });
 test('hidden tabs do not fetch', async () => {
   const h = makeHarness(); await h.resolve(0, offerPayload()); h.advance();
