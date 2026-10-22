@@ -22,6 +22,22 @@ SAFE_REASONS = frozenset(
         "refresh_race",
         "invalid_response",
         "broker_activation_required",
+        "pending_redelivery_mismatch",
+        "transport_error",
+    }
+)
+
+
+FAILURE_STAGES = frozenset(
+    {
+        "render",
+        "health",
+        "gmail_1",
+        "gmail_2",
+        "gmail_3",
+        "gmail_1_repeat",
+        "gmail_2_repeat",
+        "gmail_3_repeat",
     }
 )
 
@@ -57,6 +73,16 @@ def _json(response, stage: str, expected_type=dict):
     if not isinstance(result, expected_type):
         raise ReadFailure(stage, "invalid_json")
     return result
+
+
+def _broker_read(client, url, headers, stage, expected_type=dict):
+    try:
+        response = client.get(url, headers=headers)
+    except httpx.TransportError:
+        # Error strings can contain URLs, headers or provider details. Retain
+        # only this fixed diagnostic; never retry or classify it as revoked.
+        raise ReadFailure(stage, "transport_error") from None
+    return _json(response, stage, expected_type)
 
 
 def main():
@@ -98,24 +124,9 @@ def main():
             results = {"_meta": source}
             gmail_reads = []
             for stage, path in reads:
-                try:
-                    response = client.get(origin + path, headers=headers)
-                    result = _json(response, stage, list if stage == "render" else dict)
-                except ReadFailure as exc:
-                    # Failure receipts contain no provider payload or credentials.
-                    # Never acknowledge partial reads. Ingestion remains a separate job.
-                    Path("broker-failure.json").write_text(
-                        json.dumps(
-                            {
-                                "_meta": source,
-                                "stage": exc.stage,
-                                "reason": exc.reason,
-                            },
-                            sort_keys=True,
-                        ),
-                        encoding="utf-8",
-                    )
-                    raise
+                result = _broker_read(
+                    client, origin + path, headers, stage, list if stage == "render" else dict
+                )
                 results[path] = result
                 if stage.startswith("gmail_"):
                     gmail_reads.append((stage, path, result))
@@ -124,7 +135,7 @@ def main():
             # exact same pending observation. This certifies the at-least-once
             # boundary without advancing any private cursor.
             for stage, path, first in gmail_reads:
-                repeated = _json(client.get(origin + path, headers=headers), stage + "_repeat")
+                repeated = _broker_read(client, origin + path, headers, stage + "_repeat")
                 if (
                     not isinstance(first.get("observation_id"), str)
                     or not first["observation_id"]
@@ -141,6 +152,16 @@ def main():
             f"private observer read failed at provenance:{exc}; no cursor acknowledged"
         ) from None
     except ReadFailure as exc:
+        # Both initial reads and pending-redelivery checks use the same bounded
+        # durable diagnostic. OIDC/provenance failures remain outside this path.
+        # Partial observations are never published or acknowledged.
+        if exc.stage in FAILURE_STAGES:
+            Path("broker-failure.json").write_text(
+                json.dumps(
+                    {"_meta": source, "stage": exc.stage, "reason": exc.reason}, sort_keys=True
+                ),
+                encoding="utf-8",
+            )
         raise SystemExit(
             f"private observer read failed at {exc.stage}:{exc.reason}; no cursor acknowledged"
         ) from None
