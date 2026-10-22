@@ -102,6 +102,9 @@ export default function FragranceOffers({
   const payload = response?.payload;
   const [loadError, setLoadError] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
+  // Consent changes must synchronously re-render link attribution, not wait on
+  // the optional analytics session. No sensitive data is stored by this tick.
+  const [, refreshConsentHref] = useState(0);
   const trackedDetailViewRef = useRef<string | null>(null);
   const offerSectionRef = useRef<HTMLElement | null>(null);
   const trackedOfferViewRef = useRef<string | null>(null);
@@ -111,6 +114,9 @@ export default function FragranceOffers({
   // re-fetching the functional offers or replaying pre-consent shopping actions.
   useEffect(() => {
     const refreshMeasurement = () => {
+      // Rebuild the existing clickout href for grant and withdrawal alike.
+      // A verified merchant CTA remains available throughout the update.
+      refreshConsentHref((revision) => revision + 1);
       if (!measurementAllowed()) {
         trackedDetailViewRef.current = null;
         return;

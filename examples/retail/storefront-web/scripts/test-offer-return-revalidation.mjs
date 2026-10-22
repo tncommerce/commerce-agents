@@ -82,7 +82,7 @@ function makeHarness(input = source, { consent = false, productId = PRODUCT_A } 
       merchantClickoutUrl: (path) => path,
     },
     '@/lib/analytics': {
-      appendAcquisitionAttribution: (href) => href,
+      appendAcquisitionAttribution: (href) => consent ? `${href}?measurement=granted-v1` : href,
       ensureAnalyticsSession: async () => { sessionCalls += 1; return null; },
       trackAnalyticsEvent: async (event, payload) => { analytics.push({ event, payload }); },
     },
@@ -168,11 +168,14 @@ test('verified merchant CTA remains available while consented analytics session 
 test('consent changes never replace a verified CTA with a blocked placeholder', async () => {
   const h = makeHarness();
   await h.resolve(0, offerPayload());
+  assert.ok(!merchantLinks(h.tree)[0].props.href.includes('measurement='));
   h.consent(true); await h.flush();
   assert.equal(merchantLinks(h.tree).length, 1);
+  assert.ok(merchantLinks(h.tree)[0].props.href.endsWith('?measurement=granted-v1'), 'Consent grant must decorate active merchant href without an API session');
   assert.equal(h.sessionCalls, 0);
   h.consent(false); await h.flush();
   assert.equal(merchantLinks(h.tree).length, 1);
+  assert.ok(!merchantLinks(h.tree)[0].props.href.includes('measurement='), 'Withdrawal must immediately strip optional tracking from merchant href');
   assert.equal(nodes(h.tree, n => n.props?.['data-clickout-preparing']).length, 0);
   h.unmount();
 });
