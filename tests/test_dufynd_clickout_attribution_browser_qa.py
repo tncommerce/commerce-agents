@@ -81,7 +81,9 @@ def test_verified_clickout_is_not_blocked_by_optional_analytics_session() -> Non
     assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
     assert '!/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "")' in source
     assert "merchant clickout did not correlate acquisition and analytics session context" in source
-    assert "verified merchant clickout unavailable while optional analytics session pending" in source
+    assert (
+        "verified merchant clickout unavailable while optional analytics session pending" in source
+    )
     assert "merchant clickout blocked on optional analytics session" in source
 
     offers_source = FRAGRANCE_OFFERS.read_text(encoding="utf-8")
@@ -89,7 +91,10 @@ def test_verified_clickout_is_not_blocked_by_optional_analytics_session() -> Non
     assert "ensureAnalyticsSession" not in offers_source
     assert "data-clickout-preparing" not in offers_source
     assert "clickoutSessionReady" not in offers_source
-    assert "href={appendAcquisitionAttribution(merchantClickoutUrl(offer.clickout_path))}" in offers_source
+    assert (
+        "href={appendAcquisitionAttribution(merchantClickoutUrl(offer.clickout_path))}"
+        in offers_source
+    )
     assert 'trackAnalyticsEvent("merchant_clickout"' in offers_source
     assert "export async function ensureAnalyticsSession" in analytics_source
 
