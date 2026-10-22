@@ -2335,11 +2335,12 @@ try {
     deviceScaleFactor: 1,
     reducedMotion: "reduce",
   });
+  // Released in finally even when the pre-session CTA assertion fails.
+  let releaseClickoutSession;
+  const sessionGate = new Promise((resolve) => { releaseClickoutSession = resolve; });
   try {
     const clickoutSessionPage = await clickoutSessionContext.newPage();
     const expectedSessionId = "qa-clickout_session-1234567890";
-    let releaseClickoutSession;
-    const sessionGate = new Promise((resolve) => { releaseClickoutSession = resolve; });
 
     await clickoutSessionPage.route("**/api/session", async (route) => {
       await sessionGate;
