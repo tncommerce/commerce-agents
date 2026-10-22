@@ -115,6 +115,8 @@ jobs:
             ${{ runner.os }}-next-web-${{ hashFiles('examples/package-lock.json') }}-
       - name: Install
         run: npm ci
+      - name: Verify passive original-photo diagnostics (no image requests)
+        run: node retail/storefront-web/scripts/test-approved-photo-network-evidence.mjs
       - name: Build every app
         shell: bash
         run: |

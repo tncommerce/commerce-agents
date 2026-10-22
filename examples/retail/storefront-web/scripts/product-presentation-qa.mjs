@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { watchApprovedPhotoRequests, explainMissingApprovedPhoto } from "./approved-photo-network-evidence.mjs";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
@@ -34,6 +35,8 @@ export async function verifyProductPresentation(browser, baseUrl, outputDir) {
   for (const width of [320, 390, 768, 1440]) {
     const context = await browser.newContext({ viewport: { width, height: 900 }, hasTouch: width < 768, reducedMotion: "reduce" });
     const page = await context.newPage();
+    const photoEvidence = watchApprovedPhotoRequests(page);
+    let currentProductId = null;
     const errors = [], measurements = [], clickouts = [];
     let offerMode = "empty";
     await context.route("**/api/**", route => {
@@ -55,6 +58,7 @@ export async function verifyProductPresentation(browser, baseUrl, outputDir) {
     const images = [];
     try {
       for (const [slug, id, name, volume] of profiles) {
+        currentProductId = id;
         await page.goto(`${baseUrl}/duft/${slug}`);
         await chooseMeasurement(page, "denied");
         const hero = page.locator("[data-dufynd-product-presentation]");
@@ -139,6 +143,9 @@ export async function verifyProductPresentation(browser, baseUrl, outputDir) {
       assert.deepEqual(measurements, [], "Denied consent sends no session or analytics events");
       assert.deepEqual(clickouts, [], "No merchant clickout even for synthetic positive offers");
       results.push({ width, profiles: profiles.length, images, status: "passed", nativeTouch:width < 768, measurementRequests:0, clickouts:0 });
+    } catch (error) {
+      const photo = await explainMissingApprovedPhoto(page, photoEvidence, currentProductId);
+      throw new Error(`Product-presentation browser QA failed: ${String(error)}; approved_photo_evidence=${JSON.stringify(photo)}`, { cause: error });
     } finally { await context.close(); }
   }
   const sourcePaths = ["scripts/product-presentation-qa.mjs", "scripts/test-comparison-trust.mjs", "app/product-presentation.css", "components/FragranceVisual.tsx", "components/FragranceVariant.tsx", "components/FragranceCatalogBrowser.tsx", "components/FragranceDetailPage.tsx", "components/FragranceComparisonPicker.tsx", "components/FragranceComparisonEvidence.tsx", "lib/generated/public-fragrances.json"];
