@@ -38,3 +38,13 @@ def test_actual_browser_qa_proves_advisor_independence() -> None:
     assert "qa_home_pageview_independent" in source
     assert "pageViewEvents.length !== 1" in source
     assert 'pageViewEvents[0].acquisition_source !== "instagram"' in source
+
+
+def test_broken_remote_image_wait_stays_bounded_and_fail_closed() -> None:
+    """Allow neutral fallback to settle, never hide a persistent broken image."""
+    source = VISUAL_QA.read_text(encoding="utf-8")
+    assert "await sweepPage.waitForFunction(" in source
+    assert "timeout: 2_500, polling: 100" in source
+    assert 'image.naturalWidth === 0' in source
+    assert 'if (diagnostics.visible_broken_images.length)' in source
+    assert 'broken images: ${diagnostics.visible_broken_images.join(", ")}' in source
