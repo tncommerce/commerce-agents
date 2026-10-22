@@ -35,12 +35,10 @@ def test_partner_timeout_preserves_session_and_mobile_retry_coverage() -> None:
 def test_partner_navigation_does_not_wait_for_advisor_session() -> None:
     """Public merchant entry needs an eligible offer, not an advisor session."""
     discovery_source = DISCOVERY.read_text(encoding="utf-8")
-    home_source = Path(
-        "examples/retail/storefront-web/components/views/HomeView.tsx"
-    ).read_text(encoding="utf-8")
-    page_source = Path("examples/retail/storefront-web/app/page.tsx").read_text(
+    home_source = Path("examples/retail/storefront-web/components/views/HomeView.tsx").read_text(
         encoding="utf-8"
     )
+    page_source = Path("examples/retail/storefront-web/app/page.tsx").read_text(encoding="utf-8")
     api_source = Path("examples/retail/api/main.py").read_text(encoding="utf-8")
 
     assert "sessionSettled" not in discovery_source
