@@ -3077,7 +3077,13 @@ try {
       { waitUntil: "domcontentloaded", timeout: 45_000 },
     );
     if (!response?.ok()) throw new Error("homepage pageview QA did not load");
-    await advisorSessionStarted;
+    // An unloaded or changed homepage must fail promptly, not hang the full CI.
+    await Promise.race([
+      advisorSessionStarted,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("advisor session request never began")), 7_000),
+      ),
+    ]);
     await chooseMeasurement(homePageViewPage, "granted");
     await Promise.race([
       pageViewReceived,
