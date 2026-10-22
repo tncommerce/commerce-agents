@@ -10,7 +10,6 @@ import {
 } from "@/lib/api";
 import {
   appendAcquisitionAttribution,
-  ensureAnalyticsSession,
   trackAnalyticsEvent,
 } from "@/lib/analytics";
 import { measurementAllowed, subscribeMeasurement } from "@/lib/measurementConsent";
@@ -103,7 +102,6 @@ export default function FragranceOffers({
   const payload = response?.payload;
   const [loadError, setLoadError] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
-  const [clickoutSessionReady, setClickoutSessionReady] = useState(false);
   const trackedDetailViewRef = useRef<string | null>(null);
   const offerSectionRef = useRef<HTMLElement | null>(null);
   const trackedOfferViewRef = useRef<string | null>(null);
@@ -112,23 +110,15 @@ export default function FragranceOffers({
   // Consent can change after this product mounted. Observe that choice without
   // re-fetching the functional offers or replaying pre-consent shopping actions.
   useEffect(() => {
-    let active = true;
-    let attempt = 0;
     const refreshMeasurement = () => {
-      const currentAttempt = ++attempt;
       if (!measurementAllowed()) {
         trackedDetailViewRef.current = null;
-        setClickoutSessionReady(true);
         return;
       }
 
-      setClickoutSessionReady(false);
-      void ensureAnalyticsSession().finally(() => {
-        if (active && currentAttempt === attempt && measurementAllowed()) {
-          setClickoutSessionReady(true);
-        }
-      });
-
+      // Shopping never waits on the optional analytics-session transport.
+      // The clickout GET is public and independently revalidates the offer.
+      // trackAnalyticsEvent keeps best-effort, consent-bound first-party data.
       const detailViewKey = `${productId}:${analyticsSurface}`;
       if (trackProductOpen && trackedDetailViewRef.current !== detailViewKey) {
         trackedDetailViewRef.current = detailViewKey;
@@ -143,8 +133,6 @@ export default function FragranceOffers({
     const unsubscribe = subscribeMeasurement(refreshMeasurement);
     refreshMeasurement();
     return () => {
-      active = false;
-      attempt += 1;
       unsubscribe();
     };
   }, [analyticsSurface, productId, reloadToken, trackProductOpen]);
@@ -399,8 +387,7 @@ export default function FragranceOffers({
                   </div>
                 ) : null}
               </div>
-              {clickoutSessionReady ? (
-                <a
+              <a
                   href={appendAcquisitionAttribution(merchantClickoutUrl(offer.clickout_path))}
                   target="_blank"
                   title="Öffnet einen neuen Tab"
@@ -419,15 +406,6 @@ export default function FragranceOffers({
                 >
                   Bei {offer.merchant_name} ansehen <span aria-hidden="true" className="ml-2">↗</span>
                 </a>
-              ) : (
-                <span
-                  aria-disabled="true"
-                  data-clickout-preparing
-                  className={`${styles.merchantAction} inline-flex items-center justify-center w-full cursor-wait rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white opacity-70 sm:w-auto ${best ? "bg-(--accent-strong)" : "bg-(--ink)"}`}
-                >
-                  Link wird vorbereitet …
-                </span>
-              )}
             </div>
           );
         })}
