@@ -16,7 +16,7 @@ import PersonalLibrarySummary from "../PersonalLibrarySummary";
 const STATIC_CATALOG: Record<string, Product> = Object.fromEntries((staticCatalog.products as unknown as Product[]).map(product => [product.product_id, product]));
 const AUDIENCES = [{ key: "women", label: "Damen", world: "silk" }, { key: "men", label: "Herren", world: "mineral" }, { key: "unisex", label: "Unisex", world: "amber" }] as const;
 
-export default function HomeView({ shopperName: _shopperName, sessionSettled }: { shopperName: string; sessionSettled: boolean }) {
+export default function HomeView({ shopperName: _shopperName }: { shopperName: string }) {
   const { chat, ask } = useStoreFrame();
   const liveCatalog = useCatalogIndex(fetchProducts);
   const loadedCatalog = Object.keys(liveCatalog).length
@@ -80,7 +80,7 @@ export default function HomeView({ shopperName: _shopperName, sessionSettled }: 
       <div className="wow-advisor-links"><AcquisitionInternalLink href="/parfum-alternativen">Alternative finden ↗</AcquisitionInternalLink><AcquisitionInternalLink href="/parfum-geschenkberater">Duft verschenken ↗</AcquisitionInternalLink></div>
     </section>
     <PersonalLibrarySummary />
-    <MerchantDiscovery sessionSettled={sessionSettled} />
+    <MerchantDiscovery />
     <aside className="wow-affiliate-note" aria-label="Händlerrolle und Partnerlinks"><p><strong>Entdecken bei DUFYND. Kaufen beim Händler.</strong> Kaufvertrag, Zahlung und Versand erfolgen beim ausgewählten Händler.</p><p>Werbung: Händlerlinks können Partnerlinks sein. Bei einem Kauf kann DUFYND eine Provision erhalten. Für dich soll sich der Händlerpreis dadurch nicht erhöhen.</p><AcquisitionInternalLink href="/transparenz">So bewerten wir Empfehlungen und Angebote ↗</AcquisitionInternalLink></aside>
     <LegalFooter />
   </div>;
