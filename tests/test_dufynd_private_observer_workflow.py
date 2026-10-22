@@ -83,6 +83,7 @@ def test_observer_finalize_survives_unrelated_public_merchant_outage() -> None:
     assert "python scripts/dufynd_production_smoke.py --expected-indexing enabled" in dedicated
     assert "if python scripts/dufynd_production_smoke.py" in dedicated
 
+
 def test_private_observer_failure_receipt_has_pinned_python_dependencies() -> None:
     """A failed broker read must not lose the bounded failure receipt to missing Pydantic."""
     workflow = workflow_source()
