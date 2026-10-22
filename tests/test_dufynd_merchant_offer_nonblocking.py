@@ -7,7 +7,6 @@ from pathlib import Path
 from threading import Event
 
 import pytest
-
 from examples.retail.api import main as retail_api
 
 
