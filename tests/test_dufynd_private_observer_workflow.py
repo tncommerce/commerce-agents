@@ -95,4 +95,4 @@ def test_private_observer_failure_receipt_has_pinned_python_dependencies() -> No
     assert "python -m scripts.dufynd_private_observer_failure" in failure_receipt
     assert "if: failure() && needs.read.result == 'failure'" in failure_receipt
     assert "GMAIL_REFRESH_TOKEN" not in failure_receipt
-    assert "gh run download \"$GITHUB_RUN_ID\"" in failure_receipt
+    assert 'gh run download "$GITHUB_RUN_ID"' in failure_receipt
