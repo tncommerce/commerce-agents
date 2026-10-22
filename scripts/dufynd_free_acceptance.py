@@ -58,7 +58,7 @@ STAGES = {
     ),
     "offer_link": (
         PREFIX + "components/FragranceOffers.tsx",
-        ("ensureAnalyticsSession", "appendAcquisitionAttribution", "merchantClickoutUrl"),
+        ("refreshConsentHref((revision) => revision + 1)", "appendAcquisitionAttribution", "merchantClickoutUrl"),
     ),
     "merchant_clickout": (
         "examples/retail/api/main.py",

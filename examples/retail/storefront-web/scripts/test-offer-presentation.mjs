@@ -20,12 +20,12 @@ const fixture = {
   in_stock:true,variant_label:'100 ml · Eau de Toilette',
   clickout_path:'/api/clickout/qa-offer',affiliate_link:true,last_updated_at:'2026-10-12T19:58:00Z',
 };
-function render({offers=[fixture],focusedLanding=false,ready=true,error=false,loading=false,responseProductId='SC-QA',responseReloadToken=0}={}) {
+function render({offers=[fixture],focusedLanding=false,error=false,loading=false,responseProductId='SC-QA',responseReloadToken=0}={}) {
   let stateIndex = 0;
   const payload={offers,product_id:'SC-QA',best_offer_id:'qa-offer',affiliate_disclosure:'QA'};
   // Seed the atomic request-bound state, not a pre-hardening bare payload.
   const response={productId:responseProductId,reloadToken:responseReloadToken,payload};
-  const states=[loading?undefined:response,error,0,ready];
+  const states=[loading?undefined:response,error,0,0];
   const source=compile('../components/FragranceOffers.tsx',(id)=>{
     if(id==='react')return {...require('react'),useState:()=>[states[stateIndex++],()=>{}],useEffect:()=>{},useRef:()=>({current:null})};
     if(id==='react/jsx-runtime')return require(id);
@@ -67,7 +67,10 @@ assert.match(unknown,/Artikelpreis · Versand beim Händler prüfen/);
 assert.doesNotMatch(unknown,/Gesamtpreis inkl. Versand|data-offer-breakdown|44,00/);cases++;
 const free=render({offers:[{...fixture,total_price:40,shipping_cost:0}]});
 assert.match(free,/data-offer-breakdown/);assert.match(free,/0,00/);cases++;
-const pending=render({ready:false});assert.match(pending,/data-clickout-preparing/);assert.doesNotMatch(pending,/href="\/api\/clickout/);cases++;
+// An offered purchase must not wait for analytics/session effects during SSR.
+const withoutAnalyticsSession=render();
+assert.doesNotMatch(withoutAnalyticsSession,/data-clickout-preparing/);
+assert.match(withoutAnalyticsSession,/href="\/api\/clickout\/qa-offer/);cases++;
 const external=render({offers:[{...fixture,affiliate_link:false}]});
 assert.doesNotMatch(external,/sponsored|Werbung · Partnerlink/);assert.match(external,/keine Provision/);cases++;
 for(const state of [{loading:true},{error:true},{offers:[]}]) {
