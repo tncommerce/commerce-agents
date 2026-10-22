@@ -3651,6 +3651,31 @@ try {
           );
         });
 
+        // Give React's existing onError/ref-driven neutral visual fallback a
+        // bounded opportunity to replace a failed external product image.
+        // Persistent visible broken images still fail in the diagnostics below.
+        try {
+          await sweepPage.waitForFunction(
+            () =>
+              Array.from(document.images).every((image) => {
+                const rect = image.getBoundingClientRect();
+                const style = window.getComputedStyle(image);
+                return !(
+                  style.display !== "none" &&
+                  style.visibility !== "hidden" &&
+                  rect.width > 1 &&
+                  rect.height > 1 &&
+                  image.complete &&
+                  image.naturalWidth === 0
+                );
+              }),
+            null,
+            { timeout: 2_500, polling: 100 },
+          );
+        } catch {
+          // No silent pass: the existing hard-fail check runs immediately.
+        }
+
         const diagnostics = await sweepPage.evaluate((blocked) => {
           const bodyText = document.body.innerText;
           const visibleBrokenImages = Array.from(document.images)
