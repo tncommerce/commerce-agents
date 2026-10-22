@@ -31,8 +31,8 @@ def test_actual_browser_qa_proves_advisor_independence() -> None:
     assert 'label: "home-pageview-advisor-independent"' in source
     assert "advisorSessionGate" in source
     assert "await advisorSessionStarted;" in source
-    assert "await chooseMeasurement(homePageViewPage, \"granted\")" in source
+    assert 'await chooseMeasurement(homePageViewPage, "granted")' in source
     assert "firstPageViewObserved" in source
     assert "qa_home_pageview_independent" in source
     assert "pageViewEvents.length !== 1" in source
-    assert "pageViewEvents[0].acquisition_source !== \"instagram\"" in source
+    assert 'pageViewEvents[0].acquisition_source !== "instagram"' in source
