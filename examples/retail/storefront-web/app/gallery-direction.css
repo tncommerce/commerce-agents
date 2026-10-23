@@ -962,3 +962,33 @@
     gap:8px 10px;
   }
 }
+
+
+/* Show a modest, truthful source marker over the exact approved original;
+   external attribution renders separately only if required/source-populated. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-directory-feature-picture {
+  isolation:isolate;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-directory-original-tag {
+  position:absolute;
+  top:7px;
+  left:7px;
+  z-index:5;
+  background:rgba(246,242,233,.94);
+  color:#64564e;
+  padding:5px 7px;
+  font-size:9px;
+  line-height:1.25;
+  font-weight:650;
+  letter-spacing:.04em;
+  pointer-events:none;
+}
+@media(max-width:390px) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-original-tag {
+    font-size:8px;
+    padding:4px 5px;
+  }
+}

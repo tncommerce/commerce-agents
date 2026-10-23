@@ -47,8 +47,15 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           const sourceImage=editorial.locator('img').first();
           await sourceImage.evaluate(image=>image.decode());
           assert.ok(await sourceImage.evaluate(image=>image.naturalWidth>0),'original Libre EDP photo must decode before editorial publication');
-          const credit=editorial.locator('p').last();
-          assert.ok((await credit.innerText()).includes('Bild:'),'source photo attribution remains visible');
+          const mediaLabel=editorial.locator('.dufynd-directory-original-tag');
+          assert.equal(await mediaLabel.count(),1,'exact approved editorial photo shows its original-image identity');
+          assert.match(await mediaLabel.innerText(),/Originalaufnahme/);
+          // Not all approved affiliate feed assets require/source a visible
+          // attribution paragraph. Never invent a license or assume one exists.
+          const credits=editorial.locator('p');
+          if(await credits.count()) {
+            assert.match(await credits.last().innerText(),/Bild:/);
+          }
           const hero=page.locator('.dufynd-catalog-discovery-hero');
           const bounds=await hero.boundingBox();
           assert.ok(bounds && bounds.height<=350,'the photographic catalog introduction must not displace firstfold search');

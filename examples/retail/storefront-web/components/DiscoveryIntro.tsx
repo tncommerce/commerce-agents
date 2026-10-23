@@ -110,6 +110,7 @@ export default function DiscoveryIntro({
             className="dufynd-directory-feature-link"
           >
             <div className="dufynd-directory-feature-picture">
+              <span className="dufynd-directory-original-tag">Originalaufnahme</span>
               <FragranceVisual
                 imageUrl={catalogEditorialVisual.url}
                 cutoutUrl={catalogEditorialVisual.url}

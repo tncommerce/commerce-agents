@@ -228,6 +228,7 @@ jobs:
             examples/retail/storefront-web/.visual-qa/product-presentation/report.json
             examples/retail/storefront-web/.visual-qa/review-wave/report.json
           if-no-files-found: error
+          include-hidden-files: true
           retention-days: 2
       - name: Upload DUFYND visual QA captures
         if: always() && github.head_ref != 'dufynd-visual-first-reset-20261023'
