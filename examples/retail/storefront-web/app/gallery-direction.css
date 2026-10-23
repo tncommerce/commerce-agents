@@ -1,0 +1,608 @@
+/* DUFYND — Gallery direction 02 / Visual review candidate.
+   An independent fragrance index, not a simulated luxury manufacturer's shop.
+   Photographs remain the exact verified originals from fragranceCatalog.
+   No source pixels, variant data, merchant endpoints or checkout behavior change. */
+
+:root {
+  --dg-paper: #f4f0e9;
+  --dg-canvas: #e9dfd4;
+  --dg-ink: #202527;
+  --dg-plum: #814f58;
+  --dg-soft-ink: #695e57;
+  --dg-rule: #c9c0b6;
+}
+
+/* ARRIVAL — campaign-sized type and a real perfume taking up real visual space. */
+.vr-home .vr-gallery-hero {
+  border: 0;
+  border-top: 2px solid var(--dg-ink);
+  background: var(--dg-paper);
+  color: var(--dg-ink);
+  box-shadow: none;
+  border-radius: 0;
+}
+.vr-home .vr-gallery-hero .vr-hero-top {
+  background: #f9f5ef;
+  color: var(--dg-ink);
+  border-bottom: 1px solid var(--dg-rule);
+  padding: 11px clamp(18px,3vw,40px);
+}
+.vr-gallery-hero .vr-hero-top .wow-kicker {color: #49484a;font-size: 10px;letter-spacing:.12em;}
+.vr-gallery-hero .vr-hero-top nav a {color:var(--dg-ink);font-size:12px;font-weight:590;}
+.vr-gallery-hero .vr-hero-top nav a:hover {border-color:var(--dg-plum);}
+.vr-home .vr-gallery-hero .vr-hero-composition {
+  display:grid;
+  grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);
+  background:var(--dg-paper);
+  min-height:580px;
+}
+.vr-home .vr-gallery-hero .vr-hero-copy {
+  background:#f8f5ef;
+  color:var(--dg-ink);
+  padding:clamp(38px,4.5vw,76px) clamp(27px,4.5vw,70px);
+  align-self:stretch;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.vr-gallery-hero .vr-hero-eyebrow {
+  color:var(--dg-plum)!important;
+  letter-spacing:.1em!important;
+  font-weight:670!important;
+  margin-bottom:21px!important;
+}
+.vr-home .vr-gallery-hero h1 {
+  font-family:Georgia,'Times New Roman',serif;
+  color:#222628;
+  font-weight:400;
+  font-size:clamp(66px,6.9vw,110px);
+  line-height:.92;
+  letter-spacing:-.075em;
+  margin:0 0 29px;
+  text-wrap:balance;
+}
+.vr-home .vr-gallery-hero h1 em {
+  color:var(--dg-plum);
+  font-family:inherit;
+  font-style:italic;
+}
+.vr-home .vr-gallery-hero .vr-hero-intro {
+  color:#514d4a;
+  max-width:440px;
+  font-size:clamp(15px,1.2vw,17px);
+  line-height:1.55;
+  margin:0 0 25px;
+}
+.vr-home .vr-gallery-hero .vr-hero-search {
+  background:#fffdfa;
+  border:1px solid #9e948d;
+  box-shadow:none;
+  padding:4px;
+  max-width:520px;
+}
+.vr-gallery-hero .vr-hero-search input {color:#282c2d;font-size:15px;}
+.vr-gallery-hero .vr-hero-search button {
+  background:var(--dg-ink)!important;
+  color:white;
+  min-height:51px;
+  font-size:13px;
+  padding-inline:17px;
+  border-radius:0;
+}
+.vr-gallery-hero .vr-hero-search button:hover {background:#41494b!important;}
+.vr-gallery-hero .vr-hero-actions {margin-top:20px;}
+.vr-gallery-hero .vr-hero-actions a {font-size:13px!important;color:#373d40;font-weight:570;}
+.vr-gallery-hero .vr-hero-actions a.dufynd-hero-primary {
+  background:var(--dg-ink);
+  border:1px solid var(--dg-ink);
+  color:#fff!important;
+  border-radius:0;
+  padding:12px 19px;
+  text-decoration:none;
+}
+.vr-gallery-hero .vr-hero-actions a.dufynd-hero-primary:hover {
+  background:#444e4f;
+}
+.vr-gallery-hero .vr-hero-aside {color:#6c6661;font-size:10px;max-width:390px;}
+.vr-home .vr-gallery-hero .vr-hero-feature {
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  background:#ded2c7;
+  border-left:1px solid #c8bcb1;
+  color:var(--dg-ink);
+}
+.vr-gallery-hero .vr-feature-overline {
+  padding:19px clamp(20px,3vw,35px) 12px;
+  color:#71615e;
+  font-size:10px;
+  letter-spacing:.11em;
+}
+.vr-gallery-hero .vr-feature-profile {
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  flex:1;
+  color:#25292a;
+  text-decoration:none;
+}
+.vr-gallery-hero .vr-feature-photo {
+  position:relative;
+  z-index:0;
+  isolation:isolate;
+  margin:0 clamp(16px,2.2vw,29px);
+  height:clamp(295px,29vw,395px);
+  min-height:0;
+  flex:1;
+  max-height:470px;
+  overflow:hidden;
+  border:0;
+  background:
+    radial-gradient(ellipse 57% 74% at 50% 45%,#f4ede6 0%,#e4d4cd 67%,transparent 100%),
+    linear-gradient(135deg,#e9dbce 0%,#d4bdbb 100%);
+}
+.vr-gallery-hero .vr-gallery-backdrop-word {
+  position:absolute;
+  inset:auto 0 26%;
+  z-index:0;
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(70px,8.7vw,150px);
+  font-weight:400;
+  line-height:.82;
+  letter-spacing:-.09em;
+  text-align:center;
+  color:#8e6775;
+  opacity:.19;
+  pointer-events:none;
+  white-space:nowrap;
+  overflow:hidden;
+}
+.vr-gallery-hero .vr-feature-visual {
+  position:relative;
+  z-index:1;
+  height:100%!important;
+  width:100%;
+}
+.vr-gallery-hero .vr-feature-photo .dufynd-product-stage {
+  background:transparent!important;
+  box-shadow:none!important;
+  height:100%!important;
+}
+.vr-gallery-hero .vr-feature-photo .dufynd-product-stage::before,
+.vr-gallery-hero .vr-feature-photo .dufynd-product-stage::after,
+.vr-gallery-hero .vr-feature-photo .dufynd-product-light,
+.vr-gallery-hero .vr-feature-photo .dufynd-product-sheen {display:none!important;}
+.vr-gallery-hero .vr-feature-photo .dufynd-product-object {
+  inset:1% 5% 3%!important;
+  transform:none!important;
+}
+.vr-gallery-hero .vr-feature-photo .dufynd-product-image {
+  object-fit:contain!important;
+  object-position:center;
+  transform:scale(1.04)!important;
+  filter:drop-shadow(0 23px 17px rgba(50,34,35,.19))!important;
+}
+.vr-gallery-hero .vr-feature-caption {
+  gap:5px;
+  background:#ded2c7;
+  padding:17px clamp(20px,3vw,35px) 11px;
+  min-height:0;
+  flex:none;
+}
+.vr-gallery-hero .vr-feature-kicker {
+  font-size:10px;
+  color:#7d5152;
+  font-weight:650;
+  letter-spacing:.115em;
+}
+.vr-gallery-hero .vr-feature-caption strong {
+  font:400 clamp(34px,3.5vw,53px)/1.02 Georgia,'Times New Roman',serif;
+  color:#282629;
+  letter-spacing:-.065em;
+}
+.vr-gallery-hero .vr-feature-caption > span:nth-child(3) {
+  color:#645b58;
+  font-size:12px;
+}
+.vr-gallery-hero .vr-feature-cta {
+  margin-top:13px;
+  font-size:12px;
+  color:#67454c;
+  border-color:#9d8481;
+}
+.vr-gallery-hero .vr-feature-credit {background:#ded2c7;padding:1px clamp(20px,3vw,35px) 10px;}
+.vr-gallery-hero a.vr-feature-atlas {
+  background:#d0c0b1;
+  min-height:47px;
+  border-color:#ac9d90;
+  color:#303033;
+  padding-inline:clamp(20px,3vw,35px);
+}
+.vr-gallery-hero a.vr-feature-atlas:hover {background:#c2aea0!important;}
+.vr-home .vr-gallery-hero .vr-hero-foot {
+  background:#f9f5ef;
+  color:#605b55;
+  border-top:1px solid var(--dg-rule);
+  font-size:11px;
+  padding:13px clamp(18px,3vw,40px);
+}
+.vr-gallery-hero .vr-hero-foot b {color:var(--dg-plum);font-size:10px;}
+
+/* FRAGRANCE COVER — hero story first, actions second; NO simulated product. */
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-fragrance-hero[data-dufynd-product-presentation] {
+  border:0!important;
+  border-radius:0!important;
+  background:var(--dg-paper)!important;
+  box-shadow:none!important;
+  isolation:isolate;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-fragrance-hero[data-dufynd-product-presentation]
+  :is(.dufynd-fragrance-hero-atmosphere,.dufynd-fragrance-hero-orbit,.dufynd-fragrance-scene-beam,.dufynd-fragrance-scene-mist,.dufynd-fragrance-scene-particles) {
+  display:none!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-hero-grid {
+  display:grid!important;
+  grid-template-columns:minmax(0,1.04fr) minmax(0,.96fr)!important;
+  grid-template-rows:minmax(250px,auto) minmax(220px,auto);
+  min-height:580px;
+  gap:0;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-identity {
+  grid-column:2!important;
+  grid-row:1!important;
+  order:unset!important;
+  margin:0!important;
+  padding:clamp(32px,4vw,59px) clamp(26px,3.8vw,56px) 25px!important;
+  color:#f8f3ec;
+  background:#20292c!important;
+  border:0;
+  align-self:stretch;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .vr-pdp-eyebrow {
+  color:#e1ada6;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-size:10px;
+  font-weight:650;
+  line-height:1.5;
+  margin:0 0 23px;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .vr-pdp-eyebrow span {margin-inline:6px;color:#ab9a98;}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-identity > div:first-of-type {
+  color:#d9bbb4!important;
+  font-size:11px;
+  letter-spacing:.14em;
+  font-weight:620;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-identity h1 {
+  font-family:Georgia,'Times New Roman',serif!important;
+  color:#fff8f0!important;
+  font-weight:400!important;
+  font-size:clamp(44px,5.3vw,76px)!important;
+  letter-spacing:-.075em!important;
+  line-height:.99!important;
+  margin-top:10px!important;
+  max-width:13ch;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-variant {
+  margin-top:24px;
+  color:#eee5df!important;
+  border-top:1px solid #596165;
+  padding-top:16px;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-variant dt {color:#bbb2af!important;}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-variant dd {color:#fff8f0!important;}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-variant > div + div {border-color:#596165;}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-identity > p:not(.vr-pdp-eyebrow),
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-identity > div:not(:first-of-type) > p {
+  color:#d4d0cb!important;
+  line-height:1.55;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-identity :is(a,small) {
+  color:#e3d7d1!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell {
+  grid-column:1!important;
+  grid-row:1 / 3!important;
+  order:unset!important;
+  margin:0!important;
+  min-height:580px!important;
+  height:auto!important;
+  border:0!important;
+  isolation:isolate;
+  background:#dbc7c1!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation][data-dufynd-photo-status="verified"]
+  .dufynd-fragrance-stage-shell {
+  background:radial-gradient(circle at 50% 44%,#efe4de 0%,#dfd0cc 53%,#d1bdba 100%)!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation][data-dufynd-photo-status="pending"]
+  .dufynd-fragrance-stage-shell {
+  background:#303e3e!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .vr-pdp-stage-label {
+  position:absolute;
+  z-index:9;
+  left:clamp(20px,3vw,38px);
+  top:clamp(18px,2.5vw,29px);
+  pointer-events:none;
+  color:#685d59;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation][data-dufynd-photo-status="pending"]
+  .vr-pdp-stage-label {color:#ede1d6;}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-stage-visual,
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-stage[data-variant="hero"] {
+  height:100%!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-stage[data-variant="hero"]::before,
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-sheen,
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-light {display:none!important;}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-object {
+  inset:7% 9% 9%!important;
+  transform:none!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-product-image {
+  object-fit:contain!important;
+  object-position:center!important;
+  transform:none!important;
+  filter:drop-shadow(0 19px 20px rgba(51,27,35,.18))!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation][data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-stage[data-variant="hero"],
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation][data-product-id="SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"] .dufynd-product-stage[data-variant="hero"] {
+  background:#fffefa!important; /* Original opaque photographic matte, no fake transparency. */
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation][data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-product-image,
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation][data-product-id="SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"] .dufynd-product-image {
+  filter:none!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy {
+  grid-column:2!important;
+  grid-row:2!important;
+  order:unset!important;
+  align-self:stretch;
+  margin:0!important;
+  padding:25px clamp(26px,3.8vw,56px) 34px!important;
+  background:#fbf8f2!important;
+  color:#252729;
+  border:0;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .vr-pdp-offer-context {
+  color:#7b5554;
+  font-size:10px;
+  letter-spacing:.07em;
+  text-transform:uppercase;
+  font-weight:650;
+  margin:0 0 14px;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] #dufynd-hero-offer-cta {
+  min-height:57px!important;
+  background:#263234!important;
+  border:1px solid #263234!important;
+  border-radius:0!important;
+  font-size:15px!important;
+  letter-spacing:.012em;
+  text-transform:none;
+  box-shadow:none!important;
+  padding:15px 20px!important;
+  color:white!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] #dufynd-hero-offer-cta:hover {background:#414f51!important;}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy button,
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy a:not(#dufynd-hero-offer-cta) {
+  border-radius:0!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy > div.mt-5.grid {
+  background:transparent!important;
+  border-radius:0!important;
+  border:0!important;
+  border-top:1px solid var(--dg-rule)!important;
+  margin-top:20px!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy > div.mt-5.grid > div {
+  padding:14px 6px!important;
+}
+/* Catalogue with fewer fake-photo-sized blocks: release verified originals, but
+   render source-held profiles as compact typographic index cards. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] article.dufynd-catalog-card {
+  transition:border-color 180ms ease;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] article.dufynd-catalog-card:hover {
+  border-color:#9b8381!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-stage {
+  height:143px!important;
+  min-height:143px!important;
+  background:#2b3435!important;
+  border-bottom:1px solid #61605b;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-atmosphere {
+  display:none!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-photo-pending {
+  background:none!important;
+  padding:20px!important;
+  display:flex!important;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:6px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-photo-pending-identity {
+  display:none!important; /* The truthful fragrance name appears in the readable card body. */
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-photo-pending-eyebrow {
+  color:#f8ede2!important;
+  font-size:11px!important;
+  letter-spacing:.16em;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-photo-pending-caption {
+  color:#d8c3c1!important;
+  font-size:11px!important;
+  letter-spacing:.025em;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-body {
+  background:#faf6f0;
+  padding:19px!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-body h2 {
+  font-family:Georgia,'Times New Roman',serif;
+  font-size:clamp(24px,2.25vw,31px)!important;
+  letter-spacing:-.065em;
+  line-height:1.1;
+  font-weight:400!important;
+}
+@media(max-width:1023px) {
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-hero-grid {
+   grid-template-columns:minmax(0,1fr)!important;
+   grid-template-rows:auto auto auto!important;
+   min-height:0;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-identity {
+   grid-column:1!important;
+   grid-row:1!important;
+   padding:27px 26px!important;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell {
+   grid-column:1!important;
+   grid-row:2!important;
+   min-height:440px!important;
+   height:440px!important;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy {
+   grid-column:1!important;
+   grid-row:3!important;
+ }
+}
+@media(max-width:760px) {
+ .vr-home .vr-gallery-hero .vr-hero-composition {display:block;min-height:0;}
+ .vr-home .vr-gallery-hero .vr-hero-copy {padding:28px 23px 22px;}
+ .vr-home .vr-gallery-hero h1 {font-size:clamp(49px,12.9vw,78px);margin-bottom:17px;}
+ .vr-home .vr-gallery-hero .vr-hero-intro {font-size:14px;line-height:1.5;margin-bottom:18px;}
+ .vr-gallery-hero .vr-hero-eyebrow {margin-bottom:13px!important;font-size:10px!important;}
+ .vr-home .vr-gallery-hero .vr-hero-search {max-width:none;}
+ .vr-gallery-hero .vr-hero-actions {margin-top:14px;}
+ .vr-gallery-hero .vr-hero-actions a.dufynd-hero-primary {padding:11px 16px;}
+ .vr-home .vr-gallery-hero .vr-hero-feature {
+   border:0;
+   border-top:1px solid #c9bbb0;
+   display:flex!important;
+   flex-direction:column;
+ }
+ .vr-gallery-hero .vr-feature-overline {padding:13px 19px 8px;font-size:9px;}
+ .vr-gallery-hero .vr-feature-profile {display:flex!important;flex-direction:column!important;min-height:0!important;}
+ .vr-gallery-hero .vr-feature-photo {
+   height:clamp(240px,71vw,380px)!important;
+   min-height:240px!important;
+   max-height:none;
+   margin:0 15px;
+   flex:none;
+ }
+ .vr-gallery-hero .vr-gallery-backdrop-word {font-size:clamp(73px,18vw,112px);bottom:25%;}
+ .vr-gallery-hero .vr-feature-photo .dufynd-product-object {inset:0 6% 2%!important;}
+ .vr-gallery-hero .vr-feature-caption {padding:14px 19px 9px;min-height:0;}
+ .vr-gallery-hero .vr-feature-caption strong {font-size:clamp(38px,9vw,47px);}
+ .vr-gallery-hero .vr-feature-credit {padding:0 19px 9px;}
+ .vr-gallery-hero a.vr-feature-atlas {padding-inline:19px;}
+ .vr-home .vr-gallery-hero .vr-hero-foot {padding:11px 15px;font-size:10px;gap:8px;}
+ .vr-home .vr-gallery-hero .vr-hero-top {padding:5px 16px;}
+ .vr-gallery-hero .vr-hero-top nav {gap:9px;}
+ .vr-gallery-hero .vr-hero-top nav a {font-size:11px;color:#232525!important;}
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-identity {
+   padding:24px 20px 22px!important;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .vr-pdp-eyebrow {
+   margin-bottom:14px;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-identity h1 {
+   font-size:clamp(42px,11.2vw,56px)!important;
+   max-width:none;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-product-variant {
+   margin-top:16px;padding-top:12px;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell {
+   height:345px!important;
+   min-height:345px!important;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-product-object {
+   inset:4% 12% 5%!important;
+ }
+ .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy {
+   padding:23px 20px 28px!important;
+ }
+ .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-card-stage {
+   height:103px!important;min-height:103px!important;
+ }
+ .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] article.dufynd-catalog-card:not([data-original-photo="true"]) .dufynd-catalog-photo-pending {
+   padding:14px!important;
+ }
+}
+@media(max-width:390px) {
+  .vr-home .vr-gallery-hero h1 {font-size:clamp(45px,12.4vw,50px);}
+  .vr-home .vr-gallery-hero .vr-hero-copy {padding:22px 18px 18px;}
+  .vr-gallery-hero .vr-hero-search button {padding-inline:11px;font-size:12px;}
+  .vr-gallery-hero .vr-feature-photo {height:254px!important;}
+  .vr-gallery-hero .vr-feature-caption strong {font-size:40px;}
+  .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell {
+    height:315px!important;min-height:315px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .vr-gallery-hero *, .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] * {
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+    animation-duration:.01ms!important;
+  }
+}

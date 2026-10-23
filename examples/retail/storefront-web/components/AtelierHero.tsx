@@ -15,7 +15,7 @@ const featuredVisual = featured ? originalPhotoFor(featured) : null;
 
 export default function AtelierHero() {
   return (
-    <section className="wow-hero vr-hero" aria-labelledby="dufynd-home-discovery-heading">
+    <section className="wow-hero vr-hero vr-gallery-hero" aria-labelledby="dufynd-home-discovery-heading">
       <div className="wow-hero-top vr-hero-top">
         <span className="wow-kicker">DUFYND / Der unabhängige Duftguide</span>
         <nav aria-label="Schnellzugriff">
@@ -65,13 +65,13 @@ export default function AtelierHero() {
             </AcquisitionInternalLink>
             <AcquisitionInternalLink href="/duft">Alle Duftprofile ansehen <span aria-hidden="true">→</span></AcquisitionInternalLink>
           </div>
-          <span className="vr-hero-aside">Unabhängige Orientierung. Kein eigener Parfumverkauf.</span>
+          <span className="vr-hero-aside">DUFYND ist ein unabhängiger Duftguide. Gekauft wird beim jeweiligen Händler.</span>
         </div>
 
         <div className="vr-hero-feature" data-dufynd-home-feature>
           <div className="vr-feature-overline">
-            <span>01 / Im Duftarchiv</span>
-            <span>EDITORIAL SELECT</span>
+            <span>Aus dem DUFYND Duftarchiv</span>
+            <span>Im Fokus</span>
           </div>
           {featured && featuredVisual ? (
             <>
@@ -81,6 +81,7 @@ export default function AtelierHero() {
                 aria-label={featured.brand + " " + featured.name + ", Duftprofil öffnen"}
               >
                 <div className="vr-feature-photo">
+                  <span aria-hidden="true" className="vr-gallery-backdrop-word">{featured.name}</span>
                   <FragranceVisual
                     imageUrl={featuredVisual.url}
                     cutoutUrl={featuredVisual.url}
@@ -93,7 +94,7 @@ export default function AtelierHero() {
                   />
                 </div>
                 <div className="vr-feature-caption">
-                  <span className="vr-feature-kicker">Ein Duft aus unserem Katalog</span>
+                  <span className="vr-feature-kicker">Duftprofil / Originalaufnahme</span>
                   <strong>{featured.name}</strong>
                   <span>{featured.brand} · {featured.concentration} · {featured.volume_ml} ml</span>
                   <span className="vr-feature-cta">Duftprofil ansehen <span aria-hidden="true">↗</span></span>

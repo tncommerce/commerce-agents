@@ -415,6 +415,7 @@ export default async function FragrancePage({
         <section
           data-product-id={fragrance.product_id}
           data-dufynd-product-presentation={!review && !offerOnlyPricing || undefined}
+          data-dufynd-photo-status={heroIsProductTruth ? "verified" : "pending"}
           data-dufynd-photo-hold={!heroIsProductTruth || undefined}
           data-merchant-photo-review={review ? "top-parfuemerie" : undefined}
           data-dufynd-studio-photo={heroIsProductTruth && ["merchant_feed", "licensed"].includes(heroVisual?.provenance || "") ? true : undefined}
@@ -442,6 +443,7 @@ export default async function FragrancePage({
           />
           <div className="dufynd-fragrance-hero-grid relative z-10 grid lg:grid-cols-[1.08fr_0.92fr]">
             <div className="dufynd-fragrance-identity dufynd-fragrance-panel-section dufynd-fragrance-panel-section--identity p-5 pb-4 sm:p-7 sm:pb-5 lg:col-start-2 lg:row-start-1 lg:p-9 lg:pb-0">
+              {!review ? <p className="vr-pdp-eyebrow">DUFYND <span aria-hidden="true">/</span> Duftprofil</p> : null}
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
                 {fragrance.brand}
               </div>
@@ -494,6 +496,7 @@ export default async function FragrancePage({
               ) : null}
             </div>
             <div className="dufynd-fragrance-stage-shell relative min-h-[270px] overflow-hidden sm:min-h-[380px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[560px]">
+              {!review ? <span className="vr-pdp-stage-label" aria-hidden="true">DUFYND / Duftarchiv</span> : null}
               <FragranceVisual
                 sourceSize={review ? { width: review.width, height: review.height } : undefined}
                 imageUrl={heroVisual?.url}
@@ -542,6 +545,7 @@ export default async function FragrancePage({
             </div>
 
             <div className="dufynd-fragrance-hero-copy dufynd-fragrance-panel-section dufynd-fragrance-panel-section--copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
+              {!review ? <p className="vr-pdp-offer-context">Duft entdecken. Händlerangebote separat prüfen.</p> : null}
               <div className={`grid gap-2 sm:flex sm:flex-wrap sm:gap-2.5 ${related.length ? "grid-cols-2" : "grid-cols-1"}`}>
                 {review ? <a href="#duftnoten" className="rounded-xl bg-(--ink) px-4 py-3 text-center text-[13px] font-semibold text-white">Die Komposition entdecken ↓</a> : <OfferSectionLink
                   id="dufynd-hero-offer-cta"

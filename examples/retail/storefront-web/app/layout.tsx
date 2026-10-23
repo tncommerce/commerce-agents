@@ -9,6 +9,7 @@ import "./premium-discovery.css";
 import "./atelier.css";
 import "./visual-reset.css";
 import "./product-presentation.css";
+import "./gallery-direction.css";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
 
 const instrumentSans = Instrument_Sans({

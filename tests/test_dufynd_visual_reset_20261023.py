@@ -63,3 +63,25 @@ def test_catalog_and_public_pdp_use_only_scoped_editorial_skin() -> None:
     assert "originalPhotoFor(fragrance)" in detail
     assert "FragranceOffers" in detail
     assert "merchantClickoutUrl" in read("components/FragranceOffers.tsx")
+
+
+def test_gallery_direction_preserves_product_truth_and_purchase() -> None:
+    hero = read("components/AtelierHero.tsx")
+    detail = read("components/FragranceDetailPage.tsx")
+    catalog = read("components/FragranceCatalogBrowser.tsx")
+    css = read("app/gallery-direction.css")
+    assert "vr-gallery-hero" in hero
+    assert "vr-gallery-backdrop-word" in hero
+    assert "featured.name" in hero
+    assert "originalPhotoFor(featured)" in hero
+    assert "ImageAttribution visual={featuredVisual}" in hero
+    assert "vr-pdp-eyebrow" in detail
+    assert "vr-pdp-stage-label" in detail
+    assert "data-dufynd-photo-status" in detail
+    assert "vr-pdp-offer-context" in detail
+    assert 'id="dufynd-hero-offer-cta"' in detail
+    assert "data-original-photo" in catalog
+    assert 'data-dufynd-visual-state="missing"' in catalog
+    assert ".vr-gallery-backdrop-word" in css
+    assert "[data-dufynd-product-presentation]" in css
+    assert "gallery-direction.css" in read("app/layout.tsx")
