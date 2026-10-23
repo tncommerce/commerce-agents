@@ -3052,6 +3052,114 @@ try {
     await partnerTimeoutRecoveryContext.close();
   }
 
+  // First Money: consented homepage telemetry must not wait for advisor transport.
+  const homePageViewContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  let releaseAdvisorSession = () => {};
+  try {
+    const homePageViewPage = await homePageViewContext.newPage();
+    let sessionRequestCount = 0;
+    let markAdvisorSessionStarted = () => {};
+    const advisorSessionStarted = new Promise((resolve) => {
+      markAdvisorSessionStarted = resolve;
+    });
+    const advisorSessionGate = new Promise((resolve) => {
+      releaseAdvisorSession = resolve;
+    });
+    let firstPageViewObserved = () => {};
+    const pageViewReceived = new Promise((resolve) => {
+      firstPageViewObserved = resolve;
+    });
+    const pageViewEvents = [];
+    await homePageViewPage.route("**/api/session", async (route) => {
+      sessionRequestCount += 1;
+      if (sessionRequestCount === 1) {
+        markAdvisorSessionStarted();
+        await advisorSessionGate;
+        try {
+          await route.fulfill({
+            status: 503, contentType: "application/json",
+            body: JSON.stringify({ detail: "QA advisor delayed" }),
+          });
+        } catch {
+          // The context may close while the advisor request is held.
+        }
+        return;
+      }
+      await route.fulfill({
+        status: 200, contentType: "application/json",
+        body: JSON.stringify({
+          session_id: "qa-independent-analytics-transport-1234567890",
+          name: "QA Guest",
+        }),
+      });
+    });
+    await homePageViewPage.route(
+      (url) => url.pathname === "/api/analytics/events",
+      async (route) => {
+        const payload = route.request().postDataJSON();
+        if (payload?.event === "page_view") {
+          pageViewEvents.push(payload);
+          firstPageViewObserved();
+        }
+        await route.fulfill({
+          status: 200, contentType: "application/json", body: '{"ok":true}',
+        });
+      },
+    );
+    await homePageViewPage.route("**/api/merchant-partners", (route) =>
+      route.fulfill({
+        status: 200, contentType: "application/json",
+        body: JSON.stringify({ partners: [], affiliate_disclosure: "QA" }),
+      }),
+    );
+    const response = await homePageViewPage.goto(
+      baseUrl + "/?src=instagram&cmp=qa_home_pageview_independent",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) throw new Error("homepage pageview QA did not load");
+    // An unloaded or changed homepage must fail promptly, not hang the full CI.
+    await Promise.race([
+      advisorSessionStarted,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("advisor session request never began")), 7_000),
+      ),
+    ]);
+    await chooseMeasurement(homePageViewPage, "granted");
+    await Promise.race([
+      pageViewReceived,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("page_view waited for advisor session")), 5_000),
+      ),
+    ]);
+    if (
+      sessionRequestCount < 2 ||
+      pageViewEvents.length !== 1 ||
+      pageViewEvents[0].source !== "storefront" ||
+      pageViewEvents[0].acquisition_source !== "instagram" ||
+      pageViewEvents[0].campaign_id !== "qa_home_pageview_independent"
+    ) {
+      throw new Error("homepage pageview lost consent, dedupe or attribution");
+    }
+    report.checks.push({
+      label: "home-pageview-advisor-independent", status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "home-pageview-advisor-independent", message,
+    });
+    report.checks.push({
+      label: "home-pageview-advisor-independent", status: "failed", message,
+    });
+  } finally {
+    releaseAdvisorSession();
+    await homePageViewContext.close();
+  }
+
   const homeSessionTimeoutContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,
