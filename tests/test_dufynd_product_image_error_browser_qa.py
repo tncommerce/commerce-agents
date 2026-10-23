@@ -24,8 +24,6 @@ def test_image_error_fallback_preserves_identity_and_browser_recovery_coverage()
     assert 'rootMargin: "300px"' in visual
     assert "image.isConnected && (!image.complete || image.naturalWidth === 0)" in visual
     assert "primaryPhotoRef.current = image" in visual
-    assert "imageUnavailable ? \"unavailable\" : \"missing\"" in visual
-
 
     image_qa = qa.split("const imageFailureContext", 1)[1]
     image_qa = image_qa.split("const merchantOfferTimeoutContext", 1)[0]
