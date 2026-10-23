@@ -54,4 +54,25 @@ def test_product_cards_label_market_reference_prices() -> None:
     source = PRODUCT_TILE.read_text(encoding="utf-8")
 
     assert 'if (source === "market_reference") return `Richtpreis ${base}`;' in source
-    assert 'if (source === "current_merchant_offer") return `ab ${base}`;' in source
+    expected = 'if (source === "current_merchant_offer") return "Händlerpreis prüfen";'
+    assert expected in source
+    assert 'if (source === "current_merchant_offer") return `ab ${base}`;' not in source
+    # Both cards and compact rows must use the guarded customer-facing label.
+    assert source.count("{customerPriceLabel(product)}") == 2
+
+
+def test_merchant_snapshot_price_is_never_rendered_as_a_live_starting_price() -> None:
+    catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
+    flagged = [
+        row
+        for row in catalog["products"]
+        if str(row.get("product_id", "")).startswith("SC-")
+        if (row.get("attributes") or {}).get("price_source") == "current_merchant_offer"
+    ]
+    assert flagged  # Regression needs at least one source snapshot to protect.
+    assert all(
+        str((row.get("attributes") or {}).get("price_checked_at") or "").strip() for row in flagged
+    )
+    source = PRODUCT_TILE.read_text(encoding="utf-8")
+    expected = 'if (source === "current_merchant_offer") return "Händlerpreis prüfen";'
+    assert expected in source
