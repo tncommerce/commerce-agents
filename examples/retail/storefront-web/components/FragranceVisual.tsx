@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties, type PointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import type { FragranceVisualWorld } from "@/lib/fragranceCatalog";
 import styles from "./FragranceVisual.module.css";
 
@@ -24,6 +24,9 @@ const BASE_STYLE: StageStyle = {
 // These reviewed studio photographs have an opaque white matte, even when a
 // caller supplies them through the legacy cutout slot. Do not shadow the bitmap
 // rectangle or alter the licensed pixels to make it look transparent.
+// Fallback instead of a permanent spinner when a permitted external photo stalls.
+const PHOTO_LOAD_STALL_MS = 7_000;
+
 const WHITE_MATTE_PHOTOGRAPHS = new Set([
   "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
   "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
@@ -118,6 +121,7 @@ export default function FragranceVisual({
   // Keep a meaningful neutral loading stage until the exact source bitmap is ready.
   // A licensed URL is not proof that the image has loaded in the visitor's browser.
   const [loadedImageUrl, setLoadedImageUrl] = useState<string | null>(null);
+  const primaryPhotoRef = useRef<HTMLImageElement | null>(null);
   const imageReady = Boolean(resolvedImageUrl && loadedImageUrl === resolvedImageUrl);
   const imageUnavailable = Boolean(
     resolvedImageUrl && failedImageUrl === resolvedImageUrl,
@@ -135,6 +139,39 @@ export default function FragranceVisual({
     resolvedMode === "editorial"
       ? `${alt} – stilisierte DUFYND-Inszenierung`
       : alt;
+
+  // Watch the actual image only when near the viewport. Lazy offscreen cards
+  // must not become false "unavailable" simply because they have not loaded.
+  useEffect(() => {
+    const image = primaryPhotoRef.current;
+    if (!image || !resolvedImageUrl || imageUnavailable || imageReady) return;
+    let timeoutId: number | undefined;
+    const startWatch = () => {
+      if (timeoutId !== undefined) return;
+      timeoutId = window.setTimeout(() => {
+        if (image.isConnected && (!image.complete || image.naturalWidth === 0)) {
+          setFailedImageUrl(resolvedImageUrl);
+        }
+      }, PHOTO_LOAD_STALL_MS);
+    };
+    if (typeof window.IntersectionObserver !== "function") {
+      startWatch();
+      return () => {
+        if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      };
+    }
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        startWatch();
+        observer.disconnect();
+      }
+    }, { rootMargin: "300px" });
+    observer.observe(image);
+    return () => {
+      observer.disconnect();
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
+  }, [resolvedImageUrl, imageUnavailable, imageReady]);
 
   if (!resolvedImageUrl || imageUnavailable) {
     const fallbackCopy = imageUnavailable
@@ -190,10 +227,12 @@ export default function FragranceVisual({
           <img
             src={imageUrl}
             ref={(image) => {
+              primaryPhotoRef.current = image;
               if (image?.complete && image.naturalWidth === 0) {
                 setFailedImageUrl(resolvedImageUrl);
               }
             }}
+            onLoad={() => setLoadedImageUrl(resolvedImageUrl || null)}
             onError={() => setFailedImageUrl(resolvedImageUrl)}
             alt={displayAlt}
             loading={priority ? "eager" : "lazy"}
@@ -216,8 +255,9 @@ export default function FragranceVisual({
       className={`${styles.sourcePhoto} ${className}`}>
       {/* Preserve the entire original bitmap. At 2x, 260 CSS px fits every approved source. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src={resolvedImageUrl} width={sourceSize.width} height={sourceSize.height}
+      <img ref={primaryPhotoRef} src={resolvedImageUrl} width={sourceSize.width} height={sourceSize.height}
         alt={alt} loading={priority ? "eager" : "lazy"} decoding="async"
+        onLoad={() => setLoadedImageUrl(resolvedImageUrl || null)}
         onError={() => setFailedImageUrl(resolvedImageUrl)} />
     </div>;
   }
@@ -275,6 +315,7 @@ export default function FragranceVisual({
             <img
               src={resolvedImageUrl}
               ref={(image) => {
+                primaryPhotoRef.current = image;
                 if (image?.complete) {
                   if (image.naturalWidth === 0) setFailedImageUrl(resolvedImageUrl);
                   else setLoadedImageUrl(resolvedImageUrl || null);
