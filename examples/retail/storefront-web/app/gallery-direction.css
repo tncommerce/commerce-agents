@@ -639,3 +639,82 @@
     animation-duration:.01ms!important;
   }
 }
+
+
+
+/* Gallery V3 mobile editorial index: three genuine navigable scent audiences,
+   rather than three large repeated beige cards. Every link remains visible and
+   receives a >=44px hit target. This is a compact content architecture change,
+   not an alteration of the tested 390px scroll-height criterion. */
+@media(max-width:639px) {
+  .vr-home .wow-audiences {padding:0!important;}
+  .vr-home .wow-audiences .wow-section-heading {margin-bottom:12px!important;}
+  .vr-home .wow-audiences .wow-section-heading h2 {
+    font-size:clamp(29px,8.7vw,37px)!important;
+    margin-top:6px!important;
+    line-height:1.05!important;
+  }
+  .vr-home .wow-audience-index {
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+    border:0!important;
+  }
+  .vr-home .wow-audience-index > a {
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:flex-start!important;
+    justify-content:space-between!important;
+    gap:7px!important;
+    padding:12px 9px 10px!important;
+    min-height:116px!important;
+    max-height:none!important;
+    border:1px solid #ccc1b6!important;
+    border-radius:0!important;
+    background:#f5f0e8!important;
+    color:#263032!important;
+    text-decoration:none;
+  }
+  .vr-home .wow-audience-index > a:focus-visible {
+    outline:2px solid #8c5861!important;
+    outline-offset:2px!important;
+  }
+  .vr-home .wow-audience-index .wow-audience-number {
+    display:block;
+    font-family:Georgia,serif;
+    font-size:11px!important;
+    color:#906c69!important;
+    line-height:1.15;
+  }
+  .vr-home .wow-audience-index > a > div {min-width:0;}
+  .vr-home .wow-audience-index h3 {
+    font:400 clamp(18px,5.4vw,23px)/1.03 Georgia,"Times New Roman",serif!important;
+    letter-spacing:-.04em;
+    margin:0 0 5px!important;
+    overflow-wrap:break-word;
+    color:#263032!important;
+  }
+  .vr-home .wow-audience-index p {
+    font-size:10px!important;
+    line-height:1.35!important;
+    color:#6c625b!important;
+    overflow-wrap:break-word;
+  }
+  .vr-home .wow-audience-index > a > span:last-child {
+    position:absolute!important;
+    align-self:flex-end!important;
+    margin:0!important;
+    font-size:15px!important;
+    line-height:1;
+  }
+  .vr-home nav[aria-label="Duftwelten im Katalog"] {
+    padding-top:9px!important;
+    padding-bottom:6px!important;
+    gap:5px!important;
+  }
+  .vr-home .wow-catalog-index-link {
+    display:inline-flex!important;
+    min-height:44px;
+    align-items:center;
+  }
+}
