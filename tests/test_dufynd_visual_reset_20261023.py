@@ -48,3 +48,18 @@ def test_existing_consented_buyer_path_is_untouched() -> None:
     assert "RETURN_RECHECK_INTERVAL_MS" in offers
     visual = read("components/FragranceVisual.tsx")
     assert "data-dufynd-visual-state" in visual
+
+
+def test_catalog_and_public_pdp_use_only_scoped_editorial_skin() -> None:
+    catalog = read("app/duft/page.tsx")
+    detail = read("components/FragranceDetailPage.tsx")
+    css = read("app/visual-reset.css")
+    assert 'data-dufynd-visual-reset="editorial"' in catalog
+    assert 'data-dufynd-visual-reset={!review ? "editorial" : undefined}' in detail
+    assert "dufynd-catalog-page[data-dufynd-visual-reset" in css
+    assert "dufynd-detail-page[data-dufynd-visual-reset" in css
+    assert 'data-dufynd-photo-hold' in detail
+    assert 'id="dufynd-hero-offer-cta"' in detail
+    assert "originalPhotoFor(fragrance)" in detail
+    assert "FragranceOffers" in detail
+    assert "merchantClickoutUrl" in read("components/FragranceOffers.tsx")

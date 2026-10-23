@@ -345,7 +345,7 @@ export default async function FragrancePage({
   ).replaceAll("<", "\\u003c");
 
   return (
-    <main className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
+    <main data-dufynd-visual-reset={!review ? "editorial" : undefined} className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
