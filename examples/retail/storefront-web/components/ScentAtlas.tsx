@@ -31,7 +31,7 @@ export default function ScentAtlas() {
   const activeNote = selectedNote || current?.notes[0] || null;
   const matching = activeNote ? LIVE_FRAGRANCES.filter(p => p.product_id !== product.product_id && Object.values(p.notes).flat().some(note => note.trim().toLocaleLowerCase("en-US") === activeNote.trim().toLocaleLowerCase("en-US"))).slice(0, 2) : [];
   return <section className="wow-atlas" data-scent-atlas aria-labelledby={`${uid}-title`}>
-    <div className="wow-atlas-top"><div><p className="wow-kicker">01 / Der Duftnoten-Atlas</p><h2 id={`${uid}-title`}>Folge <em>einer Note.</em></h2></div><span className="wow-edition">DUFYND<br />STUDIO</span></div>
+    <div className="wow-atlas-top"><div><p className="wow-kicker">02 / Der Duftnoten-Atlas</p><h2 id={`${uid}-title`}>Folge <em>einer Note.</em></h2></div><span className="wow-edition">DUFYND<br />STUDIO</span></div>
     <div className="wow-atlas-grid">
       <div className="wow-atlas-intro">
         <label className="wow-atlas-label" htmlFor={`${uid}-product`}>Dein Duft im Atlas</label>

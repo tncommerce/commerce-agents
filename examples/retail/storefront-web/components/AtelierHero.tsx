@@ -20,7 +20,7 @@ export default function AtelierHero() {
         <span className="wow-kicker">DUFYND / Der unabhängige Duftguide</span>
         <nav aria-label="Schnellzugriff">
           <AcquisitionInternalLink href="/duft">Düfte entdecken</AcquisitionInternalLink>
-          <AcquisitionInternalLink href="/vergleich">Vergleichen</AcquisitionInternalLink>
+          <AcquisitionInternalLink href="/vergleich">Düfte vergleichen</AcquisitionInternalLink>
           <AcquisitionInternalLink href="/merkliste">Merkliste</AcquisitionInternalLink>
         </nav>
       </div>

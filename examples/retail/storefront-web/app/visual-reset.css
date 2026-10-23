@@ -224,3 +224,40 @@
   .vr-feature-caption strong {font-size:25px}
   .vr-home .wow-selection-photo,.vr-home .wow-selection-item:nth-child(2) .wow-selection-photo {height:210px}
 }
+
+
+/* Compact genuine mobile perfume discovery: keep the full decision journey
+   without forcing four screenfuls of navigation before the advisor. */
+@media(max-width:639px) {
+  .vr-home .vr-hero .vr-hero-top {min-height:38px;padding:6px 14px;gap:0;}
+  .vr-home .vr-hero-top > .wow-kicker {display:none;}
+  .vr-home .vr-hero-top nav {width:100%;justify-content:space-between;gap:9px;}
+  .vr-home .vr-hero-top nav a {min-height:37px;}
+  .vr-home .vr-hero .vr-hero-copy {padding:18px 16px 17px;}
+  .vr-home .vr-hero h1 {font-size:clamp(43px,12.4vw,51px);margin-bottom:12px;}
+  .vr-home .vr-hero .vr-hero-intro {margin-bottom:12px;line-height:1.45;}
+  .vr-home .vr-hero .vr-hero-actions {margin-top:9px;gap:4px 10px;}
+  .vr-home .vr-hero .vr-hero-actions a {min-height:39px;}
+  .vr-home .vr-hero .vr-hero-aside {margin-top:7px;}
+  .vr-home .wow-selection {padding:15px 15px 16px;}
+  .vr-home .wow-selection-grid {gap:11px;}
+  .vr-home .wow-section-heading {margin-bottom:15px;}
+  .vr-home .wow-selection-link {min-height:190px;}
+  .vr-home .wow-selection-photo,
+  .vr-home .wow-selection-item:nth-child(2) .wow-selection-photo {height:190px;min-height:190px;}
+  .vr-home .wow-selection-copy {padding:10px 11px 8px;}
+  .vr-home .wow-selection-copy h3 {font-size:clamp(21px,5.5vw,25px);margin:5px 0 7px;}
+  .vr-home .wow-selection-copy p {min-height:0;}
+  .vr-home .wow-selection-notes {min-height:0;margin:6px 0;line-height:1.35;}
+  .vr-home .wow-selection-item > p {padding:7px 10px;}
+  .vr-home .wow-text-link {padding:7px 0 2px;}
+  .vr-home .wow-atlas {padding-top:16px;padding-bottom:13px;}
+  .vr-home .wow-atlas-top {padding-bottom:9px;}
+  .vr-home .wow-atlas h2 {margin:12px 0 8px;}
+  .vr-home .wow-atlas-grid {padding-top:9px;}
+  .vr-home .wow-atlas-label {margin-top:7px;}
+  .vr-home .wow-atlas-material {height:140px;margin:0 0 5px;}
+  .vr-home .wow-atlas-instrument {min-height:0;}
+  .vr-home .wow-atlas-notes {min-height:0;}
+  .vr-home .wow-atlas-bottom {padding-top:10px;}
+}
