@@ -585,7 +585,7 @@ try {
             );
 
             return images
-              .filter((image) => !image.complete)
+              .filter((image) => image.isConnected && !image.complete)
               .map((image) => image.getAttribute("src") || "(missing src)");
           },
           imageDecodeTimeoutMs,
@@ -1638,6 +1638,50 @@ try {
     await imageFailureContext.close();
   }
 
+  const stalledProductImageContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const page = await stalledProductImageContext.newPage();
+    let blockedImageCount = 0;
+    // Deliberately hold a local route; no third-party image request is made.
+    await page.route(
+      "**/media/catalog/product/8/2/825869_3700578501998_051.png",
+      () => { blockedImageCount += 1; },
+    );
+    const response = await page.goto(baseUrl + "/duft/parfums-de-marly-delina", {
+      waitUntil: "domcontentloaded",
+      timeout: 45_000,
+    });
+    if (!response?.ok()) throw new Error("stalled-image QA page failed to load");
+    const hero = page.locator(".dufynd-fragrance-hero");
+    const fallback = hero.locator('[data-dufynd-visual-state="unavailable"]');
+    await fallback.waitFor({ state: "visible", timeout: 13_000 });
+    const copy = await fallback.innerText();
+    if (
+      blockedImageCount !== 1 ||
+      !copy.includes("Produktbild derzeit nicht verfügbar") ||
+      !copy.includes("Delina") ||
+      (await hero.locator("img.dufynd-product-image").count()) !== 0 ||
+      (await page.locator("#angebote").count()) !== 1
+    ) {
+      throw new Error("stalled product photo did not become the neutral identity fallback");
+    }
+    report.checks.push({
+      label: "product-image-stall-fallback", status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "product-image-stall-fallback", message });
+    report.checks.push({
+      label: "product-image-stall-fallback", status: "failed", message,
+    });
+  } finally {
+    await stalledProductImageContext.close();
+  }
+
   const merchantOfferTimeoutContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,
@@ -1866,11 +1910,10 @@ try {
     await chooseMeasurement(sessionTimeoutPage, "granted");
     const offers = sessionTimeoutPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 5_000 });
-    await offers.locator("[data-clickout-preparing]").waitFor({
-      state: "visible", timeout: 5_000,
-    });
     const clickout = offers.getByRole("link", { name: "Bei QA Session Timeout Merchant ansehen" });
-    await clickout.waitFor({ state: "visible", timeout: 12_000 });
+    // A consented, valid offer must be immediately actionable even while
+    // the optional session POST is deliberately stalled for 8.5 seconds.
+    await clickout.waitFor({ state: "visible", timeout: 5_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await clickout.getAttribute("href"));
     const measurementSid = failOpenUrl.searchParams.get("sid");
@@ -1885,7 +1928,7 @@ try {
       throw new Error("session timeout fail-open lost independent measurement or acquisition context");
     }
     if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
-      throw new Error("stalled session kept a loaded merchant offer blocked");
+      throw new Error("optional analytics session hid an eligible merchant link");
     }
     sessionRecoveryAllowed = true;
     await sessionTimeoutPage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
@@ -2336,12 +2379,15 @@ try {
     deviceScaleFactor: 1,
     reducedMotion: "reduce",
   });
+  // Released in finally even when the pre-session CTA assertion fails.
+  let releaseClickoutSession;
+  const sessionGate = new Promise((resolve) => { releaseClickoutSession = resolve; });
   try {
     const clickoutSessionPage = await clickoutSessionContext.newPage();
     const expectedSessionId = "qa-clickout_session-1234567890";
 
     await clickoutSessionPage.route("**/api/session", async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await sessionGate;
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -2411,17 +2457,18 @@ try {
     const offers = clickoutSessionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
-    const preparing = offers.locator("[data-clickout-preparing]").first();
-    await preparing.waitFor({ state: "visible", timeout: 5_000 });
-    if (
-      (await offers.locator('a[href*="/api/clickout/"]').count()) !== 0
-    ) {
+    // No response is released from /api/session yet. The verified-offer
+    // link must already exist while optional measurement transport is blocked.
+    const clickout = offers.locator('a[href*="/api/clickout/"]').first();
+    if ((await clickout.count()) !== 1) {
       throw new Error(
-        "merchant clickout became actionable before analytics session correlation completed",
+        "verified merchant clickout unavailable while optional analytics session pending",
       );
     }
-
-    const clickout = offers.locator('a[href*="/api/clickout/"]').first();
+    if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
+      throw new Error("merchant clickout blocked on optional analytics session");
+    }
+    releaseClickoutSession();
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
 
     await clickoutSessionPage.waitForFunction(
@@ -2473,6 +2520,7 @@ try {
       message,
     });
   } finally {
+    releaseClickoutSession?.();
     await clickoutSessionContext.close();
   }
 
@@ -3004,6 +3052,114 @@ try {
     await partnerTimeoutRecoveryContext.close();
   }
 
+  // First Money: consented homepage telemetry must not wait for advisor transport.
+  const homePageViewContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  let releaseAdvisorSession = () => {};
+  try {
+    const homePageViewPage = await homePageViewContext.newPage();
+    let sessionRequestCount = 0;
+    let markAdvisorSessionStarted = () => {};
+    const advisorSessionStarted = new Promise((resolve) => {
+      markAdvisorSessionStarted = resolve;
+    });
+    const advisorSessionGate = new Promise((resolve) => {
+      releaseAdvisorSession = resolve;
+    });
+    let firstPageViewObserved = () => {};
+    const pageViewReceived = new Promise((resolve) => {
+      firstPageViewObserved = resolve;
+    });
+    const pageViewEvents = [];
+    await homePageViewPage.route("**/api/session", async (route) => {
+      sessionRequestCount += 1;
+      if (sessionRequestCount === 1) {
+        markAdvisorSessionStarted();
+        await advisorSessionGate;
+        try {
+          await route.fulfill({
+            status: 503, contentType: "application/json",
+            body: JSON.stringify({ detail: "QA advisor delayed" }),
+          });
+        } catch {
+          // The context may close while the advisor request is held.
+        }
+        return;
+      }
+      await route.fulfill({
+        status: 200, contentType: "application/json",
+        body: JSON.stringify({
+          session_id: "qa-independent-analytics-transport-1234567890",
+          name: "QA Guest",
+        }),
+      });
+    });
+    await homePageViewPage.route(
+      (url) => url.pathname === "/api/analytics/events",
+      async (route) => {
+        const payload = route.request().postDataJSON();
+        if (payload?.event === "page_view") {
+          pageViewEvents.push(payload);
+          firstPageViewObserved();
+        }
+        await route.fulfill({
+          status: 200, contentType: "application/json", body: '{"ok":true}',
+        });
+      },
+    );
+    await homePageViewPage.route("**/api/merchant-partners", (route) =>
+      route.fulfill({
+        status: 200, contentType: "application/json",
+        body: JSON.stringify({ partners: [], affiliate_disclosure: "QA" }),
+      }),
+    );
+    const response = await homePageViewPage.goto(
+      baseUrl + "/?src=instagram&cmp=qa_home_pageview_independent",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) throw new Error("homepage pageview QA did not load");
+    // An unloaded or changed homepage must fail promptly, not hang the full CI.
+    await Promise.race([
+      advisorSessionStarted,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("advisor session request never began")), 7_000),
+      ),
+    ]);
+    await chooseMeasurement(homePageViewPage, "granted");
+    await Promise.race([
+      pageViewReceived,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("page_view waited for advisor session")), 5_000),
+      ),
+    ]);
+    if (
+      sessionRequestCount < 2 ||
+      pageViewEvents.length !== 1 ||
+      pageViewEvents[0].source !== "storefront" ||
+      pageViewEvents[0].acquisition_source !== "instagram" ||
+      pageViewEvents[0].campaign_id !== "qa_home_pageview_independent"
+    ) {
+      throw new Error("homepage pageview lost consent, dedupe or attribution");
+    }
+    report.checks.push({
+      label: "home-pageview-advisor-independent", status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "home-pageview-advisor-independent", message,
+    });
+    report.checks.push({
+      label: "home-pageview-advisor-independent", status: "failed", message,
+    });
+  } finally {
+    releaseAdvisorSession();
+    await homePageViewContext.close();
+  }
+
   const homeSessionTimeoutContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,
@@ -3504,7 +3660,7 @@ try {
           timeout: 20_000,
         });
 
-        await sweepPage.evaluate(async () => {
+        await sweepPage.evaluate(async (decodeTimeoutMs) => {
           const step = Math.max(
             320,
             Math.floor(window.innerHeight * 0.75),
@@ -3531,16 +3687,35 @@ try {
             images.map(async (image) => {
               image.loading = "eager";
               try {
-                await image.decode();
+                await Promise.race([
+                  image.decode().catch(() => undefined),
+                  new Promise((resolve) =>
+                    window.setTimeout(resolve, decodeTimeoutMs),
+                  ),
+                ]);
               } catch {
                 // Broken-image diagnostics below report failed loads.
               }
             }),
           );
-        });
+        }, imageDecodeTimeoutMs);
 
         const diagnostics = await sweepPage.evaluate((blocked) => {
           const bodyText = document.body.innerText;
+          const visiblePendingImages = Array.from(document.images)
+            .filter((image) => {
+              const rect = image.getBoundingClientRect();
+              const style = window.getComputedStyle(image);
+              return (
+                image.isConnected &&
+                !image.complete &&
+                style.display !== "none" &&
+                style.visibility !== "hidden" &&
+                rect.width > 1 &&
+                rect.height > 1
+              );
+            })
+            .map((image) => image.getAttribute("src") || "(missing src)");
           const visibleBrokenImages = Array.from(document.images)
             .filter((image) => {
               const rect = image.getBoundingClientRect();
@@ -3563,6 +3738,7 @@ try {
             body_length: bodyText.length,
             horizontal_overflow:
               document.documentElement.scrollWidth - window.innerWidth,
+            visible_pending_images: visiblePendingImages,
             visible_broken_images: visibleBrokenImages,
             forbidden_ui: blocked.filter((phrase) =>
               bodyText.includes(phrase),
@@ -3581,6 +3757,11 @@ try {
         if (diagnostics.horizontal_overflow > 2) {
           throw new Error(
             `horizontal overflow: ${diagnostics.horizontal_overflow}px`,
+          );
+        }
+        if (diagnostics.visible_pending_images.length) {
+          throw new Error(
+            `images remained pending after bounded fallback: ${diagnostics.visible_pending_images.join(", ")}`,
           );
         }
         if (diagnostics.visible_broken_images.length) {

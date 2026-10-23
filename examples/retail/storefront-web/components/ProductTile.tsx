@@ -201,7 +201,10 @@ export function customerPriceLabel(product: Product): string {
   const source = product.attributes?.price_source;
 
   if (String(product.product_id).startsWith("SC-")) {
-    if (source === "current_merchant_offer") return `ab ${base}`;
+    // Static catalog prices are historical snapshots, even when a merchant
+    // offer was verified at capture time. The detail-page offer API checks
+    // current merchant price, shipping and eligibility independently.
+    if (source === "current_merchant_offer") return "Händlerpreis prüfen";
     if (source === "market_reference") return `Richtpreis ${base}`;
   }
 
