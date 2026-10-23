@@ -7,10 +7,10 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
+from scripts.prepare_dufynd_runtime_offer_batch import prepare_batch
 
 from retail.api import purchase_freshness, runtime_offer_snapshots
 from retail.api.merchant_offers import MerchantOfferStore, offer_clickout_target
-from scripts.prepare_dufynd_runtime_offer_batch import prepare_batch
 
 OFFER_FILE = Path("examples/retail/data/merchant_offers.json")
 MIGRATION = Path(

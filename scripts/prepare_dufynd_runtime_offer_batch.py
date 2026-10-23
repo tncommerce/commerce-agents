@@ -18,7 +18,6 @@ from pathlib import Path
 from typing import Any
 
 import httpx
-
 from examples.retail.api.runtime_offer_snapshots import (
     PROJECT_URL,
     SOURCE_TYPES,
