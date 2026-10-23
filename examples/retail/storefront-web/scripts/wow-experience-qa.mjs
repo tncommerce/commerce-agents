@@ -37,6 +37,25 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await page.locator('.wow-search input').waitFor({state:'visible'});
           await page.locator('[data-scent-atlas] select').waitFor({state:'visible'});
         }
+        if(name==='catalog') {
+          const editorial=page.locator('[data-dufynd-directory-original]');
+          assert.equal(await editorial.count(),1,'catalog firstfold shows one exact licensed original editorial profile');
+          const previewLink=editorial.locator('a.dufynd-directory-feature-link');
+          assert.equal(await previewLink.count(),1,'editorial photo remains a native accessible product link');
+          assert.match(String(await previewLink.getAttribute('href')),/\/duft\/.*libre/);
+          assert.equal(await page.locator('[data-social-product-entry]').count(),1,'separate Rabanne social product card remains available');
+          const sourceImage=editorial.locator('img').first();
+          await sourceImage.evaluate(image=>image.decode());
+          assert.ok(await sourceImage.evaluate(image=>image.naturalWidth>0),'original Libre EDP photo must decode before editorial publication');
+          const credit=editorial.locator('p').last();
+          assert.ok((await credit.innerText()).includes('Bild:'),'source photo attribution remains visible');
+          const hero=page.locator('.dufynd-catalog-discovery-hero');
+          const bounds=await hero.boundingBox();
+          assert.ok(bounds && bounds.height<=350,'the photographic catalog introduction must not displace firstfold search');
+          const imageBounds=await sourceImage.boundingBox();
+          assert.ok(imageBounds && imageBounds.x>=-1 && imageBounds.x+imageBounds.width<=width+1,
+            'actual original product photo stays inside the viewport');
+        }
         if(name==='lancome') {
           assert.match(await page.locator('h1').innerText(),/La Vie est Belle/);
           const original=page.locator('.dufynd-fragrance-stage-shell img');

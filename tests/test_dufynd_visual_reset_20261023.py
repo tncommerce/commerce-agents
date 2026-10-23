@@ -85,3 +85,16 @@ def test_gallery_direction_preserves_product_truth_and_purchase() -> None:
     assert ".vr-gallery-backdrop-word" in css
     assert "[data-dufynd-product-presentation]" in css
     assert "gallery-direction.css" in read("app/layout.tsx")
+
+
+def test_catalogue_preview_is_exact_licensed_and_not_a_fabricated_offer() -> None:
+    intro = read("components/DiscoveryIntro.tsx")
+    stylesheet = read("app/gallery-direction.css")
+    assert 'entry.product_id === "SC-YSL-LIBRE-EDP-90"' in intro
+    assert "originalPhotoFor(catalogEditorial)" in intro
+    assert "catalog && catalogEditorial && catalogEditorialVisual" in intro
+    assert "ImageAttribution visual={catalogEditorialVisual}" in intro
+    assert "data-dufynd-directory-original" in intro
+    assert "data-dufynd-directory-copy" in intro
+    assert "dufynd-catalog-discovery-hero:has" in stylesheet
+    assert "affiliate_link" not in intro

@@ -732,3 +732,233 @@
       min-height:clamp(220px,62vw,258px)!important;
   }
 }
+
+
+
+/* DUFYND CATALOGUE EDITORIAL PREVIEW
+   A second, exact-variant original (YSL Libre EDP 90 ml) creates an
+   unmistakable photography-first fragrance index alongside the existing
+   Rabanne VIDEO CTA, never pretending that the two products are identical. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-catalog-discovery-hero:has([data-dufynd-directory-original]) {
+  display:grid!important;
+  grid-template-columns:minmax(0,1.1fr) minmax(230px,.65fr);
+  grid-template-rows:auto auto;
+  align-items:stretch;
+  gap:13px 22px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-copy] {grid-column:1;grid-row:1;}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] {
+  grid-column:2;
+  grid-row:1 / 3;
+  min-width:0;
+  margin:0;
+  display:flex;
+  flex-direction:column;
+  background:#eee6dc;
+  padding:10px 12px 8px;
+  border-top:1px solid #a87b69;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-directory-feature-link {
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  min-width:0;
+  flex:1;
+  text-decoration:none;
+  color:#1d2829;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-directory-feature-picture {
+  display:block;
+  position:relative;
+  min-width:0;
+  height:clamp(165px,16vw,260px);
+  flex:1;
+  min-height:165px;
+  overflow:hidden;
+  background:#f4f0e8;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-product-stage {
+  height:100%!important;
+  min-height:0;
+  background:#f4f0e8!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-product-object {
+  inset:3% 19% 2%!important;
+  transform:none!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-product-image {
+  object-fit:contain!important;
+  transform:none!important;
+  filter:none!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-directory-feature-caption {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:2px;
+  padding:9px 3px 5px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-directory-feature-caption small {
+  color:#80595b;font-size:10px;text-transform:uppercase;letter-spacing:.12em;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-directory-feature-caption strong {
+  font:400 clamp(24px,2.7vw,36px)/1.03 Georgia,'Times New Roman',serif;
+  letter-spacing:-.045em;
+  color:#222b2c;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] .dufynd-directory-feature-caption > span {
+  color:#6b5b57;
+  font-size:10px;
+  line-height:1.4;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-dufynd-directory-original] > p {font-size:9px;line-height:1.35;color:#766c67;margin:2px 3px;}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  [data-social-product-entry] {grid-column:1;grid-row:2;margin:0!important;}
+@media(max-width:767px) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    .dufynd-catalog-discovery-hero:has([data-dufynd-directory-original]) {
+    grid-template-columns:minmax(0,1fr) minmax(105px,122px);
+    gap:12px 12px;
+    align-items:start;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-copy] {grid-column:1;grid-row:1;min-width:0;}
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-copy] h1 {
+    font-size:clamp(27px,8vw,36px)!important;
+    overflow-wrap:normal;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] {
+    grid-column:2;
+    grid-row:1;
+    padding:5px;
+    min-width:0;
+    overflow:hidden;
+    border-top:0;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-picture {
+    height:141px;
+    min-height:141px;
+    flex:none;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-product-object {
+    inset:1% 7% 1%!important;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-caption {
+    padding:6px 2px 4px;
+    gap:2px;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-caption small {font-size:8px;letter-spacing:.04em;}
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-caption strong {font-size:20px;}
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-caption > span {font-size:9px;}
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] > p {font-size:8px;overflow-wrap:anywhere;}
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-social-product-entry] {grid-column:1/-1;grid-row:2;margin:0!important;}
+}
+
+
+
+/* Photo-authentic firstfold, short enough for the existing <=350px catalogue
+   discovery gate even at 320px. The separate Rabanne card stays 44px-tappable;
+   no product is represented as another merchant's offer. */
+@media(max-width:767px) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-picture {
+    height:103px;
+    min-height:103px;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-caption {
+    padding:4px 2px 0;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-caption small,
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-caption > span {
+    display:none;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-directory-original] .dufynd-directory-feature-caption strong {
+    font-size:18px;
+    line-height:1.04;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-social-product-entry] {
+    padding:11px 13px!important;
+    gap:4px!important;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-social-product-entry] > span:nth-child(2) strong {
+    font-size:25px!important;
+    line-height:1.1;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    [data-social-product-entry] > span:last-child {min-height:44px;}
+}
+/* Replace empty-photo theatre with source-honest archive typography. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"])
+  .dufynd-catalog-card-stage {
+  height:76px!important;
+  min-height:76px!important;
+  border:0;
+  background:#e8e2d8!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"])
+  .dufynd-catalog-photo-pending {
+  padding:12px 17px!important;
+  background:transparent!important;
+  border:0;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"])
+  .dufynd-catalog-photo-pending-eyebrow {
+  color:#6c5852!important;
+  font-size:10px!important;
+  letter-spacing:.13em;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"])
+  .dufynd-catalog-photo-pending-caption {
+  color:#716862!important;
+  font-size:10px!important;
+  line-height:1.4;
+}
+/* Preserve legibility at the smallest supported viewport. */
+@media(max-width:390px) {
+ .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"])
+  .dufynd-catalog-card-stage {
+   height:64px!important;
+   min-height:64px!important;
+ }
+ .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card:not([data-original-photo="true"])
+  .dufynd-catalog-photo-pending {padding:9px 14px!important;}
+ .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-catalog-discovery-hero:has([data-dufynd-directory-original]) {
+    gap:8px 10px;
+  }
+}
