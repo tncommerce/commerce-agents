@@ -71,8 +71,7 @@ def test_merchant_snapshot_price_is_never_rendered_as_a_live_starting_price() ->
     ]
     assert flagged  # Regression needs at least one source snapshot to protect.
     assert all(
-        str((row.get("attributes") or {}).get("price_checked_at") or "").strip()
-        for row in flagged
+        str((row.get("attributes") or {}).get("price_checked_at") or "").strip() for row in flagged
     )
     source = PRODUCT_TILE.read_text(encoding="utf-8")
     expected = 'if (source === "current_merchant_offer") return "Händlerpreis prüfen";'
