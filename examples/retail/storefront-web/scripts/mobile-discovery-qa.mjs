@@ -58,7 +58,9 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       const cards = page.locator(".dufynd-catalog-card");
       assert.equal(await cards.count(), 2);
       await cards.nth(0).getByRole("button", { name: /für Vergleich auswählen/ }).click();
+      assert.equal(await cards.nth(0).getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "first comparison click survives results-heading blur");
       await cards.nth(1).getByRole("button", { name: /für Vergleich auswählen/ }).click();
+      assert.equal(await cards.nth(1).getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "second comparison click is retained");
       await cards.nth(1).evaluate(el => el.scrollIntoView({ block: "start" }));
       const tray = page.getByRole("complementary", { name: "Duftvergleich vorbereiten" });
       const rect = await tray.boundingBox();

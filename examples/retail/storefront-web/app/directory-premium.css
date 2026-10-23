@@ -285,17 +285,17 @@
   background:none;
   box-shadow:none;
 }
-/* The live result count is already above. Keep the result heading available
-   to assistive navigation and reveal it when the filter flow focuses it. */
-.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] #catalog-results:not(:focus) {
-  position:absolute;
-  width:1px;
-  height:1px;
+/* Keep the focus target in normal flow: moving it on blur can shift a product
+   control between pointerdown and pointerup and lose a comparison selection. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] #catalog-results {
+  min-height:24px;
   margin:0;
   padding:0;
-  overflow:hidden;
+  font-size:14px;
+  line-height:24px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] #catalog-results:not(:focus) {
   clip-path:inset(50%);
-  white-space:nowrap;
 }
 .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-originals-note {
   border:0;
