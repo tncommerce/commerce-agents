@@ -247,6 +247,9 @@ class MerchantOfferStore:
             if (product_id is None or row["product_id"] == product_id)
             and (offer_id is None or row["offer_id"] == offer_id)
         ]
+        if not rows:
+            return []
+
         # A one-time, owner-approved rollout can switch live commerce values to
         # private Supabase snapshots without committing prices or deploying each
         # 72-hour refresh. No snapshot, failed auth or uncertain source => no
