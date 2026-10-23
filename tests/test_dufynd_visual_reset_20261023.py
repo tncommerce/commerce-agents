@@ -58,7 +58,7 @@ def test_catalog_and_public_pdp_use_only_scoped_editorial_skin() -> None:
     assert 'data-dufynd-visual-reset={!review ? "editorial" : undefined}' in detail
     assert "dufynd-catalog-page[data-dufynd-visual-reset" in css
     assert "dufynd-detail-page[data-dufynd-visual-reset" in css
-    assert 'data-dufynd-photo-hold' in detail
+    assert "data-dufynd-photo-hold" in detail
     assert 'id="dufynd-hero-offer-cta"' in detail
     assert "originalPhotoFor(fragrance)" in detail
     assert "FragranceOffers" in detail
