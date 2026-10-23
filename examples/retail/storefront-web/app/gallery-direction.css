@@ -661,6 +661,7 @@
     border:0!important;
   }
   .vr-home .wow-audience-index > a {
+    position:relative!important;
     display:flex!important;
     flex-direction:column!important;
     align-items:flex-start!important;
