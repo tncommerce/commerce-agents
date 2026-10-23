@@ -32,8 +32,8 @@ export default function AtelierHero() {
             Nicht irgendein<br />Parfum.<br /><em>Deins.</em>
           </h1>
           <p className="vr-hero-intro">
-            Entdecke, was wirklich zu dir passt. Vergleiche dokumentierte
-            Duftprofile – und finde separat geprüfte Händlerangebote.
+            Duftcharaktere verstehen. Favoriten vergleichen. Passende
+            Händlerangebote prüfen.
           </p>
           <form
             action="/duft"

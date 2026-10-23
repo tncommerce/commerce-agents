@@ -256,7 +256,7 @@
   grid-row:1!important;
   order:unset!important;
   margin:0!important;
-  padding:clamp(32px,4vw,59px) clamp(26px,3.8vw,56px) 25px!important;
+  padding:clamp(19px,2vw,30px) clamp(26px,3.8vw,56px) 25px!important;
   color:#f8f3ec;
   background:#20292c!important;
   border:0;
@@ -270,7 +270,7 @@
   font-size:10px;
   font-weight:650;
   line-height:1.5;
-  margin:0 0 23px;
+  margin:0 0 9px;
 }
 .dufynd-detail-page[data-dufynd-visual-reset="editorial"]
   [data-dufynd-product-presentation] .vr-pdp-eyebrow span {margin-inline:6px;color:#ab9a98;}
@@ -591,14 +591,47 @@
 }
 @media(max-width:390px) {
   .vr-home .vr-gallery-hero h1 {font-size:clamp(45px,12.4vw,50px);}
-  .vr-home .vr-gallery-hero .vr-hero-copy {padding:22px 18px 18px;}
+  .vr-home .vr-gallery-hero .vr-hero-copy {padding:18px 18px 13px;}
   .vr-gallery-hero .vr-hero-search button {padding-inline:11px;font-size:12px;}
-  .vr-gallery-hero .vr-feature-photo {height:254px!important;}
+  .vr-gallery-hero .vr-feature-photo {height:211px!important;min-height:211px!important;}
   .vr-gallery-hero .vr-feature-caption strong {font-size:40px;}
   .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell {
-    height:315px!important;min-height:315px!important;
+    height:260px!important;min-height:260px!important;
   }
 }
+
+/* QA-backed firstfold tuning: preserve all editorial content with fewer empty
+   vertical tracks; no hiding source attribution, privacy, offer or navigation. */
+@media(max-width:390px) {
+  .vr-home {gap:17px!important;}
+  .vr-home .vr-gallery-hero .vr-hero-intro {
+    font-size:13px;
+    line-height:1.4;
+    margin-bottom:12px;
+  }
+  .vr-home .vr-gallery-hero .vr-hero-actions {
+    gap:4px 12px;
+    margin-top:10px;
+  }
+  .vr-home .vr-gallery-hero .vr-hero-aside {margin-top:7px;font-size:9px;}
+  .vr-gallery-hero .vr-feature-overline {padding:10px 17px 6px;}
+  .vr-gallery-hero .vr-feature-caption {padding:10px 17px 7px;}
+  .vr-gallery-hero .vr-feature-caption strong {font-size:35px;}
+  .vr-gallery-hero .vr-feature-cta {margin-top:6px;}
+  .vr-gallery-hero .vr-feature-credit {padding:0 17px 5px;}
+  .vr-gallery-hero a.vr-feature-atlas {min-height:42px;padding:9px 17px;}
+  .vr-home .wow-selection {padding:13px!important;}
+  .vr-home .wow-selection-grid {gap:10px;}
+  .vr-home .wow-selection-link {min-height:189px!important;}
+  .vr-home .wow-selection-photo,
+  .vr-home .wow-selection-item:nth-child(2) .wow-selection-photo {
+    height:189px!important;
+    min-height:189px!important;
+  }
+  .vr-home .wow-atlas-material {height:130px!important;}
+  .vr-home .wow-atlas {padding-top:14px;padding-bottom:11px;}
+}
+
 @media(prefers-reduced-motion:reduce) {
   .vr-gallery-hero *, .dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] * {
     scroll-behavior:auto!important;
