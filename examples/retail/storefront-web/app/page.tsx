@@ -47,7 +47,7 @@ export default function StorefrontPage() {
   const session = useSession(api, { timeoutMs: 8_000 });
   const [view, setView] = useState<View>("assistant");
   const [panelOpen, setPanelOpen] = useState(false);
-  const analyticsSessionRef = useRef<string | null>(null);
+  const homepageViewTrackedRef = useRef(false);
   const consultationTrackedRef = useRef(false);
   const guidedStartRef = useRef<string | null>(null);
 
@@ -63,17 +63,19 @@ export default function StorefrontPage() {
   useEffect(() => {
     const trackCurrentPage = () => {
       if (!measurementAllowed()) {
-        analyticsSessionRef.current = null;
+        homepageViewTrackedRef.current = false;
         return;
       }
-      if (!session.sessionId || analyticsSessionRef.current === session.sessionId) return;
-      analyticsSessionRef.current = session.sessionId;
+      // Optional first-party measurement must never wait for advisor transport.
+      // This existing tracker owns the one consented homepage page_view.
+      if (homepageViewTrackedRef.current) return;
+      homepageViewTrackedRef.current = true;
       void trackAnalyticsEvent("page_view", { source: "storefront" });
     };
     const unsubscribe = subscribeMeasurement(trackCurrentPage);
     trackCurrentPage();
     return unsubscribe;
-  }, [session.sessionId]);
+  }, []);
   useEffect(() => {
     if (
       !session.sessionId ||

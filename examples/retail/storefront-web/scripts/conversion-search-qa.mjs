@@ -128,11 +128,17 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
 
       await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'domcontentloaded'});
       await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
-      await page.goto(`${baseUrl}/start?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
+      await page.goto(`${baseUrl}/start?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'load'});
       const input=page.getByLabel('Duft oder Marke suchen',{exact:true});
+      await input.waitFor({state:'visible'});
+      // Wait for React hydration; SSR alone does not attach live-search handlers.
+      await page.waitForFunction(() => {
+        const element=document.getElementById('dufynd-social-search');
+        return !!element&&Object.keys(element).some(key=>key.startsWith('__reactProps$'));
+      },null,{timeout:12_000});
       await input.fill('Libre YSL EDP 90ml');
       const results=page.locator('[data-dufynd-social-live-results]');
-      await results.getByRole('link').first().waitFor();
+      await results.getByRole('link').first().waitFor({state:'visible',timeout:12_000});
       assert.match(await results.innerText(),/Eau de Parfum · 90 ml/);
       if(outputDir) await page.screenshot({path:`${outputDir}/conversion-search-${width}-start.png`,fullPage:true});
       if(width===390) await input.press('Enter');

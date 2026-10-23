@@ -83,6 +83,10 @@ def environment(path: Path):
         records["analytics"].append(kwargs)
         return "fixture-event", "fixture-memory"
 
+    async def run_in_threadpool(func, *args, **kwargs):
+        # Execute the synthetic store in the existing no-network fixture.
+        return func(*args, **kwargs)
+
     def clickout_record(_offer, **kwargs):
         records["clickouts"].append(kwargs)
         return "fixture-click-id"
@@ -104,6 +108,7 @@ def environment(path: Path):
             eligible_offer=lambda key: offer if key == "fixture-offer" else None
         ),
         "_live_dufynd_offer_product": lambda _key: True,
+        "run_in_threadpool": run_in_threadpool,
         "offer_clickout_target": target,
         "partner_clickout_url": lambda _partner, **kw: (
             partner.affiliate_url + "&synthetic_ref=measured"
