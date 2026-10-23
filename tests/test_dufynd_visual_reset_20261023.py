@@ -1,4 +1,4 @@
-"""Visual-first review guard: promote perfume identity without weakening conversion gates.
+"""Review franchise fragrance identity without weakening existing conversion gates.
 
 This is a source contract only. Actual iPhone/tablet/desktop layout and
 licensed image decode require independent browser capture and owner review.
@@ -56,4 +56,6 @@ def test_existing_buyer_and_privacy_code_is_not_modified_by_visual_branch() -> N
     assert "merchantClickoutUrl" in offers
     assert "measurementAllowed()" in offers
     assert "RETURN_RECHECK_INTERVAL_MS" in offers
-    assert "data-dufynd-visual-state={imageUnavailable" in read("components/FragranceVisual.tsx")
+    assert "data-dufynd-visual-state={imageUnavailable" in read(
+        "components/FragranceVisual.tsx"
+    )
