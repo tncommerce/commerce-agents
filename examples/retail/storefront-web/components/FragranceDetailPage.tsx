@@ -345,7 +345,7 @@ export default async function FragrancePage({
   ).replaceAll("<", "\\u003c");
 
   return (
-    <main data-dufynd-visual-reset={!review ? "editorial" : undefined} className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
+    <main data-dufynd-visual-reset={!review ? "editorial" : undefined} data-dufynd-product-editorial={!review && !offerOnlyPricing || undefined} className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
@@ -394,7 +394,7 @@ export default async function FragrancePage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1080px] px-4 py-5 sm:px-6 sm:py-8">
+      <div className="pe-detail-content mx-auto max-w-[1080px] px-4 py-5 sm:px-6 sm:py-8">
         <nav
           aria-label="Breadcrumb"
           className="mb-5 text-[12px] text-(--ink-soft)"
@@ -443,7 +443,7 @@ export default async function FragrancePage({
           />
           <div className="dufynd-fragrance-hero-grid relative z-10 grid lg:grid-cols-[1.08fr_0.92fr]">
             <div className="dufynd-fragrance-identity dufynd-fragrance-panel-section dufynd-fragrance-panel-section--identity p-5 pb-4 sm:p-7 sm:pb-5 lg:col-start-2 lg:row-start-1 lg:p-9 lg:pb-0">
-              {!review && !offerOnlyPricing ? <p className="vr-pdp-eyebrow">DUFYND <span aria-hidden="true">/</span> Duftprofil</p> : null}
+              {!review && !offerOnlyPricing ? <p className="vr-pdp-eyebrow">DUFYND <span aria-hidden="true">/</span> Das Duftporträt</p> : null}
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
                 {fragrance.brand}
               </div>
@@ -545,7 +545,7 @@ export default async function FragrancePage({
             </div>
 
             <div className="dufynd-fragrance-hero-copy dufynd-fragrance-panel-section dufynd-fragrance-panel-section--copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
-              {!review && !offerOnlyPricing ? <p className="vr-pdp-offer-context">Duft entdecken. Händlerangebote separat prüfen.</p> : null}
+              {!review && !offerOnlyPricing ? <div className="pe-purchase-intro"><p className="vr-pdp-offer-context">Dein nächster Schritt</p><h2>Entdeckt.<br /><em>Jetzt vergleichen.</em></h2><p>Prüfe die Händlerangebote für diese exakte Duftvariante.</p></div> : null}
               <div className={`grid gap-2 sm:flex sm:flex-wrap sm:gap-2.5 ${related.length ? "grid-cols-2" : "grid-cols-1"}`}>
                 {review ? <a href="#duftnoten" className="rounded-xl bg-(--ink) px-4 py-3 text-center text-[13px] font-semibold text-white">Die Komposition entdecken ↓</a> : <OfferSectionLink
                   id="dufynd-hero-offer-cta"

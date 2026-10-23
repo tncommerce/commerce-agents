@@ -1,0 +1,361 @@
+/* A fragrance portrait, set as one editorial spread.
+   The new public-only boundary deliberately excludes private photo review and
+   the focused Rabanne purchase route. Source images and offer logic are intact. */
+.dufynd-detail-page[data-dufynd-product-editorial] {
+  --ink:#30252d;
+  --ink-soft:#6d6368;
+  --line:#d4cdc9;
+  --line-strong:#a79aa2;
+  --card:#f7f4ed;
+  --surface:#f7f4ed;
+  --well:#eee8e3;
+  --accent-ink:#623c4d;
+  --accent-strong:#623c4d;
+  background:#f7f4ed;
+  color:#30252d;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] > header {
+  background:#f7f4ed;
+  border-bottom:1px solid #d4cdc9;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] > header > div,
+.dufynd-detail-page[data-dufynd-product-editorial] .pe-detail-content {
+  max-width:1328px;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] > header :is(a,img) {
+  border-radius:0;
+  box-shadow:none;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .pe-detail-content {
+  padding-top:12px;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] nav[aria-label="Breadcrumb"] {
+  margin-bottom:12px;
+  font-size:11px;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] {
+  border:0!important;
+  border-radius:0!important;
+  background:#f7f4ed!important;
+  box-shadow:none!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] .dufynd-fragrance-hero-grid {
+  grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)!important;
+  grid-template-rows:auto minmax(420px,auto)!important;
+  gap:0!important;
+  min-height:0!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity {
+  grid-column:1 / -1!important;
+  grid-row:1!important;
+  display:block;
+  padding:12px 0 26px!important;
+  background:transparent!important;
+  border:0!important;
+  border-bottom:1px solid #b7a8af!important;
+  border-radius:0!important;
+  color:#30252d!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .vr-pdp-eyebrow {
+  float:right;
+  margin:0 0 12px 20px;
+  color:#75656d;
+  letter-spacing:.12em;
+  font-size:10px;
+  font-weight:500;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity > div:first-of-type {
+  color:#623c4d!important;
+  font-size:11px;
+  letter-spacing:.16em;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity h1 {
+  clear:both;
+  margin:13px 0 20px!important;
+  max-width:none;
+  font:400 clamp(60px,7.8vw,112px)/.99 var(--font-editorial),Georgia,"Times New Roman",serif!important;
+  letter-spacing:-.055em!important;
+  color:#30252d!important;
+  text-wrap:balance;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-variant {
+  display:inline-flex;
+  vertical-align:top;
+  margin:0 28px 0 0!important;
+  padding:0!important;
+  border:0!important;
+  gap:14px 24px;
+  color:#30252d!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-variant dt {
+  color:#75656d!important;
+  font-size:9px;
+  letter-spacing:.1em;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-variant dd {
+  color:#30252d!important;
+  margin-top:3px;
+  font-size:14px;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-variant > div + div {
+  border-color:#c7bbc2;
+  padding-left:24px;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity > p:not(.vr-pdp-eyebrow),
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity > div:not(:first-of-type) > p {
+  display:inline-block;
+  vertical-align:bottom;
+  margin:12px 20px 0 0;
+  color:#6d6368!important;
+  font-size:12px;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity :is(a,small) {
+  color:#623c4d!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell {
+  grid-column:1!important;
+  grid-row:2!important;
+  min-height:460px!important;
+  height:460px!important;
+  margin:0!important;
+  border:0!important;
+  background:#eee6e2!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .vr-pdp-stage-label {
+  top:22px;
+  left:26px;
+  color:#79636d;
+  font-size:9px;
+  letter-spacing:.16em;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-stage {
+  background:transparent!important;
+  box-shadow:none!important;
+  border:0!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-stage::before,
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-stage::after {
+  display:none!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-object {
+  inset:10% 12% 8%!important;
+  transform:none!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-image {
+  object-fit:contain!important;
+  transform:none!important;
+  filter:none!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-product-id="SC-PDM-DELINA-EDP-75"] .dufynd-fragrance-stage-shell,
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-product-id="SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"] .dufynd-fragrance-stage-shell {
+  background:#fff!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-photo-status="pending"] .dufynd-fragrance-stage-shell {
+  background:#30252d!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-photo-status="pending"] .vr-pdp-stage-label {
+  color:#d7c7cf;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy {
+  grid-column:2!important;
+  grid-row:2!important;
+  align-self:stretch;
+  justify-content:center;
+  padding:30px clamp(24px,4vw,58px)!important;
+  background:#f7f4ed!important;
+  border:0!important;
+  border-radius:0!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro {
+  margin-bottom:22px;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .vr-pdp-offer-context {
+  margin:0 0 15px;
+  color:#623c4d;
+  font-size:9px;
+  font-weight:600;
+  letter-spacing:.17em;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2 {
+  font:400 clamp(30px,3vw,43px)/1.08 var(--font-editorial),Georgia,"Times New Roman",serif;
+  letter-spacing:-.045em;
+  color:#30252d;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2 em {
+  color:#623c4d;
+  font-weight:400;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro > p:last-child {
+  margin-top:14px;
+  font-size:13px;
+  line-height:1.6;
+  max-width:34ch;
+  color:#6d6368;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] #dufynd-hero-offer-cta {
+  width:100%;
+  min-height:52px!important;
+  background:#623c4d!important;
+  border:1px solid #623c4d!important;
+  color:white!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+  transform:none!important;
+  font-size:14px!important;
+  padding:14px 20px!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] #dufynd-hero-offer-cta:hover {
+  background:#30252d!important;
+  border-color:#30252d!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-fragrance-hero-copy :is(button,a):not(#dufynd-hero-offer-cta) {
+  min-height:44px;
+  border-radius:0!important;
+  background:transparent;
+  box-shadow:none;
+  color:#623c4d;
+  border-color:#d4cdc9;
+  font-size:11px;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-detail-quick-nav {
+  margin:0;
+  padding:9px 0;
+  border:0;
+  border-top:1px solid #b7a8af;
+  border-bottom:1px solid #b7a8af;
+  border-radius:0;
+  background:#f7f4ed;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-detail-quick-nav a {
+  min-height:44px;
+  display:inline-flex;
+  align-items:center;
+  padding:10px 16px;
+  border-radius:0;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] :is(.dufynd-fragrance-journey-axis,.dufynd-fragrance-chapter-index) {
+  display:none;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] :is(.dufynd-notes-overview,.dufynd-fragrance-profile-card,.dufynd-journey-offers,.dufynd-fragrance-advanced,#alternativen) {
+  border:0;
+  border-top:1px solid #d4cdc9;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  padding:30px 0;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-notes-overview {
+  border-top:0;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] :is(.dufynd-notes-overview h2,.dufynd-fragrance-profile-card h2,.dufynd-journey-offers h2,#alternativen h2) {
+  font:400 clamp(28px,3vw,38px)/1.12 var(--font-editorial),Georgia,"Times New Roman",serif;
+  letter-spacing:-.04em;
+  color:#30252d;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-notes-group {
+  border-radius:0;
+  background:transparent;
+  border:0;
+  border-left:1px solid #d4cdc9;
+  box-shadow:none;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-notes-group:first-child {
+  border-left:0;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-notes-chip {
+  border-radius:0;
+  box-shadow:none;
+  background:transparent;
+  border:0;
+  border-bottom:1px solid #d4cdc9;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] :is(a,button,summary):focus-visible {
+  outline:2px solid #623c4d!important;
+  outline-offset:4px!important;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-fragrance-hero * {
+  animation:none!important;
+  transition:none!important;
+}
+@media(max-width:767px) {
+  .dufynd-detail-page[data-dufynd-product-editorial] nav[aria-label="Breadcrumb"] {
+    margin-bottom:4px;
+    font-size:10px;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] .dufynd-fragrance-hero-grid {
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-template-rows:auto auto auto!important;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity {
+    padding:9px 0 19px!important;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .vr-pdp-eyebrow {
+    float:none;
+    margin:0 0 14px;
+    font-size:9px;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity h1 {
+    font-size:clamp(40px,12vw,68px)!important;
+    margin:10px 0 17px!important;
+    line-height:1.01!important;
+    text-wrap:initial;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-variant {
+    display:flex;
+    margin-right:0!important;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-identity > p:not(.vr-pdp-eyebrow) {
+    font-size:11px;
+    margin:10px 14px 0 0;
+    line-height:1.4;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-stage-shell {
+    grid-column:1!important;
+    grid-row:2!important;
+    min-height:260px!important;
+    height:260px!important;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .vr-pdp-stage-label {
+    left:16px;
+    top:16px;
+    font-size:8px;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-object {
+    inset:10% 10% 7%!important;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy {
+    grid-column:1!important;
+    grid-row:3!important;
+    padding:22px 0 24px!important;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro {
+    margin-bottom:17px;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2 {
+    font-size:29px;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2 br {
+    display:none;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2 em::before {
+    content:" ";
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro > p:last-child {
+    font-size:12px;
+    margin-top:10px;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .vr-pdp-offer-context {
+    margin-bottom:10px;
+  }
+  .dufynd-detail-page[data-dufynd-product-editorial] :is(.dufynd-notes-overview,.dufynd-fragrance-profile-card,.dufynd-journey-offers,.dufynd-fragrance-advanced,#alternativen) {
+    padding:24px 0;
+  }
+}
+@media(max-width:390px) {
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation][data-dufynd-photo-status="pending"] .dufynd-fragrance-stage-shell {
+    height:clamp(220px,62vw,258px)!important;
+    min-height:clamp(220px,62vw,258px)!important;
+  }
+}

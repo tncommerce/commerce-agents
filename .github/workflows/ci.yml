@@ -177,6 +177,10 @@ jobs:
             fi
             sleep 1
           done
+          if [ "${{ github.head_ref }}" = "dufynd-visual-first-reset-20261023" ]; then
+            node retail/storefront-web/scripts/capture-editorial-review.mjs \
+              http://127.0.0.1:3000 retail/storefront-web/.visual-qa/editorial-review
+          fi
           node retail/storefront-web/scripts/test-funnel-pending-image.mjs http://127.0.0.1:3000
           node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
             --base-url http://127.0.0.1:3000 \
@@ -217,6 +221,7 @@ jobs:
         with:
           name: dufynd-visual-qa-${{ github.event.pull_request.number }}
           path: |
+            examples/retail/storefront-web/.visual-qa/editorial-review
             examples/retail/storefront-web/.visual-qa/report.json
             examples/retail/storefront-web/.visual-qa/wow22-metrics.json
             examples/retail/storefront-web/.visual-qa/wow22-home-*-first.png
@@ -229,7 +234,7 @@ jobs:
             examples/retail/storefront-web/.visual-qa/review-wave/report.json
           if-no-files-found: error
           include-hidden-files: true
-          retention-days: 2
+          retention-days: 1
       - name: Upload DUFYND visual QA captures
         if: always() && github.head_ref != 'dufynd-visual-first-reset-20261023'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

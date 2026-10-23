@@ -27,14 +27,62 @@ export default function AtelierHero() {
 
       <div className="wow-hero-composition vr-hero-composition">
         <div className="wow-hero-copy vr-hero-copy">
-          <p className="vr-hero-eyebrow">Gute Düfte. Klare Entscheidungen.</p>
+          <p className="vr-hero-eyebrow">Dein unabhängiger Duftguide</p>
           <h1 id="dufynd-home-discovery-heading">
-            Nicht irgendein<br />Parfum.<br /><em>Deins.</em>
+            Nicht irgendein<br />Parfum. <em>Deins.</em>
           </h1>
           <p className="vr-hero-intro">
-            Duftcharaktere verstehen. Favoriten vergleichen. Passende
-            Händlerangebote prüfen.
+            Entdecke, was zu dir passt. Verstehe den Duft.
+            Entscheide mit gutem Gefühl.
           </p>
+
+        </div>
+
+        <div className="vr-hero-feature" data-dufynd-home-feature>
+          <div className="vr-feature-overline">
+            <span>Die Duft-Edition / 01</span>
+            <span>Im Fokus</span>
+          </div>
+          {featured && featuredVisual ? (
+            <>
+              <AcquisitionInternalLink
+                href={"/duft/" + featured.slug}
+                className="vr-feature-profile"
+                aria-label={featured.brand + " " + featured.name + ", Duftprofil öffnen"}
+              >
+                <div className="vr-feature-photo">
+                  <span aria-hidden="true" className="vr-gallery-backdrop-word">01</span>
+                  <FragranceVisual
+                    imageUrl={featuredVisual.url}
+                    cutoutUrl={featuredVisual.url}
+                    alt={featured.brand + " " + featured.name + " " + featured.concentration + " " + featured.volume_ml + " ml"}
+                    variant="hero"
+                    mode="cutout"
+                    world="noir"
+                    priority
+                    className="vr-feature-visual"
+                  />
+                </div>
+                <div className="vr-feature-caption">
+                  <span className="vr-feature-kicker">Yves Saint Laurent / Originalaufnahme</span>
+                  <strong>{featured.name}</strong>
+                  <span>{featured.brand} · {featured.concentration} · {featured.volume_ml} ml</span>
+                  <span className="vr-feature-cta">Duftprofil ansehen <span aria-hidden="true">↗</span></span>
+                </div>
+              </AcquisitionInternalLink>
+              <div className="vr-feature-credit"><ImageAttribution visual={featuredVisual} /></div>
+            </>
+          ) : (
+            <div className="vr-feature-fallback">
+              <span aria-hidden="true">D.</span>
+              <p>Jede Vorliebe erzählt eine andere Duftgeschichte.</p>
+            </div>
+          )}
+          <a href="#duft-atlas" className="wow-hero-art vr-feature-atlas">
+            <span>Duftnoten-Atlas entdecken</span><span aria-hidden="true">↘</span>
+          </a>
+        </div>
+        <div className="vr-hero-discovery">
           <form
             action="/duft"
             method="get"
@@ -55,7 +103,7 @@ export default function AtelierHero() {
               name="q"
               type="search"
               maxLength={80}
-              placeholder="Welcher Duft interessiert dich?"
+              placeholder="Duft oder Marke"
             />
             <button type="submit">Suchen <span aria-hidden="true">↗</span></button>
           </form>
@@ -66,51 +114,6 @@ export default function AtelierHero() {
             <AcquisitionInternalLink href="/duft">Alle Duftprofile ansehen <span aria-hidden="true">→</span></AcquisitionInternalLink>
           </div>
           <span className="vr-hero-aside">DUFYND ist ein unabhängiger Duftguide. Gekauft wird beim jeweiligen Händler.</span>
-        </div>
-
-        <div className="vr-hero-feature" data-dufynd-home-feature>
-          <div className="vr-feature-overline">
-            <span>Aus dem DUFYND Duftarchiv</span>
-            <span>Im Fokus</span>
-          </div>
-          {featured && featuredVisual ? (
-            <>
-              <AcquisitionInternalLink
-                href={"/duft/" + featured.slug}
-                className="vr-feature-profile"
-                aria-label={featured.brand + " " + featured.name + ", Duftprofil öffnen"}
-              >
-                <div className="vr-feature-photo">
-                  <span aria-hidden="true" className="vr-gallery-backdrop-word">{featured.name}</span>
-                  <FragranceVisual
-                    imageUrl={featuredVisual.url}
-                    cutoutUrl={featuredVisual.url}
-                    alt={featured.brand + " " + featured.name + " " + featured.concentration + " " + featured.volume_ml + " ml"}
-                    variant="hero"
-                    mode="cutout"
-                    world="noir"
-                    priority
-                    className="vr-feature-visual"
-                  />
-                </div>
-                <div className="vr-feature-caption">
-                  <span className="vr-feature-kicker">Duftprofil / Originalaufnahme</span>
-                  <strong>{featured.name}</strong>
-                  <span>{featured.brand} · {featured.concentration} · {featured.volume_ml} ml</span>
-                  <span className="vr-feature-cta">Duftprofil ansehen <span aria-hidden="true">↗</span></span>
-                </div>
-              </AcquisitionInternalLink>
-              <div className="vr-feature-credit"><ImageAttribution visual={featuredVisual} /></div>
-            </>
-          ) : (
-            <div className="vr-feature-fallback">
-              <span aria-hidden="true">D.</span>
-              <p>Jede Vorliebe erzählt eine andere Duftgeschichte.</p>
-            </div>
-          )}
-          <a href="#duft-atlas" className="wow-hero-art vr-feature-atlas">
-            <span>Duftnoten-Atlas entdecken</span><span aria-hidden="true">↘</span>
-          </a>
         </div>
       </div>
       <div className="wow-hero-foot vr-hero-foot" aria-label="So funktioniert DUFYND">
