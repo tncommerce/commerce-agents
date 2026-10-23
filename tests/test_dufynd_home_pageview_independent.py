@@ -40,11 +40,12 @@ def test_actual_browser_qa_proves_advisor_independence() -> None:
     assert 'pageViewEvents[0].acquisition_source !== "instagram"' in source
 
 
-def test_broken_remote_image_wait_stays_bounded_and_fail_closed() -> None:
-    """Allow neutral fallback to settle, never hide a persistent broken image."""
+def test_combined_browser_qa_keeps_strict_image_timeouts() -> None:
+    """The #833 timeout guards must survive alongside #832 homepage coverage."""
     source = VISUAL_QA.read_text(encoding="utf-8")
-    assert "await sweepPage.waitForFunction(" in source
-    assert "timeout: 2_500, polling: 100" in source
-    assert "image.naturalWidth === 0" in source
+    assert "const imageDecodeTimeoutMs = 8_000;" in source
+    assert "visible_pending_images: visiblePendingImages" in source
+    assert "if (diagnostics.visible_pending_images.length)" in source
     assert "if (diagnostics.visible_broken_images.length)" in source
+    assert "images did not settle within" in source
     assert 'broken images: ${diagnostics.visible_broken_images.join(", ")}' in source
