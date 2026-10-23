@@ -255,7 +255,7 @@
 /* A single control surface instead of a card within a card. Native filter
    disclosure, search, keyboard focus and comparison controls are untouched. */
 .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] section[aria-label="Duftkatalog filtern"] {
-  padding:20px 0 12px;
+  padding:20px 0 0;
   margin-top:0;
   border:0;
   border-radius:0;
@@ -278,19 +278,35 @@
   min-height:44px;
 }
 .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-brand-directory {
+  margin:0;
+  padding:0;
   border-radius:0;
   border-color:var(--line);
   background:none;
   box-shadow:none;
 }
+/* The live result count is already above. Keep the result heading available
+   to assistive navigation and reveal it when the filter flow focuses it. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] #catalog-results:not(:focus) {
+  position:absolute;
+  width:1px;
+  height:1px;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
 .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-originals-note {
   border:0;
   border-radius:0;
   background:none;
-  padding:14px 0 0;
+  margin:0;
+  padding:0;
   color:#6d6269;
 }
 .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] section[aria-label="Passende Düfte"] {
+  margin-top:12px;
   gap:24px;
   align-items:start;
 }

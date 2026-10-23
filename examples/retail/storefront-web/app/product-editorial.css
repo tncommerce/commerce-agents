@@ -150,6 +150,7 @@
 }
 /* The verified photograph is the entire visual. Old synthetic orbit/shadow
    layers are separate UI decoration and must not survive this paper stage. */
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-fragrance-hero::before,
 .dufynd-detail-page[data-dufynd-product-editorial] .dufynd-fragrance-stage-shell::before,
 .dufynd-detail-page[data-dufynd-product-editorial] .dufynd-fragrance-stage-shell::after,
 .dufynd-detail-page[data-dufynd-product-editorial] .dufynd-product-shadow,

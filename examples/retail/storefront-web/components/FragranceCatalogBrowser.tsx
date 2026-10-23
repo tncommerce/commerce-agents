@@ -1187,15 +1187,14 @@ export default function FragranceCatalogBrowser({
             >
               <div>
                 <p>
-                  <strong>{featuredOriginalCount} Originalaufnahmen zuerst.</strong>{" "}
-                  Illustrationen sind gekennzeichnet.
+                  <strong>{featuredOriginalCount} Originalaufnahmen</strong>
                 </p>
               </div>
               <AcquisitionInternalLink
                 href="/bildnachweise"
                 className="dufynd-catalog-photo-evidence"
               >
-                Bildnachweise ansehen <span aria-hidden>↗</span>
+                Bildnachweise <span aria-hidden>↗</span>
               </AcquisitionInternalLink>
             </div>
           ) : null}
