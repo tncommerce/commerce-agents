@@ -116,7 +116,6 @@ export default function DiscoveryIntro({
                 alt={`${catalogEditorial.brand} ${catalogEditorial.name} · ${catalogEditorial.concentration} ${catalogEditorial.volume_ml} ml`}
                 mode="cutout"
                 variant="card"
-                world="silk"
                 className="h-full w-full"
                 priority
               />
