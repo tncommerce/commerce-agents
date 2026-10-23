@@ -2488,9 +2488,18 @@ try {
   try {
     const partnerSessionPage = await partnerSessionContext.newPage();
     const expectedPartnerSessionId = "qa-partner-session-1234567890";
+    let releasePartnerSession;
+    const partnerSessionGate = new Promise((resolve) => {
+      releasePartnerSession = resolve;
+    });
+    let markPartnerSessionRequested;
+    const partnerSessionRequested = new Promise((resolve) => {
+      markPartnerSessionRequested = resolve;
+    });
 
     await partnerSessionPage.route("**/api/session", async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      markPartnerSessionRequested();
+      await partnerSessionGate;
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -2540,22 +2549,16 @@ try {
     });
     await discovery.waitFor({ state: "visible", timeout: 20_000 });
 
-    const preparing = discovery.locator(
-      "[data-partner-clickout-preparing]",
-    );
-    await preparing.waitFor({ state: "visible", timeout: 5_000 });
-    if (
-      (await discovery.locator('a[href*="/api/merchant-partners/"]').count()) !== 0
-    ) {
-      throw new Error(
-        "merchant discovery clickout became actionable before storefront session correlation completed",
-      );
-    }
-
+    // An intentionally unresolved advisor API session may not delay the buyer CTA.
+    // This check reads the link only; it never follows it or records a click.
+    await partnerSessionRequested;
     const clickout = discovery
       .locator('a[href*="/api/merchant-partners/"]')
       .first();
-    await clickout.waitFor({ state: "visible", timeout: 10_000 });
+    await clickout.waitFor({ state: "visible", timeout: 5_000 });
+    if ((await discovery.locator("[data-partner-clickout-preparing]").count()) !== 0) {
+      throw new Error("merchant CTA still waits for unrelated advisor session");
+    }
 
     const href = await clickout.getAttribute("href");
     if (!href) {
@@ -2578,6 +2581,7 @@ try {
       );
     }
 
+    releasePartnerSession();
     report.checks.push({
       label: "merchant-discovery-session-correlation",
       status: "passed",
@@ -2655,22 +2659,13 @@ try {
     });
     await discovery.waitFor({ state: "visible", timeout: 20_000 });
 
-    const preparing = discovery.locator(
-      "[data-partner-clickout-preparing]",
-    );
-    await preparing.waitFor({ state: "visible", timeout: 5_000 });
-    if (
-      (await discovery.locator('a[href*="/api/merchant-partners/"]').count()) !== 0
-    ) {
-      throw new Error(
-        "merchant discovery fail-open link became actionable before session initialization settled",
-      );
-    }
-
     const clickout = discovery
       .locator('a[href*="/api/merchant-partners/"]')
       .first();
-    await clickout.waitFor({ state: "visible", timeout: 10_000 });
+    await clickout.waitFor({ state: "visible", timeout: 5_000 });
+    if ((await discovery.locator("[data-partner-clickout-preparing]").count()) !== 0) {
+      throw new Error("merchant CTA blocked despite valid partner payload during advisor error");
+    }
 
     const href = await clickout.getAttribute("href");
     if (!href) {
@@ -3064,13 +3059,11 @@ try {
     );
     if (!response?.ok()) throw new Error("homepage session timeout QA did not load");
     await chooseMeasurement(homeSessionTimeoutPage, "granted");
-    await homeSessionTimeoutPage.locator("[data-partner-clickout-preparing]").waitFor({
-      state: "visible", timeout: 5_000,
-    });
+    // The buyer link must be actionable before this 8.5s advisor session expires.
     const partnerLink = homeSessionTimeoutPage.getByRole("link", {
       name: /QA Home Timeout Partner öffnen/,
     });
-    await partnerLink.waitFor({ state: "visible", timeout: 12_000 });
+    await partnerLink.waitFor({ state: "visible", timeout: 5_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await partnerLink.getAttribute("href"));
     const homeMeasurementSid = failOpenUrl.searchParams.get("sid");

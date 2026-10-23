@@ -13,11 +13,7 @@ import {
 import type { MerchantPartnersPayload } from "@/lib/types";
 import { subscribeMeasurement } from "@/lib/measurementConsent";
 
-export default function MerchantDiscovery({
-  sessionSettled,
-}: {
-  sessionSettled: boolean;
-}) {
+export default function MerchantDiscovery() {
   const [payload, setPayload] = useState<
     MerchantPartnersPayload | null | undefined
   >(undefined);
@@ -131,43 +127,30 @@ export default function MerchantDiscovery({
       </p>
 
       <div className="mt-3 flex flex-wrap gap-2">
-        {payload.partners.map((partner) =>
-          sessionSettled ? (
-            <a
-              key={partner.merchant_id}
-              href={appendAcquisitionAttribution(
-                merchantPartnerClickoutUrl(
-                  partner.merchant_id,
-                ),
-              )}
-              target="_blank"
-              rel="sponsored noopener noreferrer"
-              onClick={() => {
-                void trackAnalyticsEvent("merchant_clickout", {
-                  source: partner.merchant_id,
-                  surface: "merchant_discovery",
-                });
-              }}
-              className="rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2 text-[12.5px] font-semibold text-(--ink) transition hover:border-(--accent)"
-            >
-              {partner.merchant_name} öffnen
-              {partner.description ? (
-                <span className="ml-1 font-normal text-(--ink-soft)">
-                  · {partner.description}
-                </span>
-              ) : null}
-            </a>
-          ) : (
-            <span
-              key={partner.merchant_id}
-              aria-disabled="true"
-              data-partner-clickout-preparing
-              className="cursor-wait rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2 text-[12.5px] font-semibold text-(--ink) opacity-65"
-            >
-              {partner.merchant_name} wird vorbereitet …
-            </span>
-          ),
-        )}
+        {payload.partners.map((partner) => (
+          <a
+            key={partner.merchant_id}
+            href={appendAcquisitionAttribution(
+              merchantPartnerClickoutUrl(partner.merchant_id),
+            )}
+            target="_blank"
+            rel="sponsored noopener noreferrer"
+            onClick={() => {
+              void trackAnalyticsEvent("merchant_clickout", {
+                source: partner.merchant_id,
+                surface: "merchant_discovery",
+              });
+            }}
+            className="rounded-xl border border-(--line-strong) bg-(--surface) px-3.5 py-2 text-[12.5px] font-semibold text-(--ink) transition hover:border-(--accent)"
+          >
+            {partner.merchant_name} öffnen
+            {partner.description ? (
+              <span className="ml-1 font-normal text-(--ink-soft)">
+                · {partner.description}
+              </span>
+            ) : null}
+          </a>
+        ))}
       </div>
 
       <p className="mt-3 text-[10.5px] leading-4 text-(--ink-soft)">

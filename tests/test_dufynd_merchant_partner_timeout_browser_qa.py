@@ -30,3 +30,27 @@ def test_partner_timeout_preserves_session_and_mobile_retry_coverage() -> None:
     assert "partnerTimeoutRequestCount !== 2" in timeout_qa
     assert "QA Partner Timeout Recovery" in timeout_qa
     assert 'state: "visible", timeout: 12_000' in timeout_qa
+
+
+def test_partner_navigation_does_not_wait_for_advisor_session() -> None:
+    """Public merchant entry needs an eligible offer, not an advisor session."""
+    discovery_source = DISCOVERY.read_text(encoding="utf-8")
+    home_source = Path("examples/retail/storefront-web/components/views/HomeView.tsx").read_text(
+        encoding="utf-8"
+    )
+    page_source = Path("examples/retail/storefront-web/app/page.tsx").read_text(encoding="utf-8")
+    api_source = Path("examples/retail/api/main.py").read_text(encoding="utf-8")
+
+    assert "sessionSettled" not in discovery_source
+    assert "data-partner-clickout-preparing" not in discovery_source
+    assert "payload.partners.map((partner) => (" in discovery_source
+    assert "merchantPartnerClickoutUrl(partner.merchant_id)" in discovery_source
+    assert "appendAcquisitionAttribution(" in discovery_source
+    assert 'trackAnalyticsEvent("merchant_clickout"' in discovery_source
+    assert 'rel="sponsored noopener noreferrer"' in discovery_source
+    assert "<MerchantDiscovery />" in home_source
+    assert "sessionSettled" not in home_source
+    assert "sessionSettled=" not in page_source
+    assert "partner = partner_store.eligible(partner_key)" in api_source
+    assert "partner is None or partner.affiliate_url is None" in api_source
+    assert "Cache-Control" in api_source and "no-store" in api_source
