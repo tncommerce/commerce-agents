@@ -719,3 +719,16 @@
     align-items:center;
   }
 }
+
+
+/* Source-held fragrances need the compact mobile stage; only exact-original
+   hero photography keeps the larger gallery. This preserves the established
+   62vw responsive recovery contract without shrinking approved originals. */
+@media(max-width:390px) {
+  .dufynd-detail-page[data-dufynd-visual-reset="editorial"]
+    [data-dufynd-product-presentation][data-dufynd-photo-status="pending"]
+    .dufynd-fragrance-stage-shell {
+      height:clamp(220px,62vw,258px)!important;
+      min-height:clamp(220px,62vw,258px)!important;
+  }
+}
