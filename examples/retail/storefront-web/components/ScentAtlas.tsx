@@ -3,7 +3,7 @@
 import { useId, useState } from "react";
 import { LIVE_FRAGRANCES, type StaticFragrance } from "@/lib/fragranceCatalog";
 import { noteLabel } from "@/lib/noteLabels";
-import ScentComposition from "./ScentComposition";
+import styles from "./ScentAtlas.module.css";
 import AcquisitionInternalLink from "./AcquisitionInternalLink";
 
 const IDS = ["SC-LANCOME-LA-VIE-EST-BELLE-EDP-100", "SC-YSL-LIBRE-EDP-90", "SC-RABANNE-1-MILLION-EDT-100"];
@@ -18,7 +18,7 @@ function groupsFor(product: StaticFragrance) {
   ).filter(group => group.notes.length);
 }
 
-/** An abstract index of documented notes, never a bottle or a strength/timing claim. */
+/** A typographic index of documented notes, never a bottle or a strength/timing claim. */
 export default function ScentAtlas() {
   const [productIndex, setProductIndex] = useState(0);
   const [layer, setLayer] = useState(0);
@@ -30,7 +30,7 @@ export default function ScentAtlas() {
   const current = groups[layer] || groups[0];
   const activeNote = selectedNote || current?.notes[0] || null;
   const matching = activeNote ? LIVE_FRAGRANCES.filter(p => p.product_id !== product.product_id && Object.values(p.notes).flat().some(note => note.trim().toLocaleLowerCase("en-US") === activeNote.trim().toLocaleLowerCase("en-US"))).slice(0, 2) : [];
-  return <section className="wow-atlas" data-scent-atlas aria-labelledby={`${uid}-title`}>
+  return <section className={`wow-atlas ${styles.atlas}`} data-scent-atlas aria-labelledby={`${uid}-title`}>
     <div className="wow-atlas-top"><div><p className="wow-kicker">02 / Der Duftnoten-Atlas</p><h2 id={`${uid}-title`}>Folge <em>einer Note.</em></h2></div><span className="wow-edition">DUFYND<br />STUDIO</span></div>
     <div className="wow-atlas-grid">
       <div className="wow-atlas-intro">
@@ -40,8 +40,14 @@ export default function ScentAtlas() {
         </select>
         <p className="wow-atlas-variant">{product.concentration} · {product.volume_ml} ml</p>
       </div>
-      <div className="wow-atlas-instrument" data-atlas-layer={layer}>
-        <div className="wow-atlas-material"><ScentComposition phase={productIndex * 2 + Math.max(0, current?.notes.indexOf(activeNote || "") || 0)} /><div className="wow-atlas-core" aria-hidden="true"><small>Deine gewählte Note</small>{activeNote ? noteLabel(activeNote) : "Duftnoten"}</div></div>
+      <div className={`wow-atlas-instrument ${styles.instrument}`} data-atlas-layer={layer}>
+        <div className={`wow-atlas-material ${styles.material}`}>
+          <div className={`wow-atlas-core ${styles.core}`} aria-hidden="true" data-long-label={activeNote && noteLabel(activeNote).length > 18 || undefined}>
+            <small>Deine gewählte Note</small>
+            <strong className={styles.note}>{activeNote ? noteLabel(activeNote) : "Duftnoten"}</strong>
+            <span className={styles.source}>{current?.label} · {current?.notes.length || 0} dokumentierte Noten</span>
+          </div>
+        </div>
       </div>
       <div className="wow-atlas-controls">
         <div className="wow-atlas-layer-buttons" aria-label="Duftnoten-Ebene wählen">
@@ -58,6 +64,6 @@ export default function ScentAtlas() {
         <small>Eine gemeinsame Note bedeutet nicht den gleichen Duft.</small>
       </div>
     </div>
-    <div className="wow-atlas-bottom"><details><summary>Über diese Ansicht</summary><p>Abstrakte Visualisierung dokumentierter Duftnoten. Keine Aussage über Stärke oder Dauer. Quelle: das jeweilige DUFYND-Duftprofil.</p></details><AcquisitionInternalLink href={`/duft/${product.slug}#duftnoten`}>Vollständiges Duftprofil ↗</AcquisitionInternalLink></div>
+    <div className="wow-atlas-bottom"><details><summary>Über diese Ansicht</summary><p>Auswahl dokumentierter Duftnoten. Keine Aussage über Stärke oder Dauer. Quelle: das jeweilige DUFYND-Duftprofil.</p></details><AcquisitionInternalLink href={`/duft/${product.slug}#duftnoten`}>Vollständiges Duftprofil ↗</AcquisitionInternalLink></div>
   </section>;
 }

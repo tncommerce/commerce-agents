@@ -26,6 +26,17 @@
   border-radius:0;
   box-shadow:none;
 }
+.dufynd-detail-page[data-dufynd-product-editorial] > header > div > a:first-child {
+  gap:0;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] > header > div > a:first-child img {
+  display:none;
+}
+.dufynd-detail-page[data-dufynd-product-editorial] > header > div > a:first-child span {
+  font-size:24px;
+  font-weight:700;
+  letter-spacing:-.065em;
+}
 .dufynd-detail-page[data-dufynd-product-editorial] .pe-detail-content {
   padding-top:12px;
 }
@@ -135,6 +146,14 @@
 }
 .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-stage::before,
 .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-stage::after {
+  display:none!important;
+}
+/* The verified photograph is the entire visual. Old synthetic orbit/shadow
+   layers are separate UI decoration and must not survive this paper stage. */
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-fragrance-stage-shell::before,
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-fragrance-stage-shell::after,
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-product-shadow,
+.dufynd-detail-page[data-dufynd-product-editorial] .dufynd-product-sheen {
   display:none!important;
 }
 .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-product-object {
@@ -328,26 +347,19 @@
   .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .dufynd-fragrance-hero-copy {
     grid-column:1!important;
     grid-row:3!important;
-    padding:22px 0 24px!important;
+    padding:18px 0 24px!important;
   }
   .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro {
-    margin-bottom:17px;
+    margin-bottom:12px;
   }
-  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2 {
-    font-size:29px;
-  }
-  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2 br {
+  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2,
+  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .vr-pdp-offer-context {
     display:none;
-  }
-  .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro h2 em::before {
-    content:" ";
   }
   .dufynd-detail-page[data-dufynd-product-editorial] .pe-purchase-intro > p:last-child {
     font-size:12px;
-    margin-top:10px;
-  }
-  .dufynd-detail-page[data-dufynd-product-editorial][data-dufynd-visual-reset] [data-dufynd-product-presentation] .vr-pdp-offer-context {
-    margin-bottom:10px;
+    margin:0;
+    max-width:none;
   }
   .dufynd-detail-page[data-dufynd-product-editorial] :is(.dufynd-notes-overview,.dufynd-fragrance-profile-card,.dufynd-journey-offers,.dufynd-fragrance-advanced,#alternativen) {
     padding:24px 0;

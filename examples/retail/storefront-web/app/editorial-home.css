@@ -36,7 +36,8 @@
 .vr-home .vr-gallery-hero .vr-feature-caption > span:nth-child(3) { grid-column:1/-1; font-size:10px; color:#66575e; }
 .vr-home .vr-gallery-hero .vr-feature-cta { grid-column:2; grid-row:2; align-self:end; margin:0; padding:0 0 4px; font-size:10px; border:0; color:var(--edition-ink); gap:9px; white-space:nowrap; }
 .vr-home .vr-gallery-hero .vr-feature-credit { padding:0 24px; min-height:0; }
-.vr-home .vr-gallery-hero.vr-hero a.vr-feature-atlas { background:transparent; border:0; border-top:1px solid #c9b9c1; color:var(--edition-ink); font-size:11px; min-height:44px; padding:12px 24px; }
+.vr-home .vr-gallery-hero.vr-hero a.vr-feature-atlas { display:flex; flex-direction:row; align-items:center; justify-content:space-between; height:auto; background:transparent; box-shadow:none; border:0; border-top:1px solid #c9b9c1; color:var(--edition-ink); font-size:11px; min-height:44px; padding:12px 24px; }
+.vr-home .vr-gallery-hero a.vr-feature-atlas::before,.vr-home .vr-gallery-hero a.vr-feature-atlas::after { content:none; }
 .vr-home .vr-gallery-hero.vr-hero a.vr-feature-atlas:hover { background:#ddd0d4!important; }
 .vr-home .vr-gallery-hero.vr-hero .vr-hero-foot { background:transparent; color:#6d6268; padding:18px 0 0; margin-top:26px; border-top:1px solid var(--edition-rule); font-size:10px; gap:20px; }
 .vr-home .vr-gallery-hero .vr-hero-foot b { display:inline; color:var(--edition-accent); margin-right:10px; font-weight:500; }
@@ -47,6 +48,8 @@
 .vr-home .wow-section-heading h2 { font-size:clamp(42px,4.6vw,68px); margin:9px 0 0; }
 .vr-home .wow-selection-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; }
 .vr-home .wow-selection-item:nth-child(2) { padding-top:0; }
+.vr-home .wow-selection-item { border:0; box-shadow:none; background:transparent; }
+.vr-home .wow-selection-item > p { padding:10px 0 0; border:0; background:transparent; }
 .vr-home .wow-selection-link { display:grid; grid-template-columns:1fr; background:transparent; color:var(--edition-ink); }
 .vr-home .wow-selection-photo,.vr-home .wow-selection-item:nth-child(2) .wow-selection-photo { height:330px!important; min-height:0!important; background:#fff; border:1px solid #eee8df; }
 .vr-home .wow-selection-photo .dufynd-product-stage { background:#fff!important; }
@@ -54,6 +57,7 @@
 .vr-home .wow-selection-photo .dufynd-product-image { filter:none!important; transform:none!important; }
 .vr-home .wow-selection-photo .dufynd-product-light,.vr-home .wow-selection-photo .dufynd-product-sheen,.vr-home .wow-selection-photo .dufynd-product-stage::before,.vr-home .wow-selection-photo .dufynd-product-stage::after { display:none!important; }
 .vr-home .wow-selection-copy { padding:18px 0 0; }
+.vr-home .wow-selection-copy .wow-text-link { border:0; }
 .vr-home .wow-selection-copy h3 { font:400 40px/1.1 var(--font-editorial),Georgia,serif; letter-spacing:-.025em; margin:7px 0; }
 .vr-home .wow-selection-copy p,.vr-home .wow-selection-notes { font-size:12px; color:#6a6166; }
 .vr-home .wow-selection-notes { margin:10px 0; }

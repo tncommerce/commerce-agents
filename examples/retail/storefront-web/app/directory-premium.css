@@ -73,7 +73,7 @@
   font-size:clamp(38px,4.8vw,58px)!important;
   font-weight:400;
   line-height:1.02;
-  letter-spacing:-.055em;
+  letter-spacing:-.025em;
   margin:0;
   text-wrap:initial;
   overflow-wrap:normal;
@@ -158,7 +158,7 @@
   .dufynd-directory-premium .dufynd-directory-feature-caption small {
   display:block;
   grid-column:1/-1;
-  font-size:9px;
+  font-size:10px;
   letter-spacing:.1em;
   line-height:1.4;
   color:#6d6269;
@@ -181,7 +181,7 @@
   left:10px;
   top:9px;
   padding:0;
-  font-size:8px;
+  font-size:9px;
   background:#ede7e1;
   color:#6d6269;
 }
@@ -209,8 +209,20 @@
   margin:0;
   color:#6d6269;
 }
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-directory-premium [data-social-product-entry] > span {
+  color:#6d6269;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-directory-premium [data-social-product-entry] > span > span {
+  color:inherit;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-directory-premium [data-social-product-entry] > span:last-child {
+  color:#623c4d;
+}
 .dufynd-directory-premium .dufynd-directory-social > span:first-child {
-  font-size:9px;
+  font-size:10px;
   letter-spacing:.09em;
 }
 .dufynd-directory-premium .dufynd-directory-social > span:nth-child(2) {
@@ -219,7 +231,7 @@
   gap:8px;
 }
 .dufynd-directory-premium .dufynd-directory-social > span:nth-child(2) > span {
-  font-size:9px;
+  font-size:10px;
   letter-spacing:.06em;
 }
 .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
@@ -460,16 +472,16 @@
   }
   .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
     .dufynd-directory-premium .dufynd-directory-feature-caption small {
-    font-size:7px;
+    font-size:9px;
     letter-spacing:.04em;
   }
   .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
     .dufynd-directory-premium .dufynd-directory-feature-caption > span {
-    font-size:9px;
+    font-size:10px;
   }
   .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
     .dufynd-directory-premium .dufynd-directory-original-tag {
-    font-size:7px;
+    font-size:9px;
     left:6px;
     top:6px;
     padding:0;
@@ -484,7 +496,7 @@
   }
   .dufynd-directory-premium .dufynd-directory-social > span:first-child {
     grid-column:1/-1;
-    font-size:8px;
+    font-size:10px;
     line-height:1.4;
     margin-bottom:4px;
   }
@@ -523,8 +535,8 @@
     grid-template-columns:minmax(0,1fr) 104px;
     gap:12px 12px;
   }
-  .dufynd-directory-premium .dufynd-directory-social > span:nth-child(2) > span {font-size:8px;}
-  .dufynd-directory-premium .dufynd-directory-social > span:nth-child(3) {font-size:9px;}
+  .dufynd-directory-premium .dufynd-directory-social > span:nth-child(2) > span {font-size:10px;}
+  .dufynd-directory-premium .dufynd-directory-social > span:nth-child(3) {font-size:10px;}
   .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
     .dufynd-directory-premium [data-social-product-entry] > span:nth-child(2) strong {font-size:21px!important;}
 }
