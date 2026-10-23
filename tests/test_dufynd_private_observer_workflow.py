@@ -82,3 +82,18 @@ def test_observer_finalize_survives_unrelated_public_merchant_outage() -> None:
     dedicated = Path(".github/workflows/dufynd-production-smoke.yml").read_text(encoding="utf-8")
     assert "python scripts/dufynd_production_smoke.py --expected-indexing enabled" in dedicated
     assert "if python scripts/dufynd_production_smoke.py" in dedicated
+
+
+def test_private_observer_failure_receipt_has_pinned_python_dependencies() -> None:
+    """A failed broker read must not lose the bounded failure receipt to missing Pydantic."""
+    workflow = workflow_source()
+    failure_receipt = workflow.split("  failure-receipt:", 1)[1]
+    read_job = workflow.split("  read:", 1)[1].split("  ingest:", 1)[0]
+    ack_job = workflow.split("  ack:", 1)[1].split("  finalize:", 1)[0]
+    assert "pip install httpx==0.28.1 pydantic==2.13.4" in failure_receipt
+    assert "pip install httpx==0.28.1 pydantic==2.13.4" not in read_job
+    assert "pip install httpx==0.28.1 pydantic==2.13.4" not in ack_job
+    assert "python -m scripts.dufynd_private_observer_failure" in failure_receipt
+    assert "if: failure() && needs.read.result == 'failure'" in failure_receipt
+    assert "GMAIL_REFRESH_TOKEN" not in failure_receipt
+    assert 'gh run download "$GITHUB_RUN_ID"' in failure_receipt
