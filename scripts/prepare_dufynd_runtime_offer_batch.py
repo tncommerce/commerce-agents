@@ -40,9 +40,7 @@ def prepare_batch(
     if evidence.get("schema_version") != 1:
         raise ValueError("unsupported_batch_schema")
     batch_id = evidence.get("batch_id")
-    if not isinstance(batch_id, str) or not re.fullmatch(
-        r"[A-Za-z0-9._:-]{8,120}", batch_id
-    ):
+    if not isinstance(batch_id, str) or not re.fullmatch(r"[A-Za-z0-9._:-]{8,120}", batch_id):
         raise ValueError("invalid_batch_id")
     items = evidence.get("offers")
     if not isinstance(items, list) or not 1 <= len(items) <= 50:
@@ -178,8 +176,7 @@ def main() -> int:
                 "batch_id": raw["batch_id"],
                 "count": len(prepared),
                 "offers": [
-                    {"offer_id": r["offer_id"], "decision": r["decision"]}
-                    for r in prepared
+                    {"offer_id": r["offer_id"], "decision": r["decision"]} for r in prepared
                 ],
                 "publication_change": False,
                 "affiliate_link_change": False,

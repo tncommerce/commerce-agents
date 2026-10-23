@@ -13,9 +13,7 @@ from retail.api import purchase_freshness, runtime_offer_snapshots
 from retail.api.merchant_offers import MerchantOfferStore, offer_clickout_target
 
 OFFER_FILE = Path("examples/retail/data/merchant_offers.json")
-MIGRATION = Path(
-    "supabase/migrations/20261023221100_dufynd_runtime_offer_snapshots_v1.sql"
-)
+MIGRATION = Path("supabase/migrations/20261023221100_dufynd_runtime_offer_snapshots_v1.sql")
 
 
 def canonical() -> dict:
@@ -106,9 +104,7 @@ def test_one_exact_verified_batch_updates_both_list_and_clickout(monkeypatch) ->
 
 
 @pytest.mark.parametrize("database_result", [None, {}])
-def test_no_database_observation_never_republishes_stale_file(
-    monkeypatch, database_result
-) -> None:
+def test_no_database_observation_never_republishes_stale_file(monkeypatch, database_result) -> None:
     monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
     monkeypatch.setattr(
         runtime_offer_snapshots, "load_runtime_snapshots", lambda _: database_result
@@ -238,7 +234,7 @@ def test_migration_closes_public_data_api_and_keeps_audit() -> None:
 
 def test_no_extra_public_api_or_unverified_schema_changes() -> None:
     source = Path("examples/retail/api/main.py").read_text(encoding="utf-8")
-    assert 'offers = await run_in_threadpool(offer_store.offers_for, product_id)' in source
-    assert 'offer = await run_in_threadpool(offer_store.eligible_offer, offer_id)' in source
-    assert 'if offer is None or not _live_dufynd_offer_product(offer.product_id):' in source
-    assert 'target = offer_clickout_target(offer)' in source
+    assert "offers = await run_in_threadpool(offer_store.offers_for, product_id)" in source
+    assert "offer = await run_in_threadpool(offer_store.eligible_offer, offer_id)" in source
+    assert "if offer is None or not _live_dufynd_offer_product(offer.product_id):" in source
+    assert "target = offer_clickout_target(offer)" in source

@@ -51,9 +51,9 @@ def runtime_offer_snapshots_enabled() -> bool:
 def identity_hash(canonical: dict[str, Any]) -> str:
     """Hash only fields that data refreshes are forbidden to change."""
     frozen = {field: canonical.get(field) for field in IDENTITY_FIELDS}
-    encoded = json.dumps(
-        frozen, sort_keys=True, ensure_ascii=False, separators=(",", ":")
-    ).encode("utf-8")
+    encoded = json.dumps(frozen, sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode(
+        "utf-8"
+    )
     return hashlib.sha256(encoded).hexdigest()
 
 

@@ -264,11 +264,7 @@ class MerchantOfferStore:
             return [
                 MerchantOffer.model_validate(verified)
                 for row in rows
-                if (
-                    verified := apply_runtime_snapshot(
-                        row, snapshots.get(row["offer_id"])
-                    )
-                )
+                if (verified := apply_runtime_snapshot(row, snapshots.get(row["offer_id"])))
                 is not None
             ]
 
