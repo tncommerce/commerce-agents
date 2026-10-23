@@ -247,6 +247,33 @@ class MerchantOfferStore:
             if (product_id is None or row["product_id"] == product_id)
             and (offer_id is None or row["offer_id"] == offer_id)
         ]
+        # A one-time, owner-approved rollout can switch live commerce values to
+        # private Supabase snapshots without committing prices or deploying each
+        # 72-hour refresh. No snapshot, failed auth or uncertain source => no
+        # purchase action. Always use the released file for destination and SKU.
+        from .runtime_offer_snapshots import (
+            apply_runtime_snapshot,
+            load_runtime_snapshots,
+            runtime_offer_snapshots_enabled,
+        )
+
+        if runtime_offer_snapshots_enabled():
+            snapshots = load_runtime_snapshots(rows)
+            if snapshots is None:
+                return []
+            return [
+                MerchantOffer.model_validate(verified)
+                for row in rows
+                if (
+                    verified := apply_runtime_snapshot(
+                        row, snapshots.get(row["offer_id"])
+                    )
+                )
+                is not None
+            ]
+
+        # Legacy source remains the production default until the schema, first
+        # verified snapshot batch and explicit deployment GO are complete.
         from .purchase_freshness import apply_evidence, evidence_for
 
         return [
