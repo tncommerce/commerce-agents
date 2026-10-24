@@ -111,3 +111,38 @@ Katalog-/Affiliate-Onboarding-Release.
 
 Die Arbeit hier ersetzt nicht die Freigabe eines neuen Produkts,
 unveränderte genehmigte Affiliate-Ziele oder korrekte Werbung-/Preislabels.
+
+
+## Ergänzung: skalierbare Evidenz- und Produktprüfung (24.10., nur DEV)
+
+Die autorisierte Händleridentität liegt weiterhin **nicht** im Preisbatch.
+Ein als \`verified\` importierter Datensatz benötigt jetzt zusätzlich:
+- aktives Händlerprogramm und bereits freigegebenen, unveränderten Affiliate-Link,
+- bei eingeschränkten Programmen die freigegebene \`verified_product_scope\`,
+- exakte Hersteller-/Marke-, Konzentrations-, Volumen- und GTIN/EAN-Übereinstimmung
+  mit \`catalog.json\` und einem als \`verified_current_variant\` gekennzeichneten
+  Händler-Mapping. Der neue Quellenbeleg enthält \`brand\`, \`concentration\`,
+  \`volume_ml\` (Integer) und \`ean\` (GTIN mit gültiger Prüfziffer).
+Fehlt eines der Felder, erfolgt kein automatischer Ersatz durch ausgedachte Werte.
+Ein explizites \`hold\` darf ein bereits gespeichertes Angebot weiterhin sperren.
+
+Für neue Bilder/Produkte existiert zusätzlich ein **rein lesender**
+10–20-Produkte-Preflight über bereits vorhandene Quellen:
+
+\`\`\`sh
+python -m scripts.report_dufynd_commerce_scale_wave --batch-size 20 \
+  --output /tmp/dufynd-commerce-review-wave.json
+\`\`\`
+
+Optional kann ein frischer, bereits vom vorhandenen offiziellen Awin-Bildskript
+erzeugter \`--photo-wave\` mitgegeben werden. Abgelaufene Feed-Metadaten
+oder ein ungesichertes Bild werden dadurch nicht freigegeben.
+Das Ergebnis trennt Informationsprofil, **bereits** freigegebenes Originalbild
+und aktuellen/verifizierungsbedürftigen Händlerbeleg. Erwartete 72h-Abläufe
+sind keine API-Störung; nur ein unabhängig nachgewiesenes
+\`--api-status unavailable\` wird als technischer Incident markiert.
+Ohne Beobachtung ist der API-Status ausdrücklich \`not_checked\`.
+
+Der Report schreibt nicht in Supabase und eröffnet keinerlei Kauf-/Bild-/
+Produktfreigabe. Notino- und Awin-Feed-Inhalte werden nicht künstlich
+aktualisiert; die externe Quelle bleibt ein separates Qualitäts-Gate.

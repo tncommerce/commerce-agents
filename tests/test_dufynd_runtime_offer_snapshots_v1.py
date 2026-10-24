@@ -53,6 +53,10 @@ def evidence(row: dict, *, now: datetime | None = None) -> dict:
                 "product_id": row["product_id"],
                 "merchant_product_id": row["merchant_product_id"],
                 "variant_label": row["variant_label"],
+                "brand": "Yves Saint Laurent",
+                "concentration": "Eau de Parfum",
+                "volume_ml": 90,
+                "ean": "3614272648425",
                 "price": 119.0,
                 "shipping_cost": 0.0,
                 "in_stock": True,
@@ -242,3 +246,48 @@ def test_no_extra_public_api_or_unverified_schema_changes() -> None:
     assert "offer = await run_in_threadpool(offer_store.eligible_offer, offer_id)" in source
     assert "if offer is None or not _live_dufynd_offer_product(offer.product_id):" in source
     assert "target = offer_clickout_target(offer)" in source
+
+
+def test_verified_batch_rejects_unapproved_partner_and_wrong_ean() -> None:
+    row = canonical()
+    packet = evidence(row)
+    stamp = datetime.now(UTC)
+    for bad_ean in ("3614272648426", "0000000000000", "", None):
+        altered = json.loads(json.dumps(packet))
+        altered["offers"][0]["ean"] = bad_ean
+        with pytest.raises(ValueError, match="ean"):
+            prepare_batch([row], altered, now=stamp)
+
+    for field, bad in (("brand", "Wrong"), ("volume_ml", 50), ("concentration", "Parfum")):
+        altered = json.loads(json.dumps(packet))
+        altered["offers"][0][field] = bad
+        with pytest.raises(ValueError, match="brand_concentration_or_volume"):
+            prepare_batch([row], altered, now=stamp)
+
+    with pytest.raises(ValueError, match="partner_or_approved"):
+        prepare_batch(
+            [row],
+            packet,
+            now=stamp,
+            partners_payload={
+                "partners": [
+                    {
+                        "merchant_id": "notino",
+                        "status": "active_product_deeplink_only",
+                        "verified_product_scope": [],
+                        "live_routing_allowed": True,
+                    }
+                ]
+            },
+        )
+
+
+def test_hold_can_revoke_a_row_without_new_affiliate_or_ean_approval() -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0]["decision"] = "hold"
+    packet["offers"][0].pop("ean")
+    result = prepare_batch(
+        [row], packet, now=datetime.now(UTC), partners_payload={"partners": []}
+    )
+    assert result[0]["decision"] == "hold"

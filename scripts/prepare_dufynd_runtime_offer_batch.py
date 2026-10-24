@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any
 
 import httpx
+from scripts.dufynd_commerce_gates import approved_affiliate_route, verify_exact_variant
 from examples.retail.api.runtime_offer_snapshots import (
     PROJECT_URL,
     SOURCE_TYPES,
@@ -28,6 +29,9 @@ from examples.retail.api.runtime_offer_snapshots import (
 )
 
 CANONICAL = Path("examples/retail/data/merchant_offers.json")
+PARTNERS = Path("examples/retail/data/merchant_partners.json")
+MAPPINGS = Path("examples/retail/data/merchant_product_mappings.json")
+CATALOG = Path("examples/retail/data/catalog.json")
 
 
 def prepare_batch(
@@ -35,8 +39,17 @@ def prepare_batch(
     evidence: dict[str, Any],
     *,
     now: datetime,
+    partners_payload: dict[str, Any] | None = None,
+    mappings_payload: dict[str, Any] | None = None,
+    catalog_payload: dict[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
-    """Validate an entire batch before producing ANY row (all-or-nothing)."""
+    """Validate one entire batch; recheck program, SKU, EAN and concentration."""
+    if partners_payload is None:
+        partners_payload = json.loads(PARTNERS.read_text(encoding="utf-8"))
+    if mappings_payload is None:
+        mappings_payload = json.loads(MAPPINGS.read_text(encoding="utf-8"))
+    if catalog_payload is None:
+        catalog_payload = json.loads(CATALOG.read_text(encoding="utf-8"))
     if evidence.get("schema_version") != 1:
         raise ValueError("unsupported_batch_schema")
     batch_id = evidence.get("batch_id")
@@ -68,6 +81,10 @@ def prepare_batch(
         decision = item.get("decision")
         if decision not in {"verified", "hold"}:
             raise ValueError("decision_must_be_verified_or_hold")
+        if decision == "verified":
+            if not approved_affiliate_route(original, partners_payload):
+                raise ValueError("partner_or_approved_tracked_route_missing")
+            verify_exact_variant(original, item, catalog_payload, mappings_payload)
         kind = item.get("source_type")
         if kind not in SOURCE_TYPES:
             raise ValueError("unapproved_evidence_type")
