@@ -368,6 +368,34 @@ oder den visuellen Owner-Variantencheck.
 Offizielle Awin-Dokumentation: https://help.awin.com/developers/docs/product-feed-list-download
 
 
+### 24.10.2026 – Awin-FID-Provenienz und aussagekräftige Evidenz (DEV only)
+
+Die vorhandene Awin-Feed-List liefert einen authentifizierten Eintrag für
+Advertiser 31081 und Feed 91379, aber ihre **Download-URL darf nicht allein
+wegen der erlaubten Host-Domain als dieselbe Feed-Version gelten**.
+Der Offline-Downloader bricht vor dem Dateidownload ab, wenn das
+`/fid/<ID>/`-Pfadsegment fehlt, einen anderen Feed bezeichnet oder
+gleichzeitig eine abweichende bzw. doppelte `fid`-Query enthält.
+Zugangsdaten im URL-Userinfo-Feld, ein anderer HTTPS-Port, Fragmente und
+Kontrollzeichen werden ebenfalls abgewiesen. Gleiches gilt für HTTP-Redirects:
+Sie müssen zusätzlich zum erlaubten HTTPS-Host die ursprüngliche Feed-ID
+erhalten. Gesperrte URLs werden nicht als neue Belegdaten gespeichert.
+
+Der separate geprüfte Preis-Batch benötigt jetzt auch eine **nichtleere,
+begrenzte Originalbeobachtung** und eine nichtleere kontrollzeichenfreie
+Quellenreferenz. Der Paket-Digest beweist dabei nur den unveränderten
+eingereichten Inhalt, **keine** externe Händlerbestätigung. Historische
+Metadaten, fehlende Bildrechte, Lagerbestand oder Preisfrische werden durch
+diese Schutzregeln nicht nachträglich verifiziert.
+
+Neue isolierte Regressionstestfälle decken falsche FIDs, URL-/Redirect-
+Manipulationen, leere Referenzen und leere Originalbeobachtungen ab.
+Alle Änderungen bleiben ausschließlich im Draft-PR #837. Neue CI-Läufe
+wurden wegen ungeklärter GitHub-Actions-Kosten mit `[skip ci]` vermieden;
+eine vollständige CI-/Integrations-Abnahme für diesen neuen HEAD ist
+noch **offen**. Kein Awin-Login, Feedabruf, Händler-Clickout, Produktiv-
+Merge, Deployment oder Supabase-Migrationslauf wurde ausgelöst.
+
 ## 24.10.2026 – Verbindliches Runtime-Händlergate und Cache-Credential-Isolation
 
 Zusätzliche P0-Sicherheitslücke in der vorbereiteten, noch **nicht** live
