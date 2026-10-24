@@ -220,3 +220,35 @@ def test_current_repo_contains_no_auto_approvable_20_item_photo_batch():
     assert report["original_image_approvals_granted"] == 0
     assert report["approved_merchant_offers_created"] == 0
     assert all(row["public_catalog_release_authorized"] is False for row in report["items"])
+
+
+
+def test_cross_merchant_gtin_conflict_blocks_photo_candidate_discovery():
+    staged, public, photos, mappings, offers, partners = inputs()
+    mappings["mappings"].append(
+        {
+            "product_id": PRODUCT_ID,
+            "merchant": "perfumetrader",
+            "merchant_product_id": "999201",
+            "gtin": "4000000000016",
+            "mapping_status": "unverified",
+        }
+    )
+    report = run(
+        staged,
+        public,
+        photos,
+        mappings,
+        offers,
+        partners,
+        feed_rows=feed(),
+        feed_metadata=official_metadata(),
+        rights=rights(),
+    )
+    row = next(x for x in report["items"] if x["product_id"] == PRODUCT_ID)
+    assert row["cross_merchant_gtin_conflict"] is True
+    assert row["priority"] == "CROSS_MERCHANT_GTIN_CONFLICT_HOLD"
+    assert row["eligible_for_official_photo_candidate_search"] is False
+    assert row["independent_variant_identity_resolution_required"] is True
+    assert row["official_feed_photo_review_lead_count"] == 0
+    assert report["original_image_approvals_granted"] == 0

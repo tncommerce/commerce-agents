@@ -47,3 +47,10 @@ werden in diesem Dossier weder ergänzt noch aktiviert.
 Eine optionale aktuelle offizielle Feed-Datei wird ausschließlich von
 `report_dufynd_public_photo_feed_leads.create_review` verarbeitet.
 Keine neuen Zugänge, Abos, Migrations-/Render-Aktionen oder Kosten freigegeben.
+
+
+**Identitätskonflikte sperren bereits die Bildquellen-Vorschlagsphase:**
+Wenn gespeicherte Händler-GTINs für denselben Duft widersprechen, wird
+kein aktueller Awin-Feedtreffer als Bild-Review-Kandidat für diesen Duft
+ausgegeben, bevor die genaue Produktidentität unabhängig geklärt ist.
+Dies betrifft in der heutigen Charge Amouage Reflection Man 100 ml.

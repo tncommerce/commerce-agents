@@ -103,7 +103,10 @@ def build_unpublished_source_queue(
             source_paths.append("CURRENT_RIGHTS_SCOPED_SOURCE_DISCOVERY_REQUIRED")
 
         is_missing_image = row["original_image_gate"] == "NO_APPROVED_ORIGINAL"
-        if is_missing_image:
+        identity_hold = len(gtins) > 1
+        # Conflicting recorded barcodes require independent variant resolution
+        # before even proposing a merchant image for human review.
+        if is_missing_image and not identity_hold:
             photo_gap.append(
                 {
                     "product_id": pid,
@@ -124,7 +127,7 @@ def build_unpublished_source_queue(
         priority = (
             "EXISTING_TRACKED_ROUTE_IMAGE_HOLD" if already_tracked else "SOURCE_ACQUISITION_HOLD"
         )
-        if len(gtins) > 1:
+        if identity_hold:
             priority = "CROSS_MERCHANT_GTIN_CONFLICT_HOLD"
         item = {
             "product_id": pid,
@@ -136,7 +139,10 @@ def build_unpublished_source_queue(
             "mapped_merchants": merchants,
             "recorded_merchant_mapping_count": len(known),
             "already_verified_sku_gtin_pair_count": len(verified),
-            "cross_merchant_gtin_conflict": len(gtins) > 1,
+            "cross_merchant_gtin_conflict": identity_hold,
+            "independent_variant_identity_resolution_required": identity_hold,
+            "eligible_for_official_photo_candidate_search": is_missing_image
+            and not identity_hold,
             "previously_stored_affiliate_route_exists": already_tracked,
             "source_paths": source_paths,
             "original_photo_gate": row["original_image_gate"],
