@@ -10,7 +10,7 @@ import os
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urlparse
+from urllib.parse import parse_qs, quote, urlparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 DEFAULT_LIST_MAX_BYTES = 8 * 1024 * 1024
@@ -21,16 +21,67 @@ ALLOWED_FEED_HOSTS = {
 }
 
 
+def _validate_feed_download_url(url: str, *, feed_id: str) -> None:
+    """Bind a secret-bearing Awin download URL to its selected feed identity.
+
+    The authenticated list row may contain a URL for a *different* feed.
+    A host-only check could download that feed and mislabel its provenance.
+    """
+    parsed = urlparse(url)
+    try:
+        valid_host = (
+            url == url.strip()
+            and parsed.scheme == "https"
+            and parsed.hostname in ALLOWED_FEED_HOSTS
+            and parsed.username is None
+            and parsed.password is None
+            and parsed.port is None
+            and not parsed.fragment
+        )
+    except ValueError:
+        valid_host = False
+    if not valid_host:
+        raise ValueError("awin_feed_download_host_not_allowed")
+
+    segments = parsed.path.split("/")
+    positions = [i for i, segment in enumerate(segments) if segment == "fid"]
+    if (
+        len(positions) != 1
+        or positions[0] + 1 >= len(segments)
+        or segments[positions[0] + 1] != feed_id
+    ):
+        raise ValueError("awin_feed_download_feed_id_mismatch")
+    # Reject any contradictory or duplicated feed-ID query override.
+    query_feed_ids = parse_qs(parsed.query, keep_blank_values=True).get("fid", [])
+    if query_feed_ids and query_feed_ids != [feed_id]:
+        raise ValueError("awin_feed_download_feed_id_mismatch")
+
+
 class AwinRedirectHandler(HTTPRedirectHandler):
+    def __init__(self, *, expected_feed_id: str | None = None) -> None:
+        super().__init__()
+        self.expected_feed_id = expected_feed_id
+
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         parsed = urlparse(newurl)
-        if (
-            parsed.scheme != "https"
-            or parsed.hostname not in ALLOWED_FEED_HOSTS
-            or parsed.username is not None
-            or parsed.password is not None
-        ):
+        try:
+            valid_host = (
+                parsed.scheme == "https"
+                and parsed.hostname in ALLOWED_FEED_HOSTS
+                and parsed.username is None
+                and parsed.password is None
+                and parsed.port is None
+                and not parsed.fragment
+            )
+        except ValueError:
+            valid_host = False
+        if not valid_host:
             raise ValueError("awin_redirect_host_not_allowed")
+        if self.expected_feed_id is not None:
+            try:
+                _validate_feed_download_url(newurl, feed_id=self.expected_feed_id)
+            except ValueError:
+                raise ValueError("awin_redirect_feed_id_mismatch") from None
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
@@ -116,7 +167,7 @@ def sanitized_feed_metadata(row: dict[str, str]) -> dict[str, str | bool]:
     }
 
 
-def _read_url(url: str, *, max_bytes: int) -> bytes:
+def _read_url(url: str, *, max_bytes: int, expected_feed_id: str | None = None) -> bytes:
     request = Request(
         url,
         headers={
@@ -125,7 +176,9 @@ def _read_url(url: str, *, max_bytes: int) -> bytes:
         },
     )
     try:
-        with build_opener(AwinRedirectHandler()).open(request, timeout=60) as response:
+        with build_opener(AwinRedirectHandler(expected_feed_id=expected_feed_id)).open(
+            request, timeout=60
+        ) as response:
             chunks: list[bytes] = []
             total = 0
             while True:
@@ -164,9 +217,7 @@ def download_feed_from_list(
         raise ValueError("awin_program_membership_not_joined")
 
     download_url = _row_value(row, "URL")
-    parsed = urlparse(download_url)
-    if parsed.scheme != "https" or parsed.hostname not in ALLOWED_FEED_HOSTS:
-        raise ValueError("awin_feed_download_host_not_allowed")
+    _validate_feed_download_url(download_url, feed_id=feed_id)
 
     report = {
         "version": 1,
@@ -181,7 +232,8 @@ def download_feed_from_list(
 
     if output_path is not None:
         feed_payload = _maybe_decompress(
-            _read_url(download_url, max_bytes=feed_max_bytes), max_bytes=feed_max_bytes
+            _read_url(download_url, max_bytes=feed_max_bytes, expected_feed_id=feed_id),
+            max_bytes=feed_max_bytes
         )
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(feed_payload)
