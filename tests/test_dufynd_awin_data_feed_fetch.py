@@ -199,20 +199,49 @@ def test_two_distinct_awin_advertisers_keep_separate_identities() -> None:
     "bad_url",
     [
         # A row for the chosen feed must not download a different feed.
-        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/99999/format/csv/",
-        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/format/csv/",
-        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/fid/99999/",
-        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/?fid=99999",
-        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/?fid=91379&fid=99999",
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/99999/format/csv/"
+        ),
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/format/csv/"
+        ),
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/91379/fid/99999/"
+        ),
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/91379/?fid=99999"
+        ),
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/91379/?fid=91379&fid=99999"
+        ),
         # A correct-looking ID does not waive URL-origin restrictions.
-        "http://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/",
-        "https://user:pw@datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/",
-        "https://datafeed.api.productserve.com:4443/datafeed/download/apikey/SECRET/fid/91379/",
-        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/#wrong",
+        (
+            "http://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/91379/"
+        ),
+        (
+            "https://user:pw@datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/91379/"
+        ),
+        (
+            "https://datafeed.api.productserve.com:4443/datafeed/download/apikey/"
+            "SECRET/fid/91379/"
+        ),
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/91379/#wrong"
+        ),
         "https://outside.example/datafeed/download/apikey/SECRET/fid/91379/",
     ],
 )
-def test_awin_feed_download_rejects_false_provenance_or_unsafe_url(bad_url: str) -> None:
+def test_awin_feed_download_rejects_false_provenance_or_unsafe_url(
+    bad_url: str,
+) -> None:
     with pytest.raises(ValueError, match="awin_feed_download_") as exc:
         awin._validate_feed_download_url(bad_url, feed_id="91379")
     assert "SECRET" not in str(exc.value)
@@ -221,8 +250,14 @@ def test_awin_feed_download_rejects_false_provenance_or_unsafe_url(bad_url: str)
 @pytest.mark.parametrize(
     "redirect_url",
     [
-        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/99999/format/csv/",
-        "https://productdata.awin.com/datafeed/download/apikey/SECRET/fid/91379/?fid=99999",
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/99999/format/csv/"
+        ),
+        (
+            "https://productdata.awin.com/datafeed/download/apikey/"
+            "SECRET/fid/91379/?fid=99999"
+        ),
         "https://datafeed.api.productserve.com/other-path",
     ],
 )
@@ -243,7 +278,10 @@ def test_awin_download_redirect_can_remain_on_same_feed() -> None:
     request = Request(
         "https://productdata.awin.com/datafeed/download/apikey/SECRET/fid/91379/"
     )
-    url = "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/format/csv/"
+    url = (
+        "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+        "SECRET/fid/91379/format/csv/"
+    )
     redirected = awin.AwinRedirectHandler(expected_feed_id="91379").redirect_request(
         request, None, 302, "Found", {}, url
     )
