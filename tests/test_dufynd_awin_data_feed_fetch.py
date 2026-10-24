@@ -219,6 +219,14 @@ def test_two_distinct_awin_advertisers_keep_separate_identities() -> None:
             "https://datafeed.api.productserve.com/datafeed/download/apikey/"
             "SECRET/fid/91379/?fid=91379&fid=99999"
         ),
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/91379/?FID=99999"
+        ),
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/apikey/"
+            "SECRET/fid/91" + chr(10) + "379/"
+        ),
         # A correct-looking ID does not waive URL-origin restrictions.
         (
             "http://datafeed.api.productserve.com/datafeed/download/apikey/"
