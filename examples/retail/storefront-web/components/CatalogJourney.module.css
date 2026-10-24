@@ -26,6 +26,13 @@
   .trayBody { grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; }
   .slot { padding-right: 30px; }
 }
-@media (min-width: 768px) {
+/* Tablet visitors should see actual fragrance results first. Keep the filters
+   available behind an accessible disclosure until the desktop breakpoint. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .searchRow { grid-template-columns: minmax(0, 1fr) 108px; align-items: end; }
+  .searchRow > label { grid-column: 1; }
+  .searchRow > button { grid-column: 2; align-self: end; }
+}
+@media (min-width: 1024px) {
   .showResults { display: none; }
 }

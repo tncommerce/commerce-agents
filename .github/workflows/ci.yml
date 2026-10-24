@@ -177,6 +177,10 @@ jobs:
             fi
             sleep 1
           done
+          if [ "${{ github.head_ref }}" = "dufynd-visual-first-reset-20261023" ]; then
+            node retail/storefront-web/scripts/capture-editorial-review.mjs \
+              http://127.0.0.1:3000 retail/storefront-web/.visual-qa/editorial-review
+          fi
           node retail/storefront-web/scripts/test-funnel-pending-image.mjs http://127.0.0.1:3000
           node retail/storefront-web/scripts/dufynd-visual-qa.mjs \
             --base-url http://127.0.0.1:3000 \
@@ -208,8 +212,31 @@ jobs:
           pip install -r requirements-dev.txt
           PYTHONPATH=examples python tests/browser/build_control_room_fixture.py /tmp/control-room-fixture.json
           NODE_PATH=examples/node_modules node tests/browser/control_room_evidence.cjs /tmp/control-room-fixture.json
+      # Visual-reset PR has large ~175MB browser suites. Execute ALL checks
+      # unchanged, but persist only the curated owner-review captures and reports.
+      # This limits artifact storage to a few MB; other PRs retain full evidence.
+      - name: Upload compact DUFYND visual reset evidence
+        if: always() && github.head_ref == 'dufynd-visual-first-reset-20261023'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dufynd-visual-qa-${{ github.event.pull_request.number }}
+          path: |
+            examples/retail/storefront-web/.visual-qa/editorial-review
+            examples/retail/storefront-web/.visual-qa/report.json
+            examples/retail/storefront-web/.visual-qa/wow22-metrics.json
+            examples/retail/storefront-web/.visual-qa/wow22-home-*-first.png
+            examples/retail/storefront-web/.visual-qa/wow22-catalog-*-first.png
+            examples/retail/storefront-web/.visual-qa/wow22-rabanne-*-first.png
+            examples/retail/storefront-web/.visual-qa/wow22-home-390-audiences.png
+            examples/retail/storefront-web/.visual-qa/wow22-home-390-selection.png
+            examples/retail/storefront-web/.visual-qa/product-presentation/yves-saint-laurent-black-opium-*.png
+            examples/retail/storefront-web/.visual-qa/product-presentation/report.json
+            examples/retail/storefront-web/.visual-qa/review-wave/report.json
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 1
       - name: Upload DUFYND visual QA captures
-        if: always()
+        if: always() && github.head_ref != 'dufynd-visual-first-reset-20261023'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: dufynd-visual-qa-${{ github.event.pull_request.number }}

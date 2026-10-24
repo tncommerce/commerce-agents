@@ -3,12 +3,25 @@
 
 import type { Metadata } from "next";
 import MeasurementPreferences from "@/components/MeasurementPreferences";
-import { Instrument_Sans } from "next/font/google";
+import { Instrument_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import "./premium-discovery.css";
 import "./atelier.css";
+import "./visual-reset.css";
 import "./product-presentation.css";
+import "./gallery-direction.css";
+import "./editorial-home.css";
+import "./directory-premium.css";
+import "./product-editorial.css";
 import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
+
+const instrumentSerif = Instrument_Serif({
+  weight: "400",
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  variable: "--font-editorial",
+  display: "optional",
+});
 
 const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
@@ -71,7 +84,7 @@ const websiteStructuredData = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={instrumentSans.variable}>
+    <html lang="de" className={`${instrumentSans.variable} ${instrumentSerif.variable}`}>
       <body>
         <script
           type="application/ld+json"

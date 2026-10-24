@@ -191,7 +191,7 @@ const viewports = [
 ];
 
 const coreRoutes = [
-  { name: "home", route: "/", marker: "Finde den Duft," },
+  { name: "home", route: "/", marker: "Nicht irgendein" },
   {
     name: "social-start",
     route: "/start",

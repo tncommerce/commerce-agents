@@ -42,7 +42,16 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       await chooseMeasurement(page, "denied");
       const search = page.getByRole("searchbox", { name: "Duft, Marke oder Profil" });
       await search.fill("Yves Saint Laurent");
-      if (width < 768) await page.locator('button[aria-controls="catalog-filter-panel"]').click();
+      if (width < 1024) {
+        const toggle = page.locator('button[aria-controls="catalog-filter-panel"]');
+        const panel = page.locator("#catalog-filter-panel");
+        assert.equal(await toggle.isVisible(), true, "mobile and tablet visitors can open advanced filters");
+        assert.equal(await panel.isVisible(), false, "advanced filters start closed below desktop");
+        await toggle.click();
+        assert.equal(await panel.isVisible(), true, "filter disclosure expands on demand");
+      } else {
+        assert.equal(await page.locator("#catalog-filter-panel").isVisible(), true, "desktop keeps advanced filters visible");
+      }
       const filters = page.getByRole("region", { name: "Duftkatalog filtern" });
       await filters.evaluate(el => el.scrollIntoView({ block: "start" }));
       for (const target of await filters.locator("button").all()) {
@@ -54,11 +63,13 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       await page.waitForFunction(() => document.activeElement?.id === "catalog-results");
       assert.equal(await page.locator("#catalog-results").evaluate(el => el === document.activeElement), true, "search key moves focus to results");
       assert.ok((await page.locator("#catalog-results").boundingBox()).height >= 24, "keyboard results focus has a visible heading");
-      if (width < 768) assert.equal(await page.locator("#catalog-filter-panel").isVisible(), false);
+      if (width < 1024) assert.equal(await page.locator("#catalog-filter-panel").isVisible(), false, "Enter focuses matching results and closes advanced filters");
       const cards = page.locator(".dufynd-catalog-card");
       assert.equal(await cards.count(), 2);
       await cards.nth(0).getByRole("button", { name: /für Vergleich auswählen/ }).click();
+      assert.equal(await cards.nth(0).getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "first comparison click survives results-heading blur");
       await cards.nth(1).getByRole("button", { name: /für Vergleich auswählen/ }).click();
+      assert.equal(await cards.nth(1).getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "second comparison click is retained");
       await cards.nth(1).evaluate(el => el.scrollIntoView({ block: "start" }));
       const tray = page.getByRole("complementary", { name: "Duftvergleich vorbereiten" });
       const rect = await tray.boundingBox();
