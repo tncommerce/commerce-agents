@@ -192,6 +192,8 @@ def test_unpublished_with_approved_image_is_not_reacquired():
 
 
 def test_current_repo_contains_no_auto_approvable_20_item_photo_batch():
+    import json
+
     from scripts.report_dufynd_unpublished_photo_sources import (
         MAPPINGS,
         OFFERS,
@@ -200,9 +202,9 @@ def test_current_repo_contains_no_auto_approvable_20_item_photo_batch():
         PUBLIC,
         STAGING,
     )
-    import json
 
-    read = lambda p: json.loads(p.read_text(encoding="utf-8"))
+    def read(path):
+        return json.loads(path.read_text(encoding="utf-8"))
     report = build_unpublished_source_queue(
         read(STAGING),
         read(PUBLIC),

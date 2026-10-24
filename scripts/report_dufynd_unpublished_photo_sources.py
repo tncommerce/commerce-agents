@@ -22,7 +22,11 @@ from scripts.report_dufynd_commerce_scale_wave import (
     PUBLIC,
     build_commerce_wave,
 )
-from scripts.report_dufynd_public_photo_feed_leads import create_review, read_merchant_feed_rows
+from scripts.report_dufynd_public_photo_feed_leads import (
+    create_review,
+    read_merchant_feed_rows,
+    verify_context,
+)
 
 MAPPINGS = DATA / "merchant_product_mappings.json"
 RIGHTS = DATA / "dufynd_affiliate_feed_image_rights.json"
@@ -159,6 +163,8 @@ def build_unpublished_source_queue(
                 now=now,
             )
         else:
+            # A supplied source is never called current without verification.
+            verify_context(feed_metadata, rights, now=now)
             photo_review = {
                 "status": "NO_UNAPPROVED_IMAGE_GAPS",
                 "products_reviewed": 0,
