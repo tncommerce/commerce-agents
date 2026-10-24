@@ -31,6 +31,7 @@ def _validate_feed_download_url(url: str, *, feed_id: str) -> None:
     try:
         valid_host = (
             url == url.strip()
+            and not any(ord(char) < 32 or ord(char) == 127 for char in url)
             and parsed.scheme == "https"
             and parsed.hostname in ALLOWED_FEED_HOSTS
             and parsed.username is None
@@ -70,7 +71,8 @@ class AwinRedirectHandler(HTTPRedirectHandler):
         parsed = urlparse(newurl)
         try:
             valid_host = (
-                parsed.scheme == "https"
+                not any(ord(char) < 32 or ord(char) == 127 for char in newurl)
+                and parsed.scheme == "https"
                 and parsed.hostname in ALLOWED_FEED_HOSTS
                 and parsed.username is None
                 and parsed.password is None
