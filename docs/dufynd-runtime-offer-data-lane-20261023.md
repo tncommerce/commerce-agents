@@ -230,3 +230,25 @@ unverändert – keine zusätzlichen Download-Schleifen.
 **Perfumetrader:** Awin-Produktfeed im vorhandenen Provider-Config
 \`dufynd_awin_perfumetrader_provider_config.json\` als nicht verfügbar
 gekennzeichnet. Keine erneuten erfolglosen Anmeldungen oder Feed-Resets.
+
+
+## Schreibprüfung & CJ-Inventar (24.10. · nur Entwicklungsbranch)
+
+Der Preisbatch bestätigt \`APPLIED\` jetzt erst nach einem separaten
+**ungecacheten** Supabase-Readback aller gespeicherten Angebote. Pro Eintrag
+werden Offer-/Produkt-/Händler-/SKU-Fingerprint, Währung, Versand,
+Preis, Bestand, Quelltyp, Evidenzhash, ursprüngliche Verifikationszeit und
+HOLD-Status exakt verglichen. Der Aufruf verwendet denselben bestehenden
+privaten Servicezugang; keine neue Infrastruktur, kein Händler-Clickout.
+Ein erfolgreicher HTTP-Upsert mit abweichender Rücklese gilt als
+\`offer_batch_write_state_unconfirmed_check_audit_no_retry\`:
+Der Datenbank-Commit *kann bereits erfolgt sein*; daher Audit prüfen und
+**nicht automatisch denselben Batch wiederholen**.
+
+Die CJ-Suche prüft nun \`count\`, \`totalCount\` und \`resultList\`
+gegeneinander. Eine unvollständige Liste darf nicht als \`NO_FEED\`
+interpretiert werden. Einzelne Feed-Treffer werden ausdrücklich als
+\`publisher_partnership_verified=false\` markiert, weil die offizielle
+CJ Product Feed Summary auch nicht beigetretene Advertiser enthalten kann
+(Quelle: https://docs.cj.com/docs/productfeed-api-search). Auch eine
+frische Feed-Metadatenuhr ist **kein** SKU-Preis-/Bestandsbeweis.

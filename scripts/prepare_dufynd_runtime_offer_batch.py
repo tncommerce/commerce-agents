@@ -14,6 +14,7 @@ import json
 import os
 import re
 from datetime import UTC, datetime
+from decimal import Decimal, InvalidOperation
 from pathlib import Path
 from typing import Any
 
@@ -153,13 +154,65 @@ def batch_digest(prepared: list[dict[str, Any]], *, batch_id: str) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def verify_written_batch(prepared: list[dict[str, Any]], observed: Any) -> None:
+    """A successful HTTP write is not yet a certified persisted offer batch."""
+    if (
+        not isinstance(observed, list)
+        or len(observed) != len(prepared)
+        or any(not isinstance(row, dict) for row in observed)
+    ):
+        raise RuntimeError("offer_batch_readback_count_or_type_mismatch")
+    saved = {str(row.get("offer_id")): row for row in observed}
+    expected_ids = {row["offer_id"] for row in prepared}
+    if len(saved) != len(observed) or set(saved) != expected_ids:
+        raise RuntimeError("offer_batch_readback_identity_mismatch")
+
+    immutable = (
+        "offer_id",
+        "product_id",
+        "merchant_id",
+        "merchant_product_id",
+        "identity_sha256",
+        "currency",
+        "in_stock",
+        "decision",
+        "source_type",
+        "source_ref",
+        "evidence_sha256",
+    )
+    for expected in prepared:
+        found = saved[expected["offer_id"]]
+        if any(found.get(field) != expected[field] for field in immutable):
+            raise RuntimeError("offer_batch_readback_contract_mismatch")
+        try:
+            for field in ("price", "shipping_cost"):
+                stored, submitted = found.get(field), expected[field]
+                if (stored is None) != (submitted is None):
+                    raise RuntimeError("offer_batch_readback_money_mismatch")
+                if stored is not None and Decimal(str(stored)) != Decimal(str(submitted)):
+                    raise RuntimeError("offer_batch_readback_money_mismatch")
+            actual = datetime.fromisoformat(
+                str(found["verified_at"]).replace("Z", "+00:00")
+            )
+            wanted = datetime.fromisoformat(
+                expected["verified_at"].replace("Z", "+00:00")
+            )
+            if actual.tzinfo is None or wanted.tzinfo is None:
+                raise RuntimeError("offer_batch_readback_timezone_missing")
+            if actual.astimezone(UTC) != wanted.astimezone(UTC):
+                raise RuntimeError("offer_batch_readback_timestamp_mismatch")
+        except (ValueError, TypeError, KeyError, InvalidOperation) as exc:
+            raise RuntimeError("offer_batch_readback_malformed") from exc
+
+
 def apply_batch(
     prepared: list[dict[str, Any]],
     *,
     batch_id: str,
     owner_approval: str,
+    transport: httpx.BaseTransport | None = None,
 ) -> None:
-    """One atomic REST upsert, bound to a batch content hash and prior GO."""
+    """Atomic upsert followed by uncached, exact-row persistence verification."""
     exact_scope = f"{batch_id}:{batch_digest(prepared, batch_id=batch_id)}"
     if owner_approval != exact_scope or os.getenv("DUFYND_OFFER_BATCH_OWNER_GO") != exact_scope:
         raise PermissionError("exact_batch_content_owner_approval_required")
@@ -175,14 +228,39 @@ def apply_batch(
     }
     if key.startswith("eyJ"):
         headers["Authorization"] = f"Bearer {key}"
-    with httpx.Client(timeout=8, follow_redirects=False) as client:
+    with httpx.Client(timeout=8, follow_redirects=False, transport=transport) as client:
         response = client.post(
             f"{PROJECT_URL}/rest/v1/{TABLE}",
             params={"on_conflict": "offer_id"},
             headers=headers,
             json=prepared,
         )
-    response.raise_for_status()
+        response.raise_for_status()
+        # A successful upsert alone cannot prove exact buyer-facing persistence.
+        # The REST read bypasses the 30-second public runtime snapshot cache.
+        readback = client.get(
+            f"{PROJECT_URL}/rest/v1/{TABLE}",
+            headers={
+                name: value
+                for name, value in headers.items()
+                if name in {"apikey", "Authorization"}
+            },
+            params={
+                "offer_id": "in.(" + ",".join(row["offer_id"] for row in prepared) + ")",
+                "select": (
+                    "offer_id,product_id,merchant_id,merchant_product_id,"
+                    "identity_sha256,currency,price,shipping_cost,in_stock,"
+                    "verified_at,decision,source_type,source_ref,evidence_sha256"
+                ),
+                "limit": str(len(prepared) + 1),
+            },
+        )
+        readback.raise_for_status()
+        try:
+            observed = readback.json()
+        except ValueError as exc:
+            raise RuntimeError("offer_batch_readback_invalid_json") from exc
+        verify_written_batch(prepared, observed)
 
 
 def main() -> int:
@@ -197,11 +275,15 @@ def main() -> int:
     catalog = json.loads(args.canonical.read_text(encoding="utf-8"))["offers"]
     prepared = prepare_batch(catalog, raw, now=datetime.now(UTC))
     if args.apply:
-        apply_batch(
-            prepared,
-            batch_id=raw["batch_id"],
-            owner_approval=args.owner_approval,
-        )
+        try:
+            apply_batch(
+                prepared,
+                batch_id=raw["batch_id"],
+                owner_approval=args.owner_approval,
+            )
+        except (httpx.HTTPError, RuntimeError):
+            # The POST may have committed even if the GET failed.
+            parser.exit(30, "offer_batch_write_state_unconfirmed_check_audit_no_retry\n")
     print(
         json.dumps(
             {

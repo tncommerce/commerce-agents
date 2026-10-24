@@ -106,7 +106,7 @@ def test_scope_conflict_or_graphql_error_cannot_certify_any_feed() -> None:
 
 
 def test_empty_feed_and_old_metadata_do_not_make_current_offers() -> None:
-    payload = {"data": {"productFeeds": {"resultList": []}}}
+    payload = {"data": {"productFeeds": {"totalCount": 0, "count": 0, "resultList": []}}}
     empty = parse_feed_response(payload, notino_advertiser_id=ADVERTISER, checked_at=NOW)
     assert empty["status"] == "CJ_NO_FEED_FOR_SCOPED_ADVERTISER"
     old = example_response()
@@ -158,3 +158,37 @@ def test_authorization_error_and_rate_limit_never_trigger_retry() -> None:
         assert result["feeds"] == []
         assert result["network_requests"] == len(calls) == 1
         assert "private details" not in json.dumps(result)
+
+
+
+def test_incomplete_cj_inventory_must_not_be_read_as_no_feed() -> None:
+    partial = example_response()
+    partial["data"]["productFeeds"]["totalCount"] = 2
+    result = parse_feed_response(
+        partial, notino_advertiser_id=ADVERTISER, checked_at=NOW
+    )
+    assert result["status"] == "CJ_FEED_INVENTORY_INCOMPLETE"
+    assert result["feeds"] == []
+
+    invalid = example_response()
+    invalid["data"]["productFeeds"]["count"] = 2
+    result = parse_feed_response(
+        invalid, notino_advertiser_id=ADVERTISER, checked_at=NOW
+    )
+    assert result["status"] == "CJ_FEED_COUNTS_UNTRUSTWORTHY"
+    assert result["feeds"] == []
+
+    result = parse_feed_response(
+        example_response(),
+        notino_advertiser_id=ADVERTISER,
+        checked_at=NOW.replace(tzinfo=None),
+    )
+    assert result["status"] == "CJ_REFERENCE_CLOCK_INVALID"
+    assert result["feeds"] == []
+
+
+def test_feed_visibility_never_grants_an_affiliate_relationship() -> None:
+    result = parse_feed_response(
+        example_response(), notino_advertiser_id=ADVERTISER, checked_at=NOW
+    )
+    assert result["feeds"][0]["publisher_partnership_verified"] is False

@@ -6,6 +6,7 @@ import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
+import httpx
 import pytest
 from scripts.prepare_dufynd_runtime_offer_batch import batch_digest, prepare_batch
 
@@ -377,3 +378,72 @@ def test_batch_approval_cannot_be_reused_after_price_or_proof_change(monkeypatch
     assert batch_digest(prepared, batch_id=batch_id) != batch_digest(
         changed_price, batch_id=batch_id
     )
+
+
+
+def test_batch_readback_rejects_missing_mismatched_or_retimed_rows() -> None:
+    from scripts.prepare_dufynd_runtime_offer_batch import verify_written_batch
+
+    row = canonical()
+    prepared = prepare_batch([row], evidence(row), now=datetime.now(UTC))
+    unchanged = json.loads(json.dumps(prepared))
+    verify_written_batch(prepared, unchanged)
+    for corrupt in (
+        [],
+        [unchanged[0] | {"offer_id": "other"}],
+        [unchanged[0] | {"price": 800.0}],
+        [unchanged[0] | {"shipping_cost": 8.50}],
+        [unchanged[0] | {"identity_sha256": "0" * 64}],
+        [unchanged[0] | {"in_stock": False}],
+        [unchanged[0] | {"decision": "hold"}],
+        [unchanged[0] | {"verified_at": "2026-10-20T00:00:00Z"}],
+    ):
+        with pytest.raises(RuntimeError, match="offer_batch_readback"):
+            verify_written_batch(prepared, corrupt)
+
+
+def test_approved_upsert_requires_exact_uncached_readback(monkeypatch) -> None:
+    from scripts.prepare_dufynd_runtime_offer_batch import apply_batch, batch_digest
+
+    row = canonical()
+    packet = evidence(row)
+    prepared = prepare_batch([row], packet, now=datetime.now(UTC))
+    batch_id = packet["batch_id"]
+    approval = f"{batch_id}:{batch_digest(prepared, batch_id=batch_id)}"
+    monkeypatch.setenv("DUFYND_OFFER_BATCH_OWNER_GO", approval)
+    monkeypatch.setenv("SUPABASE_URL", runtime_offer_snapshots.PROJECT_URL)
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "synthetic-test-only-server-key-000000")
+    calls = []
+
+    def accepted(request):
+        calls.append(request.method)
+        assert str(request.url).startswith(runtime_offer_snapshots.PROJECT_URL)
+        assert request.headers["apikey"] == "synthetic-test-only-server-key-000000"
+        if request.method == "POST":
+            return httpx.Response(201)
+        return httpx.Response(200, json=prepared)
+
+    apply_batch(
+        prepared,
+        batch_id=batch_id,
+        owner_approval=approval,
+        transport=httpx.MockTransport(accepted),
+    )
+    assert calls == ["POST", "GET"]
+
+    calls.clear()
+
+    def unconfirmed(request):
+        calls.append(request.method)
+        if request.method == "POST":
+            return httpx.Response(201)
+        return httpx.Response(200, json=[prepared[0] | {"price": 250.0}])
+
+    with pytest.raises(RuntimeError, match="readback_money"):
+        apply_batch(
+            prepared,
+            batch_id=batch_id,
+            owner_approval=approval,
+            transport=httpx.MockTransport(unconfirmed),
+        )
+    assert calls == ["POST", "GET"]

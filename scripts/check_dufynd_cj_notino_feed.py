@@ -48,6 +48,8 @@ def parse_feed_response(
 ) -> dict[str, Any]:
     """A visible feed is only a candidate, never current SKU/stock evidence."""
     advertiser = _company_id(notino_advertiser_id)
+    if checked_at.tzinfo is None:
+        return {"status": "CJ_REFERENCE_CLOCK_INVALID", "feeds": []}
     if not isinstance(payload, dict) or payload.get("errors"):
         return {"status": "CJ_GRAPHQL_RESPONSE_REJECTED", "feeds": []}
     data = payload.get("data")
@@ -57,6 +59,17 @@ def parse_feed_response(
     rows = collection.get("resultList")
     if not isinstance(rows, list) or len(rows) > 100:
         return {"status": "CJ_FEED_COLLECTION_INVALID", "feeds": []}
+    total, count = collection.get("totalCount"), collection.get("count")
+    if (
+        type(total) is not int
+        or type(count) is not int
+        or count < 0
+        or total < count
+        or count != len(rows)
+    ):
+        return {"status": "CJ_FEED_COUNTS_UNTRUSTWORTHY", "feeds": []}
+    if total != count:
+        return {"status": "CJ_FEED_INVENTORY_INCOMPLETE", "feeds": []}
     if any(not isinstance(row, dict) or str(row.get("advertiserId")) != advertiser for row in rows):
         return {"status": "CJ_ADVERTISER_SCOPE_MISMATCH", "feeds": []}
 
@@ -84,6 +97,7 @@ def parse_feed_response(
             {
                 "feed_id": ad_id,
                 "advertiser_id": advertiser,
+                "publisher_partnership_verified": False,
                 "feed_name": str(row.get("feedName") or "")[:160],
                 "product_count": quantity,
                 "feed_last_updated_at": updated.astimezone(UTC).isoformat(),
