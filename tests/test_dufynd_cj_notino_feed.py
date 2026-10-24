@@ -160,21 +160,16 @@ def test_authorization_error_and_rate_limit_never_trigger_retry() -> None:
         assert "private details" not in json.dumps(result)
 
 
-
 def test_incomplete_cj_inventory_must_not_be_read_as_no_feed() -> None:
     partial = example_response()
     partial["data"]["productFeeds"]["totalCount"] = 2
-    result = parse_feed_response(
-        partial, notino_advertiser_id=ADVERTISER, checked_at=NOW
-    )
+    result = parse_feed_response(partial, notino_advertiser_id=ADVERTISER, checked_at=NOW)
     assert result["status"] == "CJ_FEED_INVENTORY_INCOMPLETE"
     assert result["feeds"] == []
 
     invalid = example_response()
     invalid["data"]["productFeeds"]["count"] = 2
-    result = parse_feed_response(
-        invalid, notino_advertiser_id=ADVERTISER, checked_at=NOW
-    )
+    result = parse_feed_response(invalid, notino_advertiser_id=ADVERTISER, checked_at=NOW)
     assert result["status"] == "CJ_FEED_COUNTS_UNTRUSTWORTHY"
     assert result["feeds"] == []
 

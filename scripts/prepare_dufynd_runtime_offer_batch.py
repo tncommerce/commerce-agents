@@ -191,12 +191,8 @@ def verify_written_batch(prepared: list[dict[str, Any]], observed: Any) -> None:
                     raise RuntimeError("offer_batch_readback_money_mismatch")
                 if stored is not None and Decimal(str(stored)) != Decimal(str(submitted)):
                     raise RuntimeError("offer_batch_readback_money_mismatch")
-            actual = datetime.fromisoformat(
-                str(found["verified_at"]).replace("Z", "+00:00")
-            )
-            wanted = datetime.fromisoformat(
-                expected["verified_at"].replace("Z", "+00:00")
-            )
+            actual = datetime.fromisoformat(str(found["verified_at"]).replace("Z", "+00:00"))
+            wanted = datetime.fromisoformat(expected["verified_at"].replace("Z", "+00:00"))
             if actual.tzinfo is None or wanted.tzinfo is None:
                 raise RuntimeError("offer_batch_readback_timezone_missing")
             if actual.astimezone(UTC) != wanted.astimezone(UTC):

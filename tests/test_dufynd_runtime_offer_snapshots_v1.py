@@ -380,7 +380,6 @@ def test_batch_approval_cannot_be_reused_after_price_or_proof_change(monkeypatch
     )
 
 
-
 def test_batch_readback_rejects_missing_mismatched_or_retimed_rows() -> None:
     from scripts.prepare_dufynd_runtime_offer_batch import verify_written_batch
 
