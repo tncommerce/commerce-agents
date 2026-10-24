@@ -21,7 +21,9 @@ ALLOWED_FEED_HOSTS = {
 }
 
 
-def _validate_feed_download_url(url: str, *, feed_id: str) -> None:
+def _validate_feed_download_url(
+    url: str, *, feed_id: str, api_key: str | None = None
+) -> None:
     """Bind a secret-bearing Awin download URL to its selected feed identity.
 
     The authenticated list row may contain a URL for a *different* feed.
@@ -45,6 +47,17 @@ def _validate_feed_download_url(url: str, *, feed_id: str) -> None:
         raise ValueError("awin_feed_download_host_not_allowed")
 
     segments = parsed.path.split("/")
+    # Official legacy product feed: /datafeed/download/apikey/<key>/fid/<id>/...
+    # A valid feed ID on an arbitrary same-host path is not source provenance.
+    if (
+        len(segments) < 7
+        or segments[:4] != ["", "datafeed", "download", "apikey"]
+        or not segments[4]
+        or segments[5] != "fid"
+    ):
+        raise ValueError("awin_feed_download_path_invalid")
+    if api_key is not None and segments[4] != quote(api_key, safe=""):
+        raise ValueError("awin_feed_download_api_key_mismatch")
     positions = [i for i, segment in enumerate(segments) if segment == "fid"]
     if (
         len(positions) != 1
@@ -85,7 +98,19 @@ class AwinRedirectHandler(HTTPRedirectHandler):
             raise ValueError("awin_redirect_host_not_allowed")
         if self.expected_feed_id is not None:
             try:
-                _validate_feed_download_url(newurl, feed_id=self.expected_feed_id)
+                _validate_feed_download_url(
+                    req.full_url, feed_id=self.expected_feed_id
+                )
+                _validate_feed_download_url(
+                    newurl, feed_id=self.expected_feed_id
+                )
+                # Same Awin hosts and feed ID do not prove the selected
+                # publisher key survived the redirect. Never log its value.
+                if (
+                    urlparse(req.full_url).path.split("/")[4]
+                    != parsed.path.split("/")[4]
+                ):
+                    raise ValueError("awin_redirect_api_key_mismatch")
             except ValueError:
                 raise ValueError("awin_redirect_feed_id_mismatch") from None
         return super().redirect_request(req, fp, code, msg, headers, newurl)
@@ -223,7 +248,7 @@ def download_feed_from_list(
         raise ValueError("awin_program_membership_not_joined")
 
     download_url = _row_value(row, "URL")
-    _validate_feed_download_url(download_url, feed_id=feed_id)
+    _validate_feed_download_url(download_url, feed_id=feed_id, api_key=api_key)
 
     report = {
         "version": 1,
