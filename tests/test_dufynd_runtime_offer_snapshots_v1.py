@@ -779,3 +779,128 @@ def test_slower_positive_buyer_clickout_cannot_override_faster_revocation(
     assert outcomes[0][row["offer_id"]]["decision"] == "hold"
     assert request_count[0] == 2
     runtime_offer_snapshots._cache.clear()
+
+
+def test_cross_key_hold_revokes_cached_multi_offer_listing(monkeypatch) -> None:
+    """One newer HOLD invalidates a still-cached two-offer product listing."""
+    first = canonical()
+    second = first | {"offer_id": "notino-multi-cache-second"}
+    runtime_offer_snapshots._cache.clear()
+    monkeypatch.setenv("SUPABASE_URL", runtime_offer_snapshots.PROJECT_URL)
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "sb_secret_multi_offer_fixture")
+    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY", raising=False)
+    requests = []
+    original_client = httpx.Client
+
+    def source(request: httpx.Request) -> httpx.Response:
+        requests.append(str(request.url))
+        if request.headers.get("Cache-Control") == "no-store":
+            return httpx.Response(200, json=[snapshot(first) | {"decision": "hold"}])
+        decision = "verified" if len(requests) == 1 else "hold"
+        return httpx.Response(
+            200, json=[snapshot(first) | {"decision": decision}, snapshot(second)]
+        )
+
+    transport = httpx.MockTransport(source)
+    monkeypatch.setattr(
+        runtime_offer_snapshots.httpx,
+        "Client",
+        lambda **kwargs: original_client(**kwargs, transport=transport),
+    )
+
+    try:
+        initial = runtime_offer_snapshots.load_runtime_snapshots([first, second])
+        assert initial[first["offer_id"]]["decision"] == "verified"
+        assert initial[second["offer_id"]]["decision"] == "verified"
+        assert len(requests) == 1
+
+        revoked = runtime_offer_snapshots.load_runtime_snapshots(
+            [first], bypass_cache=True
+        )
+        assert revoked[first["offer_id"]]["decision"] == "hold"
+        assert len(requests) == 2
+
+        updated = runtime_offer_snapshots.load_runtime_snapshots([first, second])
+        assert len(requests) == 3
+        assert updated[first["offer_id"]]["decision"] == "hold"
+        assert updated[second["offer_id"]]["decision"] == "verified"
+    finally:
+        runtime_offer_snapshots._cache.clear()
+
+
+@pytest.mark.parametrize("revocation", ["hold", "http_503"])
+def test_slow_mixed_listing_cannot_resurrect_newer_one_offer_revocation(
+    monkeypatch, revocation
+) -> None:
+    """A slow multi-ID result cannot override a newer single-ID revocation."""
+    first = canonical()
+    second = first | {"offer_id": "notino-slow-multi-second"}
+    runtime_offer_snapshots._cache.clear()
+    monkeypatch.setenv("SUPABASE_URL", runtime_offer_snapshots.PROJECT_URL)
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "sb_secret_mixed_race_fixture")
+    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY", raising=False)
+    started, release = Event(), Event()
+    values = []
+    original_client = httpx.Client
+
+    def source(request: httpx.Request) -> httpx.Response:
+        if request.headers.get("Cache-Control") == "no-store":
+            if revocation == "http_503":
+                return httpx.Response(503, json={"message": "offline"})
+            return httpx.Response(200, json=[snapshot(first) | {"decision": "hold"}])
+        started.set()
+        assert release.wait(timeout=5)
+        return httpx.Response(200, json=[snapshot(first), snapshot(second)])
+
+    transport = httpx.MockTransport(source)
+    monkeypatch.setattr(
+        runtime_offer_snapshots.httpx,
+        "Client",
+        lambda **kwargs: original_client(**kwargs, transport=transport),
+    )
+
+    worker = Thread(
+        target=lambda: values.append(
+            runtime_offer_snapshots.load_runtime_snapshots([first, second])
+        ),
+        daemon=True,
+    )
+    worker.start()
+    try:
+        assert started.wait(timeout=5)
+        newer = runtime_offer_snapshots.load_runtime_snapshots(
+            [first], bypass_cache=True
+        )
+        if revocation == "hold":
+            assert newer[first["offer_id"]]["decision"] == "hold"
+        else:
+            assert newer is None
+    finally:
+        release.set()
+        worker.join(timeout=5)
+
+    try:
+        assert not worker.is_alive()
+        assert len(values) == 1
+        assert values[0][second["offer_id"]]["decision"] == "verified"
+        if revocation == "hold":
+            assert values[0][first["offer_id"]]["decision"] == "hold"
+        else:
+            assert first["offer_id"] not in values[0]
+        cached = runtime_offer_snapshots.load_runtime_snapshots([first, second])
+        assert cached == values[0]
+    finally:
+        runtime_offer_snapshots._cache.clear()
+
+
+def test_batch_rejects_duplicate_or_invalid_released_canonical_ids() -> None:
+    """A corrupt source registry must never silently choose the final SKU."""
+    first = canonical()
+    packet = evidence(first)
+    now = datetime.now(UTC)
+    with pytest.raises(ValueError, match="duplicate_canonical_offer_ids"):
+        prepare_batch([first, first.copy()], packet, now=now)
+    with pytest.raises(ValueError, match="invalid_canonical_offer_id"):
+        prepare_batch([first | {"offer_id": None}], packet, now=now)
+    with pytest.raises(ValueError, match="invalid_canonical_offer_rows"):
+        prepare_batch([first, "corrupt"], packet, now=now)
