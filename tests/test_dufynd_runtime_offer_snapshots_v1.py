@@ -904,7 +904,7 @@ def test_batch_rejects_duplicate_or_invalid_released_canonical_ids() -> None:
 
 @pytest.mark.parametrize(
     "bad_ref",
-    ["   ", " proof ", "source\\nrevoked", "source\\tref", "x" * 261, ""],
+    ["   ", " proof ", "source\nrevoked", "source\tref", "x" * 261, ""],
 )
 def test_batch_rejects_empty_or_control_character_source_references(
     bad_ref: str,
@@ -916,7 +916,7 @@ def test_batch_rejects_empty_or_control_character_source_references(
         prepare_batch([row], packet, now=datetime.now(UTC))
 
 
-@pytest.mark.parametrize("bad_observation", ["", "  \\n\\t", "x" * 2049, None])
+@pytest.mark.parametrize("bad_observation", ["", "  \n\t", "x" * 2049, None])
 def test_batch_rejects_missing_original_source_observation(
     bad_observation: str | None,
 ) -> None:
