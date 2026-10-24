@@ -68,8 +68,7 @@ def prepare_batch(
         raise ValueError("invalid_canonical_offer_rows")
     canonical_ids = [row.get("offer_id") for row in canonical_rows]
     if any(
-        not isinstance(offer_id, str)
-        or re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
+        not isinstance(offer_id, str) or re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
         for offer_id in canonical_ids
     ):
         raise ValueError("invalid_canonical_offer_id")
