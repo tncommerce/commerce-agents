@@ -363,8 +363,7 @@ def load_runtime_snapshots(
                         else:
                             result.pop(offer_id, None)
             elif any(
-                (result or {}).get(offer_id)
-                != (other_result or {}).get(offer_id)
+                (result or {}).get(offer_id) != (other_result or {}).get(offer_id)
                 for offer_id in shared
             ):
                 # Changed source evidence invalidates older overlapping list
