@@ -331,11 +331,15 @@ def load_runtime_snapshots(
 
     with _lock:
         latest = _cache.get(cache_key)
-        if latest is None or latest[2] <= generation:
-            # Evict only an old cache entry, never clear a newer revocation
-            # returned while this request was running.
-            if cache_key not in _cache and len(_cache) >= 200:
-                oldest_key = min(_cache, key=lambda item: _cache[item][0])
-                del _cache[oldest_key]
-            _cache[cache_key] = (time.monotonic(), result, generation)
+        if latest is not None and latest[2] > generation:
+            # A newer read already won (possibly HOLD, stock=0 or 503).
+            # Do not let this older in-flight buyer request return an
+            # out-of-date positive value, even if its GET succeeded.
+            return latest[1]
+        # Evict only an old entry, never clear a newer revocation while
+        # processing a slower in-flight request.
+        if cache_key not in _cache and len(_cache) >= 200:
+            oldest_key = min(_cache, key=lambda item: _cache[item][0])
+            del _cache[oldest_key]
+        _cache[cache_key] = (time.monotonic(), result, generation)
     return result

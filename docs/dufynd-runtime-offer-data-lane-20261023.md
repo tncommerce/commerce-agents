@@ -452,3 +452,16 @@ Synchronisationsbarrieren die alte Positive-Liste **gegen** einen neuen
 HOLD sowie mehrere fehlerhafte DB-Response-Varianten. Der Runtime-Schalter
 bleibt in Produktion aus; zusätzliche Kosten, DB-Migrationen und
 Affiliate-Clickouts sind ausdrücklich nicht Bestandteil dieses DEV-Checks.
+
+
+### Sicherheitsnachtrag – Rückgabewert laufender Käuferanfragen
+
+Nicht nur der gemeinsame Cache, auch die Antwort an einen früher gestarteten
+\`bypass_cache=True\`-Kaufvorgang folgt bei überlappenden HTTP-Requests der
+neuesten abgeschlossenen Datenbankbeobachtung. Anderenfalls könnte ein
+langsamer früher Clickout trotz mittlerweile erfolgreich bestätigtem
+\`hold\` der zweiten Anfrage noch die alte positive Antwort erhalten.
+Ein real nebenläufiger Mocktest erzwingt zwei überlappende, ungecachte
+Kaufanfragen und bestätigt die Sperre **für beide** Käuferabfragen. Ein
+neuer Datenbankfehler ersetzt ältere positive Antworten ebenfalls
+fail-closed. Keine echten Händler-Klicks oder zusätzliche Live-Reads.

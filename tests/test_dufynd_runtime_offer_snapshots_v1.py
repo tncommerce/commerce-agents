@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
-from threading import Event, Thread
+from threading import Event, Lock, Thread
 
 import httpx
 import pytest
@@ -687,7 +687,9 @@ def test_slower_old_listing_response_cannot_revive_newer_clickout_hold(monkeypat
         worker.join(timeout=5)
 
     assert not worker.is_alive()
-    assert first_result["value"][row["offer_id"]]["decision"] == "verified"
+    # Even the older in-flight caller receives the newer hold, not its own
+    # stale positive HTTP response.
+    assert first_result["value"][row["offer_id"]]["decision"] == "hold"
     # The stale query did complete after revocation, but cannot resurrect it.
     final = runtime_offer_snapshots.load_runtime_snapshots([row])
     assert final[row["offer_id"]]["decision"] == "hold"
@@ -720,4 +722,61 @@ def test_corrupt_supabase_response_cannot_partially_certify_offers(
         lambda **kwargs: original_client(**kwargs, transport=transport),
     )
     assert runtime_offer_snapshots.load_runtime_snapshots([original, second]) is None
+    runtime_offer_snapshots._cache.clear()
+
+
+
+def test_slower_positive_buyer_clickout_cannot_override_faster_revocation(
+    monkeypatch,
+) -> None:
+    """Two *uncached* buyer reads race; the first must not authorize stale stock."""
+    row = canonical()
+    runtime_offer_snapshots._cache.clear()
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+    monkeypatch.setenv("SUPABASE_URL", runtime_offer_snapshots.PROJECT_URL)
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "sb_secret_synthetic_double_clickout")
+    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY", raising=False)
+
+    entered = Event()
+    release = Event()
+    count_lock = Lock()
+    request_count = [0]
+    outcomes = []
+    original_client = httpx.Client
+
+    def network(request: httpx.Request) -> httpx.Response:
+        assert request.headers["Cache-Control"] == "no-store"
+        with count_lock:
+            request_count[0] += 1
+            index = request_count[0]
+        if index == 1:
+            entered.set()
+            assert release.wait(timeout=5)
+            return httpx.Response(200, json=[snapshot(row)])
+        return httpx.Response(200, json=[snapshot(row) | {"decision": "hold"}])
+
+    transport = httpx.MockTransport(network)
+    monkeypatch.setattr(
+        runtime_offer_snapshots.httpx,
+        "Client",
+        lambda **kwargs: original_client(**kwargs, transport=transport),
+    )
+
+    def first_buyer():
+        outcomes.append(runtime_offer_snapshots.load_runtime_snapshots([row], bypass_cache=True))
+
+    worker = Thread(target=first_buyer, daemon=True)
+    worker.start()
+    try:
+        assert entered.wait(timeout=5)
+        new_hold = runtime_offer_snapshots.load_runtime_snapshots([row], bypass_cache=True)
+        assert new_hold[row["offer_id"]]["decision"] == "hold"
+    finally:
+        release.set()
+        worker.join(timeout=5)
+
+    assert not worker.is_alive()
+    assert len(outcomes) == 1
+    assert outcomes[0][row["offer_id"]]["decision"] == "hold"
+    assert request_count[0] == 2
     runtime_offer_snapshots._cache.clear()
