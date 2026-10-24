@@ -104,7 +104,12 @@ def prepare_batch(
         if kind not in SOURCE_TYPES:
             raise ValueError("unapproved_evidence_type")
         source_ref = item.get("source_ref")
-        if not isinstance(source_ref, str) or not 3 <= len(source_ref) <= 260:
+        if (
+            not isinstance(source_ref, str)
+            or not 3 <= len(source_ref) <= 260
+            or source_ref != source_ref.strip()
+            or any(ord(char) < 32 or ord(char) == 127 for char in source_ref)
+        ):
             raise ValueError("source_reference_required")
         stamp = _verified_at(item.get("verified_at"), now=now)
         if not isinstance(item.get("in_stock"), bool):
@@ -116,7 +121,12 @@ def prepare_batch(
         supporting = item.get("evidence")
         if not isinstance(supporting, dict) or not supporting:
             raise ValueError("original_source_evidence_required")
-        if not isinstance(supporting.get("source_observation"), str):
+        observation = supporting.get("source_observation")
+        if (
+            not isinstance(observation, str)
+            or not observation.strip()
+            or len(observation) > 2048
+        ):
             raise ValueError("source_observation_reference_required")
         # A digest proves which original evidence packet was submitted,
         # NOT that the merchant independently endorsed its contents.
