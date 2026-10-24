@@ -513,3 +513,33 @@ Thread-Barrieren. Der Batchimport weist zudem doppelte oder ungültige
 *kanonische* Offer-IDs aus der Git-Registry vollständig zurück.
 **Nur Entwicklung:** kein Produktiv-Merge, kein DB-Schema, keine Runtime-
 Aktivierung, keine Affiliate-Weiterleitung oder zusätzliche Kosten.
+
+
+## Awin-Quellenidentität: URL-Pfad und Publisher-Schlüssel (24.10.2026, nur DEV)
+
+Offizielle Awin-Dokumentation zum alten CSV-Feedlisten-Download:
+[Product Feed List Download](https://help.awin.com/developers/docs/product-feed-list-download)
+(Stand: 31.08.2026). Die Feedliste enthält eine geheime Download-URL im
+Schema `https://datafeed.api.productserve.com/datafeed/download/apikey/<key>/fid/<feed-id>/...`.
+Der API-Schlüssel zum **Produktfeed** ist nicht der allgemeine Awin
+Partner-API-Schlüssel.
+
+Der Offline-Downloader akzeptiert deshalb nicht nur `fid=91379` und
+den erlaubten Awin-Host, sondern verlangt den kanonischen
+`/datafeed/download/apikey/<key>/fid/91379/`-Pfad, den identischen
+API-Schlüssel wie beim Abruf der Feedliste und eine unveränderte
+Schlüssel-/Feed-ID-Kombination auf jeder HTTP-Weiterleitung.
+Fremde/fehlende Schlüssel, beliebige Pfade auf Awin-Hosts oder
+widersprüchliche `fid`-Parameter werden **vor** dem Feed-Download
+zurückgewiesen. Fehler geben keine Schlüssel oder Downloadlinks aus.
+
+Dies ist ausschließlich eine Legacy-CSV-Feedlisten-Regel, **keine**
+pauschale Sperre anderer offizieller Awin-Schnittstellen (z. B. Enhanced
+Feeds mit separater Authentisierung), die hier nicht unterstützt sind.
+Getestet werden die dokumentierte URL-Form, kodierte API-Schlüssel,
+andere Schlüssel bei identischer Feed-ID, Redirect-Wechsel und
+nichtkanonische Pfade. Ein echter Feeddownload oder Rechte-/Preisbeleg
+wurde nicht durchgeführt. Der neue Commit erfordert vor jeder
+Produktionsfreigabe eine vollständige CI auf exakt diesem Entwicklungs-HEAD;
+die GitHub-Actions-Abrechnung ist weiterhin nicht unabhängig als 0 €
+verifiziert.
