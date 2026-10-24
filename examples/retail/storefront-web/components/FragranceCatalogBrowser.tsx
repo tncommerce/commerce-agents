@@ -867,7 +867,7 @@ export default function FragranceCatalogBrowser({
             onClick={() =>
               setMobileFiltersOpen((open) => !open)
             }
-            className="flex h-11 items-center justify-between rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] font-semibold text-(--ink) md:hidden"
+            className="flex h-11 items-center justify-between rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] font-semibold text-(--ink) lg:hidden"
             aria-expanded={mobileFiltersOpen}
             aria-controls="catalog-filter-panel"
           >
@@ -885,7 +885,7 @@ export default function FragranceCatalogBrowser({
 
         <div
           id="catalog-filter-panel"
-          className={`${mobileFiltersOpen ? "block" : "hidden"} md:block`}
+          className={`${mobileFiltersOpen ? "block" : "hidden"} lg:block`}
         >
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <label className="block">
