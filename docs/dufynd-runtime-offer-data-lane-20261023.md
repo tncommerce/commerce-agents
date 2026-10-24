@@ -4,6 +4,40 @@ Stand: 23.10.2026. Die ersten produktiven Preisquellen bleiben **unverändert**.
 Dieses Paket ist eine vorbereitete einmalige Umstellung; es ist **kein** bereits
 aktivierter Notino-Feed oder eine Freigabe zur Veröffentlichung.
 
+## 24.10.2026 – zusätzliche Offline-Gates (DEV, nicht veröffentlicht)
+
+**Quellidentität (Awin):** Der authentifizierte Feedlisten-Download bleibt
+auf den ursprünglich ausgewählten Publisher-Schlüssel und die exakte Feed-ID
+gebunden. Zusätzlich verbietet die Downloadprüfung jetzt zweite
+API-Key-Identitäten in Query-Parametern (auch Groß-/Kleinschreibung,
+`api_key`/`api-key` und URL-encodete Varianten) und unvollständige
+Query-Paare. Ein Redirect auf einen weiterhin erlaubten Awin-Host darf die
+Identität nicht über Query-Shadowing austauschen. Die bestehenden legitimen
+`format=csv`-/`language=de`-Filter bleiben zulässig. Es fand weder ein
+authentifizierter Feeddownload noch ein Token-Test statt.
+
+**Käuferschutz bei kaputten Quelldateien:** Die vollständige veröffentlichte
+`merchant_offers.json` wird vor jeder Datenbank-/Käuferabfrage gegen das
+bestehende Pydantic-`MerchantOffer`-Schema geprüft. Auch JSON-konforme
+`"Infinity"`-Werte für Preis, Versand oder Provision sind ungültig.
+Eine fehlerhafte Preis-/Zeit-/Angebotszeile sperrt alle Angebote statt
+teilweise ausgelieferte Listings oder HTTP-500-Fehler zu riskieren.
+Eine reine read-only-Formprüfung der 53 aktuell eingecheckten kanonischen
+Zeilen ergab keinen offensichtlichen Typ- oder Datumsfehler; eine vollständige
+Repo-Ausführung wurde damit **nicht** ersetzt.
+
+**Regressionen hinzugefügt, noch nicht im Repository ausgeführt:**
+`tests/test_dufynd_awin_data_feed_fetch.py` (Query-Credential-Shadowing,
+Redirect, zulässige Filter) und `tests/test_dufynd_runtime_offer_snapshots_v1.py`
+(nicht-endliche/ungültige Preise, ungültige Versand-/Provisions-/Zeitwerte,
+keine partiellen Käuferantworten oder privaten DB-Reads).
+Sämtliche neuen GitHub-Commits verwenden `[skip ci]`, weil 0 € für weitere
+Actions-Läufe noch nicht unabhängig belegt ist. **Keine grüne CI für diese
+neueren Änderungen behaupten.** Vor jedem Produktions-GO: echte autorisierte
+Awin-URL-Form ohne Tokenpreisgabe verifizieren, vollständigen Pytest/Ruff- und
+PostgreSQL-/Web-CI-Lauf auf *exaktem* HEAD kostenneutral nachweisen sowie
+aktuelle CJ-/Notino-Händlerdaten und Medienrechte belegen.
+
 ## Bestehender Befund
 
 - 53 freigegebene **kanonische Angebotsdatensätze** bei acht Händlern in
