@@ -152,6 +152,7 @@ def test_active_awin_membership_is_treated_as_joined() -> None:
     assert metadata["membership_status"] == "active"
     assert metadata["joined"] is True
 
+
 @pytest.mark.parametrize(
     "header",
     [
