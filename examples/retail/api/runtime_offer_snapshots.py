@@ -280,11 +280,7 @@ def load_runtime_snapshots(
     credential_fingerprint = hashlib.sha256(key.encode("utf-8")).hexdigest()
     cache_key = (*ids, "credential:" + credential_fingerprint)
     cached = _cache.get(cache_key)
-    if (
-        not bypass_cache
-        and cached is not None
-        and time.monotonic() - cached[0] < CACHE_SECONDS
-    ):
+    if not bypass_cache and cached is not None and time.monotonic() - cached[0] < CACHE_SECONDS:
         return cached[1]
 
     headers = {"apikey": key}

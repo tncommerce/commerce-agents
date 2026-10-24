@@ -90,9 +90,7 @@ def test_one_exact_verified_batch_updates_both_list_and_clickout(monkeypatch) ->
     calls = []
 
     def read(selected, *, bypass_cache=False):
-        calls.append(
-            ([offer["offer_id"] for offer in selected], bypass_cache)
-        )
+        calls.append(([offer["offer_id"] for offer in selected], bypass_cache))
         return {row["offer_id"]: fixed}
 
     monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", read)
@@ -120,7 +118,9 @@ def test_one_exact_verified_batch_updates_both_list_and_clickout(monkeypatch) ->
 def test_no_database_observation_never_republishes_stale_file(monkeypatch, database_result) -> None:
     monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
     monkeypatch.setattr(
-        runtime_offer_snapshots, "load_runtime_snapshots", lambda _: database_result
+        runtime_offer_snapshots,
+        "load_runtime_snapshots",
+        lambda _, **kwargs: database_result,
     )
     row = canonical()
     store = MerchantOfferStore(OFFER_FILE)
@@ -574,10 +574,10 @@ def test_runtime_offer_refuses_other_publishers_tracking_even_with_live_db(
     assert MerchantOfferStore(offer_file).offers_for(row["product_id"]) == []
 
 
-
 @pytest.mark.parametrize("revocation", ["hold", "out_of_stock", "network_error"])
 def test_clickout_reads_fresh_snapshot_after_positive_listing_cache(
-    monkeypatch, revocation,
+    monkeypatch,
+    revocation,
 ) -> None:
     """An unexpired 30s listing cache cannot authorize a later buyer click."""
     row = canonical()
