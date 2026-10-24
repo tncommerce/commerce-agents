@@ -107,17 +107,13 @@ def test_scope_conflict_or_graphql_error_cannot_certify_any_feed() -> None:
 
 def test_empty_feed_and_old_metadata_do_not_make_current_offers() -> None:
     payload = {"data": {"productFeeds": {"resultList": []}}}
-    empty = parse_feed_response(
-        payload, notino_advertiser_id=ADVERTISER, checked_at=NOW
-    )
+    empty = parse_feed_response(payload, notino_advertiser_id=ADVERTISER, checked_at=NOW)
     assert empty["status"] == "CJ_NO_FEED_FOR_SCOPED_ADVERTISER"
     old = example_response()
     old["data"]["productFeeds"]["resultList"][0]["lastUpdated"] = (
         NOW - timedelta(days=30)
     ).isoformat()
-    report = parse_feed_response(
-        old, notino_advertiser_id=ADVERTISER, checked_at=NOW
-    )
+    report = parse_feed_response(old, notino_advertiser_id=ADVERTISER, checked_at=NOW)
     assert report["feeds"][0]["feed_metadata_within_72h"] is False
 
 
@@ -131,9 +127,7 @@ def test_invalid_company_ids_and_invalid_feed_identity_are_rejected() -> None:
             raise AssertionError("unsafe CJ advertiser company ID was accepted")
     feed = example_response()
     feed["data"]["productFeeds"]["resultList"][0]["adId"] = None
-    report = parse_feed_response(
-        feed, notino_advertiser_id=ADVERTISER, checked_at=NOW
-    )
+    report = parse_feed_response(feed, notino_advertiser_id=ADVERTISER, checked_at=NOW)
     assert report["status"] == "CJ_FEED_ID_MISSING_OR_DUPLICATE"
 
 

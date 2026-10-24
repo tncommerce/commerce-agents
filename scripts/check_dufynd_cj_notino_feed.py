@@ -57,10 +57,7 @@ def parse_feed_response(
     rows = collection.get("resultList")
     if not isinstance(rows, list) or len(rows) > 100:
         return {"status": "CJ_FEED_COLLECTION_INVALID", "feeds": []}
-    if any(
-        not isinstance(row, dict) or str(row.get("advertiserId")) != advertiser
-        for row in rows
-    ):
+    if any(not isinstance(row, dict) or str(row.get("advertiserId")) != advertiser for row in rows):
         return {"status": "CJ_ADVERTISER_SCOPE_MISMATCH", "feeds": []}
 
     seen: set[str] = set()
@@ -80,9 +77,7 @@ def parse_feed_response(
                 raise ValueError("missing timezone")
         except (TypeError, ValueError):
             return {"status": "CJ_FEED_LAST_UPDATED_INVALID", "feeds": []}
-        age_seconds = (
-            checked_at.astimezone(UTC) - updated.astimezone(UTC)
-        ).total_seconds()
+        age_seconds = (checked_at.astimezone(UTC) - updated.astimezone(UTC)).total_seconds()
         if age_seconds < -300:
             return {"status": "CJ_FEED_LAST_UPDATED_IN_FUTURE", "feeds": []}
         candidates.append(
@@ -140,9 +135,7 @@ def check_notino_feeds(
     if stamp.tzinfo is None:
         return result | {"status": "CJ_REFERENCE_CLOCK_INVALID"}
     try:
-        with httpx.Client(
-            timeout=8, follow_redirects=False, transport=transport
-        ) as client:
+        with httpx.Client(timeout=8, follow_redirects=False, transport=transport) as client:
             response = client.post(
                 CJ_GRAPHQL,
                 headers={
@@ -173,10 +166,14 @@ def check_notino_feeds(
             notino_advertiser_id=notino_advertiser_id,
             checked_at=stamp,
         )
-        return result | observed | {
-            "network_requests": 1,
-            "feed_inventory_checked_at": stamp.astimezone(UTC).isoformat(),
-        }
+        return (
+            result
+            | observed
+            | {
+                "network_requests": 1,
+                "feed_inventory_checked_at": stamp.astimezone(UTC).isoformat(),
+            }
+        )
     except (httpx.HTTPError, ValueError, TypeError):
         return result | {
             "status": "CJ_TRANSPORT_OR_RESPONSE_FAILED",
@@ -199,11 +196,7 @@ def main() -> int:
         args.output.write_text(output, encoding="utf-8")
     else:
         print(output, end="")
-    return (
-        0
-        if report["status"] == "CJ_FEED_CANDIDATES_VISIBLE_NEED_SKU_EVIDENCE"
-        else 20
-    )
+    return 0 if report["status"] == "CJ_FEED_CANDIDATES_VISIBLE_NEED_SKU_EVIDENCE" else 20
 
 
 if __name__ == "__main__":
