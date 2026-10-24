@@ -18,7 +18,6 @@ from pathlib import Path
 from typing import Any
 
 import httpx
-from scripts.dufynd_commerce_gates import approved_affiliate_route, verify_exact_variant
 from examples.retail.api.runtime_offer_snapshots import (
     PROJECT_URL,
     SOURCE_TYPES,
@@ -27,6 +26,7 @@ from examples.retail.api.runtime_offer_snapshots import (
     _verified_at,
     identity_hash,
 )
+from scripts.dufynd_commerce_gates import approved_affiliate_route, verify_exact_variant
 
 CANONICAL = Path("examples/retail/data/merchant_offers.json")
 PARTNERS = Path("examples/retail/data/merchant_partners.json")
