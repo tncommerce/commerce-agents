@@ -314,3 +314,96 @@ def test_wrong_feed_list_url_stops_before_private_download(monkeypatch) -> None:
             report_path=None,
         )
     assert len(calls) == 1 and "/datafeed/list/" in calls[0]
+
+
+def test_documented_awin_legacy_feed_route_accepts_exact_key_and_feed() -> None:
+    url = (
+        "https://datafeed.api.productserve.com/datafeed/download/"
+        "apikey/SECRET/fid/91379/format/csv/language/de/"
+    )
+    awin._validate_feed_download_url(url, feed_id="91379", api_key="SECRET")
+    encoded = url.replace("apikey/SECRET/", "apikey/A%2BB/")
+    awin._validate_feed_download_url(encoded, feed_id="91379", api_key="A+B")
+
+
+@pytest.mark.parametrize(
+    "bad_url",
+    [
+        "https://datafeed.api.productserve.com/arbitrary/fid/91379/",
+        "https://datafeed.api.productserve.com/datafeed/download/apikey//fid/91379/",
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/"
+            "apikey/SECRET/other/fid/91379/"
+        ),
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/"
+            "apikey/SECRET/fid/91379/?fid=91379&FID=91379"
+        ),
+    ],
+)
+def test_awin_feed_cannot_be_disguised_as_arbitrary_same_host_route(
+    bad_url: str,
+) -> None:
+    with pytest.raises(ValueError, match="awin_feed_download_") as exc:
+        awin._validate_feed_download_url(
+            bad_url, feed_id="91379", api_key="SECRET"
+        )
+    assert "SECRET" not in str(exc.value)
+
+
+def test_awin_download_cannot_swap_selected_publisher_key() -> None:
+    wrong_key_url = (
+        "https://datafeed.api.productserve.com/datafeed/download/"
+        "apikey/OTHER/fid/91379/format/csv/"
+    )
+    with pytest.raises(ValueError, match="awin_feed_download_api_key_mismatch") as exc:
+        awin._validate_feed_download_url(
+            wrong_key_url, feed_id="91379", api_key="SECRET"
+        )
+    assert "SECRET" not in str(exc.value)
+    assert "OTHER" not in str(exc.value)
+
+
+def test_awin_redirect_cannot_switch_keys_while_keeping_feed_id() -> None:
+    request = Request(
+        "https://productdata.awin.com/datafeed/download/apikey/"
+        "SECRET/fid/91379/format/csv/"
+    )
+    malicious_redirect = (
+        "https://datafeed.api.productserve.com/datafeed/download/"
+        "apikey/OTHER/fid/91379/format/csv/"
+    )
+    with pytest.raises(ValueError, match="awin_redirect_feed_id_mismatch") as exc:
+        awin.AwinRedirectHandler(expected_feed_id="91379").redirect_request(
+            request, None, 302, "Found", {}, malicious_redirect
+        )
+    assert "SECRET" not in str(exc.value)
+    assert "OTHER" not in str(exc.value)
+
+
+def test_foreign_feed_download_credential_stops_before_download(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[str] = []
+    foreign_list = CSV.replace(
+        "apikey/SECRET/fid/91379/", "apikey/OTHER/fid/91379/", 1
+    )
+
+    def fake_read(
+        url: str, *, max_bytes: int, expected_feed_id: str | None = None
+    ) -> bytes:
+        calls.append(url)
+        if "/datafeed/list/" in url:
+            return foreign_list.encode("utf-8")
+        raise AssertionError("No download with a foreign API key is permitted")
+
+    monkeypatch.setattr(awin, "_read_url", fake_read)
+    with pytest.raises(ValueError, match="awin_feed_download_api_key_mismatch"):
+        awin.download_feed_from_list(
+            api_key="SECRET",
+            advertiser_id="31081",
+            feed_id="91379",
+            output_path=Path("must-not-be-created.csv"),
+            report_path=None,
+        )
+    assert len(calls) == 1 and "/datafeed/list/" in calls[0]
