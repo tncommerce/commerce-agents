@@ -289,3 +289,70 @@ def test_hold_can_revoke_a_row_without_new_affiliate_or_ean_approval() -> None:
     packet["offers"][0].pop("ean")
     result = prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
     assert result[0]["decision"] == "hold"
+
+def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> None:
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+    monkeypatch.delenv("DUFYND_RUNTIME_OFFER_MERCHANTS", raising=False)
+    raw = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    rabanne = next(
+        item for item in raw if item["offer_id"] == purchase_freshness.TARGET_OFFER
+    )
+    certificate = {
+        "source": "certified_purchase_verification",
+        "offer_contract": {k: v for k, v in rabanne.items() if k != "last_updated_at"},
+        "max_age_hours": 72,
+        "decision": "safe_evidence_refresh",
+        "verified_at": datetime.now(UTC).isoformat(),
+    }
+    read_calls = []
+
+    def fake_read(rows):
+        read_calls.append(rows)
+        return None  # DB outage on opted-in merchants cannot affect Rabanne.
+
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", fake_read)
+    monkeypatch.setattr(
+        purchase_freshness,
+        "evidence_for",
+        lambda offer_id: certificate if offer_id == rabanne["offer_id"] else None,
+    )
+    result = MerchantOfferStore(OFFER_FILE).eligible_offer(rabanne["offer_id"])
+    assert result is not None
+    assert result.price == rabanne["price"]
+    assert result.affiliate_url == rabanne["affiliate_url"]
+    assert not read_calls  # No Notino request on unrelated Rabanne clickout.
+
+    notino = canonical()
+    assert MerchantOfferStore(OFFER_FILE).eligible_offer(notino["offer_id"]) is None
+    assert read_calls and read_calls[-1][0]["offer_id"] == notino["offer_id"]
+
+
+def test_runtime_invalid_scope_or_selected_db_outage_fails_closed(monkeypatch, tmp_path) -> None:
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_MERCHANTS", "notino,,perfumetrader")
+    monkeypatch.setattr(
+        runtime_offer_snapshots,
+        "load_runtime_snapshots",
+        lambda _: pytest.fail("invalid scope must not make network request"),
+    )
+    assert MerchantOfferStore(OFFER_FILE).offers_for(canonical()["product_id"]) == []
+
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_MERCHANTS", "notino")
+    notino = canonical() | {
+        "last_updated_at": datetime.now(UTC).isoformat(),
+    }
+    other = next(
+        item
+        for item in json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+        if item["merchant_id"] == "douglas-de"
+    ) | {
+        "product_id": notino["product_id"],
+        "last_updated_at": datetime.now(UTC).isoformat(),
+        "in_stock": True,
+    }
+    fixture = tmp_path / "merchant_offers.json"
+    fixture.write_text(json.dumps({"offers": [notino, other]}), encoding="utf-8")
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", lambda _: None)
+    ranked = MerchantOfferStore(fixture).offers_for(notino["product_id"])
+    assert [offer.offer_id for offer in ranked] == [other["offer_id"]]
+    assert all(offer.merchant_id != "notino" for offer in ranked)

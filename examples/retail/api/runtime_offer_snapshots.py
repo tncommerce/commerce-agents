@@ -48,6 +48,24 @@ def runtime_offer_snapshots_enabled() -> bool:
     return os.getenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "") == "enabled"
 
 
+def runtime_offer_scope() -> frozenset[str] | None:
+    """Release scope per merchant, independent of each price refresh.
+
+    Default is deliberately Notino-only, preserving the established Rabanne
+    purchase-certification path at first rollout. A malformed production
+    configuration returns None and must fail closed, not silently use old prices.
+    """
+    raw = os.getenv("DUFYND_RUNTIME_OFFER_MERCHANTS", "notino")
+    merchants = [value.strip() for value in raw.split(",")]
+    if (
+        not 1 <= len(merchants) <= 16
+        or len(set(merchants)) != len(merchants)
+        or any(not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", value) for value in merchants)
+    ):
+        return None
+    return frozenset(merchants)
+
+
 def identity_hash(canonical: dict[str, Any]) -> str:
     """Hash only fields that data refreshes are forbidden to change."""
     frozen = {field: canonical.get(field) for field in IDENTITY_FIELDS}

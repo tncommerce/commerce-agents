@@ -58,6 +58,16 @@ begin
      and new.verified_at < clock_timestamp() - interval '72 hours' then
     raise exception 'only fresh observations can be marked verified';
   end if;
+  if tg_op = 'UPDATE' and (
+     new.offer_id is distinct from old.offer_id
+     or new.product_id is distinct from old.product_id
+     or new.merchant_id is distinct from old.merchant_id
+     or new.merchant_product_id is distinct from old.merchant_product_id
+     or new.identity_sha256 is distinct from old.identity_sha256
+     or new.currency is distinct from old.currency
+  ) then
+    raise exception 'canonical offer identity is immutable';
+  end if;
   if tg_op = 'UPDATE' and new.verified_at <= old.verified_at then
     raise exception 'observation timestamps must advance strictly';
   end if;

@@ -146,3 +146,17 @@ Ohne Beobachtung ist der API-Status ausdrücklich \`not_checked\`.
 Der Report schreibt nicht in Supabase und eröffnet keinerlei Kauf-/Bild-/
 Produktfreigabe. Notino- und Awin-Feed-Inhalte werden nicht künstlich
 aktualisiert; die externe Quelle bleibt ein separates Qualitäts-Gate.
+
+## Rollout-Isolation + echte Postgres-Tests (24.10., DEV)
+Die einmalige Aktivierung nutzt standardmäßig nur `notino` als Runtime-Datenquelle;
+weitere Händler können ausdrücklich in `DUFYND_RUNTIME_OFFER_MERCHANTS`
+als kommagetrennte kanonische Händler-IDs ergänzt werden. Eine fehlerhafte
+Konfiguration stoppt die gesamte Runtime-Angebotsansicht fail-closed.
+Ein Quellenausfall sperrt die betroffenen dynamischen Händlerangebote, nicht
+den zuvor getrennt zertifizierten Rabanne-Purchase-Evidence-Weg.
+
+Die vorbereitete Migration blockiert beim Update zusätzlich Veränderungen
+an Produkt-, Händler-, SKU- und Identitätsmerkmalen auf SQL-Ebene. Ein
+dedizierter PostgreSQL-Test läuft innerhalb des vorhandenen
+`budget-postgres`-CI-Services, ohne neue DB oder Produktiv-DDL.
+Er prüft Rollen/Rechte, 72h, Zeitmonotonie, Identitätssperre, HOLD und Audit.

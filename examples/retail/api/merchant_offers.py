@@ -257,23 +257,36 @@ class MerchantOfferStore:
         from .runtime_offer_snapshots import (
             apply_runtime_snapshot,
             load_runtime_snapshots,
+            runtime_offer_scope,
             runtime_offer_snapshots_enabled,
         )
+        from .purchase_freshness import apply_evidence, evidence_for
 
         if runtime_offer_snapshots_enabled():
-            snapshots = load_runtime_snapshots(rows)
-            if snapshots is None:
-                return []
-            return [
-                MerchantOffer.model_validate(verified)
-                for row in rows
-                if (verified := apply_runtime_snapshot(row, snapshots.get(row["offer_id"])))
-                is not None
-            ]
+            scope = runtime_offer_scope()
+            if scope is None:
+                return []  # Malformed activation never falls back to static prices.
+            selected = [row for row in rows if row["merchant_id"] in scope]
+            snapshots = load_runtime_snapshots(selected) if selected else {}
+            verified_rows = []
+            for row in rows:
+                if row["merchant_id"] in scope:
+                    # Missing/failed DB evidence excludes ONLY an opted-in
+                    # merchant. Other merchants keep their existing trust gate.
+                    current = apply_runtime_snapshot(
+                        row,
+                        snapshots.get(row["offer_id"]) if snapshots is not None else None,
+                    )
+                else:
+                    # Preserve existing Rabanne purchase certification until
+                    # separately migrated with the same verified safeguards.
+                    current = apply_evidence(row, evidence_for(row["offer_id"]))
+                if current is not None:
+                    verified_rows.append(MerchantOffer.model_validate(current))
+            return verified_rows
 
         # Legacy source remains the production default until the schema, first
         # verified snapshot batch and explicit deployment GO are complete.
-        from .purchase_freshness import apply_evidence, evidence_for
 
         return [
             MerchantOffer.model_validate(verified)
