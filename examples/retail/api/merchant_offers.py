@@ -232,7 +232,11 @@ class MerchantOfferStore:
         self.path = path
 
     def _load(
-        self, *, product_id: str | None = None, offer_id: str | None = None
+        self,
+        *,
+        product_id: str | None = None,
+        offer_id: str | None = None,
+        fresh_runtime_clickout: bool = False,
     ) -> list[MerchantOffer]:
         if not self.path.exists():
             return []
@@ -285,7 +289,14 @@ class MerchantOfferStore:
                     pass  # Missing/corrupt partner evidence fails closed.
             selected = [row for row in selected if approved_affiliate_route(row, partners)]
             allowed_ids = {row["offer_id"] for row in selected}
-            snapshots = load_runtime_snapshots(selected) if selected else {}
+            if not selected:
+                snapshots = {}
+            elif fresh_runtime_clickout:
+                # Buyer-action gate: never reuse a positive listing cache after
+                # the merchant was held or marked out of stock in Supabase.
+                snapshots = load_runtime_snapshots(selected, bypass_cache=True)
+            else:
+                snapshots = load_runtime_snapshots(selected)
             verified_rows = []
             for row in rows:
                 if row["merchant_id"] in scope:
@@ -338,7 +349,7 @@ class MerchantOfferStore:
         max_age_hours: float = 72.0,
     ) -> MerchantOffer | None:
         candidate = next(
-            iter(self._load(offer_id=offer_id)),
+            iter(self._load(offer_id=offer_id, fresh_runtime_clickout=True)),
             None,
         )
         if candidate is None:

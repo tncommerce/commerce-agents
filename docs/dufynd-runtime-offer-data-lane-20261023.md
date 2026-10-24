@@ -401,3 +401,24 @@ Runtime-Snapshot, fehlende Partnerdatei, pausiertes Händlerprogramm,
 fremder CJ-Publisher, falscher Zielhost, API-Schlüsselrotation,
 lokale Secret-Entfernung und falsches Supabase-Projekt. Noch keine
 echten Quellen-/Produktfreigaben oder Angebotsupdates.
+
+
+## 24.10.2026 – P0 Clickout-Readback trotz 30-Sekunden-Listen-Cache
+
+Die letzte Kaufweiterleitung darf einen zuvor gelesenen, mittlerweile
+widerrufenen Supabase-Snapshot **nicht** als Freigabe wiederverwenden.
+Mit eingeschaltetem, ausdrücklich freigegebenem Runtime-Feature nutzt
+die Produktliste unverändert den 30-Sekunden-Cache, während
+\`MerchantOfferStore.eligible_offer\` unmittelbar vor dem Clickout eine
+neue private DB-Leseanforderung mit \`Cache-Control: no-store\` fordert.
+\`None\`/503, neuer \`hold\`-Datensatz und \`in_stock=false\` sperren die
+Kaufweiterleitung; der Leser erhält keinen historischen Fallback. Die
+neuen Live-Lesedaten aktualisieren auch den normalen Listen-Cache, sodass
+ein unmittelbar darauffolgender Produktaufruf keine alte Kaufoption erhält.
+
+Kein zusätzlicher Leseaufruf für unbekannte Angebote und keine Änderung der
+legacy-nicht-dynamischen Rabanne-Zertifizierung. Die zusätzliche REST-Abfrage
+erfolgt erst nach gesondertem Produktions-GO und Aktivierung des bestehenden
+Runtime-Feature-Schalters auf dem vorhandenen Supabase-Service. Im DEV-CI
+werden die Negativfälle \`hold\`, \`out_of_stock\` und HTTP 503 gegen einen
+isolierten MockTransport geprüft; es werden keine echten Clickouts ausgelöst.

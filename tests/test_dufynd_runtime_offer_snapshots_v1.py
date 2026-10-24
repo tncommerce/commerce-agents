@@ -89,8 +89,10 @@ def test_one_exact_verified_batch_updates_both_list_and_clickout(monkeypatch) ->
     fixed = snapshot(row)
     calls = []
 
-    def read(selected):
-        calls.append([offer["offer_id"] for offer in selected])
+    def read(selected, *, bypass_cache=False):
+        calls.append(
+            ([offer["offer_id"] for offer in selected], bypass_cache)
+        )
         return {row["offer_id"]: fixed}
 
     monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", read)
@@ -111,7 +113,7 @@ def test_one_exact_verified_batch_updates_both_list_and_clickout(monkeypatch) ->
         for offer in all_rows
         if offer["product_id"] == row["product_id"] and offer["merchant_id"] == "notino"
     ]
-    assert calls == [expected_ids, [row["offer_id"]]]
+    assert calls == [(expected_ids, False), ([row["offer_id"]], True)]
 
 
 @pytest.mark.parametrize("database_result", [None, {}])
@@ -308,8 +310,8 @@ def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> 
     }
     read_calls = []
 
-    def fake_read(rows):
-        read_calls.append(rows)
+    def fake_read(rows, *, bypass_cache=False):
+        read_calls.append((rows, bypass_cache))
         return None  # DB outage on opted-in merchants cannot affect Rabanne.
 
     monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", fake_read)
@@ -326,7 +328,8 @@ def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> 
 
     notino = canonical()
     assert MerchantOfferStore(OFFER_FILE).eligible_offer(notino["offer_id"]) is None
-    assert read_calls and read_calls[-1][0]["offer_id"] == notino["offer_id"]
+    assert read_calls and read_calls[-1][0][0]["offer_id"] == notino["offer_id"]
+    assert read_calls[-1][1] is True
 
 
 def test_runtime_invalid_scope_or_selected_db_outage_fails_closed(monkeypatch, tmp_path) -> None:
@@ -505,8 +508,9 @@ def test_runtime_partner_revocation_and_missing_registry_fail_closed(monkeypatch
     monkeypatch.delenv("DUFYND_RUNTIME_OFFER_MERCHANTS", raising=False)
     reads = []
 
-    def read(rows):
+    def read(rows, *, bypass_cache=False):
         reads.extend(rows)
+        assert bypass_cache is True
         return {row["offer_id"]: snapshot(row)}
 
     monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", read)
@@ -568,3 +572,72 @@ def test_runtime_offer_refuses_other_publishers_tracking_even_with_live_db(
 
     monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
     assert MerchantOfferStore(offer_file).offers_for(row["product_id"]) == []
+
+
+
+@pytest.mark.parametrize("revocation", ["hold", "out_of_stock", "network_error"])
+def test_clickout_reads_fresh_snapshot_after_positive_listing_cache(
+    monkeypatch, revocation,
+) -> None:
+    """An unexpired 30s listing cache cannot authorize a later buyer click."""
+    row = canonical()
+    runtime_offer_snapshots._cache.clear()
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_MERCHANTS", "notino")
+    monkeypatch.setenv("SUPABASE_URL", runtime_offer_snapshots.PROJECT_URL)
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "sb_secret_synthetic_clickout_test")
+    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY", raising=False)
+
+    calls = []
+    original_httpx_client = httpx.Client
+
+    def network(request: httpx.Request) -> httpx.Response:
+        calls.append(request)
+        assert request.method == "GET"
+        assert str(request.url).startswith(runtime_offer_snapshots.PROJECT_URL)
+        assert request.headers["apikey"] == "sb_secret_synthetic_clickout_test"
+        if len(calls) == 1:
+            return httpx.Response(200, json=[snapshot(row)])
+        assert request.headers["Cache-Control"] == "no-store"
+        if revocation == "network_error":
+            return httpx.Response(503, json={"message": "not available"})
+        changed = snapshot(row)
+        if revocation == "hold":
+            changed["decision"] = "hold"
+        else:
+            changed["in_stock"] = False
+        return httpx.Response(200, json=[changed])
+
+    transport = httpx.MockTransport(network)
+    monkeypatch.setattr(
+        runtime_offer_snapshots.httpx,
+        "Client",
+        lambda **kwargs: original_httpx_client(**kwargs, transport=transport),
+    )
+    store = MerchantOfferStore(OFFER_FILE)
+    listing = store.offers_for(row["product_id"])
+    assert listing and listing[0].offer_id == row["offer_id"]
+    assert len(calls) == 1
+
+    # A positive listing is displayed, but the clickout re-reads the DB.
+    assert store.eligible_offer(row["offer_id"]) is None
+    assert len(calls) == 2
+    # A subsequent listing also sees the new hold/no-source state; no stale
+    # positive cache is silently restored after the buyer-action decision.
+    assert store.offers_for(row["product_id"]) == []
+    assert len(calls) == 2
+    runtime_offer_snapshots._cache.clear()
+
+
+def test_runtime_disabled_clickout_never_triggers_new_database_bypass(
+    monkeypatch,
+) -> None:
+    row = canonical()
+    monkeypatch.delenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", raising=False)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Legacy clickout cannot call runtime DB")
+
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
+    store = MerchantOfferStore(OFFER_FILE)
+    assert store.eligible_offer(row["offer_id"]) is None

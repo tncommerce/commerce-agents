@@ -257,6 +257,8 @@ def apply_runtime_snapshot(
 
 def load_runtime_snapshots(
     canonical_rows: list[dict[str, Any]],
+    *,
+    bypass_cache: bool = False,
 ) -> dict[str, dict[str, Any]] | None:
     """Read just the selected offers in one bounded private request.
 
@@ -278,12 +280,20 @@ def load_runtime_snapshots(
     credential_fingerprint = hashlib.sha256(key.encode("utf-8")).hexdigest()
     cache_key = (*ids, "credential:" + credential_fingerprint)
     cached = _cache.get(cache_key)
-    if cached is not None and time.monotonic() - cached[0] < CACHE_SECONDS:
+    if (
+        not bypass_cache
+        and cached is not None
+        and time.monotonic() - cached[0] < CACHE_SECONDS
+    ):
         return cached[1]
 
     headers = {"apikey": key}
     if key.startswith("eyJ"):
         headers["Authorization"] = f"Bearer {key}"
+    if bypass_cache:
+        # Clickout must see a new hold/out-of-stock row even when its page
+        # listing was cached. Prevent intermediaries from reusing the GET.
+        headers["Cache-Control"] = "no-store"
     fields = (
         "offer_id,product_id,merchant_id,merchant_product_id,identity_sha256,"
         "price,shipping_cost,in_stock,currency,verified_at,decision,"
