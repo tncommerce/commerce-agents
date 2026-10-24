@@ -177,3 +177,56 @@ CJ/Awin-Tracking-Endpunkt mit Zielgleichheit zur veröffentlichten
 Produktseite sowie die bekannten Advertiser- und Publisher-IDs. Fremde
 Weiterleitungen, zusätzliche URL-Varianten oder falsche Netzwerkprogramme
 dürfen nicht durch eine gewöhnliche Preis-Charge eingeschleust werden.
+
+## P2 – Offizielle CJ-Notino-Produktfeed-Erkennung (24.10.2026, read-only)
+
+**Umgesetzt:** \`scripts/check_dufynd_cj_notino_feed.py\`. Es nutzt die
+von CJ dokumentierte Publisher-\`productFeeds\`-GraphQL-Abfrage gegen
+\`https://ads.api.cj.com/query\`, strikt auf **eine** explizit konfigurierte
+Notino-Advertiser-Company-ID begrenzt. Der Report enthält ausschließlich
+Feed-Metadaten (adId, Datum, Anzahl, Typ) und **keine Preise, Links oder
+Originalbilder**. Es wird höchstens eine Abfrage versucht; Fehler,
+fehlende Berechtigung und Rate-Limits werden ohne Login-Retry ausgewiesen.
+
+Offizielle API-Dokumentation:
+https://docs.cj.com/docs/productfeed-api-search
+
+Benötigte **vorhandene oder eigenständig eingerichtete autorisierte**
+serverseitige Parameter (nicht in Git committen):
+- \`CJ_PRODUCT_FEED_TOKEN\`: CJ Developer Personal Access Token
+- \`CJ_PUBLISHER_COMPANY_ID\`: eigene CJ Company ID
+- \`CJ_NOTINO_ADVERTISER_COMPANY_ID\`: tatsächlich im CJ-Konto bestätigte
+  Advertiser Company ID des Notino-Programms; **nicht** aus einer vorhandenen
+  \`click-<publisher>-<adid>\`-Tracking-URL ableiten.
+
+Beispiel (ohne zusätzliche Abos und ohne Produktveröffentlichung):
+
+\`\`\`bash
+python -m scripts.check_dufynd_cj_notino_feed \
+  --output /tmp/dufynd-cj-notino-feed-inventory.json
+\`\`\`
+
+Ist kein gültiger vorhandener Satz an Zugangsdaten verfügbar, endet die Prüfung
+ohne Netzwerkanfrage und mit klarem Konfigurationsblocker. Eine erfolgreiche
+Feed-Inventarabfrage beweist **weder** aktives Affiliate-Programm,
+**noch** exakten EAN/Größen/Konzentrationsmatch, frischen SKU-Preis, verifizierten
+Bestand oder Versandkosten, noch Bildrechte. Der Probe-Report kann daher keine
+\`verified\`-Snapshots erstellen, keinen 72h-Timer verlängern und keine
+bestehende Notino-Freigabe ändern. Solche Daten werden erst nach einem
+separaten qualifizierten Product-Detail- und Rechte-Gate in den vorhandenen
+\`prepare_dufynd_runtime_offer_batch.py\` übernommen. Es wurde **keine**
+produktive Supabase-Tabelle oder GitHub-Workflow-Aktivierung erzeugt.
+
+**Awin-Grenze:** Der vorhandene Top-Parfümerie-Feed 91379
+ist ein offizieller Bild-/Produkt-Review-Weg, aber die archivierte
+Feed-Metadatenquelle hatte keine zuverlässig befüllten EAN-, Versand- und
+Bestandsfelder. Außerdem liegen zurzeit keine kanonischen Top-Parfümerie-
+Kaufangebote mit freigegebener Affiliate-Route vor. Deshalb weder aus einem
+frischen CSV-Download noch aus dessen Abrufzeitpunkt eine
+Kaufangebots-Verifizierung ableiten. Die vorhandene
+\`fetch_dufynd_awin_data_feed.py\` und Bild-Review-Skripte bleiben
+unverändert – keine zusätzlichen Download-Schleifen.
+
+**Perfumetrader:** Awin-Produktfeed im vorhandenen Provider-Config
+\`dufynd_awin_perfumetrader_provider_config.json\` als nicht verfügbar
+gekennzeichnet. Keine erneuten erfolglosen Anmeldungen oder Feed-Resets.
