@@ -151,3 +151,40 @@ def test_active_awin_membership_is_treated_as_joined() -> None:
 
     assert metadata["membership_status"] == "active"
     assert metadata["joined"] is True
+
+@pytest.mark.parametrize(
+    "header",
+    [
+        "Advertiser-ID,Advertiser ID,Feed ID,URL",
+        "Advertiser ID,Feed-ID,Feed ID,URL",
+        "Advertiser ID,,Feed ID,URL",
+    ],
+)
+def test_feed_list_rejects_ambiguous_normalized_headers(header: str) -> None:
+    payload = (header + "\n31081,31081,91379,https://example.test/file\n").encode()
+    with pytest.raises(ValueError, match="awin_feed_list_"):
+        parse_feed_list(payload)
+
+
+def test_feed_list_rejects_rows_with_extra_undeclared_fields() -> None:
+    payload = b"Advertiser ID,Feed ID\n31081,91379,unapproved-extra\n"
+    with pytest.raises(ValueError, match="row_exceeds_declared_columns"):
+        parse_feed_list(payload)
+
+
+def test_exact_awin_feed_lookup_rejects_duplicate_target_rows() -> None:
+    rows = parse_feed_list(CSV.encode("utf-8"))
+    duplicate = rows[0].copy()
+    duplicate["URL"] = "https://datafeed.api.productserve.com/other"
+    with pytest.raises(ValueError, match="target_awin_feed_ambiguous_duplicate"):
+        find_feed(
+            [*rows, duplicate],
+            advertiser_id="31081",
+            feed_id="91379",
+        )
+
+
+def test_two_distinct_awin_advertisers_keep_separate_identities() -> None:
+    rows = parse_feed_list(CSV.encode("utf-8"))
+    assert find_feed(rows, advertiser_id="31081", feed_id="91379") is rows[0]
+    assert find_feed(rows, advertiser_id="11672", feed_id="99999") is rows[1]
