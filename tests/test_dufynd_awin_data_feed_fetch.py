@@ -430,7 +430,10 @@ def test_foreign_feed_download_credential_stops_before_download(
     "redirect_url",
     [
         "https://datafeed.api.productserve.com/datafeed/list/apikey/OTHER",
-        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/",
+        (
+            "https://datafeed.api.productserve.com/datafeed/download/"
+            "apikey/SECRET/fid/91379/"
+        ),
         "https://productdata.awin.com/datafeed/list/apikey/SECRET?apiKey=OTHER",
         "https://productdata.awin.com/datafeed/list/apikey/SECRET?fid=99999",
     ],
@@ -438,7 +441,9 @@ def test_foreign_feed_download_credential_stops_before_download(
 def test_feed_list_redirect_keeps_exact_publisher_identity(redirect_url: str) -> None:
     request = Request("https://productdata.awin.com/datafeed/list/apikey/SECRET")
     handler = awin.AwinRedirectHandler(expected_list_api_key="SECRET")
-    with pytest.raises(ValueError, match="awin_redirect_feed_list_identity_mismatch") as exc:
+    with pytest.raises(
+        ValueError, match="awin_redirect_feed_list_identity_mismatch"
+    ) as exc:
         handler.redirect_request(request, None, 302, "Found", {}, redirect_url)
     assert "SECRET" not in str(exc.value)
     assert "OTHER" not in str(exc.value)
@@ -451,7 +456,9 @@ def test_feed_list_redirect_keeps_exact_publisher_identity(redirect_url: str) ->
         "https://productdata.awin.com/datafeed/list/apikey/SECRET/?format=csv",
     ],
 )
-def test_feed_list_redirect_allows_original_key_on_awin_hosts(redirect_url: str) -> None:
+def test_feed_list_redirect_allows_original_key_on_awin_hosts(
+    redirect_url: str,
+) -> None:
     request = Request("https://productdata.awin.com/datafeed/list/apikey/SECRET")
     handler = awin.AwinRedirectHandler(expected_list_api_key="SECRET")
     redirected = handler.redirect_request(request, None, 302, "Found", {}, redirect_url)

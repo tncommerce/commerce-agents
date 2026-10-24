@@ -982,7 +982,10 @@ def test_limited_partner_scope_exact_released_list_still_passes() -> None:
         ("notino-ysl-libre-edp-90", "URL=https%3A%2F%2Fother.invalid%2F"),
         ("perfumetrader-rabanne-1-million-edt-100", "AWINMID=31081"),
         ("perfumetrader-rabanne-1-million-edt-100", "AWINAFFID=1111"),
-        ("perfumetrader-rabanne-1-million-edt-100", "UED=https%3A%2F%2Fother.invalid%2F"),
+        (
+            "perfumetrader-rabanne-1-million-edt-100",
+            "UED=https%3A%2F%2Fother.invalid%2F",
+        ),
         ("perfumetrader-rabanne-1-million-edt-100", "CLICKREF=other"),
     ],
 )
@@ -995,13 +998,11 @@ def test_affiliate_route_rejects_case_variant_tracking_shadows(
         OFFER_FILE.with_name("merchant_partners.json").read_text(encoding="utf-8")
     )
     assert runtime_offer_snapshots.approved_affiliate_route(row, partners) is True
-    tampered = row | {
-        "affiliate_url": row["affiliate_url"] + "&" + shadow_parameter
-    }
+    tampered = row | {"affiliate_url": row["affiliate_url"] + "&" + shadow_parameter}
     assert runtime_offer_snapshots.approved_affiliate_route(tampered, partners) is False
 
 
-@pytest.mark.parametrize("control", ["\\n", "\\r", "\\t"])
+@pytest.mark.parametrize("control", ["\n", "\r", "\t"])
 def test_affiliate_route_rejects_silently_stripped_url_controls(control: str) -> None:
     row = canonical()
     partners = json.loads(
