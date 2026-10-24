@@ -1011,3 +1011,53 @@ def test_affiliate_route_rejects_silently_stripped_url_controls(control: str) ->
     assert runtime_offer_snapshots.approved_affiliate_route(row, partners) is True
     tampered = row | {"affiliate_url": row["affiliate_url"] + "&sid=a" + control + "b"}
     assert runtime_offer_snapshots.approved_affiliate_route(tampered, partners) is False
+
+
+@pytest.mark.parametrize(
+    "malformed_payload",
+    [
+        "{invalid-json",
+        "null",
+        "{}",
+        '{"offers": {"bad": "type"}}',
+        '{"offers": [17]}',
+        '{"offers": [{"offer_id": null}]}',
+    ],
+)
+def test_malformed_released_offer_file_fails_closed_before_runtime_read(
+    monkeypatch, tmp_path, malformed_payload: str
+) -> None:
+    offer_file = tmp_path / "merchant_offers.json"
+    offer_file.write_text(malformed_payload, encoding="utf-8")
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Invalid canonical file must never trigger a private DB call")
+
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
+    store = MerchantOfferStore(offer_file)
+    assert store.offers_for(canonical()["product_id"]) == []
+    assert store.eligible_offer(canonical()["offer_id"]) is None
+
+
+def test_duplicate_released_offer_ids_block_entire_buyer_surface(
+    monkeypatch, tmp_path
+) -> None:
+    row = canonical()
+    offer_file = tmp_path / "merchant_offers.json"
+    offer_file.write_text(
+        json.dumps({"offers": [row, row | {"price": 1.0}]}), encoding="utf-8"
+    )
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Ambiguous offer IDs must never trigger a private DB call")
+
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
+    store = MerchantOfferStore(offer_file)
+    for enabled in (True, False):
+        if enabled:
+            monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+        else:
+            monkeypatch.delenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", raising=False)
+        assert store.offers_for(row["product_id"]) == []
+        assert store.eligible_offer(row["offer_id"]) is None

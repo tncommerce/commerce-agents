@@ -241,8 +241,37 @@ class MerchantOfferStore:
         if not self.path.exists():
             return []
 
-        raw = json.loads(self.path.read_text(encoding="utf-8"))
-        rows = raw.get("offers", raw if isinstance(raw, list) else [])
+        try:
+            raw = json.loads(self.path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, UnicodeDecodeError):
+            return []  # Corrupt released commerce data must never reach buyers.
+        if isinstance(raw, dict):
+            rows = raw.get("offers", [])
+        elif isinstance(raw, list):
+            rows = raw
+        else:
+            return []
+        if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+            return []
+        ids = [row.get("offer_id") for row in rows]
+        # A duplicate canonical offer ID makes a /clickout/<id> ambiguous.
+        # Check the entire released list before narrowing to one product.
+        if (
+            any(
+                not isinstance(offer_id, str)
+                or re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
+                for offer_id in ids
+            )
+            or len(ids) != len(set(ids))
+            or any(
+                not isinstance(row.get("product_id"), str)
+                or not row["product_id"]
+                or not isinstance(row.get("merchant_id"), str)
+                or not row["merchant_id"]
+                for row in rows
+            )
+        ):
+            return []
         # Select before certified evidence reads: an unrelated merchant's cold
         # cache or outage must not delay this product or clickout eligibility.
         rows = [
