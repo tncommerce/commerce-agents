@@ -332,12 +332,45 @@ def load_runtime_snapshots(
     with _lock:
         latest = _cache.get(cache_key)
         if latest is not None and latest[2] > generation:
-            # A newer read already won (possibly HOLD, stock=0 or 503).
-            # Do not let this older in-flight buyer request return an
-            # out-of-date positive value, even if its GET succeeded.
+            # A newer read of the same exact ID set already won.
             return latest[1]
-        # Evict only an old entry, never clear a newer revocation while
-        # processing a slower in-flight request.
+
+        # Listings may request [A, B], while uncached clickouts request [A].
+        # An overlapping newer HOLD, stock=0, missing row or 503 must defeat
+        # older positives irrespective of the cache key's complete ID tuple.
+        # Never mix observations across server credential identities.
+        requested = set(ids)
+        overlapping = sorted(
+            (
+                (other_key, other_value)
+                for other_key, other_value in _cache.items()
+                if other_key != cache_key
+                and other_key[-1] == cache_key[-1]
+                and requested.intersection(other_key[:-1])
+            ),
+            key=lambda item: item[1][2],
+        )
+        for other_key, (_, other_result, other_generation) in overlapping:
+            shared = requested.intersection(other_key[:-1])
+            if other_generation > generation:
+                # This GET started before an already completed observation.
+                # Return and cache only the newer verdict for shared IDs.
+                if result is not None:
+                    result = dict(result)
+                    for offer_id in shared:
+                        if other_result is not None and offer_id in other_result:
+                            result[offer_id] = other_result[offer_id]
+                        else:
+                            result.pop(offer_id, None)
+            elif any(
+                (result or {}).get(offer_id)
+                != (other_result or {}).get(offer_id)
+                for offer_id in shared
+            ):
+                # Changed source evidence invalidates older overlapping list
+                # caches; identical reads preserve their 30-second benefit.
+                del _cache[other_key]
+
         if cache_key not in _cache and len(_cache) >= 200:
             oldest_key = min(_cache, key=lambda item: _cache[item][0])
             del _cache[oldest_key]
