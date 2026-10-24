@@ -6,7 +6,10 @@ Only previously approved canonical affiliate URLs may be reused.
 
 from __future__ import annotations
 
-from examples.retail.api.runtime_offer_snapshots import approved_affiliate_route, merchant_key
+from examples.retail.api.runtime_offer_snapshots import (
+    approved_affiliate_route as approved_affiliate_route,
+)
+from examples.retail.api.runtime_offer_snapshots import merchant_key
 from scripts.validate_dufynd_catalog_expansion_wave import valid_gtin
 
 
