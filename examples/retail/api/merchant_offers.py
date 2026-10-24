@@ -9,7 +9,7 @@ from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlparse
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
 
@@ -30,9 +30,9 @@ class MerchantOffer(BaseModel):
     merchant_id: str
     merchant_name: str
     merchant_product_id: str | None = None
-    price: float = Field(gt=0)
+    price: float = Field(gt=0, allow_inf_nan=False)
     currency: str = "EUR"
-    shipping_cost: float | None = Field(default=None, ge=0)
+    shipping_cost: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     shipping_label: str | None = None
     in_stock: bool = False
     variant_label: str | None = None
@@ -44,7 +44,7 @@ class MerchantOffer(BaseModel):
 
     # Internal economics only. Never use this for fragrance recommendations or
     # to outrank a lower-price or materially fresher customer offer.
-    commission_rate: float | None = Field(default=None, ge=0)
+    commission_rate: float | None = Field(default=None, ge=0, allow_inf_nan=False)
 
 
 def _as_utc(value: datetime) -> datetime:
@@ -272,6 +272,17 @@ class MerchantOfferStore:
             )
         ):
             return []
+        # A file may be valid JSON with unique IDs but contain malformed
+        # prices, timestamps or incomplete offers. Validate the entire
+        # released contract before any private read or buyer routing; never
+        # surface a partial catalog or let a broken row trigger a buyer 500.
+        # Explicitly reject NaN/infinity to preserve JSON-safe customer prices.
+        try:
+            for row in rows:
+                MerchantOffer.model_validate(row)
+        except (ValidationError, ValueError, TypeError):
+            return []
+
         # Select before certified evidence reads: an unrelated merchant's cold
         # cache or outage must not delay this product or clickout eligibility.
         rows = [
