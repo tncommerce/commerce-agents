@@ -141,8 +141,7 @@ def build_unpublished_source_queue(
             "already_verified_sku_gtin_pair_count": len(verified),
             "cross_merchant_gtin_conflict": identity_hold,
             "independent_variant_identity_resolution_required": identity_hold,
-            "eligible_for_official_photo_candidate_search": is_missing_image
-            and not identity_hold,
+            "eligible_for_official_photo_candidate_search": is_missing_image and not identity_hold,
             "previously_stored_affiliate_route_exists": already_tracked,
             "source_paths": source_paths,
             "original_photo_gate": row["original_image_gate"],

@@ -222,7 +222,6 @@ def test_current_repo_contains_no_auto_approvable_20_item_photo_batch():
     assert all(row["public_catalog_release_authorized"] is False for row in report["items"])
 
 
-
 def test_cross_merchant_gtin_conflict_blocks_photo_candidate_discovery():
     staged, public, photos, mappings, offers, partners = inputs()
     mappings["mappings"].append(
