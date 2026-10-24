@@ -257,6 +257,7 @@ class MerchantOfferStore:
         from .purchase_freshness import apply_evidence, evidence_for
         from .runtime_offer_snapshots import (
             apply_runtime_snapshot,
+            approved_affiliate_route,
             load_runtime_snapshots,
             runtime_offer_scope,
             runtime_offer_snapshots_enabled,
@@ -267,15 +268,36 @@ class MerchantOfferStore:
             if scope is None:
                 return []  # Malformed activation never falls back to static prices.
             selected = [row for row in rows if row["merchant_id"] in scope]
+            # A private DB row alone cannot restore an unapproved, paused or
+            # wrong-scope affiliate offer. Recheck the released partner source
+            # both before the DB request and before the clickout decision.
+            partners: dict = {"partners": []}
+            if selected:
+                try:
+                    partner_data = json.loads(
+                        self.path.with_name("merchant_partners.json").read_text(
+                            encoding="utf-8-sig"
+                        )
+                    )
+                    if isinstance(partner_data, dict):
+                        partners = partner_data
+                except (OSError, ValueError):
+                    pass  # Missing/corrupt partner evidence fails closed.
+            selected = [row for row in selected if approved_affiliate_route(row, partners)]
+            allowed_ids = {row["offer_id"] for row in selected}
             snapshots = load_runtime_snapshots(selected) if selected else {}
             verified_rows = []
             for row in rows:
                 if row["merchant_id"] in scope:
-                    # Missing/failed DB evidence excludes ONLY an opted-in
-                    # merchant. Other merchants keep their existing trust gate.
+                    # An unauthorized merchant never receives a runtime offer,
+                    # including when a previously cached DB snapshot exists.
                     current = apply_runtime_snapshot(
                         row,
-                        snapshots.get(row["offer_id"]) if snapshots is not None else None,
+                        (
+                            snapshots.get(row["offer_id"])
+                            if snapshots is not None and row["offer_id"] in allowed_ids
+                            else None
+                        ),
                     )
                 else:
                     # Preserve existing Rabanne purchase certification until

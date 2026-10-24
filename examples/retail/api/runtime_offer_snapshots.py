@@ -18,6 +18,7 @@ import time
 from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from typing import Any
+from urllib.parse import parse_qs, urlsplit
 
 import httpx
 
@@ -41,6 +42,96 @@ IDENTITY_FIELDS = (
 
 _cache: dict[tuple[str, ...], tuple[float, dict[str, dict[str, Any]] | None]] = {}
 _lock = threading.Lock()
+
+
+def merchant_key(value: object) -> str:
+    """Canonical merchant identity used by both offline importer and buyer API."""
+    key = str(value or "").strip().casefold()
+    return key[:-3] if key.endswith("-de") else key
+
+
+def approved_affiliate_route(offer: dict, partners: dict) -> bool:
+    """One identical merchant/route gate for source import and live snapshots.
+
+    Only canonical publisher-owned links, exact destinations and currently
+    released merchant/product scopes are permitted. This code never constructs
+    a tracking link or grants a new network partnership.
+    """
+    if not isinstance(offer, dict) or not isinstance(partners, dict):
+        return False
+    merchant = merchant_key(offer.get("merchant_id"))
+    records = partners.get("partners")
+    if not isinstance(records, list):
+        return False
+    found = [
+        record
+        for record in records
+        if isinstance(record, dict) and merchant_key(record.get("merchant_id")) == merchant
+    ]
+    if len(found) != 1:
+        return False
+    partner = found[0]
+    status = partner.get("status")
+    if status not in {"active", "active_product_deeplink_only"}:
+        return False
+    if status == "active_product_deeplink_only" and (
+        partner.get("live_routing_allowed") is not True
+        or offer.get("product_id") not in partner.get("verified_product_scope", [])
+    ):
+        return False
+
+    link, destination = offer.get("affiliate_url"), offer.get("product_url")
+    if not isinstance(link, str) or not isinstance(destination, str):
+        return False
+    try:
+        route = urlsplit(link)
+        target = urlsplit(destination)
+        if (
+            route.scheme != "https"
+            or route.username is not None
+            or route.password is not None
+            or route.fragment
+            or route.port is not None
+            or target.scheme != "https"
+            or target.username is not None
+            or target.password is not None
+            or target.fragment
+            or target.port is not None
+        ):
+            return False
+        affiliate_host = (route.hostname or "").casefold().rstrip(".")
+        product_host = (target.hostname or "").casefold().rstrip(".")
+        expected_product_hosts = {
+            "notino": {"notino.de", "www.notino.de"},
+            "perfumetrader": {"perfumetrader.de", "www.perfumetrader.de"},
+            "top-parfuemerie": {"topparfuemerie.de", "www.topparfuemerie.de"},
+        }
+        if product_host not in expected_product_hosts.get(merchant, set()):
+            return False
+        params = parse_qs(route.query, keep_blank_values=True, strict_parsing=True)
+        if offer.get("network") == "CJ Affiliate":
+            return (
+                merchant == "notino"
+                and affiliate_host in {"jdoqocy.com", "www.jdoqocy.com"}
+                and re.fullmatch(r"/click-101884613-[0-9]+", route.path) is not None
+                and params.get("url") == [destination]
+            )
+        if offer.get("network") == "Awin":
+            advertiser = {
+                "perfumetrader": "11672",
+                "top-parfuemerie": "31081",
+            }.get(merchant)
+            return (
+                advertiser is not None
+                and affiliate_host in {"awin1.com", "www.awin1.com"}
+                and route.path == "/cread.php"
+                and params.get("awinmid") == [advertiser]
+                and params.get("awinaffid") == ["3099222"]
+                and params.get("ued") == [destination]
+            )
+    except ValueError:
+        return False
+    return False
 
 
 def runtime_offer_snapshots_enabled() -> bool:
@@ -178,14 +269,17 @@ def load_runtime_snapshots(
     ids = tuple(sorted({str(row["offer_id"]) for row in canonical_rows}))
     if len(ids) > 100 or any(not re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", s) for s in ids):
         return None
-    cached = _cache.get(ids)
-    if cached is not None and time.monotonic() - cached[0] < CACHE_SECONDS:
-        return cached[1]
-
+    # Credentials are checked BEFORE cache access. Rotated or revoked
+    # server keys must not inherit cached observations from a prior identity.
     key = os.getenv("SUPABASE_SECRET_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
     url = os.getenv("SUPABASE_URL", "").rstrip("/")
     if url != PROJECT_URL or not key:
         return None
+    credential_fingerprint = hashlib.sha256(key.encode("utf-8")).hexdigest()
+    cache_key = (*ids, "credential:" + credential_fingerprint)
+    cached = _cache.get(cache_key)
+    if cached is not None and time.monotonic() - cached[0] < CACHE_SECONDS:
+        return cached[1]
 
     headers = {"apikey": key}
     if key.startswith("eyJ"):
@@ -220,5 +314,5 @@ def load_runtime_snapshots(
     with _lock:
         if len(_cache) >= 200:
             _cache.clear()
-        _cache[ids] = (time.monotonic(), result)
+        _cache[cache_key] = (time.monotonic(), result)
     return result

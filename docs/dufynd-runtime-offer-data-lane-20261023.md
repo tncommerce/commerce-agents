@@ -366,3 +366,38 @@ Diese Händlerauskunft **ersetzt nicht** die konkrete aktuelle Feed-Datei
 oder den visuellen Owner-Variantencheck.
 
 Offizielle Awin-Dokumentation: https://help.awin.com/developers/docs/product-feed-list-download
+
+
+## 24.10.2026 – Verbindliches Runtime-Händlergate und Cache-Credential-Isolation
+
+Zusätzliche P0-Sicherheitslücke in der vorbereiteten, noch **nicht** live
+aktivierten Architektur geschlossen: Offline-Import und Runtime-API benutzen
+nun **dieselbe** \`approved_affiliate_route\`-Prüfung aus
+\`examples/retail/api/runtime_offer_snapshots.py\` (Import-Re-Export für
+bestehende Skriptaufrufer). Dynamisch freigegebene Produktangebote müssen
+beim **Lesen und beim Clickout** zusätzlich gegen die veröffentlichte,
+gleichrangige \`merchant_partners.json\`-Datei bestehen:
+
+- aktive Partnerfreigabe und bei Notino exakter \`verified_product_scope\`;
+- exakte Publisher-Tracking-ID im CJ-Link (historisch belegte
+  \`101884613\`) beziehungsweise Awin-Publisher-ID \`3099222\` und
+  zugehörige Advertiser-IDs; der Käuferzielhost muss zur
+  bekannten Händlermarke passen und die Produkt-URL unverändert bleiben;
+- fehlende oder fehlerhafte Partnerdatei, pausierte Partnerschaft,
+  fremder Tracking-Publisher und unfreigegebene SKU: **keine** dynamische
+  Kaufoffer und nicht einmal eine unnötige DB-Anfrage. Die unabhängige
+  Rabanne-Purchase-Evidence für nicht umgestellte Händler bleibt unverändert.
+
+Der private Supabase-Snapshot-Cache prüft seine URL und seine
+serverseitige Schlüsselidentität **vor** der Cache-Rückgabe. Die
+Cache-Isolation enthält nur einen SHA-256-Fingerprint des Schlüssels
+(nicht das Geheimnis). Wird die DB-Autorisierung lokal entzogen oder
+der Schlüssel rotiert, können keine früheren positiven Cache-Daten
+unter der neuen Identität zurückgegeben werden. Diese Änderung ist
+Teil des DEV-PRs, keine produktive Keyrotation oder Berechtigungsänderung.
+
+Neue Regressionstests: unzulässiger Händler auch mit bestehendem
+Runtime-Snapshot, fehlende Partnerdatei, pausiertes Händlerprogramm,
+fremder CJ-Publisher, falscher Zielhost, API-Schlüsselrotation,
+lokale Secret-Entfernung und falsches Supabase-Projekt. Noch keine
+echten Quellen-/Produktfreigaben oder Angebotsupdates.

@@ -216,3 +216,35 @@ def test_default_batch_reviews_only_unpublished_and_avoids_duplicate_work() -> N
     explicit = _run(staging, public, images, offers, partners, product_ids=requested_ids)
     assert explicit["default_selection_excludes_public"] is False
     assert [row["product_id"] for row in explicit["items"]] == requested_ids
+
+
+
+def test_reject_foreign_cj_publisher_and_mismatched_original_merchant_domain():
+    offers = json.loads((DATA / "merchant_offers.json").read_text(encoding="utf-8"))[
+        "offers"
+    ]
+    notino = next(x for x in offers if x["offer_id"] == "notino-ysl-libre-edp-90")
+    partner = {
+        "partners": [
+            {
+                "merchant_id": "notino",
+                "status": "active_product_deeplink_only",
+                "verified_product_scope": [notino["product_id"]],
+                "live_routing_allowed": True,
+            }
+        ]
+    }
+    assert approved_affiliate_route(notino, partner)
+    foreign_link = notino["affiliate_url"].replace(
+        "/click-101884613-", "/click-87654321-"
+    )
+    assert not approved_affiliate_route(
+        notino | {"affiliate_url": foreign_link}, partner
+    )
+    assert not approved_affiliate_route(
+        notino | {"product_url": "https://www.evil.invalid/product"}, partner
+    )
+    assert not approved_affiliate_route(
+        notino | {"product_url": "https://www.notino.de.evil.invalid/product"},
+        partner,
+    )

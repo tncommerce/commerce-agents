@@ -446,3 +446,130 @@ def test_approved_upsert_requires_exact_uncached_readback(monkeypatch) -> None:
             transport=httpx.MockTransport(unconfirmed),
         )
     assert calls == ["POST", "GET"]
+
+
+
+def test_revoked_database_credentials_invalidate_cached_runtime_observation(
+    monkeypatch,
+) -> None:
+    row = canonical()
+    runtime_offer_snapshots._cache.clear()
+    monkeypatch.setenv("SUPABASE_URL", runtime_offer_snapshots.PROJECT_URL)
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "sb_secret_fixture_notino_version_a")
+    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY", raising=False)
+    requests = []
+    original_client = httpx.Client
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        assert str(request.url).startswith(runtime_offer_snapshots.PROJECT_URL)
+        credential = request.headers["apikey"]
+        requests.append(credential)
+        amount = 119.0 if credential.endswith("version_a") else 125.0
+        return httpx.Response(200, json=[snapshot(row) | {"price": amount}])
+
+    transport = httpx.MockTransport(respond)
+    monkeypatch.setattr(
+        runtime_offer_snapshots.httpx,
+        "Client",
+        lambda **kwargs: original_client(**kwargs, transport=transport),
+    )
+
+    first = runtime_offer_snapshots.load_runtime_snapshots([row])
+    assert first[row["offer_id"]]["price"] == 119
+    cached = runtime_offer_snapshots.load_runtime_snapshots([row])
+    assert cached[row["offer_id"]]["price"] == 119
+    assert len(requests) == 1
+
+    # Removing the key must block even within an otherwise valid 30s cache.
+    monkeypatch.delenv("SUPABASE_SECRET_KEY")
+    assert runtime_offer_snapshots.load_runtime_snapshots([row]) is None
+    assert len(requests) == 1
+
+    # A different secret identity must perform a fresh source query.
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "sb_secret_fixture_notino_version_b")
+    rotated = runtime_offer_snapshots.load_runtime_snapshots([row])
+    assert rotated[row["offer_id"]]["price"] == 125
+    assert len(requests) == 2
+
+    monkeypatch.setenv("SUPABASE_URL", "https://wrong-project.invalid")
+    assert runtime_offer_snapshots.load_runtime_snapshots([row]) is None
+    assert len(requests) == 2
+    runtime_offer_snapshots._cache.clear()
+
+
+def test_runtime_partner_revocation_and_missing_registry_fail_closed(
+    monkeypatch, tmp_path
+) -> None:
+    row = canonical() | {"last_updated_at": datetime.now(UTC).isoformat()}
+    offer_file = tmp_path / "merchant_offers.json"
+    offer_file.write_text(json.dumps({"offers": [row]}), encoding="utf-8")
+    partner_file = tmp_path / "merchant_partners.json"
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+    monkeypatch.delenv("DUFYND_RUNTIME_OFFER_MERCHANTS", raising=False)
+    reads = []
+
+    def read(rows):
+        reads.extend(rows)
+        return {row["offer_id"]: snapshot(row)}
+
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", read)
+    store = MerchantOfferStore(offer_file)
+    assert store.eligible_offer(row["offer_id"]) is None
+    assert reads == []  # No query for an unapproved merchant.
+
+    partner = {
+        "merchant_id": "notino",
+        "status": "active_product_deeplink_only",
+        "live_routing_allowed": True,
+        "verified_product_scope": [row["product_id"]],
+    }
+    partner_file.write_text(json.dumps({"partners": [partner]}), encoding="utf-8")
+    allowed = store.eligible_offer(row["offer_id"])
+    assert allowed is not None and allowed.price == 119
+    assert len(reads) == 1
+
+    partner["status"] = "paused"
+    partner_file.write_text(json.dumps({"partners": [partner]}), encoding="utf-8")
+    assert store.eligible_offer(row["offer_id"]) is None
+    assert len(reads) == 1
+
+    partner["status"] = "active_product_deeplink_only"
+    partner["verified_product_scope"] = []
+    partner_file.write_text(json.dumps({"partners": [partner]}), encoding="utf-8")
+    assert store.eligible_offer(row["offer_id"]) is None
+    assert len(reads) == 1
+
+
+def test_runtime_offer_refuses_other_publishers_tracking_even_with_live_db(
+    monkeypatch, tmp_path
+) -> None:
+    row = canonical()
+    tampered = row | {
+        "affiliate_url": row["affiliate_url"].replace(
+            "/click-101884613-", "/click-999999999-"
+        )
+    }
+    offer_file = tmp_path / "merchant_offers.json"
+    offer_file.write_text(json.dumps({"offers": [tampered]}), encoding="utf-8")
+    (tmp_path / "merchant_partners.json").write_text(
+        json.dumps(
+            {
+                "partners": [
+                    {
+                        "merchant_id": "notino",
+                        "status": "active_product_deeplink_only",
+                        "live_routing_allowed": True,
+                        "verified_product_scope": [row["product_id"]],
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+
+    def forbidden(_):
+        pytest.fail("Foreign-publisher tracking must be rejected before DB read")
+
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
+    assert MerchantOfferStore(offer_file).offers_for(row["product_id"]) == []
