@@ -39,9 +39,7 @@ def _run(staging, public, images, offers, partners, **kwargs):
 
 def test_twenty_product_batch_does_not_publish_or_activate():
     staging, public, images, offers, partners = _fixtures()
-    report = build_commerce_wave(
-        staging, public, images, offers, partners, now=NOW, batch_size=20
-    )
+    report = build_commerce_wave(staging, public, images, offers, partners, now=NOW, batch_size=20)
     assert report["batch_size"] == 20
     assert report["automatic_image_approval_allowed"] is False
     assert report["automatic_offer_activation_allowed"] is False
@@ -64,11 +62,13 @@ def test_source_photo_candidate_never_becomes_approved_original():
         },
         "rights_basis_id": "rights-verified",
         "automatic_image_approval_allowed": False,
-        "items": [{
-            "product_id": pid,
-            "status": "SOURCE_IMAGE_REVIEW_REQUIRED",
-            "rights_basis_id": "rights-verified",
-        }],
+        "items": [
+            {
+                "product_id": pid,
+                "status": "SOURCE_IMAGE_REVIEW_REQUIRED",
+                "rights_basis_id": "rights-verified",
+            }
+        ],
     }
     result = _run(staging, public, images, offers, partners, photo_review=wave)
     assert result["items"][0]["original_image_gate"] == "SOURCE_IMAGE_REVIEW_REQUIRED"
@@ -101,18 +101,18 @@ def test_expected_72h_offer_expiry_never_triggers_critical_incident():
     staging, public, images, offers, partners = _fixtures()
     pid = staging["products"][0]["product_id"]
     base = json.loads((DATA / "merchant_offers.json").read_text(encoding="utf-8"))
-    real = next(
-        row for row in base["offers"] if row["offer_id"] == "notino-ysl-libre-edp-90"
-    )
+    real = next(row for row in base["offers"] if row["offer_id"] == "notino-ysl-libre-edp-90")
     real["product_id"] = pid
     real["last_updated_at"] = (NOW - timedelta(hours=73)).isoformat()
     offers["offers"] = [real]
-    partners["partners"] = [{
-        "merchant_id": "notino",
-        "status": "active_product_deeplink_only",
-        "live_routing_allowed": True,
-        "verified_product_scope": [pid],
-    }]
+    partners["partners"] = [
+        {
+            "merchant_id": "notino",
+            "status": "active_product_deeplink_only",
+            "live_routing_allowed": True,
+            "verified_product_scope": [pid],
+        }
+    ]
     report = _run(staging, public, images, offers, partners)
     assert report["items"][0]["offer_gate"] == "EXPECTED_72H_EXPIRY"
     assert report["items"][0]["normal_expired_offer_rows"] == 1
@@ -125,16 +125,16 @@ def test_expected_72h_offer_expiry_never_triggers_critical_incident():
 
 def test_partner_scope_and_affiliate_required_for_verified_offer():
     base = json.loads((DATA / "merchant_offers.json").read_text(encoding="utf-8"))
-    real = next(
-        row for row in base["offers"] if row["offer_id"] == "notino-ysl-libre-edp-90"
-    )
+    real = next(row for row in base["offers"] if row["offer_id"] == "notino-ysl-libre-edp-90")
     partner = {
-        "partners": [{
-            "merchant_id": "notino",
-            "status": "active_product_deeplink_only",
-            "verified_product_scope": [real["product_id"]],
-            "live_routing_allowed": True,
-        }]
+        "partners": [
+            {
+                "merchant_id": "notino",
+                "status": "active_product_deeplink_only",
+                "verified_product_scope": [real["product_id"]],
+                "live_routing_allowed": True,
+            }
+        ]
     }
     assert approved_affiliate_route(real, partner)
     assert not approved_affiliate_route(real, {"partners": []})
@@ -147,16 +147,22 @@ def test_partner_scope_and_affiliate_required_for_verified_offer():
 def test_batch_size_and_unknown_id_are_fail_closed():
     staging, public, images, offers, partners = _fixtures()
     with pytest.raises(ValueError, match="batch_size"):
-        build_commerce_wave(
-            staging, public, images, offers, partners, now=NOW, batch_size=9
-        )
+        build_commerce_wave(staging, public, images, offers, partners, now=NOW, batch_size=9)
     with pytest.raises(ValueError, match="unique_products"):
         _run(
-            staging, public, images, offers, partners,
+            staging,
+            public,
+            images,
+            offers,
+            partners,
             product_ids=[staging["products"][0]["product_id"]] * 10,
         )
     with pytest.raises(ValueError, match="unknown"):
         _run(
-            staging, public, images, offers, partners,
+            staging,
+            public,
+            images,
+            offers,
+            partners,
             product_ids=[f"SC-REVIEW-{i:02d}" for i in range(9)] + ["SC-NOT-KNOWN"],
         )

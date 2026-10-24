@@ -91,11 +91,7 @@ def build_commerce_wave(
         for row in public.get("products", [])
         if isinstance(row, dict) and row.get("product_id")
     }
-    ids = (
-        list(product_ids)
-        if product_ids is not None
-        else list(staged)[:batch_size]
-    )
+    ids = list(product_ids) if product_ids is not None else list(staged)[:batch_size]
     if not 10 <= len(ids) <= 20 or len(set(ids)) != len(ids):
         raise ValueError("batch_must_have_10_to_20_unique_products")
     if any(not isinstance(pid, str) or pid not in staged | public_rows for pid in ids):
@@ -115,7 +111,10 @@ def build_commerce_wave(
         product = public_rows.get(pid) or staged[pid]
         known_public = pid in public_rows
         profile_fields_valid = (
-            all(str(product.get(field) or "").strip() for field in ("brand", "name", "concentration"))
+            all(
+                str(product.get(field) or "").strip()
+                for field in ("brand", "name", "concentration")
+            )
             and type(product.get("volume_ml")) is int
             and product["volume_ml"] > 0
         )
@@ -233,7 +232,9 @@ def main() -> int:
     parser.add_argument("--batch-size", type=int, default=20)
     parser.add_argument("--product-ids-file", type=Path)
     parser.add_argument("--photo-wave", type=Path)
-    parser.add_argument("--api-status", choices=["not_checked", "healthy", "unavailable"], default="not_checked")
+    parser.add_argument(
+        "--api-status", choices=["not_checked", "healthy", "unavailable"], default="not_checked"
+    )
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
     ids = load(args.product_ids_file)["product_ids"] if args.product_ids_file else None

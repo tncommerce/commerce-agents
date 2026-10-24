@@ -50,9 +50,7 @@ def approved_affiliate_route(offer: dict, partners: dict) -> bool:
             return False
         host = (url.hostname or "").casefold().rstrip(".")
         if offer.get("network") == "CJ Affiliate":
-            return host in {"jdoqocy.com", "www.jdoqocy.com"} and url.path.startswith(
-                "/click-"
-            )
+            return host in {"jdoqocy.com", "www.jdoqocy.com"} and url.path.startswith("/click-")
         if offer.get("network") == "Awin":
             return host in {"awin1.com", "www.awin1.com"}
     except ValueError:

@@ -287,7 +287,5 @@ def test_hold_can_revoke_a_row_without_new_affiliate_or_ean_approval() -> None:
     packet = evidence(row)
     packet["offers"][0]["decision"] = "hold"
     packet["offers"][0].pop("ean")
-    result = prepare_batch(
-        [row], packet, now=datetime.now(UTC), partners_payload={"partners": []}
-    )
+    result = prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
     assert result[0]["decision"] == "hold"
