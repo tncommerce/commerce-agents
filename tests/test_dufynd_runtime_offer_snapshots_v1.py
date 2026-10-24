@@ -925,3 +925,49 @@ def test_batch_rejects_missing_original_source_observation(
     packet["offers"][0]["evidence"]["source_observation"] = bad_observation
     with pytest.raises(ValueError, match="source_observation_reference_required"):
         prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+@pytest.mark.parametrize(
+    "bad_scope",
+    [
+        None,
+        "SC-YSL-LIBRE-EDP-90",
+        "SC-YSL-LIBRE-EDP-90-UNAPPROVED-SUFFIX",
+        {"SC-YSL-LIBRE-EDP-90": True},
+        ["SC-YSL-LIBRE-EDP-90", None],
+    ],
+)
+def test_limited_partner_scope_must_be_exact_list(bad_scope) -> None:
+    row = canonical()
+    partners = {
+        "partners": [
+            {
+                "merchant_id": "notino",
+                "status": "active_product_deeplink_only",
+                "live_routing_allowed": True,
+                "verified_product_scope": bad_scope,
+            }
+        ]
+    }
+    assert runtime_offer_snapshots.approved_affiliate_route(row, partners) is False
+    with pytest.raises(ValueError, match="partner_or_approved_tracked_route_missing"):
+        prepare_batch([row], evidence(row), now=datetime.now(UTC), partners_payload=partners)
+
+
+def test_limited_partner_scope_exact_released_list_still_passes() -> None:
+    row = canonical()
+    partners = {
+        "partners": [
+            {
+                "merchant_id": "notino",
+                "status": "active_product_deeplink_only",
+                "live_routing_allowed": True,
+                "verified_product_scope": [row["product_id"]],
+            }
+        ]
+    }
+    assert runtime_offer_snapshots.approved_affiliate_route(row, partners) is True
+    prepared = prepare_batch(
+        [row], evidence(row), now=datetime.now(UTC), partners_payload=partners
+    )
+    assert prepared[0]["offer_id"] == row["offer_id"]
