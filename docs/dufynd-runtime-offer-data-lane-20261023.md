@@ -465,3 +465,23 @@ Ein real nebenläufiger Mocktest erzwingt zwei überlappende, ungecachte
 Kaufanfragen und bestätigt die Sperre **für beide** Käuferabfragen. Ein
 neuer Datenbankfehler ersetzt ältere positive Antworten ebenfalls
 fail-closed. Keine echten Händler-Klicks oder zusätzliche Live-Reads.
+
+## Überlappende Käuferprüfungen · 24.10.2026 (nur DEV)
+
+Die 30-Sekunden-Cache-ID war bisher das **vollständige Offer-ID-Tupel**.
+Eine Liste mit `[A, B]` konnte deshalb eine zuvor gecachte positive
+A-Beobachtung zeigen, obwohl eine spätere zwingend ungecachte Kaufprüfung
+für `[A]` bereits HOLD, Ausverkauft oder HTTP 503 belegt hatte.
+Die Kaufweiterleitung blieb fail-closed, aber die Listenansicht war irreführend.
+
+Im Draft werden überlappende ID-Mengen derselben Server-Credential-Identität
+nach Startgeneration verglichen. Widersprechende ältere Listen-Caches werden
+invalidiert; langsame ältere Abfragen übernehmen die neueren Entscheidungen
+für gemeinsam angefragte IDs, auch bei fehlgeschlagenem Backend-Read.
+Unveränderte Beobachtungen erzeugen keine zusätzlichen Datenbankreads.
+
+Regressionen prüfen [A, B] gegen späteres [A] HOLD, HTTP 503 und
+Thread-Barrieren. Der Batchimport weist zudem doppelte oder ungültige
+*kanonische* Offer-IDs aus der Git-Registry vollständig zurück.
+**Nur Entwicklung:** kein Produktiv-Merge, kein DB-Schema, keine Runtime-
+Aktivierung, keine Affiliate-Weiterleitung oder zusätzliche Kosten.
