@@ -91,7 +91,12 @@ def build_commerce_wave(
         for row in public.get("products", [])
         if isinstance(row, dict) and row.get("product_id")
     }
-    ids = list(product_ids) if product_ids is not None else list(staged)[:batch_size]
+    unpublished = [pid for pid in staged if pid not in public_rows]
+    if product_ids is None:
+        # Never consume a review slot on an already-public fragrance.
+        ids = unpublished[:batch_size]
+    else:
+        ids = list(product_ids)
     if not 10 <= len(ids) <= 20 or len(set(ids)) != len(ids):
         raise ValueError("batch_must_have_10_to_20_unique_products")
     if any(not isinstance(pid, str) or pid not in staged | public_rows for pid in ids):
@@ -209,6 +214,9 @@ def build_commerce_wave(
         "status": "REVIEW_ONLY_NO_PRICE_OR_MEDIA_WRITES",
         "generated_at": now.astimezone(UTC).isoformat(),
         "batch_size": len(items),
+        "staged_already_public_count": len(staged) - len(unpublished),
+        "unpublished_staging_backlog": len(unpublished),
+        "default_selection_excludes_public": product_ids is None,
         "api_status": api_status,
         "critical_software_api_incident": api_status == "unavailable",
         "normal_expiry_is_software_incident": False,

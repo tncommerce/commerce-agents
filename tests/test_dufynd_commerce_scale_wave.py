@@ -196,3 +196,27 @@ def test_affiliate_route_requires_exact_approved_destination_and_program() -> No
     assert not approved_affiliate_route(
         awin | {"affiliate_url": bad_advertiser}, perfumetrader_partner
     )
+
+
+
+def test_default_batch_reviews_only_unpublished_and_avoids_duplicate_work() -> None:
+    staging, public, images, offers, partners = _fixtures()
+    public["products"] = [dict(row) for row in staging["products"][:5]]
+    report = _run(staging, public, images, offers, partners)
+    public_ids = {row["product_id"] for row in public["products"]}
+    selected_ids = {row["product_id"] for row in report["items"]}
+
+    assert report["batch_size"] == 10
+    assert report["staged_already_public_count"] == 5
+    assert report["unpublished_staging_backlog"] == 15
+    assert report["default_selection_excludes_public"] is True
+    assert selected_ids.isdisjoint(public_ids)
+
+    # Explicit per-SKU audit of existing public routes remains available.
+    requested_ids = [row["product_id"] for row in staging["products"][:10]]
+    explicit = _run(
+        staging, public, images, offers, partners,
+        product_ids=requested_ids,
+    )
+    assert explicit["default_selection_excludes_public"] is False
+    assert [row["product_id"] for row in explicit["items"]] == requested_ids

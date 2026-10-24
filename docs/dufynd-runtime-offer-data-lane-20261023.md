@@ -252,3 +252,20 @@ interpretiert werden. Einzelne Feed-Treffer werden ausdrücklich als
 CJ Product Feed Summary auch nicht beigetretene Advertiser enthalten kann
 (Quelle: https://docs.cj.com/docs/productfeed-api-search). Auch eine
 frische Feed-Metadatenuhr ist **kein** SKU-Preis-/Bestandsbeweis.
+
+
+## Kein doppeltes Produkt-Onboarding (24.10., DEV-only)
+
+Der Default-Reviewbatch lässt bereits öffentlich vorhandene \`product_id\`s
+jetzt aus und wählt die ersten **10–20 unveröffentlichten** Staging-Düfte.
+Explizite \`--product-ids-file\`-Audits dürfen weiterhin bekannte
+öffentliche Produkte prüfen, ohne diese erneut zu publizieren.
+Die Ausgabe dokumentiert \`staged_already_public_count\`,
+\`unpublished_staging_backlog\` und
+\`default_selection_excludes_public\`, um doppelte Review-Arbeit sichtbar
+zu machen. Der Repository-Snapshot vom 24.10. enthält **50** Staging-Düfte,
+davon **5 bereits öffentliche** und **45 unveröffentlichte Profile**.
+Die ersten 20 noch unveröffentlichten Profile haben derzeit **keine
+registrierte originale Packshot-Freigabe**. Das ist ein
+Bildrechte-/Quellenblocker, keine API-Störung oder Freigabe zur
+synthetischen Flakon-Erstellung.
