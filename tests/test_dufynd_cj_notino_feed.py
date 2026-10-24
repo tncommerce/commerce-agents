@@ -144,9 +144,14 @@ def test_authorization_error_and_rate_limit_never_trigger_retry() -> None:
     ]:
         calls = []
 
-        def mock(request: httpx.Request) -> httpx.Response:
-            calls.append(request)
-            return httpx.Response(response_status, text="private details")
+        def mock(
+            request: httpx.Request,
+            *,
+            _calls: list = calls,
+            _status: int = response_status,
+        ) -> httpx.Response:
+            _calls.append(request)
+            return httpx.Response(_status, text="private details")
 
         result = check_notino_feeds(
             token="synthetic-test-token",
