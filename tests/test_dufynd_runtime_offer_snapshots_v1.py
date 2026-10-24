@@ -951,7 +951,9 @@ def test_limited_partner_scope_must_be_exact_list(bad_scope) -> None:
     }
     assert runtime_offer_snapshots.approved_affiliate_route(row, partners) is False
     with pytest.raises(ValueError, match="partner_or_approved_tracked_route_missing"):
-        prepare_batch([row], evidence(row), now=datetime.now(UTC), partners_payload=partners)
+        prepare_batch(
+            [row], evidence(row), now=datetime.now(UTC), partners_payload=partners
+        )
 
 
 def test_limited_partner_scope_exact_released_list_still_passes() -> None:
