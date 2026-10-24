@@ -10,7 +10,7 @@ import os
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import parse_qs, quote, urlparse
+from urllib.parse import parse_qsl, quote, urlparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 DEFAULT_LIST_MAX_BYTES = 8 * 1024 * 1024
@@ -52,7 +52,11 @@ def _validate_feed_download_url(url: str, *, feed_id: str) -> None:
     ):
         raise ValueError("awin_feed_download_feed_id_mismatch")
     # Reject any contradictory or duplicated feed-ID query override.
-    query_feed_ids = parse_qs(parsed.query, keep_blank_values=True).get("fid", [])
+    query_feed_ids = [
+        value
+        for key, value in parse_qsl(parsed.query, keep_blank_values=True)
+        if key.casefold() == "fid"
+    ]
     if query_feed_ids and query_feed_ids != [feed_id]:
         raise ValueError("awin_feed_download_feed_id_mismatch")
 
