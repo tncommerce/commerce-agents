@@ -14,8 +14,14 @@ import httpx
 
 SUPABASE_PROJECT = "https://bqsdxaagklpkxioaqdqa.supabase.co"
 IDENTITY_FIELDS = (
-    "offer_id", "product_id", "merchant_id", "merchant_product_id",
-    "variant_label", "product_url", "affiliate_url", "network",
+    "offer_id",
+    "product_id",
+    "merchant_id",
+    "merchant_product_id",
+    "variant_label",
+    "product_url",
+    "affiliate_url",
+    "network",
 )
 _cache: dict[str, tuple[float, dict[str, Any] | None]] = {}
 
@@ -50,14 +56,17 @@ def accept_snapshot(
         verified = datetime.fromisoformat(str(snapshot["verified_at"]).replace("Z", "+00:00"))
         if verified.tzinfo is None:
             return None
-        age = ((now or datetime.now(UTC)).astimezone(UTC) - verified.astimezone(UTC)).total_seconds()
+        age = (
+            (now or datetime.now(UTC)).astimezone(UTC) - verified.astimezone(UTC)
+        ).total_seconds()
         if not -300 <= age <= 72 * 3600:
             return None
         price, shipping, stock = snapshot["price"], snapshot["shipping_cost"], snapshot["in_stock"]
         if isinstance(price, bool) or not isinstance(price, (int, float)) or not 0 < price < 100000:
             return None
         if shipping is not None and (
-            isinstance(shipping, bool) or not isinstance(shipping, (int, float))
+            isinstance(shipping, bool)
+            or not isinstance(shipping, (int, float))
             or not 0 <= shipping < 10000
         ):
             return None
@@ -84,7 +93,8 @@ def runtime_snapshot(offer_id: str) -> dict[str, Any] | None:
         return None
     merchant = offer_id.split("-", 1)[0]
     allowed = {
-        m.strip() for m in os.getenv("DUFYND_RUNTIME_OFFERS_MERCHANTS", "notino").split(",")
+        m.strip()
+        for m in os.getenv("DUFYND_RUNTIME_OFFERS_MERCHANTS", "notino").split(",")
         if m.strip()
     }
     if merchant not in allowed:

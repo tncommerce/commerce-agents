@@ -49,8 +49,16 @@ def test_exact_trusted_receipt_replaces_only_volatile_fields():
     assert result is not None
     assert result["price"] == 128.5
     assert result["last_updated_at"] == "2026-10-24T07:00:00+00:00"
-    for key in ("offer_id", "product_id", "merchant_id", "merchant_product_id",
-                "variant_label", "product_url", "affiliate_url", "network"):
+    for key in (
+        "offer_id",
+        "product_id",
+        "merchant_id",
+        "merchant_product_id",
+        "variant_label",
+        "product_url",
+        "affiliate_url",
+        "network",
+    ):
         assert result[key] == ROW[key]
 
 
@@ -70,9 +78,13 @@ def test_unverified_wrong_identity_or_old_price_never_revives():
 
 def test_invalid_price_shipping_stock_and_currency_fail_closed():
     for field, bad in (
-        ("price", -1), ("price", True), ("price", "130"),
-        ("shipping_cost", -1), ("shipping_cost", True),
-        ("in_stock", "yes"), ("currency", "USD"),
+        ("price", -1),
+        ("price", True),
+        ("price", "130"),
+        ("shipping_cost", -1),
+        ("shipping_cost", True),
+        ("in_stock", "yes"),
+        ("currency", "USD"),
     ):
         assert accept_snapshot(ROW, receipt(**{field: bad}), now=NOW) is None
 
