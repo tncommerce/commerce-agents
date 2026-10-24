@@ -106,7 +106,9 @@ def test_one_exact_verified_batch_updates_both_list_and_clickout(monkeypatch) ->
     assert offer_clickout_target(click) == row["affiliate_url"]
     all_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
     expected_ids = [
-        offer["offer_id"] for offer in all_rows if offer["product_id"] == row["product_id"]
+        offer["offer_id"]
+        for offer in all_rows
+        if offer["product_id"] == row["product_id"] and offer["merchant_id"] == "notino"
     ]
     assert calls == [expected_ids, [row["offer_id"]]]
 
