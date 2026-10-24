@@ -543,3 +543,22 @@ wurde nicht durchgeführt. Der neue Commit erfordert vor jeder
 Produktionsfreigabe eine vollständige CI auf exakt diesem Entwicklungs-HEAD;
 die GitHub-Actions-Abrechnung ist weiterhin nicht unabhängig als 0 €
 verifiziert.
+
+
+## Notino: verifizierte Produktfreigaben typfest prüfen (24.10.2026, nur DEV)
+
+Der für `active_product_deeplink_only` verwendete
+`verified_product_scope` muss eine echte Liste von SKU-Strings sein.
+Ein versehentlich als String gespeicherter Wert ist in Python
+substring-durchsuchbar und könnte eine eigentlich nicht freigegebene
+SKU innerhalb einer längeren SKU bejahen. `null`, andere
+Nichtlisten-Werte oder ungültige Listeneinträge konnten außerdem
+Ausnahmen statt einer sauberen Sperre verursachen.
+
+Der gemeinsame, unveränderte Affiliate-Routenprüfer lehnt solche
+fehlerhaft formatierten Freigaben jetzt **fail-closed** ab.
+Regressionen decken ungültige Scope-Typen, Teilstrings und einen
+korrekten exakten Listen-Scope sowohl für die Affiliate-Prüfung als auch
+für den Offline-Preisbatch ab. Bestehende Partnerrechte, bestätigte
+Einzel-SKU-Scopes, Trackinglinks und kaufbare Live-Angebote werden
+dadurch **nicht** automatisch erweitert oder aktiviert.
