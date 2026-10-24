@@ -60,6 +60,21 @@ def prepare_batch(
     if not isinstance(items, list) or not 1 <= len(items) <= 50:
         raise ValueError("batch_size_out_of_bounds")
 
+    # Duplicate source IDs could silently select the wrong merchant/SKU
+    # through dict last-write-wins. Reject the entire batch instead.
+    if not isinstance(canonical_rows, list) or any(
+        not isinstance(row, dict) for row in canonical_rows
+    ):
+        raise ValueError("invalid_canonical_offer_rows")
+    canonical_ids = [row.get("offer_id") for row in canonical_rows]
+    if any(
+        not isinstance(offer_id, str)
+        or re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
+        for offer_id in canonical_ids
+    ):
+        raise ValueError("invalid_canonical_offer_id")
+    if len(set(canonical_ids)) != len(canonical_ids):
+        raise ValueError("duplicate_canonical_offer_ids")
     allowed = {r["offer_id"]: r for r in canonical_rows}
     selected: list[dict[str, Any]] = []
     seen: set[str] = set()
