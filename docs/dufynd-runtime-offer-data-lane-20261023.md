@@ -422,3 +422,33 @@ erfolgt erst nach gesondertem Produktions-GO und Aktivierung des bestehenden
 Runtime-Feature-Schalters auf dem vorhandenen Supabase-Service. Im DEV-CI
 werden die Negativfälle \`hold\`, \`out_of_stock\` und HTTP 503 gegen einen
 isolierten MockTransport geprüft; es werden keine echten Clickouts ausgelöst.
+
+
+## 24.10.2026 – P0 Schutz vor überlappenden Preisreads
+
+Ein zusätzlicher Parallelitätsfehler im neuen, noch nicht produktiven
+Runtime-Cache wurde behoben: Ein langer, bereits vor einer
+Clickout-Sperrprüfung gestarteter Listen-Read darf eine inzwischen
+abgeschlossene, neuere DB-Prüfung (\`decision=hold\` /
+\`in_stock=false\`) **nicht** nachträglich mit einem alten positiven
+Cache-Snapshot überschreiben.
+
+Jede private Datenbankabfrage erhält unter einem Lock eine monoton
+wachsende lokale Anfragenummer. Beim Zurückschreiben entscheidet die
+**Startreihenfolge** der Abfragen, nicht ihre zufällige Antwortreihenfolge.
+Langsamere alte Antworten dürfen ihren **eigenen** bereits laufenden
+Listenaufruf beantworten, aber nicht den späteren Cache oder eine neue
+Kaufentscheidung wieder freigeben. Die Cache-Begrenzung auf 200 Einträge
+verdrängt nur den ältesten Eintrag und verwirft nicht mehr pauschal alle
+neueren Freigabe-/Sperrantworten.
+
+Zusätzlich führt ein strukturell beschädigtes Supabase-REST-Ergebnis
+(ein Nicht-Datensatz innerhalb der Liste, doppelte Offer-ID oder fremde
+Offer-ID) zu einem vollständigen **Fail-closed** statt zur selektiven
+Übernahme verbliebener positiver Angebote.
+
+Tests prüfen mit tatsächlich überlappenden Mock-HTTP-Anfragen und
+Synchronisationsbarrieren die alte Positive-Liste **gegen** einen neuen
+HOLD sowie mehrere fehlerhafte DB-Response-Varianten. Der Runtime-Schalter
+bleibt in Produktion aus; zusätzliche Kosten, DB-Migrationen und
+Affiliate-Clickouts sind ausdrücklich nicht Bestandteil dieses DEV-Checks.

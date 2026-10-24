@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
+from threading import Event, Thread
 
 import httpx
 import pytest
@@ -641,3 +642,82 @@ def test_runtime_disabled_clickout_never_triggers_new_database_bypass(
     monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
     store = MerchantOfferStore(OFFER_FILE)
     assert store.eligible_offer(row["offer_id"]) is None
+
+
+
+def test_slower_old_listing_response_cannot_revive_newer_clickout_hold(monkeypatch) -> None:
+    """Real overlapping queries: the slow positive GET must not override a new hold."""
+    row = canonical()
+    runtime_offer_snapshots._cache.clear()
+    monkeypatch.setenv("SUPABASE_URL", runtime_offer_snapshots.PROJECT_URL)
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "sb_secret_synthetic_cache_race_fixture")
+    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY", raising=False)
+
+    listing_started, allow_old_to_finish = Event(), Event()
+    calls = []
+    first_result = {}
+    original_client = httpx.Client
+
+    def respond(request: httpx.Request) -> httpx.Response:
+        calls.append(request.headers.get("Cache-Control", "default"))
+        if request.headers.get("Cache-Control") == "no-store":
+            return httpx.Response(200, json=[snapshot(row) | {"decision": "hold"}])
+        listing_started.set()
+        if not allow_old_to_finish.wait(timeout=5):
+            raise RuntimeError("test_barrier_timeout")
+        return httpx.Response(200, json=[snapshot(row)])
+
+    transport = httpx.MockTransport(respond)
+    monkeypatch.setattr(
+        runtime_offer_snapshots.httpx,
+        "Client",
+        lambda **kwargs: original_client(**kwargs, transport=transport),
+    )
+
+    def slow_listing():
+        first_result["value"] = runtime_offer_snapshots.load_runtime_snapshots([row])
+
+    worker = Thread(target=slow_listing, daemon=True)
+    worker.start()
+    try:
+        assert listing_started.wait(timeout=5)
+        newer = runtime_offer_snapshots.load_runtime_snapshots([row], bypass_cache=True)
+        assert newer[row["offer_id"]]["decision"] == "hold"
+    finally:
+        allow_old_to_finish.set()
+        worker.join(timeout=5)
+
+    assert not worker.is_alive()
+    assert first_result["value"][row["offer_id"]]["decision"] == "verified"
+    # The stale query did complete after revocation, but cannot resurrect it.
+    final = runtime_offer_snapshots.load_runtime_snapshots([row])
+    assert final[row["offer_id"]]["decision"] == "hold"
+    assert calls == ["default", "no-store"]
+    runtime_offer_snapshots._cache.clear()
+
+
+@pytest.mark.parametrize("corrupt", ["not_a_mapping", "duplicate_id", "foreign_id"])
+def test_corrupt_supabase_response_cannot_partially_certify_offers(
+    monkeypatch, corrupt,
+) -> None:
+    original = canonical()
+    second = original | {"offer_id": "notino-fixture-second-offer"}
+    runtime_offer_snapshots._cache.clear()
+    monkeypatch.setenv("SUPABASE_URL", runtime_offer_snapshots.PROJECT_URL)
+    monkeypatch.setenv("SUPABASE_SECRET_KEY", "sb_secret_synthetic_corrupt_response")
+    monkeypatch.delenv("SUPABASE_SERVICE_ROLE_KEY", raising=False)
+    if corrupt == "not_a_mapping":
+        payload = [snapshot(original), "unexpected"]
+    elif corrupt == "duplicate_id":
+        payload = [snapshot(original), snapshot(original)]
+    else:
+        payload = [snapshot(original), snapshot(second) | {"offer_id": "foreign"}]
+    original_client = httpx.Client
+    transport = httpx.MockTransport(lambda req: httpx.Response(200, json=payload))
+    monkeypatch.setattr(
+        runtime_offer_snapshots.httpx,
+        "Client",
+        lambda **kwargs: original_client(**kwargs, transport=transport),
+    )
+    assert runtime_offer_snapshots.load_runtime_snapshots([original, second]) is None
+    runtime_offer_snapshots._cache.clear()

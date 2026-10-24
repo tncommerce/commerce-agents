@@ -40,8 +40,11 @@ IDENTITY_FIELDS = (
     "currency",
 )
 
-_cache: dict[tuple[str, ...], tuple[float, dict[str, dict[str, Any]] | None]] = {}
+# The third element records when the request began, NOT when it finished.
+# A slow listing query may not overwrite a newer clickout revocation.
+_cache: dict[tuple[str, ...], tuple[float, dict[str, dict[str, Any]] | None, int]] = {}
 _lock = threading.Lock()
+_request_generation = 0
 
 
 def merchant_key(value: object) -> str:
@@ -279,9 +282,13 @@ def load_runtime_snapshots(
         return None
     credential_fingerprint = hashlib.sha256(key.encode("utf-8")).hexdigest()
     cache_key = (*ids, "credential:" + credential_fingerprint)
-    cached = _cache.get(cache_key)
-    if not bypass_cache and cached is not None and time.monotonic() - cached[0] < CACHE_SECONDS:
-        return cached[1]
+    global _request_generation
+    with _lock:
+        cached = _cache.get(cache_key)
+        if not bypass_cache and cached is not None and time.monotonic() - cached[0] < CACHE_SECONDS:
+            return cached[1]
+        _request_generation += 1
+        generation = _request_generation
 
     headers = {"apikey": key}
     if key.startswith("eyJ"):
@@ -309,16 +316,26 @@ def load_runtime_snapshots(
             )
         response.raise_for_status()
         data = response.json()
-        if isinstance(data, list) and len(data) <= len(ids):
-            rows = [r for r in data if isinstance(r, dict)]
-            selected = {r.get("offer_id"): r for r in rows}
-            if len(selected) == len(rows) and all(k in ids for k in selected):
+        # A malformed element is a failed private read, not permission to
+        # display just the remaining positive rows from a corrupt response.
+        if (
+            isinstance(data, list)
+            and len(data) <= len(ids)
+            and all(isinstance(row, dict) for row in data)
+        ):
+            selected = {r.get("offer_id"): r for r in data}
+            if len(selected) == len(data) and all(k in ids for k in selected):
                 result = selected
     except (httpx.HTTPError, ValueError, TypeError):
         pass
 
     with _lock:
-        if len(_cache) >= 200:
-            _cache.clear()
-        _cache[cache_key] = (time.monotonic(), result)
+        latest = _cache.get(cache_key)
+        if latest is None or latest[2] <= generation:
+            # Evict only an old cache entry, never clear a newer revocation
+            # returned while this request was running.
+            if cache_key not in _cache and len(_cache) >= 200:
+                oldest_key = min(_cache, key=lambda item: _cache[item][0])
+                del _cache[oldest_key]
+            _cache[cache_key] = (time.monotonic(), result, generation)
     return result
