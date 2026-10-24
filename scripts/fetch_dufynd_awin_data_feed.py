@@ -65,11 +65,23 @@ def _validate_feed_download_url(
         or segments[positions[0] + 1] != feed_id
     ):
         raise ValueError("awin_feed_download_feed_id_mismatch")
-    # Reject any contradictory or duplicated feed-ID query override.
+    # A correct feed ID in the path does not authorize a second credential
+    # in the query. Different URL parsers/backends may prioritize query API
+    # keys over the selected publisher key, silently changing source identity.
+    try:
+        query_pairs = parse_qsl(
+            parsed.query, keep_blank_values=True, strict_parsing=True
+        )
+    except ValueError:
+        raise ValueError("awin_feed_download_query_malformed") from None
+    if any(
+        key.casefold().replace("_", "").replace("-", "") == "apikey"
+        for key, _ in query_pairs
+    ):
+        raise ValueError("awin_feed_download_query_api_key_override")
+    # No conflicting or repeated feed-ID override may supplement the path.
     query_feed_ids = [
-        value
-        for key, value in parse_qsl(parsed.query, keep_blank_values=True)
-        if key.casefold() == "fid"
+        value for key, value in query_pairs if key.casefold() == "fid"
     ]
     if query_feed_ids and query_feed_ids != [feed_id]:
         raise ValueError("awin_feed_download_feed_id_mismatch")
