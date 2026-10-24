@@ -644,7 +644,6 @@ def test_runtime_disabled_clickout_never_triggers_new_database_bypass(
     assert store.eligible_offer(row["offer_id"]) is None
 
 
-
 def test_slower_old_listing_response_cannot_revive_newer_clickout_hold(monkeypatch) -> None:
     """Real overlapping queries: the slow positive GET must not override a new hold."""
     row = canonical()
@@ -698,7 +697,8 @@ def test_slower_old_listing_response_cannot_revive_newer_clickout_hold(monkeypat
 
 @pytest.mark.parametrize("corrupt", ["not_a_mapping", "duplicate_id", "foreign_id"])
 def test_corrupt_supabase_response_cannot_partially_certify_offers(
-    monkeypatch, corrupt,
+    monkeypatch,
+    corrupt,
 ) -> None:
     original = canonical()
     second = original | {"offer_id": "notino-fixture-second-offer"}
