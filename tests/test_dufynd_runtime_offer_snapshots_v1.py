@@ -448,7 +448,6 @@ def test_approved_upsert_requires_exact_uncached_readback(monkeypatch) -> None:
     assert calls == ["POST", "GET"]
 
 
-
 def test_revoked_database_credentials_invalidate_cached_runtime_observation(
     monkeypatch,
 ) -> None:
@@ -497,9 +496,7 @@ def test_revoked_database_credentials_invalidate_cached_runtime_observation(
     runtime_offer_snapshots._cache.clear()
 
 
-def test_runtime_partner_revocation_and_missing_registry_fail_closed(
-    monkeypatch, tmp_path
-) -> None:
+def test_runtime_partner_revocation_and_missing_registry_fail_closed(monkeypatch, tmp_path) -> None:
     row = canonical() | {"last_updated_at": datetime.now(UTC).isoformat()}
     offer_file = tmp_path / "merchant_offers.json"
     offer_file.write_text(json.dumps({"offers": [row]}), encoding="utf-8")
@@ -545,9 +542,7 @@ def test_runtime_offer_refuses_other_publishers_tracking_even_with_live_db(
 ) -> None:
     row = canonical()
     tampered = row | {
-        "affiliate_url": row["affiliate_url"].replace(
-            "/click-101884613-", "/click-999999999-"
-        )
+        "affiliate_url": row["affiliate_url"].replace("/click-101884613-", "/click-999999999-")
     }
     offer_file = tmp_path / "merchant_offers.json"
     offer_file.write_text(json.dumps({"offers": [tampered]}), encoding="utf-8")
