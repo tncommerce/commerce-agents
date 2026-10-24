@@ -65,9 +65,10 @@ def test_download_report_is_parseable_and_excludes_secret_url(
 
     report_text = report_path.read_text(encoding="utf-8")
     assert json.loads(report_text)["downloaded"] is True
-    assert json.loads(report_text)["download_sha256"] == hashlib.sha256(
-        b"product_id\n123\n"
-    ).hexdigest()
+    assert (
+        json.loads(report_text)["download_sha256"]
+        == hashlib.sha256(b"product_id\n123\n").hexdigest()
+    )
     assert json.loads(report_text)["downloaded_bytes"] == len(b"product_id\n123\n")
     assert "SECRET" not in report_text
     assert feed_path.read_bytes() == b"product_id\n123\n"

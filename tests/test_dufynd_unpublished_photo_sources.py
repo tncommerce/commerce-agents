@@ -266,7 +266,6 @@ def test_cross_merchant_gtin_conflict_blocks_photo_candidate_discovery():
     assert report["original_image_approvals_granted"] == 0
 
 
-
 @pytest.mark.parametrize(
     "mutation",
     [
@@ -311,9 +310,7 @@ def test_official_awin_provenance_guard_rejects_bad_file_or_old_feed(mutation: s
 
 def test_awin_official_naive_last_imported_is_review_only_with_timezone_warning():
     meta = official_metadata()
-    meta["last_imported"] = (NOW - timedelta(days=2)).replace(tzinfo=None).isoformat(
-        sep=" "
-    )
+    meta["last_imported"] = (NOW - timedelta(days=2)).replace(tzinfo=None).isoformat(sep=" ")
     report = run(*inputs(), feed_rows=feed(), feed_metadata=meta, rights=rights())
     proof = report["source_file_integrity"]
     assert proof["last_imported_timezone_unverified"] is True
