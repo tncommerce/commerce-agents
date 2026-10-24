@@ -63,7 +63,20 @@ def parse_feed_list(
     payload: bytes, *, max_bytes: int = DEFAULT_LIST_MAX_BYTES
 ) -> list[dict[str, str]]:
     decoded = _maybe_decompress(payload, max_bytes=max_bytes).decode("utf-8-sig")
-    return list(csv.DictReader(io.StringIO(decoded)))
+    reader = csv.DictReader(io.StringIO(decoded))
+    headers = reader.fieldnames or []
+    normalized = [_normalize_header(header or "") for header in headers]
+    # Awin field lookups intentionally normalize punctuation and whitespace.
+    # Two raw headings resolving to one normalized key create ambiguous
+    # advertiser/feed identities and must never be silently overwritten.
+    if not normalized or any(not name for name in normalized):
+        raise ValueError("awin_feed_list_missing_column_name")
+    if len(normalized) != len(set(normalized)):
+        raise ValueError("awin_feed_list_duplicate_normalized_headers")
+    rows = list(reader)
+    if any(None in row for row in rows):
+        raise ValueError("awin_feed_list_row_exceeds_declared_columns")
+    return rows
 
 
 def find_feed(
@@ -72,13 +85,17 @@ def find_feed(
     advertiser_id: str,
     feed_id: str,
 ) -> dict[str, str]:
-    for row in rows:
-        if (
-            _row_value(row, "Advertiser ID") == advertiser_id
-            and _row_value(row, "Feed ID") == feed_id
-        ):
-            return row
-    raise ValueError("target_awin_feed_not_found")
+    matching = [
+        row
+        for row in rows
+        if _row_value(row, "Advertiser ID") == advertiser_id
+        and _row_value(row, "Feed ID") == feed_id
+    ]
+    if not matching:
+        raise ValueError("target_awin_feed_not_found")
+    if len(matching) != 1:
+        raise ValueError("target_awin_feed_ambiguous_duplicate")
+    return matching[0]
 
 
 def sanitized_feed_metadata(row: dict[str, str]) -> dict[str, str | bool]:
