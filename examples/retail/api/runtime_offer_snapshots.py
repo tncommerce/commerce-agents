@@ -77,11 +77,18 @@ def approved_affiliate_route(offer: dict, partners: dict) -> bool:
     status = partner.get("status")
     if status not in {"active", "active_product_deeplink_only"}:
         return False
-    if status == "active_product_deeplink_only" and (
-        partner.get("live_routing_allowed") is not True
-        or offer.get("product_id") not in partner.get("verified_product_scope", [])
-    ):
-        return False
+    if status == "active_product_deeplink_only":
+        # A malformed scope must fail closed. Python string membership would
+        # otherwise accept an unapproved SKU as a substring of another SKU,
+        # and None/non-iterables could throw during a buyer request.
+        scope = partner.get("verified_product_scope")
+        if (
+            partner.get("live_routing_allowed") is not True
+            or not isinstance(scope, list)
+            or any(not isinstance(product_id, str) for product_id in scope)
+            or offer.get("product_id") not in scope
+        ):
+            return False
 
     link, destination = offer.get("affiliate_url"), offer.get("product_url")
     if not isinstance(link, str) or not isinstance(destination, str):
