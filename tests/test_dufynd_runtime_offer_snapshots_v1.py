@@ -1061,3 +1061,61 @@ def test_duplicate_released_offer_ids_block_entire_buyer_surface(
             monkeypatch.delenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", raising=False)
         assert store.offers_for(row["product_id"]) == []
         assert store.eligible_offer(row["offer_id"]) is None
+
+
+@pytest.mark.parametrize(
+    "corruption",
+    [
+        {"price": "Infinity"},
+        {"price": "not-a-number"},
+        {"shipping_cost": "Infinity"},
+        {"commission_rate": "Infinity"},
+        {"last_updated_at": "not-a-timestamp"},
+        {"merchant_name": None},
+    ],
+)
+@pytest.mark.parametrize("runtime_enabled", [False, True])
+def test_invalid_released_price_or_contract_fails_closed_before_buyer_read(
+    monkeypatch, tmp_path, corruption: dict, runtime_enabled: bool
+) -> None:
+    row = canonical()
+    offer_file = tmp_path / "merchant_offers.json"
+    offer_file.write_text(
+        json.dumps({"offers": [row | corruption]}), encoding="utf-8"
+    )
+    if runtime_enabled:
+        monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+    else:
+        monkeypatch.delenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", raising=False)
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("Malformed canonical offer must not make any private API read")
+
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
+    store = MerchantOfferStore(offer_file)
+    assert store.offers_for(row["product_id"]) == []
+    assert store.eligible_offer(row["offer_id"]) is None
+
+
+def test_unrelated_corrupt_canonical_row_never_partially_serves_buyers(
+    monkeypatch, tmp_path
+) -> None:
+    row = canonical()
+    corrupted = row | {
+        "offer_id": "unrelated-corrupt-eligible-claim",
+        "product_id": "SC-UNRELATED-FAKE",
+        "price": "Infinity",
+    }
+    offer_file = tmp_path / "merchant_offers.json"
+    offer_file.write_text(
+        json.dumps({"offers": [row, corrupted]}), encoding="utf-8"
+    )
+    monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
+
+    def forbidden(*args, **kwargs):
+        pytest.fail("No private API call before validating the whole released file")
+
+    monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
+    store = MerchantOfferStore(offer_file)
+    assert store.offers_for(row["product_id"]) == []
+    assert store.eligible_offer(row["offer_id"]) is None
