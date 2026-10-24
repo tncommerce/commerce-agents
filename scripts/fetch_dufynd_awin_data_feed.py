@@ -76,9 +76,15 @@ def _validate_feed_download_url(
 
 
 class AwinRedirectHandler(HTTPRedirectHandler):
-    def __init__(self, *, expected_feed_id: str | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        expected_feed_id: str | None = None,
+        expected_list_api_key: str | None = None,
+    ) -> None:
         super().__init__()
         self.expected_feed_id = expected_feed_id
+        self.expected_list_api_key = expected_list_api_key
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         parsed = urlparse(newurl)
@@ -96,6 +102,25 @@ class AwinRedirectHandler(HTTPRedirectHandler):
             valid_host = False
         if not valid_host:
             raise ValueError("awin_redirect_host_not_allowed")
+        if self.expected_list_api_key is not None:
+            # Keep the authenticated publisher feed-list identity even across
+            # allowed Awin hosts. Never include the actual key in an error.
+            expected_path = (
+                "/datafeed/list/apikey/" + quote(self.expected_list_api_key, safe="")
+            )
+            try:
+                for candidate in (req.full_url, newurl):
+                    source = urlparse(candidate)
+                    params = parse_qsl(
+                        source.query, keep_blank_values=True, strict_parsing=True
+                    )
+                    if source.path.rstrip("/") != expected_path or any(
+                        name.casefold() in {"apikey", "api_key", "key", "fid"}
+                        for name, _ in params
+                    ):
+                        raise ValueError("invalid_feed_list_redirect")
+            except ValueError:
+                raise ValueError("awin_redirect_feed_list_identity_mismatch") from None
         if self.expected_feed_id is not None:
             try:
                 _validate_feed_download_url(
@@ -198,7 +223,13 @@ def sanitized_feed_metadata(row: dict[str, str]) -> dict[str, str | bool]:
     }
 
 
-def _read_url(url: str, *, max_bytes: int, expected_feed_id: str | None = None) -> bytes:
+def _read_url(
+    url: str,
+    *,
+    max_bytes: int,
+    expected_feed_id: str | None = None,
+    expected_list_api_key: str | None = None,
+) -> bytes:
     request = Request(
         url,
         headers={
@@ -207,9 +238,12 @@ def _read_url(url: str, *, max_bytes: int, expected_feed_id: str | None = None) 
         },
     )
     try:
-        with build_opener(AwinRedirectHandler(expected_feed_id=expected_feed_id)).open(
-            request, timeout=60
-        ) as response:
+        with build_opener(
+            AwinRedirectHandler(
+                expected_feed_id=expected_feed_id,
+                expected_list_api_key=expected_list_api_key,
+            )
+        ).open(request, timeout=60) as response:
             chunks: list[bytes] = []
             total = 0
             while True:
@@ -240,7 +274,14 @@ def download_feed_from_list(
         raise ValueError("awin_data_feed_api_key_required")
 
     list_url = "https://productdata.awin.com/datafeed/list/apikey/" + quote(api_key, safe="")
-    rows = parse_feed_list(_read_url(list_url, max_bytes=list_max_bytes), max_bytes=list_max_bytes)
+    rows = parse_feed_list(
+        _read_url(
+            list_url,
+            max_bytes=list_max_bytes,
+            expected_list_api_key=api_key,
+        ),
+        max_bytes=list_max_bytes,
+    )
     row = find_feed(rows, advertiser_id=advertiser_id, feed_id=feed_id)
     metadata = sanitized_feed_metadata(row)
 

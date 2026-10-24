@@ -48,12 +48,18 @@ def test_download_report_is_parseable_and_excludes_secret_url(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
     def read_url(
-        url: str, *, max_bytes: int, expected_feed_id: str | None = None
+        url: str,
+        *,
+        max_bytes: int,
+        expected_feed_id: str | None = None,
+        expected_list_api_key: str | None = None,
     ) -> bytes:
         if "/datafeed/list/" in url:
             assert expected_feed_id is None
+            assert expected_list_api_key == "SECRET"
             return CSV.encode("utf-8")
         assert expected_feed_id == "91379"
+        assert expected_list_api_key is None
         return gzip.compress(b"product_id\n123\n")
 
     monkeypatch.setattr(awin, "_read_url", read_url)
@@ -300,7 +306,13 @@ def test_wrong_feed_list_url_stops_before_private_download(monkeypatch) -> None:
     calls: list[str] = []
     wrong_list = CSV.replace("/fid/91379/", "/fid/99999/", 1)
 
-    def fake_read(url: str, *, max_bytes: int, expected_feed_id=None) -> bytes:
+    def fake_read(
+        url: str,
+        *,
+        max_bytes: int,
+        expected_feed_id=None,
+        expected_list_api_key=None,
+    ) -> bytes:
         calls.append(url)
         return wrong_list.encode("utf-8")
 
@@ -390,7 +402,11 @@ def test_foreign_feed_download_credential_stops_before_download(
     )
 
     def fake_read(
-        url: str, *, max_bytes: int, expected_feed_id: str | None = None
+        url: str,
+        *,
+        max_bytes: int,
+        expected_feed_id: str | None = None,
+        expected_list_api_key: str | None = None,
     ) -> bytes:
         calls.append(url)
         if "/datafeed/list/" in url:
@@ -407,3 +423,36 @@ def test_foreign_feed_download_credential_stops_before_download(
             report_path=None,
         )
     assert len(calls) == 1 and "/datafeed/list/" in calls[0]
+
+
+
+@pytest.mark.parametrize(
+    "redirect_url",
+    [
+        "https://datafeed.api.productserve.com/datafeed/list/apikey/OTHER",
+        "https://datafeed.api.productserve.com/datafeed/download/apikey/SECRET/fid/91379/",
+        "https://productdata.awin.com/datafeed/list/apikey/SECRET?apiKey=OTHER",
+        "https://productdata.awin.com/datafeed/list/apikey/SECRET?fid=99999",
+    ],
+)
+def test_feed_list_redirect_keeps_exact_publisher_identity(redirect_url: str) -> None:
+    request = Request("https://productdata.awin.com/datafeed/list/apikey/SECRET")
+    handler = awin.AwinRedirectHandler(expected_list_api_key="SECRET")
+    with pytest.raises(ValueError, match="awin_redirect_feed_list_identity_mismatch") as exc:
+        handler.redirect_request(request, None, 302, "Found", {}, redirect_url)
+    assert "SECRET" not in str(exc.value)
+    assert "OTHER" not in str(exc.value)
+
+
+@pytest.mark.parametrize(
+    "redirect_url",
+    [
+        "https://datafeed.api.productserve.com/datafeed/list/apikey/SECRET",
+        "https://productdata.awin.com/datafeed/list/apikey/SECRET/?format=csv",
+    ],
+)
+def test_feed_list_redirect_allows_original_key_on_awin_hosts(redirect_url: str) -> None:
+    request = Request("https://productdata.awin.com/datafeed/list/apikey/SECRET")
+    handler = awin.AwinRedirectHandler(expected_list_api_key="SECRET")
+    redirected = handler.redirect_request(request, None, 302, "Found", {}, redirect_url)
+    assert redirected.full_url == redirect_url

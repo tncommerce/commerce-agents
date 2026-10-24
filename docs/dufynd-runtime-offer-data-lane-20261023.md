@@ -562,3 +562,10 @@ korrekten exakten Listen-Scope sowohl für die Affiliate-Prüfung als auch
 für den Offline-Preisbatch ab. Bestehende Partnerrechte, bestätigte
 Einzel-SKU-Scopes, Trackinglinks und kaufbare Live-Angebote werden
 dadurch **nicht** automatisch erweitert oder aktiviert.
+
+## 24.10.2026 – Weiteres DEV-Hardening: Tracking-Query-Shadowing & Feedlisten-Redirects
+
+- **Runtime-/Batch-Affiliate-Sicherheitsgate** in `examples/retail/api/runtime_offer_snapshots.py`: Fallvarianten-Duplikate von Query-Schlüsseln sind jetzt auch über Groß-/Kleinschreibung hinweg verboten. Sonst konnte z. B. ein `URL` zusätzlich zu `url` oder `AWINMID` zusätzlich zu `awinmid` die eindeutige Händler-/Publisher-Zuordnung unterlaufen. CR/LF/TAB und führende/trailing Leerzeichen in Affiliate- und Ziel-URLs werden vor der URL-Normalisierung gesperrt. Bereits freigegebene kanonische CJ-/Awin-Routen behalten ihr Format.
+- **Awin-Feedlisten-Redirect** in `scripts/fetch_dufynd_awin_data_feed.py`: Der private Feedlisten-Leseweg bindet erlaubte Host-Redirects zusätzlich an exakt denselben Awin-Publisher-Schlüssel und Listenpfad. Fremde API-Schlüssel, ein Feed-Download statt der Liste oder querybasierte Schlüssel-/Feed-Overrides führen zu einer geheimnisfreien Sperrmeldung.
+- **Regressionstests**: reale kanonische Notino- und Perfumetrader-Testdatensätze mit zusätzlichen URL-/AWINMID-/AWINAFFID-/UED-/CLICKREF-Schattenparametern, URL-Kontrollzeichen und Awin-Listenumleitungen; erlaubte unveränderte Listenweiterleitungen sind enthalten.
+- **Abnahmegrenze:** Nur Entwicklung, keine Live-Awin-Abfrage und kein Affiliate-Clickout. Weil die GitHub-Actions-Abrechnung noch nicht unabhängig als 0 € bestätigt ist, darf ein hier ausgeführter Commit **nicht** als vollständiger CI-Erfolg gelten. Vor Freigabe echte Repository-Pytests und vollständige exakte-HEAD-CI, anschließend separater Owner-Release-GO. Händlerpreise, Lieferbarkeit und Bildrechte bleiben unbestätigt.

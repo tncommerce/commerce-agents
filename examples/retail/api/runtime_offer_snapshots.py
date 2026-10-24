@@ -18,7 +18,7 @@ import time
 from datetime import UTC, datetime
 from decimal import Decimal, InvalidOperation
 from typing import Any
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import parse_qsl, urlsplit
 
 import httpx
 
@@ -93,6 +93,12 @@ def approved_affiliate_route(offer: dict, partners: dict) -> bool:
     link, destination = offer.get("affiliate_url"), offer.get("product_url")
     if not isinstance(link, str) or not isinstance(destination, str):
         return False
+    # urllib may silently discard CR/LF/TAB from URLs before parsing. Such
+    # strings must never become buyer-facing canonical affiliate routes.
+    if link != link.strip() or destination != destination.strip():
+        return False
+    if any(ord(char) < 32 or ord(char) == 127 for char in link + destination):
+        return False
     try:
         route = urlsplit(link)
         target = urlsplit(destination)
@@ -118,7 +124,17 @@ def approved_affiliate_route(offer: dict, partners: dict) -> bool:
         }
         if product_host not in expected_product_hosts.get(merchant, set()):
             return False
-        params = parse_qs(route.query, keep_blank_values=True, strict_parsing=True)
+        pairs = parse_qsl(route.query, keep_blank_values=True, strict_parsing=True)
+        keys = [name.casefold() for name, _ in pairs]
+        # HTTP affiliate networks may normalize query parameter case. An
+        # upper-case shadow (URL vs url, AWINMID vs awinmid) could otherwise
+        # override the exact publisher or destination selected by our gate.
+        if len(keys) != len(set(keys)) or any(
+            not name or any(ord(char) < 32 or ord(char) == 127 for char in name)
+            for name in keys
+        ):
+            return False
+        params = {name: [value] for name, value in pairs}
         if offer.get("network") == "CJ Affiliate":
             return (
                 merchant == "notino"
