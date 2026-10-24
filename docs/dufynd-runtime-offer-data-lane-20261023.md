@@ -269,3 +269,58 @@ Die ersten 20 noch unveröffentlichten Profile haben derzeit **keine
 registrierte originale Packshot-Freigabe**. Das ist ein
 Bildrechte-/Quellenblocker, keine API-Störung oder Freigabe zur
 synthetischen Flakon-Erstellung.
+
+
+## 24.10.2026 – Unveröffentlichte Düfte: vorhandenen Awin-Bildprüfer wiederverwenden
+
+**Eine neue Bildtechnik wurde ausdrücklich nicht gebaut.**
+\`scripts/report_dufynd_unpublished_photo_sources.py\` nutzt denselben
+\`build_commerce_wave\`-Review mit automatisch ausgeschlossenen öffentlichen
+Duftprofilen und übergibt bei *tatsächlich vorhandener aktueller offizieller*
+Top-Parfümerie-Feeddatei die unveröffentlichten Lücken an die **bereits
+bewährte** \`report_dufynd_public_photo_feed_leads.create_review\`-Prüfung.
+
+Ein sinnvoller kostenloser, **rein lesender** Start funktioniert sofort,
+auch ohne aktuelle Feed-Credentials:
+
+\`\`\`sh
+python scripts/report_dufynd_unpublished_photo_sources.py \
+  --batch-size 20 --output /tmp/dufynd-unpublished-source-queue.json
+\`\`\`
+
+Der Report identifiziert Händler-Mappings, bereits gespeicherte
+Affiliate-Routen, fehlende registrierte Bilder, widersprüchliche EANs,
+Source-Pfade und explizite Review-Prioritäten, ohne Preise, Belege,
+Originalbilder oder Permission-Flags zu ändern. Ein vorhandener Tracking-Link
+wie bei Lattafa Eclaire begründet eine **Priorität zur manuellen Prüfung**,
+keine neue Freigabe oder Aussage über seinen aktuellen Zustand.
+
+Nur **nach** einem bereits autorisierten, offiziellen Awin-Feeddownload
+(durch die bestehende, getrennt freigegebene
+\`dufynd-awin-feed-revalidation.yml\`, nicht hier ausgelöst):
+
+\`\`\`sh
+python scripts/report_dufynd_unpublished_photo_sources.py \
+  --batch-size 20 \
+  --feed /secure/read-only/top-parfuemerie.csv \
+  --feed-metadata /secure/read-only/awin-feed-metadata.json \
+  --output /tmp/dufynd-unpublished-photo-review.json
+\`\`\`
+
+Fehlen Downloadbeleg, Aktualität (max. 7 Tage), Advertiser 31081/Feed
+91379, bestätigter Beitritt, bestehender Rechtsnachweis, genaue
+Duftidentität, SKU-Eindeutigkeit oder sichere Bild-URL, darf daraus
+**keine** Bildfreigabe entstehen. Name-only-Treffer bleiben menschliche
+Mapping-Recherche, nie SKU-/EAN- oder Lizenzfreigaben. Alle Kandidaten
+bleiben \`registered=false\`, \`published=false\`, und es gibt null
+automatische Medienaktivierungen.
+
+**Aktueller exakter Repository-Befund** (noch keine neuen Quellen):
+50 Staging-Profile, davon 5 bereits öffentlich und 45 unveröffentlicht.
+Die ersten 20 unveröffentlichten Düfte besitzen null registrierte,
+freigegebene Originalbilder. Drei davon haben eine aufgezeichnete
+Notino-Mapping-Zuordnung, aber **keine davon** den Status
+\`verified_current_variant\` für Notino. Die fünf Top-Parfümerie-Mappings
+des Gesamtbestands beziehen sich auf bereits öffentliche Produkte, nicht
+auf diese 20; Kandidaten sind daher nur durch frische, vollständig
+nachkontrollierte Namens-/Duftvariantenrecherche möglich.
