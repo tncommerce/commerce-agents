@@ -248,12 +248,21 @@ class MerchantOfferStore:
             and (offer_id is None or row["offer_id"] == offer_id)
         ]
         from .purchase_freshness import apply_evidence, evidence_for
+        from .runtime_offer_overlay import accept_snapshot, runtime_snapshot
 
-        return [
-            MerchantOffer.model_validate(verified)
-            for row in rows
-            if (verified := apply_evidence(row, evidence_for(row["offer_id"]))) is not None
-        ]
+        verified_rows = []
+        for row in rows:
+            verified = apply_evidence(row, evidence_for(row["offer_id"]))
+            if verified is None:
+                continue
+            # Opt-in only. The immutable Git offer supplies merchant, exact SKU,
+            # source and affiliate destination; a separately certified snapshot
+            # may modify price, shipping, stock and checked_at exclusively.
+            snapshot = runtime_snapshot(row["offer_id"])
+            if replacement := accept_snapshot(row, snapshot):
+                verified = replacement
+            verified_rows.append(MerchantOffer.model_validate(verified))
+        return verified_rows
 
     def offers_for(
         self,
