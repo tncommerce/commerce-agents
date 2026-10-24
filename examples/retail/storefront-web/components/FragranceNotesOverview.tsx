@@ -28,7 +28,7 @@ function uniqueNotes(notes: string[]): string[] {
   });
 }
 
-function NoteCard({ group }: { group: NoteGroup }) {
+function NoteCard({ group, interactive }: { group: NoteGroup; interactive: boolean }) {
   return (
     <section className="dufynd-notes-group" data-dufynd-notes-group={group.id}>
       <div className="dufynd-notes-group-heading">
@@ -42,7 +42,7 @@ function NoteCard({ group }: { group: NoteGroup }) {
         <ul className="dufynd-notes-chips">
           {uniqueNotes(group.notes).map((note) => (
             <li key={note}>
-              <AcquisitionInternalLink
+              {interactive ? <AcquisitionInternalLink
                 href={`/duft?q=${encodeURIComponent(noteLabel(note))}`}
                 aria-label={`Weitere Düfte mit ${noteLabel(note)} entdecken`}
                 className="dufynd-notes-chip"
@@ -50,7 +50,7 @@ function NoteCard({ group }: { group: NoteGroup }) {
                 <NoteIcon note={note} className="h-4 w-4 shrink-0" />
                 <span>{noteLabel(note)}</span>
                 <span aria-hidden>↗</span>
-              </AcquisitionInternalLink>
+              </AcquisitionInternalLink> : <span className="dufynd-notes-chip"><NoteIcon note={note} className="h-4 w-4 shrink-0" /><span>{noteLabel(note)}</span></span>}
             </li>
           ))}
         </ul>
@@ -62,7 +62,7 @@ function NoteCard({ group }: { group: NoteGroup }) {
 }
 
 /** Source-honest visual grammar. Never infer a time pyramid from key notes. */
-export default function FragranceNotesOverview({ notes }: { notes: FragranceNotes }) {
+export default function FragranceNotesOverview({ notes, interactive = true }: { notes: FragranceNotes; interactive?: boolean }) {
   const hasPyramid = Boolean(
     notes.top.length || notes.heart.length || notes.base.length,
   );
@@ -110,7 +110,7 @@ export default function FragranceNotesOverview({ notes }: { notes: FragranceNote
       {documented.length ? (
         <>
           <div className="dufynd-notes-groups" data-dufynd-note-count={documented.length}>
-            {primary.map((group) => <NoteCard key={group.id} group={group} />)}
+            {primary.map((group) => <NoteCard key={group.id} group={group} interactive={interactive} />)}
           </div>
           {hasPyramid && complementary.length ? (
             <div className="dufynd-notes-supplementary">
@@ -118,14 +118,14 @@ export default function FragranceNotesOverview({ notes }: { notes: FragranceNote
               <ul className="dufynd-notes-chips">
                 {complementary.map((note) => (
                   <li key={note}>
-                    <AcquisitionInternalLink
+                    {interactive ? <AcquisitionInternalLink
                       href={`/duft?q=${encodeURIComponent(noteLabel(note))}`}
                       className="dufynd-notes-chip"
                     >
                       <NoteIcon note={note} className="h-4 w-4 shrink-0" />
                       <span>{noteLabel(note)}</span>
                       <span aria-hidden>↗</span>
-                    </AcquisitionInternalLink>
+                    </AcquisitionInternalLink> : <span className="dufynd-notes-chip"><NoteIcon note={note} className="h-4 w-4 shrink-0" /><span>{noteLabel(note)}</span></span>}
                   </li>
                 ))}
               </ul>

@@ -1,0 +1,499 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 prebuild
+> npm run test:mobile-offer-privacy && npm run test:offer-return-revalidation && npm run test:measurement-anchors && npm run test:measurement-consent && npm run test:attribution-boundary && npm run test:brand-discovery && node scripts/test-photo-integration.mjs && node scripts/prepare-public-build.mjs && node scripts/generate-released-profiles.mjs && node scripts/test-release-gate.mjs && node scripts/test-scent-scenes.mjs && node scripts/test-public-fragrance-data.mjs && node scripts/test-brand-identity.mjs && node scripts/test-fragrance-metadata.mjs && node scripts/test-comparison-trust.mjs && npm run test:acquisition-entry && npm run test:fragrance-search && npm run test:model-viewer && npm run test:catalog-request && npm run test:analytics-session-ownership && node scripts/test-offer-expiry-warning.mjs && node scripts/generate-launch-seo.mjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:mobile-offer-privacy
+> node scripts/test-mobile-offer-privacy.mjs
+
+{"status":"PASS","cases":32,"networkRequests":0,"scope":"Actual MobileOfferBar effect with isolated geometry; full React browser suite remains separate"}
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:offer-return-revalidation
+> node scripts/test-offer-return-revalidation.mjs && node scripts/capture-offer-qa-source.mjs
+
+{
+  "status": "PASS",
+  "baseline": false,
+  "cases": 50,
+  "results": [
+    {
+      "name": "valid exact offer is unchanged",
+      "status": "PASS"
+    },
+    {
+      "name": "valid zero offers remain an empty success",
+      "status": "PASS"
+    },
+    {
+      "name": "empty offers without best ID remain valid",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown shipping stays unknown",
+      "status": "PASS"
+    },
+    {
+      "name": "free shipping is accepted",
+      "status": "PASS"
+    },
+    {
+      "name": "non-affiliate verified offer is accepted",
+      "status": "PASS"
+    },
+    {
+      "name": "null optional labels remain valid",
+      "status": "PASS"
+    },
+    {
+      "name": "null body",
+      "status": "PASS"
+    },
+    {
+      "name": "array body",
+      "status": "PASS"
+    },
+    {
+      "name": "string body",
+      "status": "PASS"
+    },
+    {
+      "name": "wrong top-level product ID",
+      "status": "PASS"
+    },
+    {
+      "name": "wrong offer-row product ID",
+      "status": "PASS"
+    },
+    {
+      "name": "missing offers array",
+      "status": "PASS"
+    },
+    {
+      "name": "null offers array",
+      "status": "PASS"
+    },
+    {
+      "name": "object offers array",
+      "status": "PASS"
+    },
+    {
+      "name": "null offer row",
+      "status": "PASS"
+    },
+    {
+      "name": "unknown best offer",
+      "status": "PASS"
+    },
+    {
+      "name": "missing best offer with non-empty offers",
+      "status": "PASS"
+    },
+    {
+      "name": "empty offers cannot retain a best offer",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate offer IDs",
+      "status": "PASS"
+    },
+    {
+      "name": "external clickout destination",
+      "status": "PASS"
+    },
+    {
+      "name": "mismatched clickout offer",
+      "status": "PASS"
+    },
+    {
+      "name": "query parameter injection",
+      "status": "PASS"
+    },
+    {
+      "name": "path traversal in offer ID",
+      "status": "PASS"
+    },
+    {
+      "name": "empty merchant name",
+      "status": "PASS"
+    },
+    {
+      "name": "object merchant label",
+      "status": "PASS"
+    },
+    {
+      "name": "missing merchant ID",
+      "status": "PASS"
+    },
+    {
+      "name": "string price",
+      "status": "PASS"
+    },
+    {
+      "name": "negative price",
+      "status": "PASS"
+    },
+    {
+      "name": "zero price",
+      "status": "PASS"
+    },
+    {
+      "name": "NaN price",
+      "status": "PASS"
+    },
+    {
+      "name": "infinite price",
+      "status": "PASS"
+    },
+    {
+      "name": "negative shipping",
+      "status": "PASS"
+    },
+    {
+      "name": "string shipping",
+      "status": "PASS"
+    },
+    {
+      "name": "invalid total price",
+      "status": "PASS"
+    },
+    {
+      "name": "unavailable offer row",
+      "status": "PASS"
+    },
+    {
+      "name": "string stock flag",
+      "status": "PASS"
+    },
+    {
+      "name": "string affiliate flag",
+      "status": "PASS"
+    },
+    {
+      "name": "unsupported currency",
+      "status": "PASS"
+    },
+    {
+      "name": "invalid date",
+      "status": "PASS"
+    },
+    {
+      "name": "missing date",
+      "status": "PASS"
+    },
+    {
+      "name": "object shipping label",
+      "status": "PASS"
+    },
+    {
+      "name": "object variant label",
+      "status": "PASS"
+    },
+    {
+      "name": "object merchant product ID",
+      "status": "PASS"
+    },
+    {
+      "name": "missing disclosure",
+      "status": "PASS"
+    },
+    {
+      "name": "empty disclosure",
+      "status": "PASS"
+    },
+    {
+      "name": "HTTP 503 returns error, never offers",
+      "status": "PASS"
+    },
+    {
+      "name": "HTTP 404 is error, not empty success",
+      "status": "PASS"
+    },
+    {
+      "name": "invalid JSON is caught",
+      "status": "PASS"
+    },
+    {
+      "name": "transport failure is caught",
+      "status": "PASS"
+    }
+  ],
+  "realNetworkRequests": 0,
+  "merchantClickouts": 0,
+  "fixtureOnly": true
+}
+{
+  "status": "PASS",
+  "cases": 19,
+  "results": [
+    {
+      "name": "initial functional load requires no consent",
+      "status": "PASS"
+    },
+    {
+      "name": "hidden tabs do not fetch",
+      "status": "PASS"
+    },
+    {
+      "name": "return below threshold stays idle",
+      "status": "PASS"
+    },
+    {
+      "name": "actual second GET replaces old offer with authoritative empty state",
+      "status": "PASS"
+    },
+    {
+      "name": "simultaneous events deduplicate before commit",
+      "status": "PASS"
+    },
+    {
+      "name": "later back-forward restoration fetches again",
+      "status": "PASS"
+    },
+    {
+      "name": "initial error has working functional retry",
+      "status": "PASS"
+    },
+    {
+      "name": "failed revalidation cannot restore old merchant CTA",
+      "status": "PASS"
+    },
+    {
+      "name": "null response is error rather than empty success",
+      "status": "PASS"
+    },
+    {
+      "name": "late earlier response is ignored after return",
+      "status": "PASS"
+    },
+    {
+      "name": "late former product response cannot replace current product",
+      "status": "PASS"
+    },
+    {
+      "name": "unmount removes listeners and ignores pending response",
+      "status": "PASS"
+    },
+    {
+      "name": "consented refresh never creates duplicate view or clickout events",
+      "status": "PASS"
+    },
+    {
+      "name": "consent grant and revoke do not reload functional offers",
+      "status": "PASS"
+    },
+    {
+      "name": "listeners remain single across product switches",
+      "status": "PASS"
+    },
+    {
+      "name": "new product render never exposes previous product merchant CTA before effects",
+      "status": "PASS"
+    },
+    {
+      "name": "wrong-product API response cannot become a purchase option",
+      "status": "PASS"
+    },
+    {
+      "name": "return render hides old merchant CTA before the passive fetch effect",
+      "status": "PASS"
+    },
+    {
+      "name": "new product render cannot inherit the previous product error state",
+      "status": "PASS"
+    }
+  ],
+  "mutationResults": [
+    {
+      "name": "missing functional reload dependency",
+      "status": "KILLED",
+      "detail": "Return must execute a second GET, not only update a counter\n\n1 !== 2\n"
+    },
+    {
+      "name": "old response guard removed",
+      "status": "KILLED",
+      "detail": "Old response replaced newer result\n\n'loading' !== 'empty'\n"
+    }
+  ],
+  "realNetworkRequests": 0,
+  "merchantClickouts": 0,
+  "pollingTimers": 0,
+  "limitation": "Deterministic source-transpiled hook/JSX tests, not React DOM, browser, iPhone, full build or deployed CI."
+}
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:measurement-anchors
+> node scripts/test-measurement-anchor-navigation.mjs
+
+{
+  "status": "PASS",
+  "cases": 24,
+  "networkRequests": 0,
+  "scope": "Actual consent/acquisition/analytics modules in VM; no full-browser claim"
+}
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:measurement-consent
+> node scripts/test-measurement-consent.mjs
+
+PASS default off, no optional reads/initialization/telemetry; functional data retained
+PASS neither QA marker nor URL transport signal grants consent
+PASS grant permits actual telemetry; withdrawal clears optional identity; regrant rotates identity
+PASS late initialization and old queue cannot restore revoked generation or clobber new initializer
+PASS withdrawal aborts pending analytics fetch, prevents retry and drops queued events
+PASS functional advisor session survives optional-measurement withdrawal
+PASS blocked storage never forces analytics or shopping failure {"blockedLocal":true}
+PASS blocked storage never forces analytics or shopping failure {"blockedSession":true}
+PASS blocked storage never forces analytics or shopping failure {"blockedLocal":true,"blockedSession":true}
+PASS memory-only grant is revoked on document teardown
+PASS cross-tab withdrawal clears other tab identity and stops its future telemetry
+PASS expired consent preference cannot keep analytics enabled
+PASS invalid preference fails closed broken
+PASS invalid preference fails closed {"version":0,"choice":"granted","savedAt":1780000000000}
+PASS invalid preference fails closed {"version":1,"choice":"granted","savedAt":9999999999999}
+PASS SSR never establishes shared measurement permission
+PASS withdrawal cleans optional URL fields while preserving functional query and fragment
+PASS bfcache/pageshow rechecks current persisted choice
+PASS untrusted destinations remain untouched with no optional-data side effects
+PASS 213 combined consent/destination-boundary cases
+{
+  "status": "PASS",
+  "scenarioGroups": 19,
+  "boundaryCases": 213,
+  "realNetworkRequests": 0,
+  "scope": "Actual transpiled consent + analytics modules in synthetic DOM/storage/API fixtures; not full browser E2E"
+}
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:attribution-boundary
+> node scripts/test-attribution-boundary.mjs
+
+{"status":"PASS","cases":213,"originalDestinationCases":193,"unseededOrDeniedCases":20,"realNetworkRequests":0,"scope":"actual consent/acquisition/analytics modules in one isolated VM"}
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:brand-discovery
+> node scripts/test-brand-discovery.mjs
+
+{"status":"PASS","public_products":37,"brands":29,"blocked_products":1,"indexing_approved":false}
+1 unchanged, hash-bound photos prepared for merchant-only private review.
+Photo integration gates: default-off cleanup, exact bytes, 11 negative permission/source cases and public-route separation passed.
+Clean public build: stale browser chunks and previous review exports removed.
+Owner-authorized independent profiles: 0. Affiliate availability is not a release condition.
+Release gate: default deny, exact evidence/design/QA binding, independent visual/variant/owner/indexing gates pass.
+41 explicitly mapped, distinct review compositions; no external images or bottle replica.
+Public fragrance projection: third-party community metrics excluded.
+Public boundary: third-party metrics stripped, private sources intact, four exact approved photographs.
+Brand identities verified: 29 brands, 37 public products; aliases do not add products.
+Fragrance metadata: all four indexing gates and product-specific social previews PASS
+RC1 metadata: exact identity, unapproved creative excluded, licensed-photo precedence PASS
+Libre metadata: exact EDP 90ml intent, original canonical, no invented image PASS
+Comparison trust: pair pages, free picker, withheld/partial/zero values and hub/social metadata PASS
+Comparison evidence: missing data, deduplication, exact overlap and non-inferred synonyms PASS
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:acquisition-entry
+> node scripts/test-acquisition-entry.mjs
+
+Acquisition entry: UTM, referrer, precedence, privacy and no-evidence cases PASS
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:fragrance-search
+> node scripts/test-fragrance-search-identity.mjs
+
+Fragrance search: brand/product aliases, word order and exact size/concentration passed.
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:model-viewer
+> node scripts/test-model-viewer-loader.mjs
+
+DUFYND 3D recovery: shared loads, retry, timeout and image fallback verified.
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:catalog-request
+> node scripts/test-catalog-request.mjs
+
+DUFYND catalog requests: success, failures, header/body timeout and independent recovery passed.
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:analytics-session-ownership
+> node scripts/test-analytics-session-ownership.mjs
+
+{"status":"PASS","cases":21,"suite":"real consent/acquisition/analytics ownership integration","realNetworkRequests":0}
+{"status":"PASS","cases":7,"networkRequests":0,"merchantClicks":0,"note":"Candidate offer expiry warning only; no live supplier evidence refreshed"}
+DUFYND SEO generated: 62 sitemap routes; indexable=false; site=https://dufynd.de
+
+> acme-retail-storefront-web@0.1.0 build
+> next build
+
+▲ Next.js 16.3.6 (Turbopack)
+✓ Running next.config.ts took 19ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 14.3s
+  Running TypeScript ...
+  Finished TypeScript in 6.0s ...
+  Collecting page data using 8 workers ...
+  Generating static pages using 8 workers (0/105) ...
+  Generating static pages using 8 workers (26/105)
+  Generating static pages using 8 workers (52/105)
+  Generating static pages using 8 workers (78/105)
+✓ Generating static pages using 8 workers (105/105) in 841ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /bildnachweise
+├ ○ /datenschutz
+├ ○ /duft
+├   /duft/[slug]
+│ ├ ● /duft/louis-vuitton-imagination
+│ ├ ● /duft/arabiyat-prestige-marwa
+│ ├ ● /duft/arabiyat-prestige-marwa-extrait
+│ └ ● [+34 more paths]
+├ ○ /duftfinder
+├ ○ /icon.svg
+├ ○ /impressum
+├ ○ /marken
+├   /marken/[slug]
+│ ├ ● /marken/afnan-perfumes
+│ ├ ● /marken/al-ambra
+│ ├ ● /marken/al-haramain
+│ └ ● [+26 more paths]
+├ ○ /merkliste
+├ ○ /parfum-alternativen
+├ ○ /parfum-geschenkberater
+├   /review/duft/[slug]
+│ └ ● /review/duft/disabled
+├ ○ /review/photos
+├   /review/photos/[slug]
+│ └ ● /review/photos/disabled
+├ ○ /sammlung
+├ ○ /showcase
+├ ○ /start
+├ ○ /transparenz
+├ ○ /vergleich
+└   /vergleich/[pair]
+  ├ ● /vergleich/afnan-perfumes-supremacy-collectors-edition-vs-creed-absolu-aventus
+  ├ ● /vergleich/afnan-perfumes-turathi-blue-vs-bvlgari-le-gemme-tygar
+  ├ ● /vergleich/afnan-perfumes-turathi-blue-vs-sospiro-vibrato
+  └ ● [+15 more paths]
+
+
+○  (Static)  prerendered as static content
+●  (SSG)     prerendered as static HTML (uses generateStaticParams)
+
+
+> acme-retail-storefront-web@0.1.0 postbuild
+> npm run test:offer-presentation && node scripts/export-review-pages.mjs && node scripts/verify-public-export.mjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> acme-retail-storefront-web@0.1.0 test:offer-presentation
+> node scripts/test-offer-presentation.mjs
+
+{"status":"PASS","cases":12,"networkRequests":0,"merchantClicks":0,"scope":"SSR offer presentation; no browser layout claim"}
+Libre EDP 90ml buyer guide: static export, internal offer CTA and product isolation PASS
+Public export verified: no raw Parfumo rating payload; review-route boundary intact.

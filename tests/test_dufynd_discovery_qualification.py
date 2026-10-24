@@ -70,3 +70,17 @@ def test_discovery_cannot_claim_publication_or_community_rights(field, value):
     evidence["products"][0][field] = value
     with pytest.raises(ValueError, match="scope_or_evidence"):
         attach_discovery_qualifications(staged, evidence)
+
+
+@pytest.mark.parametrize("field", ["identity", "notes_source"])
+def test_review_variant_requires_its_actual_sources(field):
+    staged, evidence = inputs()
+    profile = next(
+        row
+        for row in evidence["products"]
+        if row["product_id"] == "SC-GUERLAIN-MON-GUERLAIN-EDP-100"
+    )
+    profile[field]["source_url" if field == "identity" else "url"] = ""
+    with pytest.raises(ValueError, match="source"):
+        attach_discovery_qualifications(staged, evidence)
+    assert not any("discovery" in row for row in staged)

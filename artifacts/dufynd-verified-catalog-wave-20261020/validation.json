@@ -1,0 +1,636 @@
+{
+  "base_commit": "4adca15a7be87cfa8578acdea2fd48a72205daf5",
+  "renderer_sha256": "8978e9746467d35cf9136a2dbd7fa87b1e818b7526a769d9da796a3a17468b65",
+  "mode": "LOCAL_PRIVATE_REVIEW_NO_PUBLIC_RELEASE",
+  "new_catalog_rows": 0,
+  "existing_profiles_functionally_integrated": 5,
+  "ready_for_owner_review_complete": 0,
+  "identity_hold": 0,
+  "source_hold": 0,
+  "image_hold": 5,
+  "public_activations": 0,
+  "public_profiles_unchanged": 37,
+  "private_profiles_unchanged": 41,
+  "new_private_flows_passed": 20,
+  "all_review_page_width_checks": 164,
+  "private_photo_checks_passed": 10,
+  "private_photo_artifacts_in_public_output": false,
+  "python": {
+    "passed": 3594,
+    "skipped": 205
+  },
+  "normal_browser_first_run": {
+    "passed_checks": 174,
+    "image_network_failures": [
+      {
+        "label": "product-presentation",
+        "message": "TimeoutError: locator.scrollIntoViewIfNeeded: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-dufynd-product-presentation]').locator('img.dufynd-product-image')\u001b[22m\n"
+      },
+      {
+        "label": "wow22-experience",
+        "message": "TimeoutError: locator.waitFor: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.dufynd-fragrance-stage-shell img').first() to be visible\u001b[22m\n"
+      },
+      {
+        "label": "home-320",
+        "url": "http://127.0.0.1:3000/",
+        "message": "homepage spotlight must use the approved original Libre 90 ml photo"
+      },
+      {
+        "label": "home-390",
+        "url": "http://127.0.0.1:3000/",
+        "message": "homepage spotlight must use the approved original Libre 90 ml photo"
+      },
+      {
+        "label": "home-768",
+        "url": "http://127.0.0.1:3000/",
+        "message": "homepage spotlight must use the approved original Libre 90 ml photo"
+      },
+      {
+        "label": "home-1440",
+        "url": "http://127.0.0.1:3000/",
+        "message": "homepage spotlight must use the approved original Libre 90 ml photo"
+      }
+    ]
+  },
+  "image_recheck": {
+    "mode": "existing_approved_original_bytes_from_hash_verified_cache",
+    "images": [
+      {
+        "url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+        "sha256": "ae756bf1af5675524ba7f0c455f1c63337acc868dea9cdafafcc7ecb287a5b57"
+      },
+      {
+        "url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+        "sha256": "25e72f57fd46750e6c06fac6f2bd316380316a98933a551adcaaf9fc620031cf"
+      },
+      {
+        "url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+        "sha256": "693e7bba7086b777d07579ed5931971e0d90a7ae3b7f36dd40dc2a8d726e30a4"
+      },
+      {
+        "url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+        "sha256": "81618e5edba3e2ef29638aa2b348a206d6abe8ee636ebc57c92ffce2bf1f55b4"
+      }
+    ],
+    "checks": [
+      {
+        "label": "product-presentation",
+        "results": [
+          {
+            "width": 320,
+            "profiles": 5,
+            "images": [
+              {
+                "productId": "SC-YSL-LIBRE-EDP-90",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+                "naturalWidth": 258,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+                "naturalWidth": 412,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+                "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+                "naturalWidth": 600,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-PDM-DELINA-EDP-75",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+                "naturalWidth": 252,
+                "naturalHeight": 519,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              }
+            ],
+            "status": "passed",
+            "nativeTouch": true,
+            "measurementRequests": 0,
+            "clickouts": 0
+          },
+          {
+            "width": 390,
+            "profiles": 5,
+            "images": [
+              {
+                "productId": "SC-YSL-LIBRE-EDP-90",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+                "naturalWidth": 258,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+                "naturalWidth": 412,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+                "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+                "naturalWidth": 600,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-PDM-DELINA-EDP-75",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+                "naturalWidth": 252,
+                "naturalHeight": 519,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              }
+            ],
+            "status": "passed",
+            "nativeTouch": true,
+            "measurementRequests": 0,
+            "clickouts": 0
+          },
+          {
+            "width": 768,
+            "profiles": 5,
+            "images": [
+              {
+                "productId": "SC-YSL-LIBRE-EDP-90",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+                "naturalWidth": 258,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+                "naturalWidth": 412,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+                "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+                "naturalWidth": 600,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-PDM-DELINA-EDP-75",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+                "naturalWidth": 252,
+                "naturalHeight": 519,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              }
+            ],
+            "status": "passed",
+            "nativeTouch": false,
+            "measurementRequests": 0,
+            "clickouts": 0
+          },
+          {
+            "width": 1440,
+            "profiles": 5,
+            "images": [
+              {
+                "productId": "SC-YSL-LIBRE-EDP-90",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+                "naturalWidth": 258,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+                "naturalWidth": 412,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+                "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+                "naturalWidth": 600,
+                "naturalHeight": 600,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              },
+              {
+                "productId": "SC-PDM-DELINA-EDP-75",
+                "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+                "naturalWidth": 252,
+                "naturalHeight": 519,
+                "complete": true,
+                "fit": "contain",
+                "transform": "none",
+                "contained": true
+              }
+            ],
+            "status": "passed",
+            "nativeTouch": false,
+            "measurementRequests": 0,
+            "clickouts": 0
+          }
+        ]
+      },
+      {
+        "label": "wow22-experience",
+        "results": [
+          {
+            "name": "home",
+            "width": 320,
+            "cls": 0,
+            "lcp": 196,
+            "overflow": 0,
+            "dom": 31.69999999552965,
+            "resources": 1112112,
+            "scrollFrames": 6,
+            "scrollHeight": 3628,
+            "searchBottom": 403.78125,
+            "keyboard": true,
+            "touch": true,
+            "reducedMotion": true,
+            "atlasDestination": "/duft/maison-asrar-vanguard",
+            "advisor": {
+              "inlineToConversation": true,
+              "requests": 2,
+              "mocked": true
+            }
+          },
+          {
+            "name": "catalog",
+            "width": 320,
+            "cls": 0,
+            "lcp": 96,
+            "overflow": 0,
+            "dom": 50,
+            "resources": 1062839
+          },
+          {
+            "name": "brands",
+            "width": 320,
+            "cls": 0,
+            "lcp": 84,
+            "overflow": 0,
+            "dom": 31.799999997019768,
+            "resources": 847965
+          },
+          {
+            "name": "rabanne",
+            "width": 320,
+            "cls": 0.026490911153584824,
+            "lcp": 116,
+            "overflow": 0,
+            "dom": 33.600000001490116,
+            "resources": 934946,
+            "offerStates": [
+              "error",
+              "available",
+              "empty"
+            ]
+          },
+          {
+            "name": "lancome",
+            "width": 320,
+            "cls": 0,
+            "lcp": 92,
+            "overflow": 0,
+            "dom": 56.399999998509884,
+            "resources": 934946
+          },
+          {
+            "name": "home",
+            "width": 390,
+            "cls": 0,
+            "lcp": 188,
+            "overflow": 0,
+            "dom": 35.30000000447035,
+            "resources": 1112112,
+            "scrollFrames": 6,
+            "scrollHeight": 3426,
+            "baselineScrollHeight": 5841,
+            "scrollReduction": 0.4134565998972779,
+            "searchBottom": 389.15625,
+            "keyboard": true,
+            "touch": true,
+            "reducedMotion": true,
+            "atlasDestination": "/duft/maison-asrar-vanguard",
+            "advisor": {
+              "inlineToConversation": true,
+              "requests": 2,
+              "mocked": true
+            }
+          },
+          {
+            "name": "catalog",
+            "width": 390,
+            "cls": 0,
+            "lcp": 92,
+            "overflow": 0,
+            "dom": 40.600000001490116,
+            "resources": 1062839
+          },
+          {
+            "name": "brands",
+            "width": 390,
+            "cls": 0,
+            "lcp": 68,
+            "overflow": 0,
+            "dom": 30.19999999552965,
+            "resources": 847965
+          },
+          {
+            "name": "rabanne",
+            "width": 390,
+            "cls": 0.041389211890211414,
+            "lcp": 100,
+            "overflow": 0,
+            "dom": 52.100000001490116,
+            "resources": 934946,
+            "offerStates": [
+              "error",
+              "available",
+              "empty"
+            ]
+          },
+          {
+            "name": "lancome",
+            "width": 390,
+            "cls": 0,
+            "lcp": 76,
+            "overflow": 0,
+            "dom": 46.600000001490116,
+            "resources": 934946
+          },
+          {
+            "name": "home",
+            "width": 768,
+            "cls": 0,
+            "lcp": 92,
+            "overflow": 0,
+            "dom": 29.100000001490116,
+            "resources": 1112112,
+            "scrollFrames": 4,
+            "scrollHeight": 3006,
+            "searchBottom": 536.71875,
+            "keyboard": true,
+            "touch": true,
+            "reducedMotion": true,
+            "atlasDestination": "/duft/maison-asrar-vanguard",
+            "advisor": {
+              "inlineToConversation": true,
+              "requests": 2,
+              "mocked": true
+            }
+          },
+          {
+            "name": "catalog",
+            "width": 768,
+            "cls": 0,
+            "lcp": 84,
+            "overflow": 0,
+            "dom": 68.10000000149012,
+            "resources": 1062839
+          },
+          {
+            "name": "brands",
+            "width": 768,
+            "cls": 0,
+            "lcp": 84,
+            "overflow": 0,
+            "dom": 29.69999999552965,
+            "resources": 847965
+          },
+          {
+            "name": "rabanne",
+            "width": 768,
+            "cls": 0.036502652343750004,
+            "lcp": 116,
+            "overflow": 0,
+            "dom": 46.70000000298023,
+            "resources": 934946,
+            "offerStates": [
+              "error",
+              "available",
+              "empty"
+            ]
+          },
+          {
+            "name": "lancome",
+            "width": 768,
+            "cls": 0,
+            "lcp": 112,
+            "overflow": 0,
+            "dom": 54.69999999552965,
+            "resources": 934946
+          },
+          {
+            "name": "home",
+            "width": 1024,
+            "cls": 0,
+            "lcp": 100,
+            "overflow": 0,
+            "dom": 32.899999998509884,
+            "resources": 1112112,
+            "scrollFrames": 4,
+            "scrollHeight": 2936,
+            "searchBottom": 489.765625,
+            "keyboard": true,
+            "touch": false,
+            "reducedMotion": true,
+            "atlasDestination": "/duft/maison-asrar-vanguard",
+            "advisor": {
+              "inlineToConversation": true,
+              "requests": 2,
+              "mocked": true
+            }
+          },
+          {
+            "name": "catalog",
+            "width": 1024,
+            "cls": 0,
+            "lcp": 88,
+            "overflow": 0,
+            "dom": 33.70000000298023,
+            "resources": 1062839
+          },
+          {
+            "name": "brands",
+            "width": 1024,
+            "cls": 0,
+            "lcp": 64,
+            "overflow": 0,
+            "dom": 55.900000005960464,
+            "resources": 847965
+          },
+          {
+            "name": "rabanne",
+            "width": 1024,
+            "cls": 0.06929181003570557,
+            "lcp": 88,
+            "overflow": 0,
+            "dom": 37,
+            "resources": 934946,
+            "offerStates": [
+              "error",
+              "available",
+              "empty"
+            ]
+          },
+          {
+            "name": "lancome",
+            "width": 1024,
+            "cls": 0,
+            "lcp": 128,
+            "overflow": 0,
+            "dom": 35.600000001490116,
+            "resources": 934946
+          },
+          {
+            "name": "home",
+            "width": 1440,
+            "cls": 0,
+            "lcp": 96,
+            "overflow": 0,
+            "dom": 63.5,
+            "resources": 1112112,
+            "scrollFrames": 4,
+            "scrollHeight": 2936,
+            "searchBottom": 509.640625,
+            "keyboard": true,
+            "touch": false,
+            "reducedMotion": true,
+            "atlasDestination": "/duft/maison-asrar-vanguard",
+            "advisor": {
+              "inlineToConversation": true,
+              "requests": 2,
+              "mocked": true
+            }
+          },
+          {
+            "name": "catalog",
+            "width": 1440,
+            "cls": 0,
+            "lcp": 84,
+            "overflow": 0,
+            "dom": 77.60000000149012,
+            "resources": 1062839
+          },
+          {
+            "name": "brands",
+            "width": 1440,
+            "cls": 0,
+            "lcp": 72,
+            "overflow": 0,
+            "dom": 61.599999994039536,
+            "resources": 847965
+          },
+          {
+            "name": "rabanne",
+            "width": 1440,
+            "cls": 0.04510689887152777,
+            "lcp": 156,
+            "overflow": 0,
+            "dom": 47.30000000447035,
+            "resources": 934946,
+            "offerStates": [
+              "error",
+              "available",
+              "empty"
+            ]
+          },
+          {
+            "name": "lancome",
+            "width": 1440,
+            "cls": 0,
+            "lcp": 116,
+            "overflow": 0,
+            "dom": 28,
+            "resources": 934946
+          },
+          {
+            "normalMotion": true
+          }
+        ]
+      },
+      {
+        "label": "home-320",
+        "passed": true
+      },
+      {
+        "label": "home-390",
+        "passed": true
+      },
+      {
+        "label": "home-768",
+        "passed": true
+      },
+      {
+        "label": "home-1440",
+        "passed": true
+      }
+    ]
+  },
+  "control_room_widths": [
+    320,
+    390,
+    430,
+    768,
+    1280,
+    1440
+  ],
+  "source_observation_dates_preserved": true,
+  "production_checks_repeated": false,
+  "render_previews": "off for storefront and API; branch scentai-mvp only",
+  "angham": "No changes retained: qualifying its staging row would alter excluded Jarvis state fingerprint. Mon Guerlain is the fifth existing qualified profile.",
+  "normal_build": "passed",
+  "gated_review_build": "passed",
+  "normal_export_contains_review_routes": false,
+  "normal_export_contains_private_profile_payloads": false,
+  "normal_export_contains_private_photos": false
+}
