@@ -92,11 +92,8 @@ def build_commerce_wave(
         if isinstance(row, dict) and row.get("product_id")
     }
     unpublished = [pid for pid in staged if pid not in public_rows]
-    if product_ids is None:
-        # Never consume a review slot on an already-public fragrance.
-        ids = unpublished[:batch_size]
-    else:
-        ids = list(product_ids)
+    # Never consume a review slot on an already-public fragrance.
+    ids = unpublished[:batch_size] if product_ids is None else list(product_ids)
     if not 10 <= len(ids) <= 20 or len(set(ids)) != len(ids):
         raise ValueError("batch_must_have_10_to_20_unique_products")
     if any(not isinstance(pid, str) or pid not in staged | public_rows for pid in ids):

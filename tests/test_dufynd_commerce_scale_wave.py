@@ -198,7 +198,6 @@ def test_affiliate_route_requires_exact_approved_destination_and_program() -> No
     )
 
 
-
 def test_default_batch_reviews_only_unpublished_and_avoids_duplicate_work() -> None:
     staging, public, images, offers, partners = _fixtures()
     public["products"] = [dict(row) for row in staging["products"][:5]]
@@ -214,9 +213,6 @@ def test_default_batch_reviews_only_unpublished_and_avoids_duplicate_work() -> N
 
     # Explicit per-SKU audit of existing public routes remains available.
     requested_ids = [row["product_id"] for row in staging["products"][:10]]
-    explicit = _run(
-        staging, public, images, offers, partners,
-        product_ids=requested_ids,
-    )
+    explicit = _run(staging, public, images, offers, partners, product_ids=requested_ids)
     assert explicit["default_selection_excludes_public"] is False
     assert [row["product_id"] for row in explicit["items"]] == requested_ids
