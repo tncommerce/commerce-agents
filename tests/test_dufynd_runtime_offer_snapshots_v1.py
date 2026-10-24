@@ -900,3 +900,28 @@ def test_batch_rejects_duplicate_or_invalid_released_canonical_ids() -> None:
         prepare_batch([first | {"offer_id": None}], packet, now=now)
     with pytest.raises(ValueError, match="invalid_canonical_offer_rows"):
         prepare_batch([first, "corrupt"], packet, now=now)
+
+
+@pytest.mark.parametrize(
+    "bad_ref",
+    ["   ", " proof ", "source\\nrevoked", "source\\tref", "x" * 261, ""],
+)
+def test_batch_rejects_empty_or_control_character_source_references(
+    bad_ref: str,
+) -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0]["source_ref"] = bad_ref
+    with pytest.raises(ValueError, match="source_reference_required"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+@pytest.mark.parametrize("bad_observation", ["", "  \\n\\t", "x" * 2049, None])
+def test_batch_rejects_missing_original_source_observation(
+    bad_observation: str | None,
+) -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0]["evidence"]["source_observation"] = bad_observation
+    with pytest.raises(ValueError, match="source_observation_reference_required"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
