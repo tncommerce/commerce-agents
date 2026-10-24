@@ -7,7 +7,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-from scripts.prepare_dufynd_runtime_offer_batch import prepare_batch
+from scripts.prepare_dufynd_runtime_offer_batch import batch_digest, prepare_batch
 
 from retail.api import purchase_freshness, runtime_offer_snapshots
 from retail.api.merchant_offers import MerchantOfferStore, offer_clickout_target
@@ -356,3 +356,22 @@ def test_runtime_invalid_scope_or_selected_db_outage_fails_closed(monkeypatch, t
     ranked = MerchantOfferStore(fixture).offers_for(notino["product_id"])
     assert [offer.offer_id for offer in ranked] == [other["offer_id"]]
     assert all(offer.merchant_id != "notino" for offer in ranked)
+
+def test_batch_approval_cannot_be_reused_after_price_or_proof_change(monkeypatch) -> None:
+    from scripts.prepare_dufynd_runtime_offer_batch import apply_batch
+
+    row = canonical()
+    packet = evidence(row)
+    prepared = prepare_batch([row], packet, now=datetime.now(UTC))
+    batch_id = packet["batch_id"]
+    exact_scope = f"{batch_id}:{batch_digest(prepared, batch_id=batch_id)}"
+    monkeypatch.setenv("DUFYND_OFFER_BATCH_OWNER_GO", exact_scope)
+
+    changed_price = [prepared[0] | {"price": prepared[0]["price"] + 1}]
+    changed_proof = [prepared[0] | {"evidence_sha256": "f" * 64}]
+    for altered in (changed_price, changed_proof):
+        with pytest.raises(PermissionError, match="content_owner_approval"):
+            apply_batch(altered, batch_id=batch_id, owner_approval=exact_scope)
+    assert batch_digest(prepared, batch_id=batch_id) != batch_digest(
+        changed_price, batch_id=batch_id
+    )

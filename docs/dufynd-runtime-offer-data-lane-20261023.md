@@ -48,10 +48,10 @@ python -m scripts.prepare_dufynd_runtime_offer_batch \
   --evidence evidence/reviewed-prices-YYYYMMDD.json
 
 # Nur nach Quellprüfung und bestätigter batch-spezifischer Freigabe:
-DUFYND_OFFER_BATCH_OWNER_GO=<EXACT-BATCH-ID> \
+DUFYND_OFFER_BATCH_OWNER_GO=<BATCH-ID>:<BATCH-SHA256> \
 python -m scripts.prepare_dufynd_runtime_offer_batch \
   --evidence evidence/reviewed-prices-YYYYMMDD.json \
-  --apply --owner-approval <EXACT-BATCH-ID>
+  --apply --owner-approval <BATCH-ID>:<BATCH-SHA256>
 \`\`\`
 
 Das Eingabeformat enthält \`schema_version: 1\`, \`batch_id\` und \`offers\`
@@ -160,3 +160,20 @@ an Produkt-, Händler-, SKU- und Identitätsmerkmalen auf SQL-Ebene. Ein
 dedizierter PostgreSQL-Test läuft innerhalb des vorhandenen
 `budget-postgres`-CI-Services, ohne neue DB oder Produktiv-DDL.
 Er prüft Rollen/Rechte, 72h, Zeitmonotonie, Identitätssperre, HOLD und Audit.
+
+## Sicherheit der Batch-Freigabe (24.10., DEV)
+Ein Freigabe-Batch wird über einen reproduzierbaren SHA-256 des exakten
+vorbereiteten Inhalts (inklusive einzelner Quellen-Evidenz-Digests, Preise,
+Bestand und Prüfzeitpunkten) gebunden. Im Dry Run wird `batch_sha256`
+ausgegeben. Erst `DUFYND_OFFER_BATCH_OWNER_GO=<BATCH-ID>:<BATCH-SHA256>`
+**und** `--owner-approval` mit exakt demselben Scope erlauben das
+serverseitige Anwenden. Ändert sich auch nur ein Beleg oder Preis nach
+Owner-Prüfung, ist die zuvor erteilte Freigabe ungültig.
+Der Hash beweist Eingabeintegrität, nicht die Wahrheit oder Herkunft einer
+Händlerbeobachtung. Die separate externe Quellprüfung bleibt verpflichtend.
+
+Das Affiliate-Gate verlangt nun zusätzlich den exakten bereits freigegebenen
+CJ/Awin-Tracking-Endpunkt mit Zielgleichheit zur veröffentlichten
+Produktseite sowie die bekannten Advertiser- und Publisher-IDs. Fremde
+Weiterleitungen, zusätzliche URL-Varianten oder falsche Netzwerkprogramme
+dürfen nicht durch eine gewöhnliche Preis-Charge eingeschleust werden.

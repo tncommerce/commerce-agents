@@ -138,15 +138,34 @@ def prepare_batch(
     return selected
 
 
+def batch_digest(prepared: list[dict[str, Any]], *, batch_id: str) -> str:
+    """Content-address the exact evidence-backed rows, not merely a reusable ID."""
+    payload = json.dumps(
+        {
+            "batch_id": batch_id,
+            "offers": sorted(prepared, key=lambda row: row["offer_id"]),
+        },
+        sort_keys=True,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        allow_nan=False,
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def apply_batch(
     prepared: list[dict[str, Any]],
     *,
     batch_id: str,
     owner_approval: str,
 ) -> None:
-    """One atomic REST upsert, recorded by database triggers per offer."""
-    if owner_approval != batch_id or os.getenv("DUFYND_OFFER_BATCH_OWNER_GO") != batch_id:
-        raise PermissionError("exact_batch_owner_approval_required")
+    """One atomic REST upsert, bound to a batch content hash and prior GO."""
+    exact_scope = f"{batch_id}:{batch_digest(prepared, batch_id=batch_id)}"
+    if (
+        owner_approval != exact_scope
+        or os.getenv("DUFYND_OFFER_BATCH_OWNER_GO") != exact_scope
+    ):
+        raise PermissionError("exact_batch_content_owner_approval_required")
     if os.getenv("SUPABASE_URL", "").rstrip("/") != PROJECT_URL:
         raise PermissionError("unexpected_supabase_project")
     key = os.getenv("SUPABASE_SECRET_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
@@ -191,6 +210,7 @@ def main() -> int:
             {
                 "status": "APPLIED" if args.apply else "DRY_RUN_ONLY",
                 "batch_id": raw["batch_id"],
+                "batch_sha256": batch_digest(prepared, batch_id=raw["batch_id"]),
                 "count": len(prepared),
                 "offers": [
                     {"offer_id": r["offer_id"], "decision": r["decision"]} for r in prepared

@@ -254,13 +254,13 @@ class MerchantOfferStore:
         # private Supabase snapshots without committing prices or deploying each
         # 72-hour refresh. No snapshot, failed auth or uncertain source => no
         # purchase action. Always use the released file for destination and SKU.
+        from .purchase_freshness import apply_evidence, evidence_for
         from .runtime_offer_snapshots import (
             apply_runtime_snapshot,
             load_runtime_snapshots,
             runtime_offer_scope,
             runtime_offer_snapshots_enabled,
         )
-        from .purchase_freshness import apply_evidence, evidence_for
 
         if runtime_offer_snapshots_enabled():
             scope = runtime_offer_scope()

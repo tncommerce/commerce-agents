@@ -142,9 +142,8 @@ def test_sql_rejects_old_and_future_verification(db, variant):
     row["verified_at"] = variant["verified_at"](datetime.now(UTC))
     row["decision"] = variant["decision"]
     db.execute("set local role service_role")
-    with pytest.raises(psycopg.errors.RaiseException):
-        with db.transaction():
-            insert(db, row)
+    with pytest.raises(psycopg.errors.RaiseException), db.transaction():
+        insert(db, row)
 
 
 @pytest.mark.parametrize(
@@ -163,12 +162,13 @@ def test_sql_never_mutates_canonical_identity(db, field, value):
     row = observation()
     db.execute("set local role service_role")
     insert(db, row)
-    with pytest.raises(psycopg.errors.RaiseException, match="canonical offer identity"):
-        with db.transaction():
-            db.execute(
-                f"update {TABLE} set {field}=%s, verified_at=%s where offer_id=%s",
-                (value, datetime.now(UTC) - timedelta(minutes=1), row["offer_id"]),
-            )
+    with pytest.raises(psycopg.errors.RaiseException, match="canonical offer identity"), (
+        db.transaction()
+    ):
+        db.execute(
+            f"update {TABLE} set {field}=%s, verified_at=%s where offer_id=%s",
+            (value, datetime.now(UTC) - timedelta(minutes=1), row["offer_id"]),
+        )
 
 
 def test_sql_hold_audited_and_monotone(db):
@@ -185,9 +185,10 @@ def test_sql_hold_audited_and_monotone(db):
     assert db.execute(
         f"select decision from {TABLE} where offer_id=%s", (row["offer_id"],)
     ).fetchone()[0] == "hold"
-    with pytest.raises(psycopg.errors.RaiseException, match="must advance strictly"):
-        with db.transaction():
-            db.execute(
-                f"update {TABLE} set price=50,verified_at=%s where offer_id=%s",
-                (newer, row["offer_id"]),
-            )
+    with pytest.raises(psycopg.errors.RaiseException, match="must advance strictly"), (
+        db.transaction()
+    ):
+        db.execute(
+            f"update {TABLE} set price=50,verified_at=%s where offer_id=%s",
+            (newer, row["offer_id"]),
+        )

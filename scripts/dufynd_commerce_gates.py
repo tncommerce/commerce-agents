@@ -6,7 +6,8 @@ Only previously approved canonical affiliate URLs may be reused.
 
 from __future__ import annotations
 
-from urllib.parse import urlsplit
+import re
+from urllib.parse import parse_qs, urlsplit
 
 from scripts.validate_dufynd_catalog_expansion_wave import valid_gtin
 
@@ -46,13 +47,32 @@ def approved_affiliate_route(offer: dict, partners: dict) -> bool:
             or url.username is not None
             or url.password is not None
             or url.fragment
+            or url.port is not None
         ):
             return False
         host = (url.hostname or "").casefold().rstrip(".")
+        params = parse_qs(url.query, keep_blank_values=True, strict_parsing=True)
+        destination = str(offer.get("product_url") or "")
         if offer.get("network") == "CJ Affiliate":
-            return host in {"jdoqocy.com", "www.jdoqocy.com"} and url.path.startswith("/click-")
+            return (
+                merchant == "notino"
+                and host in {"jdoqocy.com", "www.jdoqocy.com"}
+                and re.fullmatch(r"/click-[0-9]+-[0-9]+", url.path) is not None
+                and params.get("url") == [destination]
+            )
         if offer.get("network") == "Awin":
-            return host in {"awin1.com", "www.awin1.com"}
+            expected_advertiser = {
+                "perfumetrader": "11672",
+                "top-parfuemerie": "31081",
+            }.get(merchant)
+            return (
+                expected_advertiser is not None
+                and host in {"awin1.com", "www.awin1.com"}
+                and url.path == "/cread.php"
+                and params.get("awinmid") == [expected_advertiser]
+                and params.get("awinaffid") == ["3099222"]
+                and params.get("ued") == [destination]
+            )
     except ValueError:
         return False
     return False
