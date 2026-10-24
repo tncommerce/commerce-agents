@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import csv
 import gzip
+import hashlib
 import io
 import json
 import os
@@ -157,6 +158,7 @@ def download_feed_from_list(
         **metadata,
         "downloaded": False,
         "downloaded_bytes": 0,
+        "download_sha256": None,
         "secrets_logged": False,
     }
 
@@ -168,6 +170,9 @@ def download_feed_from_list(
         output_path.write_bytes(feed_payload)
         report["downloaded"] = True
         report["downloaded_bytes"] = len(feed_payload)
+        # Bind the Awin list metadata to exactly the file handed to offline
+        # reviewers; the hash is not a source/rights/price endorsement.
+        report["download_sha256"] = hashlib.sha256(feed_payload).hexdigest()
 
     if report_path is not None:
         report_path.parent.mkdir(parents=True, exist_ok=True)

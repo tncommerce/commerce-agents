@@ -324,3 +324,45 @@ Notino-Mapping-Zuordnung, aber **keine davon** den Status
 des Gesamtbestands beziehen sich auf bereits öffentliche Produkte, nicht
 auf diese 20; Kandidaten sind daher nur durch frische, vollständig
 nachkontrollierte Namens-/Duftvariantenrecherche möglich.
+
+
+## Aktuelle Feed-Version statt erneuerter Download-Uhr (24.10., Sicherheitsgate)
+
+Die unveröffentlichten 20er-Bild-Reviews benötigen jetzt die **exakt
+heruntergeladene offizielle Awin-Datei** und prüfen zusätzlich zum bestehenden
+Partner-/Rechte-/SKU-Gate:
+
+- \`download_sha256\` und \`downloaded_bytes\` der tatsächlich geladenen
+  CSV-Datei gegen die Metadaten des bestehenden Awin-Feed-List-Downloads.
+- Offizielle Awin-Download-Domain; niemals einen beliebigen lokalen
+  Upload als bewiesene Händlerquelle behandeln.
+- Das Awin-Feld **Last Imported** muss eine plausibel aktuelle
+  Feed-Importversion enthalten (maximal sieben Tage für manuelle
+  Bildquellen-Sichtung). Nur eine heute erneut geladene alte Feed-Version
+  gilt ausdrücklich **nicht** als aktuell.
+- Awin liefert \`Last Imported\` teilweise ohne Zeitzonenangabe.
+  Die zusätzliche Prüfung verwendet dann eine vorsichtige ±14-Stunden-
+  Unsicherheitsmarge im siebentägigen REVIEW-Fenster; der Zeitzonenmangel
+  wird ausdrücklich ausgewiesen und **kann keinen 72-Stunden-Kaufpreis
+  bestätigen**.
+
+\`scripts/fetch_dufynd_awin_data_feed.py\` zeichnet die SHA-256- und
+Byte-Prüfsumme künftig nur für tatsächlich heruntergeladene Daten auf,
+ohne geheime Download-URL oder API-Key ins Review-Artefakt zu schreiben.
+Die bereits bestehende CI-Workflow-Datei wird **nicht automatisch**
+gestartet oder geändert. Es bleibt ein Vorschlags-/Owner-Bild-Gate,
+kein originaler Medienimport oder Preisupdate.
+
+**Quellenkorrektur nach authentischer Händlerkorrespondenz:**
+Top Parfümerie hat am 06.10.2026 schriftlich mitgeteilt, dass der
+regelmäßig synchronisierte Awin-Feed ausschließlich lagernde Artikel
+enthalten soll und seine Shop-Preise/-Bilder übernimmt. Die Nutzung von
+unveränderten Bildern innerhalb einer DUFYND-Affiliate-Integration wurde
+grundsätzlich befürwortet. Das ist **keine** Zusage zum dauerhaften
+eigenen Bildhosting oder zur Freigabe eines bestimmten nicht erreichbaren
+Originalflakons. Die gesonderte E-Mail-Anfrage zur YSL-Libre-Originaldatei
+vom 22.10. bleibt vor einer selbst gehosteten Veröffentlichung offen.
+Diese Händlerauskunft **ersetzt nicht** die konkrete aktuelle Feed-Datei
+oder den visuellen Owner-Variantencheck.
+
+Offizielle Awin-Dokumentation: https://help.awin.com/developers/docs/product-feed-list-download

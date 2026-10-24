@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -10,6 +11,8 @@ from scripts.report_dufynd_unpublished_photo_sources import (
 )
 
 NOW = datetime(2026, 10, 24, 10, tzinfo=UTC)
+FEED_BYTES = b"synthetic-only-offline-csv-fixture"
+FEED_SHA = hashlib.sha256(FEED_BYTES).hexdigest()
 URL = "https://www.topparfuemerie.de/media/catalog/product/a/b/000100.png"
 PRODUCT_ID = "SC-EXAMPLE-SCENT-EDP-100"
 
@@ -57,6 +60,11 @@ def inputs(count: int = 25):
 
 
 def run(*args, **kwargs):
+    if "feed_rows" in kwargs and "feed_integrity" not in kwargs:
+        kwargs["feed_integrity"] = {
+            "sha256": FEED_SHA,
+            "downloaded_bytes": len(FEED_BYTES),
+        }
     return build_unpublished_source_queue(*args, now=NOW, batch_size=20, **kwargs)
 
 
@@ -69,6 +77,9 @@ def official_metadata():
         "downloaded": True,
         "checked_at": NOW.isoformat(),
         "last_imported": NOW.isoformat(),
+        "download_host": "datafeed.api.productserve.com",
+        "download_sha256": FEED_SHA,
+        "downloaded_bytes": len(FEED_BYTES),
     }
 
 
@@ -118,6 +129,8 @@ def test_source_review_uses_existing_strict_licensed_feed_validator():
     report = run(*inputs(), feed_rows=feed(), feed_metadata=official_metadata(), rights=rights())
     review = report["official_awin_photo_review"]
     assert review["status"] == "REVIEW_ONLY_NOT_LIVE"
+    assert report["source_file_integrity"]["feed_sha256"] == FEED_SHA
+    assert report["source_file_integrity"]["verified_for_runtime_price_updates"] is False
     assert review["products_reviewed"] == 20
     assert review["products_with_leads"] == 1
     assert review["approved_new_images"] == 0
@@ -251,3 +264,69 @@ def test_cross_merchant_gtin_conflict_blocks_photo_candidate_discovery():
     assert row["independent_variant_identity_resolution_required"] is True
     assert row["official_feed_photo_review_lead_count"] == 0
     assert report["original_image_approvals_granted"] == 0
+
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "missing_hash",
+        "wrong_hash",
+        "wrong_bytes",
+        "missing_last_imported",
+        "stale_last_imported",
+        "wrong_download_host",
+        "unknown_source",
+        "future_import",
+    ],
+)
+def test_official_awin_provenance_guard_rejects_bad_file_or_old_feed(mutation: str):
+    metadata = official_metadata()
+    integrity = {"sha256": FEED_SHA, "downloaded_bytes": len(FEED_BYTES)}
+    if mutation == "missing_hash":
+        del metadata["download_sha256"]
+    elif mutation == "wrong_hash":
+        integrity["sha256"] = "b" * 64
+    elif mutation == "wrong_bytes":
+        integrity["downloaded_bytes"] += 1
+    elif mutation == "missing_last_imported":
+        metadata["last_imported"] = ""
+    elif mutation == "stale_last_imported":
+        metadata["last_imported"] = (NOW - timedelta(days=10)).isoformat()
+    elif mutation == "wrong_download_host":
+        metadata["download_host"] = "api.invalid"
+    elif mutation == "unknown_source":
+        metadata["source"] = "custom_scraper"
+    else:
+        metadata["last_imported"] = (NOW + timedelta(days=2)).isoformat()
+    with pytest.raises(ValueError, match="official_awin"):
+        run(
+            *inputs(),
+            feed_rows=feed(),
+            feed_metadata=metadata,
+            feed_integrity=integrity,
+            rights=rights(),
+        )
+
+
+def test_awin_official_naive_last_imported_is_review_only_with_timezone_warning():
+    meta = official_metadata()
+    meta["last_imported"] = (NOW - timedelta(days=2)).replace(tzinfo=None).isoformat(
+        sep=" "
+    )
+    report = run(*inputs(), feed_rows=feed(), feed_metadata=meta, rights=rights())
+    proof = report["source_file_integrity"]
+    assert proof["last_imported_timezone_unverified"] is True
+    assert proof["verified_for_review_only"] is True
+    assert proof["verified_for_runtime_price_updates"] is False
+    assert report["original_image_approvals_granted"] == 0
+
+
+def test_official_download_not_new_runtime_price_timestamp():
+    meta = official_metadata()
+    meta["checked_at"] = NOW.isoformat()
+    meta["last_imported"] = (NOW - timedelta(days=5)).isoformat()
+    report = run(*inputs(), feed_rows=feed(), feed_metadata=meta, rights=rights())
+    assert report["source_observation_timestamps_renewed"] == 0
+    assert report["approved_merchant_offers_created"] == 0
+    assert report["official_awin_photo_review"]["approved_new_images"] == 0
