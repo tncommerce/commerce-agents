@@ -363,6 +363,62 @@ def test_awin_feed_cannot_be_disguised_as_arbitrary_same_host_route(
     assert "SECRET" not in str(exc.value)
 
 
+@pytest.mark.parametrize(
+    "query",
+    [
+        "apiKey=OTHER",
+        "API_KEY=OTHER",
+        "api-key=OTHER",
+        "%61piKey=OTHER",
+        "apiKey=SECRET",  # Even a redundant key adds a second identity source.
+        "fid=91379&apiKey=OTHER",
+        "format=csv&APIKEY=OTHER",
+    ],
+)
+def test_awin_feed_query_cannot_override_publisher_key(query: str) -> None:
+    url = (
+        "https://datafeed.api.productserve.com/datafeed/download/"
+        "apikey/SECRET/fid/91379/format/csv/?" + query
+    )
+    with pytest.raises(
+        ValueError, match="awin_feed_download_query_api_key_override"
+    ) as exc:
+        awin._validate_feed_download_url(url, feed_id="91379", api_key="SECRET")
+    assert "SECRET" not in str(exc.value)
+    assert "OTHER" not in str(exc.value)
+
+
+def test_awin_feed_rejects_malformed_query_before_credentialed_request() -> None:
+    url = (
+        "https://datafeed.api.productserve.com/datafeed/download/"
+        "apikey/SECRET/fid/91379/format/csv/?format"
+    )
+    with pytest.raises(ValueError, match="awin_feed_download_query_malformed"):
+        awin._validate_feed_download_url(url, feed_id="91379", api_key="SECRET")
+
+
+def test_awin_feed_allows_noncredential_format_filters() -> None:
+    url = (
+        "https://datafeed.api.productserve.com/datafeed/download/"
+        "apikey/SECRET/fid/91379/format/csv/?format=csv&language=de"
+    )
+    awin._validate_feed_download_url(url, feed_id="91379", api_key="SECRET")
+
+
+def test_awin_redirect_rejects_download_query_key_shadow() -> None:
+    base = (
+        "https://productdata.awin.com/datafeed/download/"
+        "apikey/SECRET/fid/91379/format/csv/"
+    )
+    redirect = base.replace(
+        "productdata.awin.com", "datafeed.api.productserve.com"
+    ) + "?apiKey=OTHER"
+    with pytest.raises(ValueError, match="awin_redirect_feed_id_mismatch"):
+        awin.AwinRedirectHandler(expected_feed_id="91379").redirect_request(
+            Request(base), None, 302, "Found", {}, redirect
+        )
+
+
 def test_awin_download_cannot_swap_selected_publisher_key() -> None:
     wrong_key_url = (
         "https://datafeed.api.productserve.com/datafeed/download/"
