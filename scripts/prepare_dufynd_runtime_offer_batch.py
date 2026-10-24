@@ -161,10 +161,7 @@ def apply_batch(
 ) -> None:
     """One atomic REST upsert, bound to a batch content hash and prior GO."""
     exact_scope = f"{batch_id}:{batch_digest(prepared, batch_id=batch_id)}"
-    if (
-        owner_approval != exact_scope
-        or os.getenv("DUFYND_OFFER_BATCH_OWNER_GO") != exact_scope
-    ):
+    if owner_approval != exact_scope or os.getenv("DUFYND_OFFER_BATCH_OWNER_GO") != exact_scope:
         raise PermissionError("exact_batch_content_owner_approval_required")
     if os.getenv("SUPABASE_URL", "").rstrip("/") != PROJECT_URL:
         raise PermissionError("unexpected_supabase_project")

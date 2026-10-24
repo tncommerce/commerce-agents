@@ -167,13 +167,10 @@ def test_batch_size_and_unknown_id_are_fail_closed():
             product_ids=[f"SC-REVIEW-{i:02d}" for i in range(9)] + ["SC-NOT-KNOWN"],
         )
 
+
 def test_affiliate_route_requires_exact_approved_destination_and_program() -> None:
-    offers = json.loads((DATA / "merchant_offers.json").read_text(encoding="utf-8"))[
-        "offers"
-    ]
-    notino = next(
-        row for row in offers if row["offer_id"] == "notino-ysl-libre-edp-90"
-    )
+    offers = json.loads((DATA / "merchant_offers.json").read_text(encoding="utf-8"))["offers"]
+    notino = next(row for row in offers if row["offer_id"] == "notino-ysl-libre-edp-90")
     notino_partner = {
         "partners": [
             {
@@ -186,22 +183,14 @@ def test_affiliate_route_requires_exact_approved_destination_and_program() -> No
     }
     assert approved_affiliate_route(notino, notino_partner)
     bad_tracking = notino["affiliate_url"].replace("/click-101884613-12260695", "/click-evil")
-    wrong_destination = notino["affiliate_url"].replace(
-        "p-15968532", "p-12345678"
-    )
+    wrong_destination = notino["affiliate_url"].replace("p-15968532", "p-12345678")
     for replacement in (bad_tracking, wrong_destination):
-        assert not approved_affiliate_route(
-            notino | {"affiliate_url": replacement}, notino_partner
-        )
+        assert not approved_affiliate_route(notino | {"affiliate_url": replacement}, notino_partner)
 
     awin = next(
-        row
-        for row in offers
-        if row["offer_id"] == "perfumetrader-rabanne-1-million-edt-100"
+        row for row in offers if row["offer_id"] == "perfumetrader-rabanne-1-million-edt-100"
     )
-    perfumetrader_partner = {
-        "partners": [{"merchant_id": "perfumetrader", "status": "active"}]
-    }
+    perfumetrader_partner = {"partners": [{"merchant_id": "perfumetrader", "status": "active"}]}
     assert approved_affiliate_route(awin, perfumetrader_partner)
     bad_advertiser = awin["affiliate_url"].replace("awinmid=11672", "awinmid=999")
     assert not approved_affiliate_route(

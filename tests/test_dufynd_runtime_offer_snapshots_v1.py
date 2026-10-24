@@ -290,13 +290,12 @@ def test_hold_can_revoke_a_row_without_new_affiliate_or_ean_approval() -> None:
     result = prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
     assert result[0]["decision"] == "hold"
 
+
 def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> None:
     monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
     monkeypatch.delenv("DUFYND_RUNTIME_OFFER_MERCHANTS", raising=False)
     raw = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
-    rabanne = next(
-        item for item in raw if item["offer_id"] == purchase_freshness.TARGET_OFFER
-    )
+    rabanne = next(item for item in raw if item["offer_id"] == purchase_freshness.TARGET_OFFER)
     certificate = {
         "source": "certified_purchase_verification",
         "offer_contract": {k: v for k, v in rabanne.items() if k != "last_updated_at"},
@@ -356,6 +355,7 @@ def test_runtime_invalid_scope_or_selected_db_outage_fails_closed(monkeypatch, t
     ranked = MerchantOfferStore(fixture).offers_for(notino["product_id"])
     assert [offer.offer_id for offer in ranked] == [other["offer_id"]]
     assert all(offer.merchant_id != "notino" for offer in ranked)
+
 
 def test_batch_approval_cannot_be_reused_after_price_or_proof_change(monkeypatch) -> None:
     from scripts.prepare_dufynd_runtime_offer_batch import apply_batch

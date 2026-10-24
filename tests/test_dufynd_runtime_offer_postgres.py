@@ -123,9 +123,12 @@ def test_sql_updates_price_and_audits_without_renewing_source_time(db):
     assert str(updated[0]) == "94.30"
     assert str(updated[1]) == "0.00"
     assert updated[2] == newer
-    assert db.execute(
-        f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
-    ).fetchone()[0] == 2
+    assert (
+        db.execute(
+            f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
+        ).fetchone()[0]
+        == 2
+    )
 
 
 @pytest.mark.parametrize(
@@ -162,8 +165,9 @@ def test_sql_never_mutates_canonical_identity(db, field, value):
     row = observation()
     db.execute("set local role service_role")
     insert(db, row)
-    with pytest.raises(psycopg.errors.RaiseException, match="canonical offer identity"), (
-        db.transaction()
+    with (
+        pytest.raises(psycopg.errors.RaiseException, match="canonical offer identity"),
+        db.transaction(),
     ):
         db.execute(
             f"update {TABLE} set {field}=%s, verified_at=%s where offer_id=%s",
@@ -182,11 +186,15 @@ def test_sql_hold_audited_and_monotone(db):
         f"update {TABLE} set decision='hold',verified_at=%s where offer_id=%s",
         (newer, row["offer_id"]),
     )
-    assert db.execute(
-        f"select decision from {TABLE} where offer_id=%s", (row["offer_id"],)
-    ).fetchone()[0] == "hold"
-    with pytest.raises(psycopg.errors.RaiseException, match="must advance strictly"), (
-        db.transaction()
+    assert (
+        db.execute(
+            f"select decision from {TABLE} where offer_id=%s", (row["offer_id"],)
+        ).fetchone()[0]
+        == "hold"
+    )
+    with (
+        pytest.raises(psycopg.errors.RaiseException, match="must advance strictly"),
+        db.transaction(),
     ):
         db.execute(
             f"update {TABLE} set price=50,verified_at=%s where offer_id=%s",
