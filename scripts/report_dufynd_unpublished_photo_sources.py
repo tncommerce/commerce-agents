@@ -89,11 +89,7 @@ def build_unpublished_source_queue(
             and m.get("merchant_product_id")
             and (m.get("gtin") or m.get("ean"))
         ]
-        gtins = {
-            str(m.get("gtin") or m.get("ean"))
-            for m in known
-            if m.get("gtin") or m.get("ean")
-        }
+        gtins = {str(m.get("gtin") or m.get("ean")) for m in known if m.get("gtin") or m.get("ean")}
         source_paths = []
         if "notino" in merchants:
             source_paths.append(SOURCE_NOTINO)
@@ -125,7 +121,9 @@ def build_unpublished_source_queue(
             offer.get("product_id") == pid and offer.get("affiliate_url")
             for offer in offers.get("offers", [])
         )
-        priority = "EXISTING_TRACKED_ROUTE_IMAGE_HOLD" if already_tracked else "SOURCE_ACQUISITION_HOLD"
+        priority = (
+            "EXISTING_TRACKED_ROUTE_IMAGE_HOLD" if already_tracked else "SOURCE_ACQUISITION_HOLD"
+        )
         if len(gtins) > 1:
             priority = "CROSS_MERCHANT_GTIN_CONFLICT_HOLD"
         item = {
@@ -155,7 +153,10 @@ def build_unpublished_source_queue(
     if feed_rows is not None:
         if photo_gap:
             photo_review = create_review(
-                {"status": "RIGHTS_SOURCE_ACQUISITION_PENDING_NO_AUTO_APPROVAL", "items": photo_gap},
+                {
+                    "status": "RIGHTS_SOURCE_ACQUISITION_PENDING_NO_AUTO_APPROVAL",
+                    "items": photo_gap,
+                },
                 mappings,
                 feed_rows,
                 feed_metadata,

@@ -57,9 +57,7 @@ def inputs(count: int = 25):
 
 
 def run(*args, **kwargs):
-    return build_unpublished_source_queue(
-        *args, now=NOW, batch_size=20, **kwargs
-    )
+    return build_unpublished_source_queue(*args, now=NOW, batch_size=20, **kwargs)
 
 
 def official_metadata():
@@ -111,13 +109,13 @@ def test_exact_20_unpublished_items_no_double_work_no_net_calls():
     assert report["original_image_approvals_granted"] == 0
     public = {row["product_id"] for row in inputs()[1]["products"]}
     assert all(row["product_id"] not in public for row in report["items"])
-    assert sum(row["priority"] == "EXISTING_TRACKED_ROUTE_IMAGE_HOLD" for row in report["items"]) == 1
+    assert (
+        sum(row["priority"] == "EXISTING_TRACKED_ROUTE_IMAGE_HOLD" for row in report["items"]) == 1
+    )
 
 
 def test_source_review_uses_existing_strict_licensed_feed_validator():
-    report = run(
-        *inputs(), feed_rows=feed(), feed_metadata=official_metadata(), rights=rights()
-    )
+    report = run(*inputs(), feed_rows=feed(), feed_metadata=official_metadata(), rights=rights())
     review = report["official_awin_photo_review"]
     assert review["status"] == "REVIEW_ONLY_NOT_LIVE"
     assert review["products_reviewed"] == 20
@@ -135,7 +133,9 @@ def test_source_review_uses_existing_strict_licensed_feed_validator():
     assert report["publications"] == 0
 
 
-@pytest.mark.parametrize("invalid_source", ["wrong_advertiser", "not_joined", "stale", "wrong_rights"])
+@pytest.mark.parametrize(
+    "invalid_source", ["wrong_advertiser", "not_joined", "stale", "wrong_rights"]
+)
 def test_wrong_source_or_rights_cannot_create_even_a_candidate(invalid_source: str):
     meta = official_metadata()
     license_data = rights()
@@ -205,6 +205,7 @@ def test_current_repo_contains_no_auto_approvable_20_item_photo_batch():
 
     def read(path):
         return json.loads(path.read_text(encoding="utf-8"))
+
     report = build_unpublished_source_queue(
         read(STAGING),
         read(PUBLIC),
