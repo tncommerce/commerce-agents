@@ -725,7 +725,6 @@ def test_corrupt_supabase_response_cannot_partially_certify_offers(
     runtime_offer_snapshots._cache.clear()
 
 
-
 def test_slower_positive_buyer_clickout_cannot_override_faster_revocation(
     monkeypatch,
 ) -> None:
