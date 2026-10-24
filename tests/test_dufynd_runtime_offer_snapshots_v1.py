@@ -814,9 +814,7 @@ def test_cross_key_hold_revokes_cached_multi_offer_listing(monkeypatch) -> None:
         assert initial[second["offer_id"]]["decision"] == "verified"
         assert len(requests) == 1
 
-        revoked = runtime_offer_snapshots.load_runtime_snapshots(
-            [first], bypass_cache=True
-        )
+        revoked = runtime_offer_snapshots.load_runtime_snapshots([first], bypass_cache=True)
         assert revoked[first["offer_id"]]["decision"] == "hold"
         assert len(requests) == 2
 
@@ -868,9 +866,7 @@ def test_slow_mixed_listing_cannot_resurrect_newer_one_offer_revocation(
     worker.start()
     try:
         assert started.wait(timeout=5)
-        newer = runtime_offer_snapshots.load_runtime_snapshots(
-            [first], bypass_cache=True
-        )
+        newer = runtime_offer_snapshots.load_runtime_snapshots([first], bypass_cache=True)
         if revocation == "hold":
             assert newer[first["offer_id"]]["decision"] == "hold"
         else:
