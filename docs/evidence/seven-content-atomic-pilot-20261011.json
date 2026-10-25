@@ -1,0 +1,136 @@
+{
+  "evidence_kind": "actual local PostgreSQL-WASM RPC execution; not production",
+  "source_context_sha256": "cf3bd98888b4ca668b3ac22e83a20df5ab97b919715581af8b49fc399d60d7a8",
+  "external_http_calls": 0,
+  "provider_calls": 0,
+  "production_writes": 0,
+  "workers": [
+    {
+      "role": "W1",
+      "started_utc": "2026-10-11T12:36:35.019722+00:00",
+      "finished_utc": "2026-10-11T12:36:35.061503+00:00",
+      "status": "DONE",
+      "input_sha256": "167baf6e82e3a42288e6152f97cc74f084d08ea41ff9520d218617c8cb100098",
+      "packet_sha256": "5b5925d4a715122b05a484b348b55ec225bd7b0a6b2d72d6ff71c7a5d9979c81",
+      "predecessor_sha256": {},
+      "task_state": "done",
+      "released": true,
+      "holds": []
+    },
+    {
+      "role": "W3",
+      "started_utc": "2026-10-11T12:36:35.061558+00:00",
+      "finished_utc": "2026-10-11T12:36:35.100041+00:00",
+      "status": "DONE_WITH_HOLDS",
+      "input_sha256": "14c9af47a6d1c4a34948efc898eb69554852627b437c3c4679f29982d1db1032",
+      "packet_sha256": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
+      "predecessor_sha256": {
+        "W1": "5b5925d4a715122b05a484b348b55ec225bd7b0a6b2d72d6ff71c7a5d9979c81"
+      },
+      "task_state": "done",
+      "released": true,
+      "holds": [
+        "fresh_creator_metrics_and_source_verification_unavailable_offline"
+      ]
+    },
+    {
+      "role": "W4",
+      "started_utc": "2026-10-11T12:36:35.100096+00:00",
+      "finished_utc": "2026-10-11T12:36:35.123767+00:00",
+      "status": "DONE_WITH_HOLDS",
+      "input_sha256": "bb40577ebde0d2ac7cd79cfce531c9b438c9473db35561c9990be03e04b854f7",
+      "packet_sha256": "616137cb567f009293e6507b587ff16c492e08b194c582d1f806e0ea87eaa3ae",
+      "predecessor_sha256": {
+        "W1": "5b5925d4a715122b05a484b348b55ec225bd7b0a6b2d72d6ff71c7a5d9979c81"
+      },
+      "task_state": "done",
+      "released": true,
+      "holds": [
+        "no_live_page_fetch_or_qualified_exact_claim_verification"
+      ]
+    },
+    {
+      "role": "W5",
+      "started_utc": "2026-10-11T12:36:35.123819+00:00",
+      "finished_utc": "2026-10-11T12:36:35.149135+00:00",
+      "status": "DONE",
+      "input_sha256": "e0906a7bffa2feb312dd03034f3b69eba9a891067a7b7a8f05f3bc0c5e84bed7",
+      "packet_sha256": "f4e108e66f14c895a8aeda81321251931e8984f25c88bf125481aada72fae970",
+      "predecessor_sha256": {
+        "W1": "5b5925d4a715122b05a484b348b55ec225bd7b0a6b2d72d6ff71c7a5d9979c81",
+        "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d"
+      },
+      "task_state": "done",
+      "released": true,
+      "holds": []
+    },
+    {
+      "role": "W6",
+      "started_utc": "2026-10-11T12:36:35.149182+00:00",
+      "finished_utc": "2026-10-11T12:36:35.175827+00:00",
+      "status": "DONE",
+      "input_sha256": "b14b81a1b195d39655de7d1d8cf4e425fb9fa2ad333608720715d9d39a3e0ac9",
+      "packet_sha256": "125efbf25bab9b54e2650f837bab460173cc9eb89ca575d3a97f4f658b8f1079",
+      "predecessor_sha256": {
+        "W1": "5b5925d4a715122b05a484b348b55ec225bd7b0a6b2d72d6ff71c7a5d9979c81",
+        "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
+        "W5": "f4e108e66f14c895a8aeda81321251931e8984f25c88bf125481aada72fae970"
+      },
+      "task_state": "done",
+      "released": true,
+      "holds": []
+    },
+    {
+      "role": "W2",
+      "started_utc": "2026-10-11T12:36:35.175873+00:00",
+      "finished_utc": "2026-10-11T12:36:35.210012+00:00",
+      "status": "DONE_WITH_HOLDS",
+      "input_sha256": "d78715857c6d9bcd8b0d3b703b4e503e1cd73dc6b82aa4539967ed1ae9c97450",
+      "packet_sha256": "0d6483eeefb4aa7d8fdfd678da808d6bd68a4ddf73390abd5f1f6472e3e4898f",
+      "predecessor_sha256": {
+        "W1": "5b5925d4a715122b05a484b348b55ec225bd7b0a6b2d72d6ff71c7a5d9979c81",
+        "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
+        "W4": "616137cb567f009293e6507b587ff16c492e08b194c582d1f806e0ea87eaa3ae",
+        "W5": "f4e108e66f14c895a8aeda81321251931e8984f25c88bf125481aada72fae970",
+        "W6": "125efbf25bab9b54e2650f837bab460173cc9eb89ca575d3a97f4f658b8f1079"
+      },
+      "task_state": "done",
+      "released": true,
+      "holds": [
+        "visual_and_owner_creative_qa_pending",
+        "worker_is_not_an_inference_provider"
+      ]
+    },
+    {
+      "role": "W7",
+      "started_utc": "2026-10-11T12:36:35.210096+00:00",
+      "finished_utc": "2026-10-11T12:36:35.246018+00:00",
+      "status": "DONE_WITH_HOLDS",
+      "input_sha256": "754365bf074beb5cf234e048e25bd1c35d2f0e02d12d1c89ad04f5e798764bf1",
+      "packet_sha256": "8d61a1ae89a6b8e304da99298bf5bfc7cdb6605991867b5484261cb71b1ab01b",
+      "predecessor_sha256": {
+        "W1": "5b5925d4a715122b05a484b348b55ec225bd7b0a6b2d72d6ff71c7a5d9979c81",
+        "W2": "0d6483eeefb4aa7d8fdfd678da808d6bd68a4ddf73390abd5f1f6472e3e4898f",
+        "W3": "d3bea84d7d063fb88f7feac8286028e18197efac4988a71e0d38312e2c23ff3d",
+        "W4": "616137cb567f009293e6507b587ff16c492e08b194c582d1f806e0ea87eaa3ae",
+        "W5": "f4e108e66f14c895a8aeda81321251931e8984f25c88bf125481aada72fae970",
+        "W6": "125efbf25bab9b54e2650f837bab460173cc9eb89ca575d3a97f4f658b8f1079"
+      },
+      "task_state": "done",
+      "released": true,
+      "holds": [
+        "per_asset_rights_audio_ai_and_separate_owner_publish_go_required",
+        "frozen_references_are_not_completed_post_copy"
+      ]
+    }
+  ],
+  "replay": [
+    "ALREADY_DONE",
+    "ALREADY_DONE",
+    "ALREADY_DONE",
+    "ALREADY_DONE",
+    "ALREADY_DONE",
+    "ALREADY_DONE",
+    "ALREADY_DONE"
+  ]
+}
