@@ -404,7 +404,7 @@
     {
       "product_id": "SC-PDM-LAYTON-125",
       "title": "Parfums de Marly Layton Eau de Parfum 125 ml",
-      "image_url": "/products/pilot/pdm-layton-editorial.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
       "brand": "Parfums de Marly",
       "price": 219.26,
       "currency": "EUR",
@@ -436,7 +436,17 @@
         "market_price_eur": "219.26",
         "price_per_ml_eur": "1.75408",
         "price_checked_at": "2026-09-09",
-        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high"
+        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.833071+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+        "image_variant": "125ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
       "short_description": "Parfums de Marly Layton is a sweet, spicy, fruity Eau de Parfum fragrance."
@@ -524,7 +534,7 @@
     {
       "product_id": "SC-PDM-ALTHAIR-125",
       "title": "Parfums de Marly Althaïr Eau de Parfum 125 ml",
-      "image_url": "/products/pilot/pdm-althair-editorial.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
       "brand": "Parfums de Marly",
       "price": 239.99,
       "currency": "EUR",
@@ -556,7 +566,17 @@
         "market_price_eur": "239.99",
         "price_per_ml_eur": "1.91992",
         "price_checked_at": "2026-09-09",
-        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high"
+        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:58.107745+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
+        "image_variant": "125ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
       "short_description": "Parfums de Marly Althaïr is a sweet, gourmand, creamy Eau de Parfum fragrance."
@@ -766,7 +786,7 @@
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
       "title": "Giorgio Armani Stronger With You Intensely Eau de Parfum 100 ml",
-      "image_url": "/products/armani-swy-intensely-100-cutout-production.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
       "brand": "Giorgio Armani",
       "price": 66.04,
       "currency": "EUR",
@@ -799,7 +819,17 @@
         "price_per_ml_eur": "0.6604",
         "price_checked_at": "2026-09-09",
         "relationship_links": "",
-        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp"
+        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.832040+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+        "image_variant": "100ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
       "short_description": "Giorgio Armani Stronger With You Intensely is a sweet, gourmand, spicy Eau de Parfum fragrance."
@@ -1008,7 +1038,7 @@
     {
       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
       "title": "Valentino Uomo Born In Roma Intense Eau de Parfum 100 ml",
-      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
       "brand": "Valentino",
       "price": 66,
       "currency": "EUR",
@@ -1040,7 +1070,17 @@
         "market_price_eur": "66.0",
         "price_per_ml_eur": "0.66",
         "price_checked_at": "2026-09-10",
-        "relationship_links": ""
+        "relationship_links": "",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.834066+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+        "image_variant": "100ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
       "short_description": "Valentino Uomo Born In Roma Intense is a sweet, synthetic, fresh Eau de Parfum fragrance."
@@ -1209,7 +1249,7 @@
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
       "title": "Essential Parfums Bois Impérial Eau de Parfum 100 ml",
-      "image_url": "/products/pilot/bois-imperial-editorial.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
       "brand": "Essential Parfums",
       "price": 90.9,
       "currency": "EUR",
@@ -1241,7 +1281,17 @@
         "market_price_eur": "90.9",
         "price_per_ml_eur": "0.909",
         "price_checked_at": "2026-09-10",
-        "relationship_links": ""
+        "relationship_links": "",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.829585+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+        "image_variant": "100ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
       "short_description": "Essential Parfums Bois Impérial is a fresh, woody, synthetic Eau de Parfum fragrance."
@@ -3372,7 +3422,7 @@
     {
       "product_id": "SC-RABANNE-1-MILLION-EDT-100",
       "title": "Rabanne 1 Million Eau de Toilette 100 ml",
-      "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
       "brand": "Rabanne",
       "price": 67.95,
       "currency": "EUR",
@@ -3404,8 +3454,17 @@
         "gtin": "3349666007921",
         "image_license_name": "",
         "image_license_url": "",
-        "image_attribution_text": "",
-        "image_share_alike_required": ""
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
+        "image_share_alike_required": "",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.830868+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+        "image_variant": "100ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+        "image_source_merchant_id": "top-parfuemerie"
       },
       "in_stock": true,
       "short_description": "Rabanne 1 Million ist ein süß-würziger, orientalisch geprägter Duft."

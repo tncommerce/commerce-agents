@@ -1,0 +1,1175 @@
+diff --git a/examples/retail/data/catalog.json b/examples/retail/data/catalog.json
+index f1e1c23..1b232c1 100644
+--- a/examples/retail/data/catalog.json
++++ b/examples/retail/data/catalog.json
+@@ -465,7 +465,7 @@
+     {
+       "product_id": "SC-PDM-LAYTON-125",
+       "title": "Parfums de Marly Layton Eau de Parfum 125 ml",
+-      "image_url": "/products/pilot/pdm-layton-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
+       "brand": "Parfums de Marly",
+       "price": 219.26,
+       "currency": "EUR",
+@@ -503,7 +503,17 @@
+         "market_price_eur": "219.26",
+         "price_per_ml_eur": "1.75408",
+         "price_checked_at": "2026-09-09",
+-        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high"
++        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.833071+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
++        "image_variant": "125ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Parfums de Marly Layton is a sweet, spicy, fruity Eau de Parfum fragrance."
+@@ -603,7 +613,7 @@
+     {
+       "product_id": "SC-PDM-ALTHAIR-125",
+       "title": "Parfums de Marly Althaïr Eau de Parfum 125 ml",
+-      "image_url": "/products/pilot/pdm-althair-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
+       "brand": "Parfums de Marly",
+       "price": 239.99,
+       "currency": "EUR",
+@@ -641,7 +651,17 @@
+         "market_price_eur": "239.99",
+         "price_per_ml_eur": "1.91992",
+         "price_checked_at": "2026-09-09",
+-        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high"
++        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:58.107745+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
++        "image_variant": "125ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Parfums de Marly Althaïr is a sweet, gourmand, creamy Eau de Parfum fragrance."
+@@ -881,7 +901,7 @@
+     {
+       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+       "title": "Giorgio Armani Stronger With You Intensely Eau de Parfum 100 ml",
+-      "image_url": "/products/armani-swy-intensely-100-cutout-production.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+       "brand": "Giorgio Armani",
+       "price": 66.04,
+       "currency": "EUR",
+@@ -920,7 +940,17 @@
+         "price_per_ml_eur": "0.6604",
+         "price_checked_at": "2026-09-09",
+         "relationship_links": "",
+-        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp"
++        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.832040+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
++        "image_variant": "100ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Giorgio Armani Stronger With You Intensely is a sweet, gourmand, spicy Eau de Parfum fragrance."
+@@ -1159,7 +1189,7 @@
+     {
+       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+       "title": "Valentino Uomo Born In Roma Intense Eau de Parfum 100 ml",
+-      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
+       "brand": "Valentino",
+       "price": 66,
+       "currency": "EUR",
+@@ -1197,7 +1227,17 @@
+         "market_price_eur": "66.0",
+         "price_per_ml_eur": "0.66",
+         "price_checked_at": "2026-09-10",
+-        "relationship_links": ""
++        "relationship_links": "",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.834066+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
++        "image_variant": "100ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Valentino Uomo Born In Roma Intense is a sweet, synthetic, fresh Eau de Parfum fragrance."
+@@ -1390,7 +1430,7 @@
+     {
+       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+       "title": "Essential Parfums Bois Impérial Eau de Parfum 100 ml",
+-      "image_url": "/products/pilot/bois-imperial-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
+       "brand": "Essential Parfums",
+       "price": 90.9,
+       "currency": "EUR",
+@@ -1428,7 +1468,17 @@
+         "market_price_eur": "90.9",
+         "price_per_ml_eur": "0.909",
+         "price_checked_at": "2026-09-10",
+-        "relationship_links": ""
++        "relationship_links": "",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.829585+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
++        "image_variant": "100ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Essential Parfums Bois Impérial is a fresh, woody, synthetic Eau de Parfum fragrance."
+diff --git a/examples/retail/data/dufynd_approved_feed_image_candidates.json b/examples/retail/data/dufynd_approved_feed_image_candidates.json
+index d158236..5b03c34 100644
+--- a/examples/retail/data/dufynd_approved_feed_image_candidates.json
++++ b/examples/retail/data/dufynd_approved_feed_image_candidates.json
+@@ -104,6 +104,276 @@
+       "rights_checked_at": "2026-09-28",
+       "visual_approval_basis": "explicit_user_visual_approval_2026-10-01",
+       "reviewed_at": "2026-10-01T09:49:00+00:00"
++    },
++    {
++      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
++      "candidate_id": "PHOTO-20261026-924719",
++      "brand": "Essential Parfums",
++      "name": "Bois Impérial",
++      "concentration": "Eau de Parfum",
++      "volume_ml": 100,
++      "merchant": "top-parfuemerie",
++      "merchant_id": "top-parfuemerie",
++      "merchant_product_id": "924719",
++      "gtin": "3770010614630",
++      "gtin_evidence_scope": "Historical exact-variant corroboration; GTIN is absent from the current official feed row.",
++      "offer_id": "38332629354",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
++      "network": "Awin",
++      "data_source": "approved-affiliate-feed",
++      "original_data_source": "awin-product-data-feed-preflight",
++      "last_updated_at": "2026-10-22 11:31:08",
++      "review_status": "approved",
++      "proposed_image_status": "approved_feed_image",
++      "exact_variant_verified": true,
++      "advertiser_id": "31081",
++      "feed_id": "91379",
++      "feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "feed_review_id": "top-parfuemerie-images-20261026",
++      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++      "rights_status": "verified_for_publisher_service",
++      "rights_checked_at": "2026-09-28",
++      "written_permission_date": "2026-10-06",
++      "visual_approval_basis": "explicit_user_visual_approval_2026-10-26",
++      "reviewed_at": "2026-10-26T12:34:35.829585+00:00",
++      "publication_authorized": false,
++      "offer_activation_authorized": false,
++      "required_release_gate": "Separate release GO and a matching authorized Top Parfümerie merchant-bound placement/offer; this patch does not activate an offer.",
++      "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
++      "width": 286,
++      "height": 600,
++      "source_page_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
++      "source_merchant_id": "top-parfuemerie",
++      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++      "source_feed_id": "91379",
++      "source_advertiser_id": "31081",
++      "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++      "source_row_canonical_json_sha256": "93ba71c3b2221026f92e2b150cb514e3535e11cdf221c05a1b143759f24e67f1",
++      "source_run_id": 40324201008,
++      "source_job_id": 121576555286,
++      "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++      "source_merchant_page_sha256": "d90b8cd4b827f9ac0ba73f2ab196b3af173908f21bef49811ace5229e5805c8b",
++      "source_merchant_variant_id": "30659",
++      "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++      "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++      "owner_manifest_image_filename": "01-bois-imperial-100.png"
++    },
++    {
++      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
++      "candidate_id": "PHOTO-20261026-849484",
++      "brand": "Giorgio Armani",
++      "name": "Stronger With You Intensely",
++      "concentration": "Eau de Parfum",
++      "volume_ml": 100,
++      "merchant": "top-parfuemerie",
++      "merchant_id": "top-parfuemerie",
++      "merchant_product_id": "849484",
++      "gtin": "3614272225718",
++      "gtin_evidence_scope": "Historical exact-variant corroboration; GTIN is absent from the current official feed row.",
++      "offer_id": "37127260028",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
++      "network": "Awin",
++      "data_source": "approved-affiliate-feed",
++      "original_data_source": "awin-product-data-feed-preflight",
++      "last_updated_at": "2026-08-13 17:30:58",
++      "review_status": "approved",
++      "proposed_image_status": "approved_feed_image",
++      "exact_variant_verified": true,
++      "advertiser_id": "31081",
++      "feed_id": "91379",
++      "feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "feed_review_id": "top-parfuemerie-images-20261026",
++      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++      "rights_status": "verified_for_publisher_service",
++      "rights_checked_at": "2026-09-28",
++      "written_permission_date": "2026-10-06",
++      "visual_approval_basis": "explicit_user_visual_approval_2026-10-26",
++      "reviewed_at": "2026-10-26T12:34:35.832040+00:00",
++      "publication_authorized": false,
++      "offer_activation_authorized": false,
++      "required_release_gate": "Separate release GO and a matching authorized Top Parfümerie merchant-bound placement/offer; this patch does not activate an offer.",
++      "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
++      "width": 381,
++      "height": 600,
++      "source_page_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
++      "source_merchant_id": "top-parfuemerie",
++      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++      "source_feed_id": "91379",
++      "source_advertiser_id": "31081",
++      "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++      "source_row_canonical_json_sha256": "8ff904f7304ea4692b3b9af502b791f20deb707b53dc97745dc4e9de1afd75a8",
++      "source_run_id": 40324201008,
++      "source_job_id": 121576555286,
++      "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++      "source_merchant_page_sha256": "c3dcc4065a99aa573e20e97c7d5c58ecf36a2e1725e96cfe968429b11187e0e9",
++      "source_merchant_variant_id": "3205",
++      "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++      "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++      "owner_manifest_image_filename": "04-armani-swy-intensely-edp-100.png"
++    },
++    {
++      "product_id": "SC-PDM-LAYTON-125",
++      "candidate_id": "PHOTO-20261026-812773",
++      "brand": "Parfums de Marly",
++      "name": "Layton",
++      "concentration": "Eau de Parfum",
++      "volume_ml": 125,
++      "merchant": "top-parfuemerie",
++      "merchant_id": "top-parfuemerie",
++      "merchant_product_id": "812773",
++      "gtin": "3700578502322",
++      "gtin_evidence_scope": "Historical exact-variant corroboration; GTIN is absent from the current official feed row.",
++      "offer_id": "37127262708",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
++      "network": "Awin",
++      "data_source": "approved-affiliate-feed",
++      "original_data_source": "awin-product-data-feed-preflight",
++      "last_updated_at": "2026-10-14 11:31:07",
++      "review_status": "approved",
++      "proposed_image_status": "approved_feed_image",
++      "exact_variant_verified": true,
++      "advertiser_id": "31081",
++      "feed_id": "91379",
++      "feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "feed_review_id": "top-parfuemerie-images-20261026",
++      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++      "rights_status": "verified_for_publisher_service",
++      "rights_checked_at": "2026-09-28",
++      "written_permission_date": "2026-10-06",
++      "visual_approval_basis": "explicit_user_visual_approval_2026-10-26",
++      "reviewed_at": "2026-10-26T12:34:35.833071+00:00",
++      "publication_authorized": false,
++      "offer_activation_authorized": false,
++      "required_release_gate": "Separate release GO and a matching authorized Top Parfümerie merchant-bound placement/offer; this patch does not activate an offer.",
++      "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
++      "width": 270,
++      "height": 524,
++      "source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
++      "source_merchant_id": "top-parfuemerie",
++      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++      "source_feed_id": "91379",
++      "source_advertiser_id": "31081",
++      "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++      "source_row_canonical_json_sha256": "16afc401eccf9c7238792cd16e6deaa616d1a7291cbd97b890759a59dccb7c48",
++      "source_run_id": 40324201008,
++      "source_job_id": 121576555286,
++      "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++      "source_merchant_page_sha256": "4bbaf15faa68b399f4bbad87c5131287f7ef3b46d7be52be6c161358cd4bbe6e",
++      "source_merchant_variant_id": "12674",
++      "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++      "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++      "owner_manifest_image_filename": "03-layton-edp-125.png"
++    },
++    {
++      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
++      "candidate_id": "PHOTO-20261026-897029",
++      "brand": "Valentino",
++      "name": "Uomo Born In Roma Intense",
++      "concentration": "Eau de Parfum",
++      "volume_ml": 100,
++      "merchant": "top-parfuemerie",
++      "merchant_id": "top-parfuemerie",
++      "merchant_product_id": "897029",
++      "gtin": "3614273790826",
++      "gtin_evidence_scope": "Historical exact-variant corroboration; GTIN is absent from the current official feed row.",
++      "offer_id": "37127264452",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
++      "network": "Awin",
++      "data_source": "approved-affiliate-feed",
++      "original_data_source": "awin-product-data-feed-preflight",
++      "last_updated_at": "2026-08-12 01:21:45",
++      "review_status": "approved",
++      "proposed_image_status": "approved_feed_image",
++      "exact_variant_verified": true,
++      "advertiser_id": "31081",
++      "feed_id": "91379",
++      "feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "feed_review_id": "top-parfuemerie-images-20261026",
++      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++      "rights_status": "verified_for_publisher_service",
++      "rights_checked_at": "2026-09-28",
++      "written_permission_date": "2026-10-06",
++      "visual_approval_basis": "explicit_user_visual_approval_2026-10-26",
++      "reviewed_at": "2026-10-26T12:34:35.834066+00:00",
++      "publication_authorized": false,
++      "offer_activation_authorized": false,
++      "required_release_gate": "Separate release GO and a matching authorized Top Parfümerie merchant-bound placement/offer; this patch does not activate an offer.",
++      "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
++      "width": 361,
++      "height": 600,
++      "source_page_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
++      "source_merchant_id": "top-parfuemerie",
++      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++      "source_feed_id": "91379",
++      "source_advertiser_id": "31081",
++      "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++      "source_row_canonical_json_sha256": "feb45a0bd1a0a1833490183c0b6a4129ed2264fea11cc7a91653aadd14995d00",
++      "source_run_id": 40324201008,
++      "source_job_id": 121576555286,
++      "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++      "source_merchant_page_sha256": "cae846d259012883d18a817580bd9520fab51a45c0c5db3098a6fd1c94da08e0",
++      "source_merchant_variant_id": "23323",
++      "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++      "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++      "owner_manifest_image_filename": "06-valentino-born-in-roma-intense.png"
++    },
++    {
++      "product_id": "SC-PDM-ALTHAIR-125",
++      "candidate_id": "PHOTO-20261026-904707",
++      "brand": "Parfums de Marly",
++      "name": "Althaïr",
++      "concentration": "Eau de Parfum",
++      "volume_ml": 125,
++      "merchant": "top-parfuemerie",
++      "merchant_id": "top-parfuemerie",
++      "merchant_product_id": "904707",
++      "gtin": "3700578504364",
++      "gtin_evidence_scope": "Historical exact-variant corroboration; GTIN is absent from the current official feed row.",
++      "offer_id": "37127265511",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
++      "network": "Awin",
++      "data_source": "approved-affiliate-feed",
++      "original_data_source": "awin-product-data-feed-preflight",
++      "last_updated_at": "2026-10-22 14:31:10",
++      "review_status": "approved",
++      "proposed_image_status": "approved_feed_image",
++      "exact_variant_verified": true,
++      "advertiser_id": "31081",
++      "feed_id": "91379",
++      "feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "feed_review_id": "top-parfuemerie-images-20261026",
++      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++      "rights_status": "verified_for_publisher_service",
++      "rights_checked_at": "2026-09-28",
++      "written_permission_date": "2026-10-06",
++      "visual_approval_basis": "explicit_user_visual_approval_2026-10-26",
++      "reviewed_at": "2026-10-26T12:34:58.107745+00:00",
++      "publication_authorized": false,
++      "offer_activation_authorized": false,
++      "required_release_gate": "Separate release GO and a matching authorized Top Parfümerie merchant-bound placement/offer; this patch does not activate an offer.",
++      "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
++      "width": 800,
++      "height": 800,
++      "source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
++      "source_merchant_id": "top-parfuemerie",
++      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++      "source_feed_id": "91379",
++      "source_advertiser_id": "31081",
++      "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++      "source_row_canonical_json_sha256": "95218fcb11b4588667da0ae083a3c2c1cd8c2bd31001e7dbe2607e94d847c5b9",
++      "source_run_id": 40324201008,
++      "source_job_id": 121576555286,
++      "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++      "source_merchant_page_sha256": "3e87165e74a0ec831b6116f2ef031f1011afafdb88a2336096b461a2422ce709",
++      "source_merchant_variant_id": "25798",
++      "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++      "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++      "owner_manifest_image_filename": "05-althair-edp-125-HOLD.png"
+     }
+   ],
+   "automatic_approval_allowed": false,
+@@ -115,5 +385,35 @@
+     "scope": "visual identity and use of these three exact current Awin feed images only",
+     "publication_authorized": false,
+     "routing_authorized": false
+-  }
++  },
++  "additional_feed_reviews": [
++    {
++      "review_id": "top-parfuemerie-images-20261026",
++      "feed_provenance": {
++        "checked_at": "2026-10-26T12:39:33+00:00",
++        "source": "awin_product_feed_list",
++        "advertiser_id": "31081",
++        "feed_id": "91379",
++        "membership_status": "active",
++        "joined": true,
++        "last_imported": "2026-10-26 00:04:22",
++        "downloaded": true,
++        "downloaded_bytes": 12194085,
++        "download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
++      },
++      "source_workflow": {
++        "id": 40324201008,
++        "job_id": 121576555286,
++        "head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb"
++      },
++      "evidence_delivery": "Bounded current official feed rows in workflow job logs; no new artifact uploaded.",
++      "rights_checked_at": "2026-09-28",
++      "written_permission_date": "2026-10-06",
++      "written_permission_scope": "Top Parfümerie programme-limited image use; not a blanket licence for merchant-page imagery or advertising other merchants.",
++      "terms_reverified_at": null,
++      "owner_visual_approval_date": "2026-10-26",
++      "publication_authorized": false,
++      "offer_activation_authorized": false
++    }
++  ]
+ }
+diff --git a/examples/retail/data/scentai_products.json b/examples/retail/data/scentai_products.json
+index 91ff093..538961f 100644
+--- a/examples/retail/data/scentai_products.json
++++ b/examples/retail/data/scentai_products.json
+@@ -1189,8 +1189,38 @@
+       "validation": {
+         "catalog_ready": true
+       },
+-      "image_url": "/products/pilot/pdm-layton-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "125ml",
++          "reviewed_at": "2026-10-26T12:34:35.833071+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
++          "width": 270,
++          "height": 524,
++          "source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "16afc401eccf9c7238792cd16e6deaa616d1a7291cbd97b890759a59dccb7c48",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "4bbaf15faa68b399f4bbad87c5131287f7ef3b46d7be52be6c161358cd4bbe6e",
++          "source_merchant_variant_id": "12674",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "03-layton-edp-125.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/pilot/pdm-layton-editorial.webp",
+@@ -1520,8 +1550,38 @@
+       "validation": {
+         "catalog_ready": true
+       },
+-      "image_url": "/products/pilot/pdm-althair-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "125ml",
++          "reviewed_at": "2026-10-26T12:34:58.107745+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
++          "width": 800,
++          "height": 800,
++          "source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "95218fcb11b4588667da0ae083a3c2c1cd8c2bd31001e7dbe2607e94d847c5b9",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "3e87165e74a0ec831b6116f2ef031f1011afafdb88a2336096b461a2422ce709",
++          "source_merchant_variant_id": "25798",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "05-althair-edp-125-HOLD.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/pilot/pdm-althair-editorial.webp",
+@@ -2187,8 +2247,38 @@
+       "validation": {
+         "catalog_ready": true
+       },
+-      "image_url": "/products/armani-swy-intensely-100-cutout-production.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "100ml",
++          "reviewed_at": "2026-10-26T12:34:35.832040+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
++          "width": 381,
++          "height": 600,
++          "source_page_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "8ff904f7304ea4692b3b9af502b791f20deb707b53dc97745dc4e9de1afd75a8",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "c3dcc4065a99aa573e20e97c7d5c58ecf36a2e1725e96cfe968429b11187e0e9",
++          "source_merchant_variant_id": "3205",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "04-armani-swy-intensely-edp-100.png"
++        },
+         {
+           "role": "cutout",
+           "url": "/products/armani-swy-intensely-100-cutout-production.webp",
+@@ -2834,8 +2924,38 @@
+       "validation": {
+         "catalog_ready": true
+       },
+-      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "100ml",
++          "reviewed_at": "2026-10-26T12:34:35.834066+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
++          "width": 361,
++          "height": 600,
++          "source_page_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "feb45a0bd1a0a1833490183c0b6a4129ed2264fea11cc7a91653aadd14995d00",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "cae846d259012883d18a817580bd9520fab51a45c0c5db3098a6fd1c94da08e0",
++          "source_merchant_variant_id": "23323",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "06-valentino-born-in-roma-intense.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+@@ -3357,8 +3477,38 @@
+       "validation": {
+         "catalog_ready": true
+       },
+-      "image_url": "/products/pilot/bois-imperial-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "100ml",
++          "reviewed_at": "2026-10-26T12:34:35.829585+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
++          "width": 286,
++          "height": 600,
++          "source_page_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "93ba71c3b2221026f92e2b150cb514e3535e11cdf221c05a1b143759f24e67f1",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "d90b8cd4b827f9ac0ba73f2ab196b3af173908f21bef49811ace5229e5805c8b",
++          "source_merchant_variant_id": "30659",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "01-bois-imperial-100.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/pilot/bois-imperial-editorial.webp",
+diff --git a/examples/retail/storefront-web/lib/generated/original-photos.json b/examples/retail/storefront-web/lib/generated/original-photos.json
+index 851fe96..37cd893 100644
+--- a/examples/retail/storefront-web/lib/generated/original-photos.json
++++ b/examples/retail/storefront-web/lib/generated/original-photos.json
+@@ -17,6 +17,51 @@
+     "volume_ml": 90,
+     "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928"
+   },
++  {
++    "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
++    "url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
++    "volume_ml": 100,
++    "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++    "width": 286,
++    "height": 600,
++    "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75"
++  },
++  {
++    "product_id": "SC-ARMANI-SWY-INTENSELY-100",
++    "url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
++    "volume_ml": 100,
++    "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++    "width": 381,
++    "height": 600,
++    "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac"
++  },
++  {
++    "product_id": "SC-PDM-LAYTON-125",
++    "url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
++    "volume_ml": 125,
++    "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++    "width": 270,
++    "height": 524,
++    "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd"
++  },
++  {
++    "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
++    "url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
++    "volume_ml": 100,
++    "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++    "width": 361,
++    "height": 600,
++    "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f"
++  },
++  {
++    "product_id": "SC-PDM-ALTHAIR-125",
++    "url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
++    "volume_ml": 125,
++    "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++    "width": 800,
++    "height": 800,
++    "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910"
++  },
+   {
+     "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+     "url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+diff --git a/examples/retail/storefront-web/lib/generated/public-catalog.json b/examples/retail/storefront-web/lib/generated/public-catalog.json
+index 7cf2764..f6e3d6a 100644
+--- a/examples/retail/storefront-web/lib/generated/public-catalog.json
++++ b/examples/retail/storefront-web/lib/generated/public-catalog.json
+@@ -404,7 +404,7 @@
+     {
+       "product_id": "SC-PDM-LAYTON-125",
+       "title": "Parfums de Marly Layton Eau de Parfum 125 ml",
+-      "image_url": "/products/pilot/pdm-layton-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
+       "brand": "Parfums de Marly",
+       "price": 219.26,
+       "currency": "EUR",
+@@ -436,7 +436,17 @@
+         "market_price_eur": "219.26",
+         "price_per_ml_eur": "1.75408",
+         "price_checked_at": "2026-09-09",
+-        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high"
++        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.833071+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
++        "image_variant": "125ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Parfums de Marly Layton is a sweet, spicy, fruity Eau de Parfum fragrance."
+@@ -524,7 +534,7 @@
+     {
+       "product_id": "SC-PDM-ALTHAIR-125",
+       "title": "Parfums de Marly Althaïr Eau de Parfum 125 ml",
+-      "image_url": "/products/pilot/pdm-althair-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
+       "brand": "Parfums de Marly",
+       "price": 239.99,
+       "currency": "EUR",
+@@ -556,7 +566,17 @@
+         "market_price_eur": "239.99",
+         "price_per_ml_eur": "1.91992",
+         "price_checked_at": "2026-09-09",
+-        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high"
++        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:58.107745+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
++        "image_variant": "125ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Parfums de Marly Althaïr is a sweet, gourmand, creamy Eau de Parfum fragrance."
+@@ -766,7 +786,7 @@
+     {
+       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+       "title": "Giorgio Armani Stronger With You Intensely Eau de Parfum 100 ml",
+-      "image_url": "/products/armani-swy-intensely-100-cutout-production.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+       "brand": "Giorgio Armani",
+       "price": 66.04,
+       "currency": "EUR",
+@@ -799,7 +819,17 @@
+         "price_per_ml_eur": "0.6604",
+         "price_checked_at": "2026-09-09",
+         "relationship_links": "",
+-        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp"
++        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.832040+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
++        "image_variant": "100ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Giorgio Armani Stronger With You Intensely is a sweet, gourmand, spicy Eau de Parfum fragrance."
+@@ -1008,7 +1038,7 @@
+     {
+       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+       "title": "Valentino Uomo Born In Roma Intense Eau de Parfum 100 ml",
+-      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
+       "brand": "Valentino",
+       "price": 66,
+       "currency": "EUR",
+@@ -1040,7 +1070,17 @@
+         "market_price_eur": "66.0",
+         "price_per_ml_eur": "0.66",
+         "price_checked_at": "2026-09-10",
+-        "relationship_links": ""
++        "relationship_links": "",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.834066+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
++        "image_variant": "100ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Valentino Uomo Born In Roma Intense is a sweet, synthetic, fresh Eau de Parfum fragrance."
+@@ -1209,7 +1249,7 @@
+     {
+       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+       "title": "Essential Parfums Bois Impérial Eau de Parfum 100 ml",
+-      "image_url": "/products/pilot/bois-imperial-editorial.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
+       "brand": "Essential Parfums",
+       "price": 90.9,
+       "currency": "EUR",
+@@ -1241,7 +1281,17 @@
+         "market_price_eur": "90.9",
+         "price_per_ml_eur": "0.909",
+         "price_checked_at": "2026-09-10",
+-        "relationship_links": ""
++        "relationship_links": "",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.829585+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
++        "image_variant": "100ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
++        "image_source_merchant_id": "top-parfuemerie",
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
+       },
+       "in_stock": true,
+       "short_description": "Essential Parfums Bois Impérial is a fresh, woody, synthetic Eau de Parfum fragrance."
+diff --git a/examples/retail/storefront-web/lib/generated/public-fragrances.json b/examples/retail/storefront-web/lib/generated/public-fragrances.json
+index 3808490..198d24d 100644
+--- a/examples/retail/storefront-web/lib/generated/public-fragrances.json
++++ b/examples/retail/storefront-web/lib/generated/public-fragrances.json
+@@ -880,6 +880,36 @@
+         ]
+       },
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "125ml",
++          "reviewed_at": "2026-10-26T12:34:35.833071+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
++          "width": 270,
++          "height": 524,
++          "source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "16afc401eccf9c7238792cd16e6deaa616d1a7291cbd97b890759a59dccb7c48",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "4bbaf15faa68b399f4bbad87c5131287f7ef3b46d7be52be6c161358cd4bbe6e",
++          "source_merchant_variant_id": "12674",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "03-layton-edp-125.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/pilot/pdm-layton-editorial.webp",
+@@ -1146,6 +1176,36 @@
+         ]
+       },
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "125ml",
++          "reviewed_at": "2026-10-26T12:34:58.107745+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
++          "width": 800,
++          "height": 800,
++          "source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "95218fcb11b4588667da0ae083a3c2c1cd8c2bd31001e7dbe2607e94d847c5b9",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "3e87165e74a0ec831b6116f2ef031f1011afafdb88a2336096b461a2422ce709",
++          "source_merchant_variant_id": "25798",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "05-althair-edp-125-HOLD.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/pilot/pdm-althair-editorial.webp",
+@@ -1682,6 +1742,36 @@
+         ]
+       },
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "100ml",
++          "reviewed_at": "2026-10-26T12:34:35.832040+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
++          "width": 381,
++          "height": 600,
++          "source_page_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "8ff904f7304ea4692b3b9af502b791f20deb707b53dc97745dc4e9de1afd75a8",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "c3dcc4065a99aa573e20e97c7d5c58ecf36a2e1725e96cfe968429b11187e0e9",
++          "source_merchant_variant_id": "3205",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "04-armani-swy-intensely-edp-100.png"
++        },
+         {
+           "role": "cutout",
+           "url": "/products/armani-swy-intensely-100-cutout-production.webp",
+@@ -2191,6 +2281,36 @@
+         ]
+       },
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "100ml",
++          "reviewed_at": "2026-10-26T12:34:35.834066+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
++          "width": 361,
++          "height": 600,
++          "source_page_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "feb45a0bd1a0a1833490183c0b6a4129ed2264fea11cc7a91653aadd14995d00",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "cae846d259012883d18a817580bd9520fab51a45c0c5db3098a6fd1c94da08e0",
++          "source_merchant_variant_id": "23323",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "06-valentino-born-in-roma-intense.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+@@ -2597,6 +2717,36 @@
+         ]
+       },
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "100ml",
++          "reviewed_at": "2026-10-26T12:34:35.829585+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
++          "width": 286,
++          "height": 600,
++          "source_page_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "93ba71c3b2221026f92e2b150cb514e3535e11cdf221c05a1b143759f24e67f1",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "d90b8cd4b827f9ac0ba73f2ab196b3af173908f21bef49811ace5229e5805c8b",
++          "source_merchant_variant_id": "30659",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "01-bois-imperial-100.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/pilot/bois-imperial-editorial.webp",
+diff --git a/examples/retail/storefront-web/scripts/generate-public-fragrance-data.mjs b/examples/retail/storefront-web/scripts/generate-public-fragrance-data.mjs
+index a62e530..425237d 100644
+--- a/examples/retail/storefront-web/scripts/generate-public-fragrance-data.mjs
++++ b/examples/retail/storefront-web/scripts/generate-public-fragrance-data.mjs
+@@ -26,5 +26,6 @@ writeFileSync(new URL('public-fragrances.json',dir), JSON.stringify({products:re
+ console.log('Public fragrance projection: third-party community metrics excluded.');
+ const approved = [...read('dufynd_approved_feed_image_candidates.json').candidates,...read('dufynd_rights_cleared_image_candidates.json').candidates]
+   .filter(c=>c.review_status==='approved' && c.exact_variant_verified===true && c.rights_status==='verified_for_publisher_service')
+-  .map(c=>({product_id:c.product_id,url:c.image_url,volume_ml:c.volume_ml,rights_basis_id:c.rights_basis_id}));
++  .map(c=>({product_id:c.product_id,url:c.image_url,volume_ml:c.volume_ml,rights_basis_id:c.rights_basis_id,
++    ...Object.fromEntries(['width','height','image_sha256'].filter(key=>c[key]!==undefined).map(key=>[key,c[key]]))}));
+ writeFileSync(new URL('original-photos.json',dir),JSON.stringify(approved,null,2)+'\n');
+diff --git a/examples/retail/storefront-web/scripts/photo-integration-qa.mjs b/examples/retail/storefront-web/scripts/photo-integration-qa.mjs
+index b26a226..24d4fb8 100644
+--- a/examples/retail/storefront-web/scripts/photo-integration-qa.mjs
++++ b/examples/retail/storefront-web/scripts/photo-integration-qa.mjs
+@@ -6,7 +6,7 @@ export async function photoIntegrationQa(browser,{base,out}) {
+   const {items,holds}=JSON.parse(readFileSync(new URL('../../data/dufynd_photo_integration_review.json',import.meta.url),'utf8'));
+   const originals=JSON.parse(readFileSync(new URL('../lib/generated/original-photos.json',import.meta.url),'utf8'));
+   assert.equal(items.length,6);
+-  assert.equal(originals.length,4,'Public registry unchanged');
++  assert.equal(originals.length,9,'Explicitly prepared public image set; private review remains separate');
+   assert.equal(holds.length,0,'All six exact source photographs visually accepted on 26 October');
+   mkdirSync(`${out}/photo-integration`,{recursive:true});
+   const report=[];
+diff --git a/examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs b/examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs
+index 23168fc..1319ceb 100644
+--- a/examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs
++++ b/examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs
+@@ -15,6 +15,28 @@ assert.deepEqual(c.attributes,{volume_ml:'100'});
+ const source=JSON.parse(readFileSync(new URL('../lib/generated/public-fragrances.json',import.meta.url),'utf8'));
+ assert.ok(source.products.every(p=>p.community.rating_10===null&&p.community.rating_count===0));
+ const originals=JSON.parse(readFileSync(new URL('../lib/generated/original-photos.json',import.meta.url),'utf8'));
+-assert.equal(originals.length,4);
++const expectedOriginalIds = [
++  "SC-PDM-DELINA-EDP-75",
++  "SC-YSL-BLACK-OPIUM-EDP-90",
++  "SC-YSL-LIBRE-EDP-90",
++  "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
++  "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
++  "SC-ARMANI-SWY-INTENSELY-100",
++  "SC-PDM-LAYTON-125",
++  "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
++  "SC-PDM-ALTHAIR-125"
++];
++assert.deepEqual(originals.map(p=>p.product_id).sort(), expectedOriginalIds.sort());
++const sourceById=new Map(source.products.map(p=>[p.product_id,p]));
++for (const image of originals.filter(p=>p.width !== undefined)) {
++  assert.ok(Number.isInteger(image.width)&&image.width>0&&Number.isInteger(image.height)&&image.height>0);
++  assert.match(image.image_sha256,/^[a-f0-9]{64}$/);
++  const visual=sourceById.get(image.product_id)?.visuals.find(v=>v.role==='primary'&&v.url===image.url);
++  assert.ok(visual&&visual.fidelity_status==='verified'&&visual.source_merchant_id==='top-parfuemerie');
++  assert.equal(visual.image_sha256,image.image_sha256);
++  assert.equal(visual.width,image.width);assert.equal(visual.height,image.height);
++  assert.ok(visual.source_page_url.startsWith('https://www.topparfuemerie.de/'));
++  assert.equal(visual.rights_checked_at,'2026-09-28');
++}
+ assert.ok(originals.every(a=>a.url.startsWith('https://')&&a.rights_basis_id&&a.volume_ml));
+-console.log('Public boundary: third-party metrics stripped, private sources intact, four exact approved photographs.');
++console.log('Public boundary: third-party metrics stripped, private sources intact, 9 exact approved photographs; source dimensions and Top merchant binding verified.');
+diff --git a/examples/retail/storefront-web/scripts/verify-public-export.mjs b/examples/retail/storefront-web/scripts/verify-public-export.mjs
+index 08b6f0f..f2e7518 100644
+--- a/examples/retail/storefront-web/scripts/verify-public-export.mjs
++++ b/examples/retail/storefront-web/scripts/verify-public-export.mjs
+@@ -4,12 +4,20 @@ import {fileURLToPath} from 'node:url';
+ import {rendererDigest} from './release-gate.mjs';
+ const root=fileURLToPath(new URL('../out',import.meta.url));
+ const reviewPhotos=JSON.parse(readFileSync(new URL('../../data/dufynd_photo_integration_review.json',import.meta.url),'utf8')).items;
++const publicPhotos=JSON.parse(readFileSync(new URL('../lib/generated/original-photos.json',import.meta.url),'utf8'));
++// A reviewed source can later receive an exact public approval. Its private
++// review route/file remains forbidden; an approval for another hash or variant
++// cannot exempt the original private image from this export boundary.
++const privateOnlyPhotos=reviewPhotos.filter(p=>!publicPhotos.some(a=>
++ a.product_id===p.product_id && a.url===p.image_url && a.image_sha256===p.image_sha256 &&
++ a.volume_ml===p.volume_ml && a.rights_basis_id===p.rights_basis_id
++));
+ const built=JSON.parse(readFileSync(new URL('../lib/generated/review-build-fingerprint.json',import.meta.url),'utf8'));
+ if(built.renderer_sha256!==rendererDigest())throw new Error('Render sources changed during build');
+ function walk(dir){return readdirSync(dir,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(path.join(dir,d.name)):[path.join(dir,d.name)]);}
+ for(const file of walk(root).filter(f=>/\.(js|html|txt)$/.test(f))) {
+  const text=readFileSync(file,'utf8').replaceAll('\\"','"');
+- if(process.env.DUFYND_CATALOG_REVIEW!=='1' && reviewPhotos.some(p=>text.includes(p.image_sha256)||text.includes(p.image_url))) throw Error(`Private merchant photo leaked into normal export: ${path.relative(root,file)}`);
++ if(process.env.DUFYND_CATALOG_REVIEW!=='1' && privateOnlyPhotos.some(p=>text.includes(p.image_sha256)||text.includes(p.image_url))) throw Error(`Private merchant photo leaked into normal export: ${path.relative(root,file)}`);
+  if(/"source"\s*:\s*"Parfumo"\s*,\s*"rating_10"\s*:\s*\d/.test(text)) throw new Error(`Blocked community data in public export: ${path.relative(root,file)}`);
+ }
+ if(process.env.DUFYND_CATALOG_REVIEW!=='1' && existsSync(path.join(root,'review'))) throw new Error('Review routes leaked into normal export');
+diff --git a/examples/retail/storefront-web/components/ImageAttribution.tsx b/examples/retail/storefront-web/components/ImageAttribution.tsx
+index 7a05637..be4f9bd 100644
+--- a/examples/retail/storefront-web/components/ImageAttribution.tsx
++++ b/examples/retail/storefront-web/components/ImageAttribution.tsx
+@@ -11,6 +11,16 @@ export default function ImageAttribution({
+   const licenseName = String(visual?.license_name || "").trim();
+   const licenseUrl = String(visual?.license_url || "").trim();
+ 
++  const merchantSource = visual?.provenance === "merchant_feed" &&
++    visual.source_merchant_id === "top-parfuemerie" &&
++    visual.source_page_url?.startsWith("https://www.topparfuemerie.de/");
++  if (merchantSource) {
++    if (compact) return null;
++    return (
++      <p data-original-photo-source="top-parfuemerie" className="text-[10px] leading-4 text-(--ink-soft)">Bild: <a href={visual.source_page_url!} target="_blank" rel="nofollow noopener noreferrer" className="font-medium text-(--accent-ink) hover:underline">top Parfümerie · Originalaufnahme</a></p>
++    );
++  }
++
+   if (!attribution || !licenseName) return null;
+ 
+   if (compact) {
+diff --git a/examples/retail/storefront-web/lib/fragranceCatalog.ts b/examples/retail/storefront-web/lib/fragranceCatalog.ts
+index 5d50e74..4fffdc3 100644
+--- a/examples/retail/storefront-web/lib/fragranceCatalog.ts
++++ b/examples/retail/storefront-web/lib/fragranceCatalog.ts
+@@ -55,6 +55,8 @@ export interface FragranceVisualAsset {
+   license_name?: string | null;
+   license_url?: string | null;
+   attribution_text?: string | null;
++  source_page_url?: string | null;
++  source_merchant_id?: string | null;
+   share_alike_required?: boolean | null;
+ }
+ 

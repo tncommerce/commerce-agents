@@ -2,10 +2,17 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import type { FragranceVisualWorld } from "@/lib/fragranceCatalog";
+import approvedOriginals from "@/lib/generated/original-photos.json";
 import styles from "./FragranceVisual.module.css";
 
 type VisualVariant = "card" | "hero";
 type VisualMode = "auto" | "editorial" | "cutout";
+
+type ApprovedOriginalPhoto = {
+  url: string;
+  width?: number;
+  height?: number;
+};
 
 type StageStyle = CSSProperties & {
   "--dufynd-rx": string;
@@ -114,6 +121,14 @@ export default function FragranceVisual({
   sourceSize?: { width: number; height: number };
 }) {
   const resolvedImageUrl = cutoutUrl || imageUrl;
+  const approvedOriginal = (approvedOriginals as ApprovedOriginalPhoto[]).find(
+    (photo) => photo.url === resolvedImageUrl &&
+      Number.isInteger(photo.width) && Number.isInteger(photo.height) &&
+      Number(photo.width) > 0 && Number(photo.height) > 0,
+  );
+  const originalSourceSize = sourceSize || (approvedOriginal ? {
+    width: approvedOriginal.width!, height: approvedOriginal.height!,
+  } : undefined);
   const whiteMatte = WHITE_MATTE_PHOTOGRAPHS.has(resolvedImageUrl || "");
   const catalogClass = variant === "card" ? styles.catalog : "";
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null);
@@ -206,7 +221,7 @@ export default function FragranceVisual({
     );
   }
 
-  if (resolvedMode === "editorial" && imageUrl) {
+  if (resolvedMode === "editorial" && imageUrl && !originalSourceSize) {
     return (
       <div
         data-variant={variant}
@@ -250,12 +265,17 @@ export default function FragranceVisual({
     );
   }
 
-  if (sourceSize && resolvedImageUrl) {
-    return <div data-dufynd-original-review-photo data-variant={variant}
+  if (originalSourceSize && resolvedImageUrl) {
+    return <div data-dufynd-original-review-photo={sourceSize ? true : undefined}
+      data-dufynd-original-photo={!sourceSize ? true : undefined} data-variant={variant}
       className={`${styles.sourcePhoto} ${className}`}>
-      {/* Preserve the entire original bitmap. At 2x, 260 CSS px fits every approved source. */}
+      {/* Preserve the entire original bitmap and its resolution at 2x display density. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img ref={primaryPhotoRef} src={resolvedImageUrl} width={sourceSize.width} height={sourceSize.height}
+      <img ref={primaryPhotoRef} src={resolvedImageUrl} width={originalSourceSize.width} height={originalSourceSize.height}
+        style={{
+          height: Math.min(variant === "card" ? 180 : 260, originalSourceSize.height / 2),
+          maxWidth: `min(86%, ${originalSourceSize.width / 2}px)`,
+        }}
         alt={alt} loading={priority ? "eager" : "lazy"} decoding="async"
         onLoad={() => setLoadedImageUrl(resolvedImageUrl || null)}
         onError={() => setFailedImageUrl(resolvedImageUrl)} />

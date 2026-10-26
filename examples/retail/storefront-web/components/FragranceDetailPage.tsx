@@ -12,6 +12,7 @@ import FragranceNoteSculpture from "@/components/FragranceNoteSculpture";
 import FragranceNotesOverview from "@/components/FragranceNotesOverview";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
+import PrivatePhotoOffer from "@/components/PrivatePhotoOffer";
 import LibreRefillGuide, {
   LIBRE_REFILL_SEO_DESCRIPTION,
   LIBRE_REFILL_SEO_TITLE,
@@ -355,7 +356,7 @@ export default async function FragrancePage({
         dangerouslySetInnerHTML={{ __html: productJson }}
       />
       {review ? <aside data-photo-review-boundary className="border-b border-(--line) bg-[#ede9df] px-5 py-3 text-center text-[12px] text-(--ink)">
-        <strong>Designprüfung · top Parfümerie</strong> · nicht veröffentlicht · keine Kaufangebote
+        <strong>Designprüfung · top Parfümerie</strong> · nicht veröffentlicht · deaktivierte Kaufbuttons
         <a className="ml-3 underline" href="/review/photos">Zur Bildauswahl</a>
       </aside> : <AcquisitionAnalytics source="fragrance_detail" />}
       <header className="border-b border-(--line) bg-(--card)">
@@ -670,11 +671,13 @@ export default async function FragrancePage({
               </> : null}
 
               <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
-                {review ? "Originalaufnahme aus dem Sortiment von top Parfümerie. Kaufangebote bleiben bis zur gesonderten Tracking- und Release-Freigabe deaktiviert." : "DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler."}
+                {review ? "Originalaufnahme aus dem Sortiment von top Parfümerie. Kaufbuttons bleiben bis zur gesonderten Veröffentlichung und Händleraktivierung deaktiviert." : "DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler."}
               </p>
             </div>
           </div>
         </section>
+
+        {review ? <PrivatePhotoOffer productId={fragrance.product_id} /> : null}
 
         <nav
           aria-label="Schnellnavigation auf der Duftseite"

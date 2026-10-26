@@ -1,0 +1,269 @@
+diff --git a/examples/retail/data/catalog.json b/examples/retail/data/catalog.json
+index 1b232c1..ce36873 100644
+--- a/examples/retail/data/catalog.json
++++ b/examples/retail/data/catalog.json
+@@ -3802,7 +3802,7 @@
+     {
+       "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+       "title": "Rabanne 1 Million Eau de Toilette 100 ml",
+-      "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
+       "brand": "Rabanne",
+       "price": 67.95,
+       "currency": "EUR",
+@@ -3840,8 +3840,17 @@
+         "gtin": "3349666007921",
+         "image_license_name": "",
+         "image_license_url": "",
+-        "image_attribution_text": "",
+-        "image_share_alike_required": ""
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++        "image_share_alike_required": "",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.830868+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
++        "image_variant": "100ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
++        "image_source_merchant_id": "top-parfuemerie"
+       },
+       "in_stock": true,
+       "short_description": "Rabanne 1 Million ist ein süß-würziger, orientalisch geprägter Duft."
+diff --git a/examples/retail/data/dufynd_approved_feed_image_candidates.json b/examples/retail/data/dufynd_approved_feed_image_candidates.json
+index 5b03c34..f50d1d0 100644
+--- a/examples/retail/data/dufynd_approved_feed_image_candidates.json
++++ b/examples/retail/data/dufynd_approved_feed_image_candidates.json
+@@ -374,6 +374,60 @@
+       "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
+       "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
+       "owner_manifest_image_filename": "05-althair-edp-125-HOLD.png"
++    },
++    {
++      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
++      "candidate_id": "PHOTO-20261026-707368",
++      "brand": "Rabanne",
++      "name": "1 Million",
++      "concentration": "Eau de Toilette",
++      "volume_ml": 100,
++      "merchant": "top-parfuemerie",
++      "merchant_id": "top-parfuemerie",
++      "merchant_product_id": "707368",
++      "gtin": "3349666007921",
++      "gtin_evidence_scope": "Historical exact-variant corroboration; GTIN is absent from the current official feed row.",
++      "offer_id": "37127263142",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
++      "network": "Awin",
++      "data_source": "approved-affiliate-feed",
++      "original_data_source": "awin-product-data-feed-preflight",
++      "last_updated_at": "2026-09-24 08:31:07",
++      "review_status": "approved",
++      "proposed_image_status": "approved_feed_image",
++      "exact_variant_verified": true,
++      "advertiser_id": "31081",
++      "feed_id": "91379",
++      "feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "feed_review_id": "top-parfuemerie-images-20261026",
++      "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++      "rights_status": "verified_for_publisher_service",
++      "rights_checked_at": "2026-09-28",
++      "written_permission_date": "2026-10-06",
++      "visual_approval_basis": "explicit_user_visual_approval_2026-10-26",
++      "reviewed_at": "2026-10-26T12:34:35.830868+00:00",
++      "publication_authorized": false,
++      "offer_activation_authorized": false,
++      "required_release_gate": "Separate release GO and a matching authorized Top Parfümerie merchant-bound placement/offer; this patch does not activate an offer.",
++      "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
++      "width": 229,
++      "height": 600,
++      "source_page_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
++      "source_merchant_id": "top-parfuemerie",
++      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++      "source_feed_id": "91379",
++      "source_advertiser_id": "31081",
++      "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++      "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++      "source_row_canonical_json_sha256": "04b392ad1688997f454a246d47d1d42604326dd62d96c023d0f385cc4b15f56f",
++      "source_run_id": 40324201008,
++      "source_job_id": 121576555286,
++      "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++      "source_merchant_page_sha256": "0eec6b2e96831c76d29ddfccacf4ed7c3eefc1e298f7009a1090309320b5254d",
++      "source_merchant_variant_id": "15571",
++      "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++      "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++      "owner_manifest_image_filename": "02-rabanne-1-million-edt-100.png"
+     }
+   ],
+   "automatic_approval_allowed": false,
+diff --git a/examples/retail/data/scentai_products.json b/examples/retail/data/scentai_products.json
+index 538961f..fb4a4ed 100644
+--- a/examples/retail/data/scentai_products.json
++++ b/examples/retail/data/scentai_products.json
+@@ -3841,8 +3841,38 @@
+       "identifiers": {
+         "gtin": "3349666007921"
+       },
+-      "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "100ml",
++          "reviewed_at": "2026-10-26T12:34:35.830868+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
++          "width": 229,
++          "height": 600,
++          "source_page_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "04b392ad1688997f454a246d47d1d42604326dd62d96c023d0f385cc4b15f56f",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "0eec6b2e96831c76d29ddfccacf4ed7c3eefc1e298f7009a1090309320b5254d",
++          "source_merchant_variant_id": "15571",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "02-rabanne-1-million-edt-100.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+diff --git a/examples/retail/storefront-web/lib/generated/original-photos.json b/examples/retail/storefront-web/lib/generated/original-photos.json
+index 37cd893..ffe0fe6 100644
+--- a/examples/retail/storefront-web/lib/generated/original-photos.json
++++ b/examples/retail/storefront-web/lib/generated/original-photos.json
+@@ -62,6 +62,15 @@
+     "height": 800,
+     "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910"
+   },
++  {
++    "product_id": "SC-RABANNE-1-MILLION-EDT-100",
++    "url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
++    "volume_ml": 100,
++    "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++    "width": 229,
++    "height": 600,
++    "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa"
++  },
+   {
+     "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+     "url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+diff --git a/examples/retail/storefront-web/lib/generated/public-catalog.json b/examples/retail/storefront-web/lib/generated/public-catalog.json
+index f6e3d6a..babb169 100644
+--- a/examples/retail/storefront-web/lib/generated/public-catalog.json
++++ b/examples/retail/storefront-web/lib/generated/public-catalog.json
+@@ -3422,7 +3422,7 @@
+     {
+       "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+       "title": "Rabanne 1 Million Eau de Toilette 100 ml",
+-      "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
++      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
+       "brand": "Rabanne",
+       "price": 67.95,
+       "currency": "EUR",
+@@ -3454,8 +3454,17 @@
+         "gtin": "3349666007921",
+         "image_license_name": "",
+         "image_license_url": "",
+-        "image_attribution_text": "",
+-        "image_share_alike_required": ""
++        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++        "image_share_alike_required": "",
++        "image_product_truth_provenance": "merchant_feed",
++        "image_reviewed_at": "2026-10-26T12:34:35.830868+00:00",
++        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++        "image_rights_checked_at": "2026-09-28",
++        "image_exact_variant_verified": "true",
++        "image_source_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
++        "image_variant": "100ml",
++        "image_source_page_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
++        "image_source_merchant_id": "top-parfuemerie"
+       },
+       "in_stock": true,
+       "short_description": "Rabanne 1 Million ist ein süß-würziger, orientalisch geprägter Duft."
+diff --git a/examples/retail/storefront-web/lib/generated/public-fragrances.json b/examples/retail/storefront-web/lib/generated/public-fragrances.json
+index 198d24d..d772dbf 100644
+--- a/examples/retail/storefront-web/lib/generated/public-fragrances.json
++++ b/examples/retail/storefront-web/lib/generated/public-fragrances.json
+@@ -3046,6 +3046,36 @@
+         ]
+       },
+       "visuals": [
++        {
++          "role": "primary",
++          "url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
++          "provenance": "merchant_feed",
++          "fidelity_status": "verified",
++          "variant": "100ml",
++          "reviewed_at": "2026-10-26T12:34:35.830868+00:00",
++          "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
++          "rights_checked_at": "2026-09-28",
++          "exact_variant_verified": true,
++          "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
++          "width": 229,
++          "height": 600,
++          "source_page_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
++          "source_merchant_id": "top-parfuemerie",
++          "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
++          "source_feed_id": "91379",
++          "source_advertiser_id": "31081",
++          "source_feed_checked_at": "2026-10-26T12:39:33+00:00",
++          "source_feed_download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d",
++          "source_row_canonical_json_sha256": "04b392ad1688997f454a246d47d1d42604326dd62d96c023d0f385cc4b15f56f",
++          "source_run_id": 40324201008,
++          "source_job_id": 121576555286,
++          "source_run_head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb",
++          "source_merchant_page_sha256": "0eec6b2e96831c76d29ddfccacf4ed7c3eefc1e298f7009a1090309320b5254d",
++          "source_merchant_variant_id": "15571",
++          "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
++          "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
++          "owner_manifest_image_filename": "02-rabanne-1-million-edt-100.png"
++        },
+         {
+           "role": "editorial",
+           "url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+diff --git a/examples/retail/storefront-web/scripts/photo-integration-qa.mjs b/examples/retail/storefront-web/scripts/photo-integration-qa.mjs
+index 24d4fb8..a28e161 100644
+--- a/examples/retail/storefront-web/scripts/photo-integration-qa.mjs
++++ b/examples/retail/storefront-web/scripts/photo-integration-qa.mjs
+@@ -6,7 +6,7 @@ export async function photoIntegrationQa(browser,{base,out}) {
+   const {items,holds}=JSON.parse(readFileSync(new URL('../../data/dufynd_photo_integration_review.json',import.meta.url),'utf8'));
+   const originals=JSON.parse(readFileSync(new URL('../lib/generated/original-photos.json',import.meta.url),'utf8'));
+   assert.equal(items.length,6);
+-  assert.equal(originals.length,9,'Explicitly prepared public image set; private review remains separate');
++  assert.equal(originals.length,10,'Explicitly prepared public image set; private review remains separate');
+   assert.equal(holds.length,0,'All six exact source photographs visually accepted on 26 October');
+   mkdirSync(`${out}/photo-integration`,{recursive:true});
+   const report=[];
+diff --git a/examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs b/examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs
+index 1319ceb..01bbcca 100644
+--- a/examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs
++++ b/examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs
+@@ -24,7 +24,8 @@ const expectedOriginalIds = [
+   "SC-ARMANI-SWY-INTENSELY-100",
+   "SC-PDM-LAYTON-125",
+   "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+-  "SC-PDM-ALTHAIR-125"
++  "SC-PDM-ALTHAIR-125",
++  "SC-RABANNE-1-MILLION-EDT-100"
+ ];
+ assert.deepEqual(originals.map(p=>p.product_id).sort(), expectedOriginalIds.sort());
+ const sourceById=new Map(source.products.map(p=>[p.product_id,p]));
+@@ -39,4 +40,4 @@ for (const image of originals.filter(p=>p.width !== undefined)) {
+   assert.equal(visual.rights_checked_at,'2026-09-28');
+ }
+ assert.ok(originals.every(a=>a.url.startsWith('https://')&&a.rights_basis_id&&a.volume_ml));
+-console.log('Public boundary: third-party metrics stripped, private sources intact, 9 exact approved photographs; source dimensions and Top merchant binding verified.');
++console.log('Public boundary: third-party metrics stripped, private sources intact, 10 exact approved photographs; source dimensions and Top merchant binding verified.');
