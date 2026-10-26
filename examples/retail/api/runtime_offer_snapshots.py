@@ -146,6 +146,45 @@ def approved_affiliate_route(offer: dict, partners: dict) -> bool:
                 "perfumetrader": "11672",
                 "top-parfuemerie": "31081",
             }.get(merchant)
+            if route.path == "/pclick.php":
+                # Original Awin feed links carry an Awin product ID instead of
+                # an embedded destination. Require a released, exact feed-row
+                # binding; never manufacture or rewrite a network URL.
+                bindings = partner.get("verified_feed_routes")
+                if not (
+                    merchant == "top-parfuemerie"
+                    and status == "active_product_deeplink_only"
+                    and isinstance(offer.get("merchant_product_id"), str)
+                    and re.fullmatch(r"[0-9]{6}", offer["merchant_product_id"]) is not None
+                    and affiliate_host in {"awin1.com", "www.awin1.com"}
+                    and set(params) == {"p", "a", "m"}
+                    and params.get("a") == ["3099222"]
+                    and params.get("m") == ["31081"]
+                    and isinstance(bindings, list)
+                    and all(isinstance(binding, dict) for binding in bindings)
+                ):
+                    return False
+                matches = [
+                    binding
+                    for binding in bindings
+                    if binding.get("product_id") == offer.get("product_id")
+                    and binding.get("merchant_product_id") == offer.get("merchant_product_id")
+                ]
+                if len(matches) != 1:
+                    return False
+                binding = matches[0]
+                aw_product_id = binding.get("aw_product_id")
+                return (
+                    isinstance(aw_product_id, str)
+                    and re.fullmatch(r"[0-9]{1,20}", aw_product_id) is not None
+                    and params.get("p") == [aw_product_id]
+                    and binding.get("affiliate_url") == link
+                    and binding.get("product_url") == destination
+                    and binding.get("feed_id") == "91379"
+                    and binding.get("advertiser_id") == "31081"
+                    and re.fullmatch(r"[0-9a-f]{64}", str(binding.get("source_feed_sha256", "")))
+                    is not None
+                )
             return (
                 advertiser is not None
                 and affiliate_host in {"awin1.com", "www.awin1.com"}

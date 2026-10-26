@@ -1,0 +1,14 @@
+{
+  "README.md": "48ef8ef9a60c50cf5df7159ff09ab739068bba8d021ff5eb72fc74e36569b77b",
+  "batch-input.json": "95cd7d1377431e5c64c74e0806819c6337ba1b2a5c722774411a426c20b5b7cf",
+  "current-feed-evidence.json": "8ceeb7b87549eca1efd847cc5fae5cb0e87c63cbfa0352516f369b5463f698a2",
+  "customer-preview.json": "1179a9d856512f0a62681fdb89403aac476b2d3f2e19cf51089f994329113a64",
+  "dry-run.json": "0d67296961825e30172484460aa42f7a106b5c97d6fb76660f5e00217f7c9cd1",
+  "merchant-browser-observations.json": "6cf1bc2a1f8b938db2c92006047753350b19e93ee258f74e965e3188c27d0402",
+  "prepare-reviewed-batch.py": "2ca72d191d3395cf100b1605cc7a01ef70736a2d29f384151390019112121ed2",
+  "proposed-mappings.json": "d39157cf3a2e628c3d5605107462b59c3c7dbb0d01a188aff5198910787c1508",
+  "proposed-offers.json": "077232c21e0aef30e98d6a98f9469d3e032a5a160df3bd78ebb3759e5ff01867",
+  "proposed-partner.json": "013d7c51f39dba2a04ddddbd3fde8b3b5b4d9b81a3079f94152cefc47d5d9e55",
+  "shipping-browser-observation.json": "0a819632737b7f2b4d4e289a1d3c0907d3b81fcfbc2e6458723bfdf1898ecc39",
+  "validation.json": "17c4b34cc5f1290d0c734beddc0d6dd208cf75a8f2d21ee3576b616959af0268"
+}

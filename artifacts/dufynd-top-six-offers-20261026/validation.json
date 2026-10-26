@@ -1,0 +1,12 @@
+{
+  "checked_at": "2026-10-26T12:52:42.240195+00:00",
+  "scope": "13 targeted offline candidate and pclick regression tests; no external clickouts or analytics; no full CI",
+  "command": "python -m pytest -q tests/test_dufynd_top_six_offer_candidates.py",
+  "passed": 13,
+  "failed": 0,
+  "observed_summary": "13 passed in 0.21s",
+  "actual_browser_qa": "merchant-browser-observations.json",
+  "actual_shipping_browser_qa": "shipping-browser-observation.json",
+  "original_official_feed_run": 40324201008,
+  "canonical_live_configuration_changed": false
+}
