@@ -2,6 +2,13 @@
 
 Production base: `7b793cf7ce1223967e66d768fcb7930ecdfc0e40`.
 
+Current release handoff: [guarded migration and rollback packet](../release/dufynd-jarvis-source-dedupe-20261026/README.md).
+The original migration is unchanged. Native PostgreSQL verification subsequently
+passed in [CI run 40303294857](https://github.com/tncommerce/commerce-agents/actions/runs/40303294857)
+(233 PostgreSQL tests, including the 31 assertions below). The continuation adds
+only the release packet and 28 offline release/rollback assertions; it does not
+repeat the scheduler implementation or the successful native CI.
+
 The live business planner uses an hourly `bizplan:social-truth:YYYYMMDDHH24`
 identity while the existing runtime deliberately reports
 `publication_verified=false`. Read-only inspection on 26 October 2026 found
@@ -69,12 +76,12 @@ test executes the exact same SQL suite against the migrated native fixture.
 ## Release boundary
 
 No production SQL, migration, cron, queue rewrite, publication, merchant
-activation, deployment or merge was performed. GitHub Actions artifact/storage
-costs remain unverified; the development commit uses `[skip ci]`, and full CI
-is deliberately not claimed. Applying this exact migration requires separate
-Owner approval after native PostgreSQL verification in a proven free environment.
-Production remains unchanged until that action. Rollback restores only
-`plan_dufynd_autonomous_business_work_v1()` from migration
-`20261006212500_jarvis_content_reuse_worker_v1.sql`; do not replay that entire old
-migration because it includes operational writes and cron setup. The private
-helper/checkpoint can remain inert during rollback; historical tasks are retained.
+activation, deployment or merge was performed. The successful shared CI reports
+zero billable runner milliseconds. Applying the migration still requires separate
+Owner approval. Production remains unchanged until that action. The release
+packet captures the exact live planner definition and ACL for rollback; do not
+replay an entire historical migration with operational writes or cron setup.
+The private helper/checkpoint remain inert during rollback; historical tasks are
+retained. Existing remote/local migration-version differences rule out a generic
+repository-wide `db push`; the packet specifies one tracked Supabase
+`apply_migration` call and explicit readback of its actual generated version.
