@@ -157,7 +157,8 @@
       "source_merchant_variant_id": "30659",
       "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
       "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
-      "owner_manifest_image_filename": "01-bois-imperial-100.png"
+      "owner_manifest_image_filename": "01-bois-imperial-100.png",
+      "application_scope": "existing_public_profile"
     },
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
@@ -211,7 +212,8 @@
       "source_merchant_variant_id": "3205",
       "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
       "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
-      "owner_manifest_image_filename": "04-armani-swy-intensely-edp-100.png"
+      "owner_manifest_image_filename": "04-armani-swy-intensely-edp-100.png",
+      "application_scope": "existing_public_profile"
     },
     {
       "product_id": "SC-PDM-LAYTON-125",
@@ -265,7 +267,8 @@
       "source_merchant_variant_id": "12674",
       "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
       "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
-      "owner_manifest_image_filename": "03-layton-edp-125.png"
+      "owner_manifest_image_filename": "03-layton-edp-125.png",
+      "application_scope": "existing_public_profile"
     },
     {
       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
@@ -319,7 +322,8 @@
       "source_merchant_variant_id": "23323",
       "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
       "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
-      "owner_manifest_image_filename": "06-valentino-born-in-roma-intense.png"
+      "owner_manifest_image_filename": "06-valentino-born-in-roma-intense.png",
+      "application_scope": "existing_public_profile"
     },
     {
       "product_id": "SC-PDM-ALTHAIR-125",
@@ -373,7 +377,8 @@
       "source_merchant_variant_id": "25798",
       "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
       "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
-      "owner_manifest_image_filename": "05-althair-edp-125-HOLD.png"
+      "owner_manifest_image_filename": "05-althair-edp-125-HOLD.png",
+      "application_scope": "existing_public_profile"
     },
     {
       "product_id": "SC-RABANNE-1-MILLION-EDT-100",
@@ -427,7 +432,8 @@
       "source_merchant_variant_id": "15571",
       "owner_manifest_filename": "DUFYND_Originalbild_Quellenmanifest_20261026.json",
       "owner_manifest_sha256": "1289fb799a55b661ad099a4faea346b6922834e1dbd8b052708d8536548fdef2",
-      "owner_manifest_image_filename": "02-rabanne-1-million-edt-100.png"
+      "owner_manifest_image_filename": "02-rabanne-1-million-edt-100.png",
+      "application_scope": "existing_public_profile"
     }
   ],
   "automatic_approval_allowed": false,
