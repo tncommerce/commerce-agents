@@ -4,9 +4,11 @@ import { useRef } from "react";
 import { trackAnalyticsEvent } from "@/lib/analytics";
 import AcquisitionInternalLink from "./AcquisitionInternalLink";
 import FragranceVisual from "./FragranceVisual";
+import ImageAttribution from "./ImageAttribution";
 import {
   LIVE_FRAGRANCES,
   isVerifiedProductTruthVisual,
+  originalPhotoFor,
 } from "@/lib/fragranceCatalog";
 import styles from "./DiscoveryIntro.module.css";
 
@@ -26,6 +28,12 @@ export default function DiscoveryIntro({
   const socialProduct = catalog
     ? LIVE_FRAGRANCES.find((entry) => entry.product_id === "SC-RABANNE-1-MILLION-EDT-100")
     : undefined;
+  const catalogEditorial = catalog
+    ? LIVE_FRAGRANCES.find((entry) => entry.product_id === "SC-YSL-LIBRE-EDP-90")
+    : undefined;
+  const catalogEditorialVisual = catalogEditorial
+    ? originalPhotoFor(catalogEditorial)
+    : null;
   const originals = ORIGINAL_IDS.flatMap((id) => {
     const fragrance = LIVE_FRAGRANCES.find((entry) => entry.product_id === id);
     const visual =
@@ -36,15 +44,17 @@ export default function DiscoveryIntro({
   });
   return (
     <section
-      className={`${styles.intro} ${catalog ? "dufynd-catalog-discovery-hero" : "dufynd-premium-home"}`}
+      className={`${styles.intro} ${catalog ? "dufynd-catalog-discovery-hero dufynd-directory-premium" : "dufynd-premium-home"}`}
       aria-labelledby={
         catalog
           ? "dufynd-catalog-discovery-heading"
           : "dufynd-home-discovery-heading"
       }
     >
-      <div className={styles.copy}>
-        <p className={styles.eyebrow}>DUFYND / Duftentdeckung</p>
+      <div className={styles.copy} data-dufynd-directory-copy={catalog || undefined}>
+        <p className={styles.eyebrow}>
+          {catalog ? `Das Duftarchiv / ${LIVE_FRAGRANCES.length} Profile` : "DUFYND / Duftentdeckung"}
+        </p>
         <h1
           id={
             catalog
@@ -67,8 +77,9 @@ export default function DiscoveryIntro({
           )}
         </h1>
         <p className={styles.description}>
-          Entdecke Duftprofile. Vergleiche deine Favoriten. Finde persönliche
-          Beratung.
+          {catalog
+            ? "Von der ersten Note bis zu deinem nächsten Lieblingsduft."
+            : "Entdecke Duftprofile. Vergleiche deine Favoriten. Finde persönliche Beratung."}
         </p>
         <div className={styles.actions}>
           {catalog ? (
@@ -91,10 +102,43 @@ export default function DiscoveryIntro({
           Duftprofile entdecken · Händlerangebote separat prüfen
         </p>
       </div>
+      {catalog && catalogEditorial && catalogEditorialVisual ? (
+        <aside
+          className="dufynd-directory-feature"
+          data-dufynd-directory-original
+          aria-label="Originalaufnahme aus dem DUFYND Duftarchiv"
+        >
+          <AcquisitionInternalLink
+            href={`/duft/${catalogEditorial.slug}`}
+            className="dufynd-directory-feature-link"
+          >
+            <div className="dufynd-directory-feature-picture">
+              <span className="dufynd-directory-original-tag">Originalaufnahme</span>
+              <FragranceVisual
+                imageUrl={catalogEditorialVisual.url}
+                cutoutUrl={catalogEditorialVisual.url}
+                alt={`${catalogEditorial.brand} ${catalogEditorial.name} · ${catalogEditorial.concentration} ${catalogEditorial.volume_ml} ml`}
+                mode="cutout"
+                variant="card"
+                className="h-full w-full"
+                priority
+              />
+            </div>
+            <span className="dufynd-directory-feature-caption">
+              <small>{catalogEditorial.brand}</small>
+              <strong>{catalogEditorial.name}</strong>
+              <span>
+                {catalogEditorial.concentration} · {catalogEditorial.volume_ml} ml
+              </span>
+            </span>
+          </AcquisitionInternalLink>
+          <ImageAttribution visual={catalogEditorialVisual} />
+        </aside>
+      ) : null}
       {socialProduct ? (
         <AcquisitionInternalLink
           href={`/duft/${socialProduct.slug}`}
-          className={styles.socialProduct}
+          className={`${styles.socialProduct} dufynd-directory-social`}
           data-social-product-entry
           onClick={() => void trackAnalyticsEvent("product_open", {
             product_id: socialProduct.product_id,

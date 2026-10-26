@@ -40,7 +40,7 @@ export default function FragranceIndexPage() {
   );
 
   return (
-    <main className="dufynd-catalog-page min-h-screen text-(--ink)">
+    <main data-dufynd-visual-reset="editorial" className="dufynd-catalog-page min-h-screen text-(--ink)">
       <AcquisitionAnalytics source="catalog" />
       <header className="dufynd-catalog-header border-b border-(--line)">
         <div className="mx-auto flex max-w-[1080px] items-center justify-between gap-4 px-4 py-4 sm:px-6">

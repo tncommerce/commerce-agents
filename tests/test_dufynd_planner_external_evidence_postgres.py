@@ -352,3 +352,20 @@ def test_migration_declares_no_scheduler_queue_or_provider_side_effects():
     assert "external.http" not in sql
     assert "http_post" not in sql
     assert "security definer" not in sql
+
+
+def test_business_source_dedupe_executes_original_sql_contract():
+    """Run the same state-transition cases used by the offline PostgreSQL check.
+
+    Uses the existing disposable migrated-schema CI service, including content
+    workflows. The suite rolls back all fixtures and temporary replacements.
+    """
+    import psycopg
+
+    migration = ROOT / "supabase/migrations/20261026083433_jarvis_business_source_dedupe.sql"
+    with psycopg.connect(DSN) as db:
+        db.execute(migration.read_text(encoding="utf-8"))
+        # Reapplication must not enqueue tasks or rewrite existing evidence.
+        db.execute(migration.read_text(encoding="utf-8"))
+        db.execute((ROOT / "tests/sql_dufynd_business_source_dedupe.sql").read_text())
+        db.rollback()

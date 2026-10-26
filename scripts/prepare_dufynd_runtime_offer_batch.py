@@ -1,0 +1,323 @@
+"""Build or apply a reviewed, exact-variant DUFYND offer batch.
+
+No product URL or affiliate link can be authored here. Dry run is the default;
+the apply path requires a matching batch-scoped owner/operations approval and
+uses the already connected Supabase project/server-side key. Input observations
+must come from authorized evidence, never inferred from a previous timestamp.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import re
+from datetime import UTC, datetime
+from decimal import Decimal, InvalidOperation
+from pathlib import Path
+from typing import Any
+
+import httpx
+from examples.retail.api.runtime_offer_snapshots import (
+    PROJECT_URL,
+    SOURCE_TYPES,
+    TABLE,
+    _safe_amount,
+    _verified_at,
+    identity_hash,
+)
+from scripts.dufynd_commerce_gates import approved_affiliate_route, verify_exact_variant
+
+CANONICAL = Path("examples/retail/data/merchant_offers.json")
+PARTNERS = Path("examples/retail/data/merchant_partners.json")
+MAPPINGS = Path("examples/retail/data/merchant_product_mappings.json")
+CATALOG = Path("examples/retail/data/catalog.json")
+
+
+def prepare_batch(
+    canonical_rows: list[dict[str, Any]],
+    evidence: dict[str, Any],
+    *,
+    now: datetime,
+    partners_payload: dict[str, Any] | None = None,
+    mappings_payload: dict[str, Any] | None = None,
+    catalog_payload: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """Validate one entire batch; recheck program, SKU, EAN and concentration."""
+    if partners_payload is None:
+        partners_payload = json.loads(PARTNERS.read_text(encoding="utf-8"))
+    if mappings_payload is None:
+        mappings_payload = json.loads(MAPPINGS.read_text(encoding="utf-8"))
+    if catalog_payload is None:
+        catalog_payload = json.loads(CATALOG.read_text(encoding="utf-8"))
+    if evidence.get("schema_version") != 1:
+        raise ValueError("unsupported_batch_schema")
+    batch_id = evidence.get("batch_id")
+    if not isinstance(batch_id, str) or not re.fullmatch(r"[A-Za-z0-9._:-]{8,120}", batch_id):
+        raise ValueError("invalid_batch_id")
+    items = evidence.get("offers")
+    if not isinstance(items, list) or not 1 <= len(items) <= 50:
+        raise ValueError("batch_size_out_of_bounds")
+
+    # Duplicate source IDs could silently select the wrong merchant/SKU
+    # through dict last-write-wins. Reject the entire batch instead.
+    if not isinstance(canonical_rows, list) or any(
+        not isinstance(row, dict) for row in canonical_rows
+    ):
+        raise ValueError("invalid_canonical_offer_rows")
+    canonical_ids = [row.get("offer_id") for row in canonical_rows]
+    if any(
+        not isinstance(offer_id, str) or re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
+        for offer_id in canonical_ids
+    ):
+        raise ValueError("invalid_canonical_offer_id")
+    if len(set(canonical_ids)) != len(canonical_ids):
+        raise ValueError("duplicate_canonical_offer_ids")
+    allowed = {r["offer_id"]: r for r in canonical_rows}
+    selected: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for item in items:
+        if not isinstance(item, dict):
+            raise ValueError("invalid_offer_record")
+        offer_id = item.get("offer_id")
+        if not isinstance(offer_id, str) or offer_id not in allowed:
+            raise ValueError("unknown_or_unreleased_offer")
+        if offer_id in seen:
+            raise ValueError("duplicate_offer_in_batch")
+        seen.add(offer_id)
+        original = allowed[offer_id]
+        for field in ("product_id", "merchant_product_id", "variant_label"):
+            if item.get(field) != original.get(field):
+                raise ValueError("exact_product_or_variant_mismatch")
+        if any(field in item for field in ("affiliate_url", "product_url", "network")):
+            raise ValueError("network_or_destination_change_forbidden")
+
+        decision = item.get("decision")
+        if decision not in {"verified", "hold"}:
+            raise ValueError("decision_must_be_verified_or_hold")
+        if decision == "verified":
+            if not approved_affiliate_route(original, partners_payload):
+                raise ValueError("partner_or_approved_tracked_route_missing")
+            verify_exact_variant(original, item, catalog_payload, mappings_payload)
+        kind = item.get("source_type")
+        if kind not in SOURCE_TYPES:
+            raise ValueError("unapproved_evidence_type")
+        source_ref = item.get("source_ref")
+        if (
+            not isinstance(source_ref, str)
+            or not 3 <= len(source_ref) <= 260
+            or source_ref != source_ref.strip()
+            or any(ord(char) < 32 or ord(char) == 127 for char in source_ref)
+        ):
+            raise ValueError("source_reference_required")
+        stamp = _verified_at(item.get("verified_at"), now=now)
+        if not isinstance(item.get("in_stock"), bool):
+            raise ValueError("stock_must_be_boolean")
+        price = _safe_amount(item.get("price"))
+        shipping = _safe_amount(item.get("shipping_cost"), allow_zero=True)
+        if price is None:
+            raise ValueError("verified_price_missing")
+        supporting = item.get("evidence")
+        if not isinstance(supporting, dict) or not supporting:
+            raise ValueError("original_source_evidence_required")
+        observation = supporting.get("source_observation")
+        if not isinstance(observation, str) or not observation.strip() or len(observation) > 2048:
+            raise ValueError("source_observation_reference_required")
+        # A digest proves which original evidence packet was submitted,
+        # NOT that the merchant independently endorsed its contents.
+        proof = json.dumps(
+            {
+                "batch_id": batch_id,
+                "offer_id": offer_id,
+                "observation": supporting,
+                "verified_at": stamp.isoformat(),
+            },
+            sort_keys=True,
+            ensure_ascii=False,
+            separators=(",", ":"),
+            allow_nan=False,
+        )
+        selected.append(
+            {
+                "offer_id": offer_id,
+                "product_id": original["product_id"],
+                "merchant_id": original["merchant_id"],
+                "merchant_product_id": original.get("merchant_product_id"),
+                "identity_sha256": identity_hash(original),
+                "currency": "EUR",
+                "price": price,
+                "shipping_cost": shipping,
+                "in_stock": item["in_stock"],
+                "verified_at": stamp.isoformat(),
+                "decision": decision,
+                "source_type": kind,
+                "source_ref": source_ref,
+                "evidence_sha256": hashlib.sha256(proof.encode("utf-8")).hexdigest(),
+            }
+        )
+    return selected
+
+
+def batch_digest(prepared: list[dict[str, Any]], *, batch_id: str) -> str:
+    """Content-address the exact evidence-backed rows, not merely a reusable ID."""
+    payload = json.dumps(
+        {
+            "batch_id": batch_id,
+            "offers": sorted(prepared, key=lambda row: row["offer_id"]),
+        },
+        sort_keys=True,
+        ensure_ascii=False,
+        separators=(",", ":"),
+        allow_nan=False,
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def verify_written_batch(prepared: list[dict[str, Any]], observed: Any) -> None:
+    """A successful HTTP write is not yet a certified persisted offer batch."""
+    if (
+        not isinstance(observed, list)
+        or len(observed) != len(prepared)
+        or any(not isinstance(row, dict) for row in observed)
+    ):
+        raise RuntimeError("offer_batch_readback_count_or_type_mismatch")
+    saved = {str(row.get("offer_id")): row for row in observed}
+    expected_ids = {row["offer_id"] for row in prepared}
+    if len(saved) != len(observed) or set(saved) != expected_ids:
+        raise RuntimeError("offer_batch_readback_identity_mismatch")
+
+    immutable = (
+        "offer_id",
+        "product_id",
+        "merchant_id",
+        "merchant_product_id",
+        "identity_sha256",
+        "currency",
+        "in_stock",
+        "decision",
+        "source_type",
+        "source_ref",
+        "evidence_sha256",
+    )
+    for expected in prepared:
+        found = saved[expected["offer_id"]]
+        if any(found.get(field) != expected[field] for field in immutable):
+            raise RuntimeError("offer_batch_readback_contract_mismatch")
+        try:
+            for field in ("price", "shipping_cost"):
+                stored, submitted = found.get(field), expected[field]
+                if (stored is None) != (submitted is None):
+                    raise RuntimeError("offer_batch_readback_money_mismatch")
+                if stored is not None and Decimal(str(stored)) != Decimal(str(submitted)):
+                    raise RuntimeError("offer_batch_readback_money_mismatch")
+            actual = datetime.fromisoformat(str(found["verified_at"]).replace("Z", "+00:00"))
+            wanted = datetime.fromisoformat(expected["verified_at"].replace("Z", "+00:00"))
+            if actual.tzinfo is None or wanted.tzinfo is None:
+                raise RuntimeError("offer_batch_readback_timezone_missing")
+            if actual.astimezone(UTC) != wanted.astimezone(UTC):
+                raise RuntimeError("offer_batch_readback_timestamp_mismatch")
+        except (ValueError, TypeError, KeyError, InvalidOperation) as exc:
+            raise RuntimeError("offer_batch_readback_malformed") from exc
+
+
+def apply_batch(
+    prepared: list[dict[str, Any]],
+    *,
+    batch_id: str,
+    owner_approval: str,
+    transport: httpx.BaseTransport | None = None,
+) -> None:
+    """Atomic upsert followed by uncached, exact-row persistence verification."""
+    exact_scope = f"{batch_id}:{batch_digest(prepared, batch_id=batch_id)}"
+    if owner_approval != exact_scope or os.getenv("DUFYND_OFFER_BATCH_OWNER_GO") != exact_scope:
+        raise PermissionError("exact_batch_content_owner_approval_required")
+    if os.getenv("SUPABASE_URL", "").rstrip("/") != PROJECT_URL:
+        raise PermissionError("unexpected_supabase_project")
+    key = os.getenv("SUPABASE_SECRET_KEY") or os.getenv("SUPABASE_SERVICE_ROLE_KEY")
+    if not key:
+        raise PermissionError("no_server_only_database_key")
+    headers = {
+        "apikey": key,
+        "Content-Type": "application/json",
+        "Prefer": "resolution=merge-duplicates,return=minimal",
+    }
+    if key.startswith("eyJ"):
+        headers["Authorization"] = f"Bearer {key}"
+    with httpx.Client(timeout=8, follow_redirects=False, transport=transport) as client:
+        response = client.post(
+            f"{PROJECT_URL}/rest/v1/{TABLE}",
+            params={"on_conflict": "offer_id"},
+            headers=headers,
+            json=prepared,
+        )
+        response.raise_for_status()
+        # A successful upsert alone cannot prove exact buyer-facing persistence.
+        # The REST read bypasses the 30-second public runtime snapshot cache.
+        readback = client.get(
+            f"{PROJECT_URL}/rest/v1/{TABLE}",
+            headers={
+                name: value
+                for name, value in headers.items()
+                if name in {"apikey", "Authorization"}
+            },
+            params={
+                "offer_id": "in.(" + ",".join(row["offer_id"] for row in prepared) + ")",
+                "select": (
+                    "offer_id,product_id,merchant_id,merchant_product_id,"
+                    "identity_sha256,currency,price,shipping_cost,in_stock,"
+                    "verified_at,decision,source_type,source_ref,evidence_sha256"
+                ),
+                "limit": str(len(prepared) + 1),
+            },
+        )
+        readback.raise_for_status()
+        try:
+            observed = readback.json()
+        except ValueError as exc:
+            raise RuntimeError("offer_batch_readback_invalid_json") from exc
+        verify_written_batch(prepared, observed)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--evidence", type=Path, required=True)
+    parser.add_argument("--canonical", type=Path, default=CANONICAL)
+    parser.add_argument("--apply", action="store_true")
+    parser.add_argument("--owner-approval", default="")
+    args = parser.parse_args()
+
+    raw = json.loads(args.evidence.read_text(encoding="utf-8"))
+    catalog = json.loads(args.canonical.read_text(encoding="utf-8"))["offers"]
+    prepared = prepare_batch(catalog, raw, now=datetime.now(UTC))
+    if args.apply:
+        try:
+            apply_batch(
+                prepared,
+                batch_id=raw["batch_id"],
+                owner_approval=args.owner_approval,
+            )
+        except (httpx.HTTPError, RuntimeError):
+            # The POST may have committed even if the GET failed.
+            parser.exit(30, "offer_batch_write_state_unconfirmed_check_audit_no_retry\n")
+    print(
+        json.dumps(
+            {
+                "status": "APPLIED" if args.apply else "DRY_RUN_ONLY",
+                "batch_id": raw["batch_id"],
+                "batch_sha256": batch_digest(prepared, batch_id=raw["batch_id"]),
+                "count": len(prepared),
+                "offers": [
+                    {"offer_id": r["offer_id"], "decision": r["decision"]} for r in prepared
+                ],
+                "publication_change": False,
+                "affiliate_link_change": False,
+            },
+            ensure_ascii=False,
+        )
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

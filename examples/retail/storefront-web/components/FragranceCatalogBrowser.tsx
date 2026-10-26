@@ -867,7 +867,7 @@ export default function FragranceCatalogBrowser({
             onClick={() =>
               setMobileFiltersOpen((open) => !open)
             }
-            className="flex h-11 items-center justify-between rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] font-semibold text-(--ink) md:hidden"
+            className="flex h-11 items-center justify-between rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] font-semibold text-(--ink) lg:hidden"
             aria-expanded={mobileFiltersOpen}
             aria-controls="catalog-filter-panel"
           >
@@ -885,7 +885,7 @@ export default function FragranceCatalogBrowser({
 
         <div
           id="catalog-filter-panel"
-          className={`${mobileFiltersOpen ? "block" : "hidden"} md:block`}
+          className={`${mobileFiltersOpen ? "block" : "hidden"} lg:block`}
         >
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <label className="block">
@@ -1166,17 +1166,6 @@ export default function FragranceCatalogBrowser({
       <h2 id="catalog-results" tabIndex={-1} className={styles.resultsAnchor}>
         {filtered.length} {filtered.length === 1 ? "passender Duft" : "passende Düfte"}
       </h2>
-      <details className="dufynd-brand-directory">
-        <summary>Marken A–Z <span>· {brands.length} Marken entdecken</span></summary>
-        <nav aria-label="Marken A–Z">
-          {brands.map((name) => (
-            <button key={name} type="button" aria-pressed={brand === name}
-              onClick={() => { setBrand(brand === name ? "all" : name); }}>
-              {name}<span>{fragrances.filter((item) => item.brand === name).length}</span>
-            </button>
-          ))}
-        </nav>
-      </details>
 
       {filtered.length ? (
         <>
@@ -1187,15 +1176,14 @@ export default function FragranceCatalogBrowser({
             >
               <div>
                 <p>
-                  <strong>{featuredOriginalCount} Originalaufnahmen zuerst.</strong>{" "}
-                  Illustrationen sind gekennzeichnet.
+                  <strong>{featuredOriginalCount} Originalaufnahmen</strong>
                 </p>
               </div>
               <AcquisitionInternalLink
                 href="/bildnachweise"
                 className="dufynd-catalog-photo-evidence"
               >
-                Bildnachweise ansehen <span aria-hidden>↗</span>
+                Bildnachweise <span aria-hidden>↗</span>
               </AcquisitionInternalLink>
             </div>
           ) : null}
@@ -1506,6 +1494,18 @@ export default function FragranceCatalogBrowser({
           </div>
         </section>
       )}
+      <details className="dufynd-brand-directory">
+        <summary>Marken A–Z <span>· {brands.length} Marken entdecken</span></summary>
+        <nav aria-label="Marken A–Z">
+          {brands.map((name) => (
+            <button key={name} type="button" aria-pressed={brand === name}
+              onClick={() => { setBrand(brand === name ? "all" : name); }}>
+              {name}<span>{fragrances.filter((item) => item.brand === name).length}</span>
+            </button>
+          ))}
+        </nav>
+      </details>
+
       {compareSelection.length ? (
         <aside className={styles.compareTray} aria-label="Duftvergleich vorbereiten">
           <div className={styles.trayHeading}>

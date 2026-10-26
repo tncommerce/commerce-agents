@@ -1,0 +1,329 @@
+"""Reuse Awin's strict source reviewer; never treat a feed hit as an image GO."""
+
+from __future__ import annotations
+
+import hashlib
+from datetime import UTC, datetime, timedelta
+
+import pytest
+from scripts.report_dufynd_unpublished_photo_sources import (
+    build_unpublished_source_queue,
+)
+
+NOW = datetime(2026, 10, 24, 10, tzinfo=UTC)
+FEED_BYTES = b"synthetic-only-offline-csv-fixture"
+FEED_SHA = hashlib.sha256(FEED_BYTES).hexdigest()
+URL = "https://www.topparfuemerie.de/media/catalog/product/a/b/000100.png"
+PRODUCT_ID = "SC-EXAMPLE-SCENT-EDP-100"
+
+
+def inputs(count: int = 25):
+    staged = {
+        "products": [
+            {
+                "product_id": PRODUCT_ID if i == 5 else f"SC-NEW-{i:02}",
+                "brand": "Example",
+                "name": "Scent" if i == 5 else f"Fragrance {i}",
+                "concentration": "Eau de Parfum",
+                "volume_ml": 100,
+            }
+            for i in range(count)
+        ]
+    }
+    public = {"products": staged["products"][:5]}
+    mapped = {
+        "mappings": [
+            {
+                "product_id": PRODUCT_ID,
+                "merchant": "top-parfuemerie",
+                "merchant_product_id": "100100",
+                "gtin": "4000000000009",
+                "mapping_status": "verified_current_variant",
+            },
+            {
+                "product_id": PRODUCT_ID,
+                "merchant": "notino",
+                "merchant_product_id": "NOTINO-100",
+                "gtin": "4000000000009",
+            },
+        ]
+    }
+    offers = {
+        "offers": [
+            {
+                "product_id": PRODUCT_ID,
+                "affiliate_url": "https://cj.example.invalid/historical-only",
+            }
+        ]
+    }
+    return staged, public, [], mapped, offers, {"partners": []}
+
+
+def run(*args, **kwargs):
+    if "feed_rows" in kwargs and "feed_integrity" not in kwargs:
+        kwargs["feed_integrity"] = {
+            "sha256": FEED_SHA,
+            "downloaded_bytes": len(FEED_BYTES),
+        }
+    return build_unpublished_source_queue(*args, now=NOW, batch_size=20, **kwargs)
+
+
+def official_metadata():
+    return {
+        "source": "awin_product_feed_list",
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "joined": True,
+        "downloaded": True,
+        "checked_at": NOW.isoformat(),
+        "last_imported": NOW.isoformat(),
+        "download_host": "datafeed.api.productserve.com",
+        "download_sha256": FEED_SHA,
+        "downloaded_bytes": len(FEED_BYTES),
+    }
+
+
+def rights():
+    return {
+        "entries": [
+            {
+                "merchant_id": "top-parfuemerie",
+                "advertiser_id": "31081",
+                "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+                "program_status": "approved",
+                "rights_status": "verified_for_publisher_service",
+                "asset_scope": "unaltered_advertiser_materials_from_official_awin_product_feed",
+            }
+        ]
+    }
+
+
+def feed():
+    return [
+        {
+            "merchant_product_id": "100100",
+            "product_name": "Example Scent EDP 100 ml",
+            "merchant_image_url": URL,
+            "gtin": "4000000000009",
+        }
+    ]
+
+
+def test_exact_20_unpublished_items_no_double_work_no_net_calls():
+    report = run(*inputs())
+    assert report["review_size"] == 20
+    assert report["already_public_staging_excluded"] == 5
+    assert report["unpublished_staging_backlog"] == 20
+    assert report["source_file_checked"] is False
+    assert report["official_awin_photo_review"] is None
+    assert report["publications"] == report["network_requests"] == report["database_writes"] == 0
+    assert report["original_image_approvals_granted"] == 0
+    public = {row["product_id"] for row in inputs()[1]["products"]}
+    assert all(row["product_id"] not in public for row in report["items"])
+    assert (
+        sum(row["priority"] == "EXISTING_TRACKED_ROUTE_IMAGE_HOLD" for row in report["items"]) == 1
+    )
+
+
+def test_source_review_uses_existing_strict_licensed_feed_validator():
+    report = run(*inputs(), feed_rows=feed(), feed_metadata=official_metadata(), rights=rights())
+    review = report["official_awin_photo_review"]
+    assert review["status"] == "REVIEW_ONLY_NOT_LIVE"
+    assert report["source_file_integrity"]["feed_sha256"] == FEED_SHA
+    assert report["source_file_integrity"]["verified_for_runtime_price_updates"] is False
+    assert review["products_reviewed"] == 20
+    assert review["products_with_leads"] == 1
+    assert review["approved_new_images"] == 0
+    record = next(x for x in review["items"] if x["product_id"] == PRODUCT_ID)
+    assert record["status"] == "REVIEW_LEADS_FOUND"
+    assert record["candidates"][0]["merchant_product_id"] == "100100"
+    assert record["candidates"][0]["feed_explicit_size_match"] is True
+    assert record["candidates"][0]["registered"] is False
+    assert record["candidates"][0]["published"] is False
+    assert report["original_image_approvals_granted"] == 0
+    assert report["approved_merchant_offers_created"] == 0
+    assert report["affiliate_links_generated"] == 0
+    assert report["publications"] == 0
+
+
+@pytest.mark.parametrize(
+    "invalid_source", ["wrong_advertiser", "not_joined", "stale", "wrong_rights"]
+)
+def test_wrong_source_or_rights_cannot_create_even_a_candidate(invalid_source: str):
+    meta = official_metadata()
+    license_data = rights()
+    if invalid_source == "wrong_advertiser":
+        meta["advertiser_id"] = "999"
+    elif invalid_source == "not_joined":
+        meta["joined"] = False
+    elif invalid_source == "stale":
+        meta["checked_at"] = (NOW - timedelta(days=8)).isoformat()
+    else:
+        license_data["entries"][0]["program_status"] = "pending"
+    with pytest.raises(ValueError):
+        run(*inputs(), feed_rows=feed(), feed_metadata=meta, rights=license_data)
+
+
+def test_same_sku_with_conflicting_current_feed_rows_is_not_released():
+    report = run(
+        *inputs(),
+        feed_rows=feed() + feed(),
+        feed_metadata=official_metadata(),
+        rights=rights(),
+    )
+    review = report["official_awin_photo_review"]
+    match = next(x for x in review["items"] if x["product_id"] == PRODUCT_ID)
+    assert match["duplicate_feed_sku_hold"] is True
+    assert match["candidates"] == []
+    assert report["original_image_approvals_granted"] == 0
+
+
+def test_invalid_or_partial_feed_input_is_never_silently_accepted():
+    with pytest.raises(ValueError, match="together"):
+        run(*inputs(), feed_rows=feed())
+    with pytest.raises(ValueError, match="together"):
+        run(*inputs(), feed_metadata=official_metadata())
+    with pytest.raises(ValueError, match="rights_registry"):
+        run(*inputs(), feed_rows=feed(), feed_metadata=official_metadata())
+
+
+def test_unpublished_with_approved_image_is_not_reacquired():
+    staging, public, photos, mappings, offers, partners = inputs()
+    photos.append(
+        {
+            "product_id": PRODUCT_ID,
+            "volume_ml": 100,
+            "rights_basis_id": "previous_verified_grant",
+            "url": "https://www.example.invalid/preapproved.png",
+        }
+    )
+    report = run(staging, public, photos, mappings, offers, partners)
+    match = next(x for x in report["items"] if x["product_id"] == PRODUCT_ID)
+    assert match["original_photo_gate"] == "REUSE_ALREADY_APPROVED_ORIGINAL"
+    assert match["owner_visual_review_required"] is False
+    assert match["image_license_granted_by_this_queue"] is False
+
+
+def test_current_repo_contains_no_auto_approvable_20_item_photo_batch():
+    import json
+
+    from scripts.report_dufynd_unpublished_photo_sources import (
+        MAPPINGS,
+        OFFERS,
+        PARTNERS,
+        PHOTOS,
+        PUBLIC,
+        STAGING,
+    )
+
+    def read(path):
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    report = build_unpublished_source_queue(
+        read(STAGING),
+        read(PUBLIC),
+        read(PHOTOS),
+        read(MAPPINGS),
+        read(OFFERS),
+        read(PARTNERS),
+        now=NOW,
+        batch_size=20,
+    )
+    assert report["review_size"] == 20
+    assert report["original_image_approvals_granted"] == 0
+    assert report["approved_merchant_offers_created"] == 0
+    assert all(row["public_catalog_release_authorized"] is False for row in report["items"])
+
+
+def test_cross_merchant_gtin_conflict_blocks_photo_candidate_discovery():
+    staged, public, photos, mappings, offers, partners = inputs()
+    mappings["mappings"].append(
+        {
+            "product_id": PRODUCT_ID,
+            "merchant": "perfumetrader",
+            "merchant_product_id": "999201",
+            "gtin": "4000000000016",
+            "mapping_status": "unverified",
+        }
+    )
+    report = run(
+        staged,
+        public,
+        photos,
+        mappings,
+        offers,
+        partners,
+        feed_rows=feed(),
+        feed_metadata=official_metadata(),
+        rights=rights(),
+    )
+    row = next(x for x in report["items"] if x["product_id"] == PRODUCT_ID)
+    assert row["cross_merchant_gtin_conflict"] is True
+    assert row["priority"] == "CROSS_MERCHANT_GTIN_CONFLICT_HOLD"
+    assert row["eligible_for_official_photo_candidate_search"] is False
+    assert row["independent_variant_identity_resolution_required"] is True
+    assert row["official_feed_photo_review_lead_count"] == 0
+    assert report["original_image_approvals_granted"] == 0
+
+
+@pytest.mark.parametrize(
+    "mutation",
+    [
+        "missing_hash",
+        "wrong_hash",
+        "wrong_bytes",
+        "missing_last_imported",
+        "stale_last_imported",
+        "wrong_download_host",
+        "unknown_source",
+        "future_import",
+    ],
+)
+def test_official_awin_provenance_guard_rejects_bad_file_or_old_feed(mutation: str):
+    metadata = official_metadata()
+    integrity = {"sha256": FEED_SHA, "downloaded_bytes": len(FEED_BYTES)}
+    if mutation == "missing_hash":
+        del metadata["download_sha256"]
+    elif mutation == "wrong_hash":
+        integrity["sha256"] = "b" * 64
+    elif mutation == "wrong_bytes":
+        integrity["downloaded_bytes"] += 1
+    elif mutation == "missing_last_imported":
+        metadata["last_imported"] = ""
+    elif mutation == "stale_last_imported":
+        metadata["last_imported"] = (NOW - timedelta(days=10)).isoformat()
+    elif mutation == "wrong_download_host":
+        metadata["download_host"] = "api.invalid"
+    elif mutation == "unknown_source":
+        metadata["source"] = "custom_scraper"
+    else:
+        metadata["last_imported"] = (NOW + timedelta(days=2)).isoformat()
+    with pytest.raises(ValueError, match="official_awin"):
+        run(
+            *inputs(),
+            feed_rows=feed(),
+            feed_metadata=metadata,
+            feed_integrity=integrity,
+            rights=rights(),
+        )
+
+
+def test_awin_official_naive_last_imported_is_review_only_with_timezone_warning():
+    meta = official_metadata()
+    meta["last_imported"] = (NOW - timedelta(days=2)).replace(tzinfo=None).isoformat(sep=" ")
+    report = run(*inputs(), feed_rows=feed(), feed_metadata=meta, rights=rights())
+    proof = report["source_file_integrity"]
+    assert proof["last_imported_timezone_unverified"] is True
+    assert proof["verified_for_review_only"] is True
+    assert proof["verified_for_runtime_price_updates"] is False
+    assert report["original_image_approvals_granted"] == 0
+
+
+def test_official_download_not_new_runtime_price_timestamp():
+    meta = official_metadata()
+    meta["checked_at"] = NOW.isoformat()
+    meta["last_imported"] = (NOW - timedelta(days=5)).isoformat()
+    report = run(*inputs(), feed_rows=feed(), feed_metadata=meta, rights=rights())
+    assert report["source_observation_timestamps_renewed"] == 0
+    assert report["approved_merchant_offers_created"] == 0
+    assert report["official_awin_photo_review"]["approved_new_images"] == 0

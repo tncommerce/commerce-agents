@@ -1,0 +1,101 @@
+{
+  "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+  "passed": 31,
+  "checkpointRowsAfterRollback": 0,
+  "scope": "offline PostgreSQL-WASM; not native multi-connection CI",
+  "cases": [
+    {
+      "label": "01 initial bounded audit"
+    },
+    {
+      "label": "02 certified payload unchanged"
+    },
+    {
+      "label": "03 24 clock-only polls create zero audits"
+    },
+    {
+      "label": "04 unchanged checkpoint is not rewritten"
+    },
+    {
+      "label": "05 completed audit never reset"
+    },
+    {
+      "label": "06 actual buyer event creates audit"
+    },
+    {
+      "label": "07 buyer event replay deduplicated"
+    },
+    {
+      "label": "08 identical merchant refresh is not a business event"
+    },
+    {
+      "label": "09 merchant price change creates audit"
+    },
+    {
+      "label": "10 genuine A B A source transition is processed"
+    },
+    {
+      "label": "11 original publication proof creates audit"
+    },
+    {
+      "label": "12 workflow bookkeeping and proof polling do not requeue"
+    },
+    {
+      "label": "13 no fabricated publication verification"
+    },
+    {
+      "label": "14 matching platform schedule source processed"
+    },
+    {
+      "label": "15 original platform publication transition processed"
+    },
+    {
+      "label": "16 repeated platform poll deduplicated"
+    },
+    {
+      "label": "17 owner gate wins over new source"
+    },
+    {
+      "label": "18 active lease wins over new source"
+    },
+    {
+      "label": "19 deferred merchant stock change is not lost"
+    },
+    {
+      "label": "20 verified source selects bounded funnel audit"
+    },
+    {
+      "label": "21 funnel audits also deduplicate"
+    },
+    {
+      "label": "22 zero spend report preserved"
+    },
+    {
+      "label": "23 private ACL preserved"
+    },
+    {
+      "label": "24 invoker rights preserved"
+    },
+    {
+      "label": "25 partial proof and platform values remain inspectable"
+    },
+    {
+      "label": "26 identical partial evidence does not loop"
+    },
+    {
+      "label": "27 equal-time event ordering is canonical"
+    },
+    {
+      "label": "28 platform ordering is canonical even without IDs"
+    },
+    {
+      "label": "29 checkpoint failure rolls back inserted audit"
+    },
+    {
+      "label": "30 checkpoint failure preserves previous source"
+    },
+    {
+      "label": "31 recovery processes pending genuine change once"
+    }
+  ]
+}
