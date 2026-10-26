@@ -60,7 +60,9 @@ def test_four_real_browser_observations_are_bound_to_original_feed_and_gtin_sour
         assert offer["merchant_product_id"] == sku == observed["merchant_product_id"]
         assert item["ean"] == identities[pid]["gtin"] == gtin
         assert observed["volume_ml"] == item["volume_ml"] == identities[pid]["volume_ml"] == 100
-        assert observed["concentration"] == item["concentration"] == identities[pid]["concentration"]
+        assert (
+            observed["concentration"] == item["concentration"] == identities[pid]["concentration"]
+        )
         assert offer["price"] == observed["price"] == float(fields["search_price"]) == price
         assert offer["shipping_cost"] == 0 and price >= 49.95
         assert observed["purchase_button_visible"] and observed["purchase_button_enabled"]
@@ -70,9 +72,12 @@ def test_four_real_browser_observations_are_bound_to_original_feed_and_gtin_sour
         assert offer["last_updated_at"] == item["verified_at"] == observed["checked_at"]
         assert offer["last_updated_at"] != fields["last_updated"]
         assert item["evidence"]["source_row_sha256"] == raw["source_row_canonical_json_sha256"]
-        assert item["evidence"]["browser_observation_sha256"] == hashlib.sha256(
-            (PACKET / "merchant-browser-observations.json").read_bytes()
-        ).hexdigest()
+        assert (
+            item["evidence"]["browser_observation_sha256"]
+            == hashlib.sha256(
+                (PACKET / "merchant-browser-observations.json").read_bytes()
+            ).hexdigest()
+        )
         if sku == "836129":
             assert offer["variant_label"] == "100 ml · Eau de Parfum · Geschenkbox"
             assert "Gift Box" in fields["product_name"]
@@ -96,7 +101,8 @@ def test_additive_wave_preserves_every_prior_offer_mapping_and_route() -> None:
             assert len(rows) == 63 and len(preserved) == 59
         elif key == "mappings":
             preserved = [
-                r for r in rows
+                r
+                for r in rows
                 if not (r["merchant"] == "top-parfuemerie" and r["product_id"] in products)
             ]
             assert len(rows) == 110 and len(preserved) == 106

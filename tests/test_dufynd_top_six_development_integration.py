@@ -39,9 +39,7 @@ def test_only_six_exact_routes_are_integrated_and_all_other_rows_are_preserved()
         rows = read(DATA / name)[key]
         if key == "offers":
             existing_updates = set(integration.get("allowed_existing_offer_updates", []))
-            preserved = [
-                x for x in rows if x["offer_id"] not in ids | existing_updates | later_ids
-            ]
+            preserved = [x for x in rows if x["offer_id"] not in ids | existing_updates | later_ids]
             assert len([x for x in rows if x["offer_id"] in ids]) == 6
         elif key == "partners":
             preserved = [x for x in rows if x["merchant_id"] != "top-parfuemerie"]
