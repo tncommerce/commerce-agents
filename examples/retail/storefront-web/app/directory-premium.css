@@ -285,8 +285,8 @@
   background:none;
   box-shadow:none;
 }
-/* Keep the focus target in normal flow: moving it on blur can shift a product
-   control between pointerdown and pointerup and lose a comparison selection. */
+/* The visible result count is the stable keyboard destination. It occupies
+   the same space before and after focus, without a second clipped heading. */
 .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] #catalog-results {
   min-height:24px;
   margin:0;
@@ -294,8 +294,8 @@
   font-size:14px;
   line-height:24px;
 }
-.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] #catalog-results:not(:focus) {
-  clip-path:inset(50%);
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-copy-status:empty {
+  display:none;
 }
 .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-originals-note {
   border:0;
@@ -615,7 +615,7 @@
     row-gap:10px;
   }
   .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] section[aria-label="Duftkatalog filtern"] {
-    padding-top:16px;
+    padding-top:12px;
   }
   .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
     article.dufynd-catalog-card[data-original-photo="true"] > a.group {
@@ -629,4 +629,75 @@
     column-gap:12px;
   }
   .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card-body h2 {font-size:25px;}
+}
+
+/* Keep the disclosure state authoritative over the earlier desktop grid. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] #catalog-filter-panel.hidden {
+  display:none;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] button[aria-controls="catalog-filter-panel"] {
+  min-height:56px;
+}
+@media(max-width:767px) {
+  /* The already-published Rabanne route stays direct and fully identified;
+     its action shares a row with the variant instead of adding another row. */
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    .dufynd-directory-premium [data-social-product-entry] {
+    grid-template-columns:minmax(0,1fr) 124px;
+    align-items:center;
+    column-gap:14px;
+    padding:12px 0!important;
+  }
+  .dufynd-directory-premium .dufynd-directory-social > span:first-child {display:none;}
+  .dufynd-directory-premium .dufynd-directory-social > span:nth-child(2) {
+    grid-column:1;
+    grid-row:1;
+  }
+  .dufynd-directory-premium .dufynd-directory-social > span:nth-child(3) {
+    grid-column:1;
+    grid-row:2;
+  }
+  .dufynd-directory-premium .dufynd-directory-social > span:last-child {
+    grid-column:2;
+    grid-row:1/3;
+    align-self:stretch;
+    white-space:normal;
+    line-height:1.5;
+  }
+}
+
+/* Count and photo evidence form one legible summary before the products. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-catalog-results-summary[data-originals-summary] {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:0 10px;
+  align-items:center;
+}
+.dufynd-catalog-results-summary[data-originals-summary] #catalog-results {
+  grid-column:1;
+  grid-row:1;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-catalog-results-summary[data-originals-summary] .dufynd-catalog-originals-note {
+  display:contents;
+}
+.dufynd-catalog-results-summary[data-originals-summary] .dufynd-catalog-originals-note > div {
+  grid-column:1;
+  grid-row:2;
+  font-size:11px;
+  line-height:20px;
+  color:var(--ink-soft);
+}
+.dufynd-catalog-results-summary[data-originals-summary] .dufynd-catalog-photo-evidence {
+  grid-column:2;
+  grid-row:1/3;
+  font-size:11px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] section[aria-label="Passende Düfte"] {
+  margin-top:8px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-results-summary {
+  margin-top:8px;
+  padding-top:8px;
 }

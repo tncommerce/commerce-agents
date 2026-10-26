@@ -867,7 +867,7 @@ export default function FragranceCatalogBrowser({
             onClick={() =>
               setMobileFiltersOpen((open) => !open)
             }
-            className="flex h-11 items-center justify-between rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] font-semibold text-(--ink) lg:hidden"
+            className="flex h-11 items-center justify-between rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] font-semibold text-(--ink)"
             aria-expanded={mobileFiltersOpen}
             aria-controls="catalog-filter-panel"
           >
@@ -885,7 +885,7 @@ export default function FragranceCatalogBrowser({
 
         <div
           id="catalog-filter-panel"
-          className={`${mobileFiltersOpen ? "block" : "hidden"} lg:block`}
+          className={mobileFiltersOpen ? "block" : "hidden"}
         >
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <label className="block">
@@ -1099,9 +1099,14 @@ export default function FragranceCatalogBrowser({
           </div>
         ) : null}
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-(--line) pt-3">
-          <div
-            className="text-[12px] text-(--ink-soft)"
+        <div
+          className="dufynd-catalog-results-summary mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-(--line) pt-3"
+          data-originals-summary={!hasChanges && featuredOriginalCount > 0 || undefined}
+        >
+          <h2
+            id="catalog-results"
+            tabIndex={-1}
+            className={`${styles.resultsAnchor} text-[12px] text-(--ink-soft)`}
             aria-live="polite"
           >
             <span className="font-semibold text-(--ink)">
@@ -1114,7 +1119,26 @@ export default function FragranceCatalogBrowser({
                 · {visibleFragrances.length} angezeigt
               </span>
             ) : null}
-          </div>
+          </h2>
+
+          {!hasChanges && featuredOriginalCount > 0 ? (
+            <div
+              className="dufynd-catalog-originals-note mt-4"
+              aria-label="Originalaufnahmen zuerst"
+            >
+              <div>
+                <p>
+                  <strong>{featuredOriginalCount} Originalaufnahmen</strong>
+                </p>
+              </div>
+              <AcquisitionInternalLink
+                href="/bildnachweise"
+                className="dufynd-catalog-photo-evidence"
+              >
+                Bildnachweise <span aria-hidden>↗</span>
+              </AcquisitionInternalLink>
+            </div>
+          ) : null}
 
           {hasChanges ? (
             <div className="flex flex-wrap items-center gap-3">
@@ -1140,7 +1164,7 @@ export default function FragranceCatalogBrowser({
             {filtered.length} {filtered.length === 1 ? "Duft" : "Düfte"} anzeigen ↓
           </button>
         ) : null}
-        <span role="status" className="text-[11px] text-(--ink-soft)">
+        <span role="status" className="dufynd-catalog-copy-status text-[11px] text-(--ink-soft)">
           {copyStatus}
         </span>
         <ManualShareLink url={manualUrl} />
@@ -1163,30 +1187,9 @@ export default function FragranceCatalogBrowser({
         </div>
       ) : null}
 
-      <h2 id="catalog-results" tabIndex={-1} className={styles.resultsAnchor}>
-        {filtered.length} {filtered.length === 1 ? "passender Duft" : "passende Düfte"}
-      </h2>
-
       {filtered.length ? (
         <>
-          {!hasChanges && featuredOriginalCount > 0 ? (
-            <div
-              className="dufynd-catalog-originals-note mt-4"
-              aria-label="Originalaufnahmen zuerst"
-            >
-              <div>
-                <p>
-                  <strong>{featuredOriginalCount} Originalaufnahmen</strong>
-                </p>
-              </div>
-              <AcquisitionInternalLink
-                href="/bildnachweise"
-                className="dufynd-catalog-photo-evidence"
-              >
-                Bildnachweise <span aria-hidden>↗</span>
-              </AcquisitionInternalLink>
-            </div>
-          ) : null}
+
           <section
             className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
             aria-label="Passende Düfte"

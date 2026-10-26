@@ -50,21 +50,27 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       const firstVariant = await firstOriginal.locator(".dufynd-product-variant").boundingBox();
       assert.ok(firstName && firstName.y + firstName.height <= firstFoldHeight, `first exact fragrance name visible at ${width}`);
       assert.ok(firstVariant && firstVariant.y + firstVariant.height <= firstFoldHeight, `first exact variant visible at ${width}`);
+      if (width >= 390) {
+        const firstCta = firstOriginal.locator(".dufynd-catalog-card-cta");
+        const ctaBounds = await firstCta.boundingBox();
+        assert.ok(ctaBounds && ctaBounds.y + ctaBounds.height <= firstFoldHeight - 16, `complete first profile CTA has breathing room at ${width}`);
+        assert.equal(await firstCta.evaluate(element => {
+          const box = element.getBoundingClientRect();
+          const target = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2);
+          return element.closest("a")?.contains(target) ?? false;
+        }), true, `first profile CTA is not covered at ${width}`);
+      }
       await page.setViewportSize({ width, height: 900 });
       await page.goto(`${baseUrl}/duft?qa=1&q=Yves%20Saint%20Laurent`);
       await chooseMeasurement(page, "denied");
       const search = page.getByRole("searchbox", { name: "Duft, Marke oder Profil" });
       await search.fill("Yves Saint Laurent");
-      if (width < 1024) {
-        const toggle = page.locator('button[aria-controls="catalog-filter-panel"]');
-        const panel = page.locator("#catalog-filter-panel");
-        assert.equal(await toggle.isVisible(), true, "mobile and tablet visitors can open advanced filters");
-        assert.equal(await panel.isVisible(), false, "advanced filters start closed below desktop");
-        await toggle.click();
-        assert.equal(await panel.isVisible(), true, "filter disclosure expands on demand");
-      } else {
-        assert.equal(await page.locator("#catalog-filter-panel").isVisible(), true, "desktop keeps advanced filters visible");
-      }
+      const toggle = page.locator('button[aria-controls="catalog-filter-panel"]');
+      const panel = page.locator("#catalog-filter-panel");
+      assert.equal(await toggle.isVisible(), true, "every width exposes the filter disclosure");
+      assert.equal(await panel.isVisible(), false, "advanced filters start closed at every width");
+      await toggle.click();
+      assert.equal(await panel.isVisible(), true, "filter disclosure expands on demand");
       const filters = page.getByRole("region", { name: "Duftkatalog filtern" });
       await filters.evaluate(el => el.scrollIntoView({ block: "start" }));
       for (const target of await filters.locator("button").all()) {
@@ -76,7 +82,7 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       await page.waitForFunction(() => document.activeElement?.id === "catalog-results");
       assert.equal(await page.locator("#catalog-results").evaluate(el => el === document.activeElement), true, "search key moves focus to results");
       assert.ok((await page.locator("#catalog-results").boundingBox()).height >= 24, "keyboard results focus has a visible heading");
-      if (width < 1024) assert.equal(await page.locator("#catalog-filter-panel").isVisible(), false, "Enter focuses matching results and closes advanced filters");
+      assert.equal(await page.locator("#catalog-filter-panel").isVisible(), false, "Enter focuses matching results and closes advanced filters");
       const cards = page.locator(".dufynd-catalog-card");
       assert.equal(await cards.count(), 2);
       await cards.nth(0).getByRole("button", { name: /für Vergleich auswählen/ }).click();
