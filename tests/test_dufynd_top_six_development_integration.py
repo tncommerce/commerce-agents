@@ -27,6 +27,10 @@ def read(path: Path) -> dict:
 def test_only_six_exact_routes_are_integrated_and_all_other_rows_are_preserved() -> None:
     integration = read(PACKET / "development-integration.json")
     ids, products = set(integration["offer_ids"]), set(integration["product_ids"])
+    # Later additive wave has its own exact four-row preservation/source gate.
+    # Remove only that reviewed delta when checking this historical six-row wave.
+    wave2 = read(Path("artifacts/dufynd-top-wave2-offers-20261026/development-integration.json"))
+    later_ids, later_products = set(wave2["offer_ids"]), set(wave2["product_ids"])
     for name, key in (
         ("merchant_offers.json", "offers"),
         ("merchant_partners.json", "partners"),
@@ -35,21 +39,26 @@ def test_only_six_exact_routes_are_integrated_and_all_other_rows_are_preserved()
         rows = read(DATA / name)[key]
         if key == "offers":
             existing_updates = set(integration.get("allowed_existing_offer_updates", []))
-            preserved = [x for x in rows if x["offer_id"] not in ids | existing_updates]
+            preserved = [
+                x for x in rows if x["offer_id"] not in ids | existing_updates | later_ids
+            ]
             assert len([x for x in rows if x["offer_id"] in ids]) == 6
         elif key == "partners":
             preserved = [x for x in rows if x["merchant_id"] != "top-parfuemerie"]
             top = next(x for x in rows if x["merchant_id"] == "top-parfuemerie")
             assert top["status"] == "active_product_deeplink_only" and top["affiliate_url"] is None
-            assert set(top["verified_product_scope"]) == products
-            assert len(top["verified_feed_routes"]) == 6
+            assert set(top["verified_product_scope"]) == products | later_products
+            assert len(top["verified_feed_routes"]) == 6 + len(later_ids)
         else:
             preserved = [
                 x
                 for x in rows
-                if not (x["merchant"] == "top-parfuemerie" and x["product_id"] in products)
+                if not (
+                    x["merchant"] == "top-parfuemerie"
+                    and x["product_id"] in products | later_products
+                )
             ]
-            assert len(rows) - len(preserved) == 6
+            assert len(rows) - len(preserved) == 6 + len(later_ids)
         encoded = json.dumps(
             preserved, ensure_ascii=False, sort_keys=True, separators=(",", ":")
         ).encode()

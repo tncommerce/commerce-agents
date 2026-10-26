@@ -1,0 +1,42 @@
+{
+  "checked_at": "2026-10-26T15:29:38.402697+00:00",
+  "mode": "OFFLINE_TARGETED_TESTS_AND_REAL_CANONICAL_DRY_RUN",
+  "pytest_command": "python -m pytest -q tests/test_dufynd_top_wave2_development.py tests/test_dufynd_top_six_development_integration.py::test_only_six_exact_routes_are_integrated_and_all_other_rows_are_preserved tests/test_dufynd_top_parfuemerie_mapping_canonical.py tests/test_scentai_release_feed_activation_queue.py::test_current_release01_perfumetrader_variant_audit_matches_repo_sources",
+  "pytest_result": "12 passed in 0.35s",
+  "new_tests": 8,
+  "affected_existing_contract_tests": 4,
+  "ruff_result": "All checks passed!",
+  "diff_check": "passed",
+  "normal_cli_result": {
+    "status": "DRY_RUN_ONLY",
+    "batch_id": "top-wave2-20261026T151915Z",
+    "batch_sha256": "ef5d1eba49e49980f6c43a062069594d69bf8850417c8653194fc2c6e4296973",
+    "count": 4,
+    "offers": [
+      {
+        "offer_id": "top-parfuemerie-montblanc-explorer-edp-100",
+        "decision": "verified"
+      },
+      {
+        "offer_id": "top-parfuemerie-creed-aventus-edp-100",
+        "decision": "verified"
+      },
+      {
+        "offer_id": "top-parfuemerie-prada-lhomme-edt-100",
+        "decision": "verified"
+      },
+      {
+        "offer_id": "top-parfuemerie-xerjoff-naxos-edp-100-gift-box",
+        "decision": "verified"
+      }
+    ],
+    "publication_change": false,
+    "affiliate_link_change": false
+  },
+  "affiliate_clickouts": 0,
+  "cart_actions": 0,
+  "sql_writes": 0,
+  "production_deployments": 0,
+  "full_ci_run": false,
+  "image_approval_changed": false
+}

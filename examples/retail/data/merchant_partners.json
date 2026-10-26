@@ -62,14 +62,18 @@
       "status": "active_product_deeplink_only",
       "affiliate_url": null,
       "last_verified_at": "2026-10-26T12:39:33+00:00",
-      "description": "Awin product-feed routes active only for six individually source-verified SKUs; no merchant-homepage route.",
+      "description": "Reviewed ten-product scope in development; production release remains gated.",
       "verified_product_scope": [
         "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
         "SC-RABANNE-1-MILLION-EDT-100",
         "SC-ARMANI-SWY-INTENSELY-100",
         "SC-PDM-LAYTON-125",
         "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
-        "SC-PDM-ALTHAIR-125"
+        "SC-PDM-ALTHAIR-125",
+        "SC-MONTBLANC-EXPLORER-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-PRADA-LHOMME-100",
+        "SC-XERJOFF-NAXOS-100"
       ],
       "live_routing_allowed": true,
       "routing_scope": "verified_product_only",
@@ -131,6 +135,46 @@
           "aw_product_id": "37127265511",
           "affiliate_url": "https://www.awin1.com/pclick.php?p=37127265511&a=3099222&m=31081",
           "product_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-MONTBLANC-EXPLORER-100",
+          "merchant_product_id": "849457",
+          "aw_product_id": "37127262224",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=37127262224&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/montblanc-explorer-edp-nat-spray",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-CREED-AVENTUS-100",
+          "merchant_product_id": "827407",
+          "aw_product_id": "37127260323",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=37127260323&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/creed-aventus-edp-nat-spray",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-PRADA-LHOMME-100",
+          "merchant_product_id": "815682",
+          "aw_product_id": "43999996888",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=43999996888&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/prada-l-homme-prada-edt-nat-spray",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-XERJOFF-NAXOS-100",
+          "merchant_product_id": "836129",
+          "aw_product_id": "46356123604",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=46356123604&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/xerjoff-1861-naxos-edp-spray-gift-box",
           "feed_id": "91379",
           "advertiser_id": "31081",
           "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"

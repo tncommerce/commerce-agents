@@ -1,0 +1,17 @@
+{
+  "README.md": "ec3ec80f0e06c8585f9662665044906fce80c9c7c86c7d854dff1ff4f0ee5f47",
+  "batch-input.json": "179292be4769529a85e4727a6750859173de4482b4c7346b100b7ae43a62a4ef",
+  "canonical-development-dry-run.json": "559be95e05b5a2f0266cb8f3ca6ec325a61d9dc7d990d89f8d49bf375de2fa1c",
+  "current-feed-evidence.json": "b0a40fb8e37a739a74f1dbc033c0fb397b7f1713e0842be71cd822d0fe3759c3",
+  "customer-preview.json": "a110037155a23731986f188c20c2f20d0b9666b2b76b74f5748b393c93cb1e8e",
+  "development-integration.json": "d8bc9e19811819c2ba08f9b1fae5e833346bcc5779c72e5fb6c2c8f09d3d7c7e",
+  "identifier-corroboration.json": "46f11b5791faa6439ebfdf5698051ce4cbc7191221ee3eb5d65c76fd99eda0be",
+  "merchant-browser-observations.json": "e1a76ffe466472a95c56463ced32bad1ce4738a366b3b589d1be23e0a2bf2772",
+  "prada-manufacturer-identity.json": "5698e3a77cb9f7dba30d820e1f1e214cd0b0dfa8a72bc68ecefa920295e36a66",
+  "proposed-mappings.json": "000bd970277b7616810a180071a0dea2cfea36904ba08438159a12ffccfd8978",
+  "proposed-offers.json": "3c963b8ae9e217686b5f1733fbf339c8bf1af7692b2af1a1d88bda592a5c5437",
+  "proposed-partner.json": "d14da46b5869ef8346b28c2c0eb2df8499dfad03f0b8afe23318dbeee7cd1443",
+  "shipping-browser-observation.json": "0a819632737b7f2b4d4e289a1d3c0907d3b81fcfbc2e6458723bfdf1898ecc39",
+  "source-run.json": "ef487d96e923cfeb72c918ab2fd329ac80503f4ac3825f146c4dca3e2198a883",
+  "validation.json": "bbd8bfbbc8d426a0453e41459c1b63318cc6c1c80b6f33068d20dac18fce469d"
+}
