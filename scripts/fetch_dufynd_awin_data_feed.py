@@ -3,13 +3,14 @@ from __future__ import annotations
 import argparse
 import csv
 import gzip
+import hashlib
 import io
 import json
 import os
 from datetime import UTC, datetime
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urlparse
+from urllib.parse import parse_qsl, quote, urlparse
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 DEFAULT_LIST_MAX_BYTES = 8 * 1024 * 1024
@@ -20,16 +21,114 @@ ALLOWED_FEED_HOSTS = {
 }
 
 
+def _validate_feed_download_url(url: str, *, feed_id: str, api_key: str | None = None) -> None:
+    """Bind a secret-bearing Awin download URL to its selected feed identity.
+
+    The authenticated list row may contain a URL for a *different* feed.
+    A host-only check could download that feed and mislabel its provenance.
+    """
+    parsed = urlparse(url)
+    try:
+        valid_host = (
+            url == url.strip()
+            and not any(ord(char) < 32 or ord(char) == 127 for char in url)
+            and parsed.scheme == "https"
+            and parsed.hostname in ALLOWED_FEED_HOSTS
+            and parsed.username is None
+            and parsed.password is None
+            and parsed.port is None
+            and not parsed.fragment
+        )
+    except ValueError:
+        valid_host = False
+    if not valid_host:
+        raise ValueError("awin_feed_download_host_not_allowed")
+
+    segments = parsed.path.split("/")
+    # Official legacy product feed: /datafeed/download/apikey/<key>/fid/<id>/...
+    # A valid feed ID on an arbitrary same-host path is not source provenance.
+    if (
+        len(segments) < 7
+        or segments[:4] != ["", "datafeed", "download", "apikey"]
+        or not segments[4]
+        or segments[5] != "fid"
+    ):
+        raise ValueError("awin_feed_download_path_invalid")
+    if api_key is not None and segments[4] != quote(api_key, safe=""):
+        raise ValueError("awin_feed_download_api_key_mismatch")
+    positions = [i for i, segment in enumerate(segments) if segment == "fid"]
+    if (
+        len(positions) != 1
+        or positions[0] + 1 >= len(segments)
+        or segments[positions[0] + 1] != feed_id
+    ):
+        raise ValueError("awin_feed_download_feed_id_mismatch")
+    # A correct feed ID in the path does not authorize a second credential
+    # in the query. Different URL parsers/backends may prioritize query API
+    # keys over the selected publisher key, silently changing source identity.
+    try:
+        query_pairs = parse_qsl(parsed.query, keep_blank_values=True, strict_parsing=True)
+    except ValueError:
+        raise ValueError("awin_feed_download_query_malformed") from None
+    if any(key.casefold().replace("_", "").replace("-", "") == "apikey" for key, _ in query_pairs):
+        raise ValueError("awin_feed_download_query_api_key_override")
+    # No conflicting or repeated feed-ID override may supplement the path.
+    query_feed_ids = [value for key, value in query_pairs if key.casefold() == "fid"]
+    if query_feed_ids and query_feed_ids != [feed_id]:
+        raise ValueError("awin_feed_download_feed_id_mismatch")
+
+
 class AwinRedirectHandler(HTTPRedirectHandler):
+    def __init__(
+        self,
+        *,
+        expected_feed_id: str | None = None,
+        expected_list_api_key: str | None = None,
+    ) -> None:
+        super().__init__()
+        self.expected_feed_id = expected_feed_id
+        self.expected_list_api_key = expected_list_api_key
+
     def redirect_request(self, req, fp, code, msg, headers, newurl):
         parsed = urlparse(newurl)
-        if (
-            parsed.scheme != "https"
-            or parsed.hostname not in ALLOWED_FEED_HOSTS
-            or parsed.username is not None
-            or parsed.password is not None
-        ):
+        try:
+            valid_host = (
+                not any(ord(char) < 32 or ord(char) == 127 for char in newurl)
+                and parsed.scheme == "https"
+                and parsed.hostname in ALLOWED_FEED_HOSTS
+                and parsed.username is None
+                and parsed.password is None
+                and parsed.port is None
+                and not parsed.fragment
+            )
+        except ValueError:
+            valid_host = False
+        if not valid_host:
             raise ValueError("awin_redirect_host_not_allowed")
+        if self.expected_list_api_key is not None:
+            # Keep the authenticated publisher feed-list identity even across
+            # allowed Awin hosts. Never include the actual key in an error.
+            expected_path = "/datafeed/list/apikey/" + quote(self.expected_list_api_key, safe="")
+            try:
+                for candidate in (req.full_url, newurl):
+                    source = urlparse(candidate)
+                    params = parse_qsl(source.query, keep_blank_values=True, strict_parsing=True)
+                    if source.path.rstrip("/") != expected_path or any(
+                        name.casefold() in {"apikey", "api_key", "key", "fid"} for name, _ in params
+                    ):
+                        raise ValueError("invalid_feed_list_redirect")
+            except ValueError:
+                raise ValueError("awin_redirect_feed_list_identity_mismatch") from None
+        if self.expected_feed_id is not None:
+            try:
+                _validate_feed_download_url(req.full_url, feed_id=self.expected_feed_id)
+                _validate_feed_download_url(newurl, feed_id=self.expected_feed_id)
+                # Same Awin hosts and feed ID do not prove the selected
+                # publisher key survived the redirect. Never log its value.
+                if urlparse(req.full_url).path.split("/")[4] != parsed.path.split("/")[4]:
+                    raise ValueError("awin_redirect_api_key_mismatch")
+            except ValueError:
+                raise ValueError("awin_redirect_feed_id_mismatch") from None
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
@@ -62,7 +161,20 @@ def parse_feed_list(
     payload: bytes, *, max_bytes: int = DEFAULT_LIST_MAX_BYTES
 ) -> list[dict[str, str]]:
     decoded = _maybe_decompress(payload, max_bytes=max_bytes).decode("utf-8-sig")
-    return list(csv.DictReader(io.StringIO(decoded)))
+    reader = csv.DictReader(io.StringIO(decoded))
+    headers = reader.fieldnames or []
+    normalized = [_normalize_header(header or "") for header in headers]
+    # Awin field lookups intentionally normalize punctuation and whitespace.
+    # Two raw headings resolving to one normalized key create ambiguous
+    # advertiser/feed identities and must never be silently overwritten.
+    if not normalized or any(not name for name in normalized):
+        raise ValueError("awin_feed_list_missing_column_name")
+    if len(normalized) != len(set(normalized)):
+        raise ValueError("awin_feed_list_duplicate_normalized_headers")
+    rows = list(reader)
+    if any(None in row for row in rows):
+        raise ValueError("awin_feed_list_row_exceeds_declared_columns")
+    return rows
 
 
 def find_feed(
@@ -71,13 +183,17 @@ def find_feed(
     advertiser_id: str,
     feed_id: str,
 ) -> dict[str, str]:
-    for row in rows:
-        if (
-            _row_value(row, "Advertiser ID") == advertiser_id
-            and _row_value(row, "Feed ID") == feed_id
-        ):
-            return row
-    raise ValueError("target_awin_feed_not_found")
+    matching = [
+        row
+        for row in rows
+        if _row_value(row, "Advertiser ID") == advertiser_id
+        and _row_value(row, "Feed ID") == feed_id
+    ]
+    if not matching:
+        raise ValueError("target_awin_feed_not_found")
+    if len(matching) != 1:
+        raise ValueError("target_awin_feed_ambiguous_duplicate")
+    return matching[0]
 
 
 def sanitized_feed_metadata(row: dict[str, str]) -> dict[str, str | bool]:
@@ -98,7 +214,13 @@ def sanitized_feed_metadata(row: dict[str, str]) -> dict[str, str | bool]:
     }
 
 
-def _read_url(url: str, *, max_bytes: int) -> bytes:
+def _read_url(
+    url: str,
+    *,
+    max_bytes: int,
+    expected_feed_id: str | None = None,
+    expected_list_api_key: str | None = None,
+) -> bytes:
     request = Request(
         url,
         headers={
@@ -107,7 +229,12 @@ def _read_url(url: str, *, max_bytes: int) -> bytes:
         },
     )
     try:
-        with build_opener(AwinRedirectHandler()).open(request, timeout=60) as response:
+        with build_opener(
+            AwinRedirectHandler(
+                expected_feed_id=expected_feed_id,
+                expected_list_api_key=expected_list_api_key,
+            )
+        ).open(request, timeout=60) as response:
             chunks: list[bytes] = []
             total = 0
             while True:
@@ -138,7 +265,14 @@ def download_feed_from_list(
         raise ValueError("awin_data_feed_api_key_required")
 
     list_url = "https://productdata.awin.com/datafeed/list/apikey/" + quote(api_key, safe="")
-    rows = parse_feed_list(_read_url(list_url, max_bytes=list_max_bytes), max_bytes=list_max_bytes)
+    rows = parse_feed_list(
+        _read_url(
+            list_url,
+            max_bytes=list_max_bytes,
+            expected_list_api_key=api_key,
+        ),
+        max_bytes=list_max_bytes,
+    )
     row = find_feed(rows, advertiser_id=advertiser_id, feed_id=feed_id)
     metadata = sanitized_feed_metadata(row)
 
@@ -146,9 +280,7 @@ def download_feed_from_list(
         raise ValueError("awin_program_membership_not_joined")
 
     download_url = _row_value(row, "URL")
-    parsed = urlparse(download_url)
-    if parsed.scheme != "https" or parsed.hostname not in ALLOWED_FEED_HOSTS:
-        raise ValueError("awin_feed_download_host_not_allowed")
+    _validate_feed_download_url(download_url, feed_id=feed_id, api_key=api_key)
 
     report = {
         "version": 1,
@@ -157,17 +289,22 @@ def download_feed_from_list(
         **metadata,
         "downloaded": False,
         "downloaded_bytes": 0,
+        "download_sha256": None,
         "secrets_logged": False,
     }
 
     if output_path is not None:
         feed_payload = _maybe_decompress(
-            _read_url(download_url, max_bytes=feed_max_bytes), max_bytes=feed_max_bytes
+            _read_url(download_url, max_bytes=feed_max_bytes, expected_feed_id=feed_id),
+            max_bytes=feed_max_bytes,
         )
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(feed_payload)
         report["downloaded"] = True
         report["downloaded_bytes"] = len(feed_payload)
+        # Bind the Awin list metadata to exactly the file handed to offline
+        # reviewers; the hash is not a source/rights/price endorsement.
+        report["download_sha256"] = hashlib.sha256(feed_payload).hexdigest()
 
     if report_path is not None:
         report_path.parent.mkdir(parents=True, exist_ok=True)

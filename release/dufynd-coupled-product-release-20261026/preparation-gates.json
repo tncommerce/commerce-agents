@@ -1,0 +1,157 @@
+{
+  "observed_at": "2026-10-26T15:11:37.943Z",
+  "production_sha": "7b793cf7ce1223967e66d768fcb7930ecdfc0e40",
+  "pulls": [
+    {
+      "number": 836,
+      "head": "d953d3ad6aff48fe915c298acc40fdd352c94f81",
+      "head_ref": "dufynd-visual-first-reset-20261023",
+      "base": "7b793cf7ce1223967e66d768fcb7930ecdfc0e40",
+      "draft": true,
+      "mergeable": true,
+      "mergeable_state": "blocked",
+      "private_repository": false
+    },
+    {
+      "number": 837,
+      "head": "2374ae55c08da75a693656d5571ace1c912f49e3",
+      "head_ref": "feature/dufynd-runtime-offer-data-lane-20261023",
+      "base": "7b793cf7ce1223967e66d768fcb7930ecdfc0e40",
+      "draft": true,
+      "mergeable": true,
+      "mergeable_state": "blocked",
+      "private_repository": false
+    }
+  ],
+  "required_ruleset": {
+    "id": 25193573,
+    "name": "Protect scentai-mvp",
+    "target": "branch",
+    "source_type": "Repository",
+    "source": "tncommerce/commerce-agents",
+    "enforcement": "active",
+    "conditions": {
+      "ref_name": {
+        "exclude": [],
+        "include": [
+          "refs/heads/scentai-mvp"
+        ]
+      }
+    },
+    "rules": [
+      {
+        "type": "deletion"
+      },
+      {
+        "type": "non_fast_forward"
+      },
+      {
+        "type": "pull_request",
+        "parameters": {
+          "required_approving_review_count": 0,
+          "dismiss_stale_reviews_on_push": false,
+          "required_reviewers": [],
+          "require_code_owner_review": false,
+          "require_last_push_approval": false,
+          "required_review_thread_resolution": true,
+          "require_extra_approval_for_unattributed_changes": true,
+          "allowed_merge_methods": [
+            "merge",
+            "squash",
+            "rebase"
+          ]
+        }
+      },
+      {
+        "type": "required_status_checks",
+        "parameters": {
+          "strict_required_status_checks_policy": false,
+          "do_not_enforce_on_create": false,
+          "required_status_checks": [
+            {
+              "context": "web",
+              "integration_id": 15368
+            },
+            {
+              "context": "python (3.11)",
+              "integration_id": 15368
+            },
+            {
+              "context": "python (3.12)",
+              "integration_id": 15368
+            },
+            {
+              "context": "no-pypi-fallback",
+              "integration_id": 15368
+            },
+            {
+              "context": "budget-postgres",
+              "integration_id": 15368
+            },
+            {
+              "context": "private-broker-container",
+              "integration_id": 15368
+            }
+          ]
+        }
+      }
+    ],
+    "node_id": "RRS_lACqUmVwb3NpdG9yec5Rg43pzgGAbGU",
+    "created_at": "2026-10-15T21:48:12.507+02:00",
+    "updated_at": "2026-10-15T21:48:12.609+02:00",
+    "bypass_actors": [],
+    "current_user_can_bypass": "never",
+    "_links": {
+      "self": {
+        "href": "https://api.github.com/repos/tncommerce/commerce-agents/rulesets/25193573"
+      },
+      "html": {
+        "href": "https://github.com/tncommerce/commerce-agents/rules/25193573"
+      }
+    }
+  },
+  "actions_runs": {
+    "d953d3ad6aff48fe915c298acc40fdd352c94f81": {
+      "total_count": 0,
+      "workflow_runs": []
+    },
+    "2374ae55c08da75a693656d5571ace1c912f49e3": {
+      "total_count": 0,
+      "workflow_runs": []
+    }
+  },
+  "workflow_dispatch_verified_in_default_branch": true,
+  "workflow_dispatch_no_artifact_job": true,
+  "workflow_dispatch_no_production_observer_job": true,
+  "ci_connector_dispatch_available": false,
+  "ci_dispatch_path": "Browser: repository /actions/workflows/ci.yml -> Run workflow -> frozen existing development branch",
+  "cost_sources": [
+    "https://docs.github.com/en/actions/concepts/billing-and-usage",
+    "https://docs.github.com/en/billing/concepts/product-billing/github-actions"
+  ],
+  "cost_scope": "Public standard ubuntu runner minutes free. Parent-session authenticated browser inspection found40 cache entries approximately1.7GB, below included10GB. Existing manual CI cache writes normal; no artifact uploads on dispatch. Render costs and production rollout readiness remain unverified.",
+  "github_cache_observation": {
+    "source": "Authenticated GitHub browser inspection by parent agent in this session",
+    "date": "2026-10-26",
+    "entries": 40,
+    "approximate_total_gb": 1.7,
+    "included_allowance_gb": 10,
+    "billing_or_cache_settings_changed": false
+  },
+  "deployment_order_gate": "One Git merge does not imply simultaneous Render frontend/backend rollout. Actual deployed backend must expose all six permitted Top offers before frontend original photos become public, or an existing release flow must demonstrate that ordering without unauthorized configuration changes.",
+  "initial_snapshot_only": true,
+  "final_candidate_source_heads": {
+    "website": "d953d3ad6aff48fe915c298acc40fdd352c94f81",
+    "commerce": "d6b0e9948dd4708601f7fafcad30f28d370f8061",
+    "jarvis": "8a32220fef2c05e4aa6051314fe2642d38b83d1c"
+  },
+  "final_candidate_counts": {
+    "public_profiles": 37,
+    "approved_original_photos": 10,
+    "private_next_wave_image_candidates_pending_visual_owner_acceptance": 4,
+    "new_top_offers_prepared": 10,
+    "new_top_offers_live_confirmed_by_this_packet": 0
+  },
+  "superseded_commerce_parent": "2374ae55c08da75a693656d5571ace1c912f49e3",
+  "newer_live_rabanne_source": "live-source-state.json; observed timestamp must not be overwritten or displaced by an older static fallback"
+}

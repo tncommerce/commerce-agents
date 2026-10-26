@@ -146,17 +146,6 @@
       "gtin": null
     },
     {
-      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
-      "merchant": "top-parfuemerie",
-      "merchant_product_id": "924719",
-      "ean": "3770010614630",
-      "gtin": "3770010614630",
-      "mapping_status": "verified_current_variant",
-      "verified_at": "2026-09-22",
-      "evidence_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
-      "evidence_note": "Awin feed product 38332629354 maps merchant product 924719 to Bois Impérial EDP; EAN 3770010614630 independently cross-verifies the refillable 100 ml variant."
-    },
-    {
       "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
       "merchant": "douglas",
       "merchant_product_id": "3001034674",
@@ -786,6 +775,126 @@
       "verified_at": "2026-10-01",
       "evidence_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
       "evidence_note": "Notino DE exact Libre Eau de Parfum 90 ml refillable bottle revalidated immediately before explicitly approved product-scoped live routing; merchant code VZR11010. Affiliate routing does not grant image rights."
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "924719",
+      "ean": "3770010614630",
+      "gtin": "3770010614630",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T12:41:59.016Z",
+      "evidence_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+      "evidence_note": "Current direct browser selected SKU and exact size; GTIN is inherited from the historical exact-variant/merchant-gallery evidence, not present in the current Awin feed.",
+      "inherited_gtin_source": "examples/retail/data/dufynd_affiliate_release_last_mile_20261012.json"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "707368",
+      "ean": "3349666007921",
+      "gtin": "3349666007921",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T12:42:33.944Z",
+      "evidence_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+      "evidence_note": "Current direct browser selected SKU and exact size; GTIN is inherited from the historical exact-variant/merchant-gallery evidence, not present in the current Awin feed.",
+      "inherited_gtin_source": "examples/retail/data/dufynd_affiliate_release_last_mile_20261012.json"
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "849484",
+      "ean": "3614272225718",
+      "gtin": "3614272225718",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T12:42:36.944Z",
+      "evidence_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
+      "evidence_note": "Current direct browser selected SKU and exact size; GTIN is inherited from the historical exact-variant/merchant-gallery evidence, not present in the current Awin feed.",
+      "inherited_gtin_source": "examples/retail/data/dufynd_affiliate_release_last_mile_20261012.json"
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "812773",
+      "ean": "3700578502322",
+      "gtin": "3700578502322",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T12:42:52.569Z",
+      "evidence_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
+      "evidence_note": "Current direct browser selected SKU and exact size; GTIN is inherited from the historical exact-variant/merchant-gallery evidence, not present in the current Awin feed.",
+      "inherited_gtin_source": "examples/retail/data/dufynd_affiliate_release_last_mile_20261012.json"
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "897029",
+      "ean": "3614273790826",
+      "gtin": "3614273790826",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T12:43:08.570Z",
+      "evidence_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
+      "evidence_note": "Current direct browser selected SKU and exact size; GTIN is inherited from the historical exact-variant/merchant-gallery evidence, not present in the current Awin feed.",
+      "inherited_gtin_source": "examples/retail/data/dufynd_affiliate_release_last_mile_20261012.json"
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "904707",
+      "ean": "3700578504364",
+      "gtin": "3700578504364",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T12:43:32.589Z",
+      "evidence_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
+      "evidence_note": "Current direct browser selected SKU and exact size; GTIN is inherited from the historical exact-variant/merchant-gallery evidence, not present in the current Awin feed.",
+      "inherited_gtin_source": "examples/retail/data/dufynd_photo_integration_review.json holds[SC-PDM-ALTHAIR-125] gallery 904707_3700578504364_052.png"
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "849457",
+      "ean": "3386460101035",
+      "gtin": "3386460101035",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T15:16:31.046Z",
+      "evidence_url": "https://www.topparfuemerie.de/montblanc-explorer-edp-nat-spray",
+      "evidence_note": "Current direct browser binds selected100ml SKU, concentration and gallery; separate identifier-corroboration.json binds GTIN. GTIN is not present in current feed fields.",
+      "gtin_evidence_url": "https://www.shop-apotheke.com/beauty/upmPHMRG7/montblanc-eau-de-parfum.htm"
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "827407",
+      "ean": "3508441001114",
+      "gtin": "3508441001114",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T15:16:55.610Z",
+      "evidence_url": "https://www.topparfuemerie.de/creed-aventus-edp-nat-spray",
+      "evidence_note": "Current direct browser binds selected100ml SKU, concentration and gallery; separate identifier-corroboration.json binds GTIN. GTIN is not present in current feed fields.",
+      "gtin_evidence_url": "https://www.careofcarl.de/de/creed-aventus-eau-de-parfum-100ml"
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "815682",
+      "ean": "8435137749607",
+      "gtin": "8435137749607",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T15:18:10.671Z",
+      "evidence_url": "https://www.topparfuemerie.de/prada-l-homme-prada-edt-nat-spray",
+      "evidence_note": "Current direct browser binds selected100ml SKU, concentration and gallery; separate identifier-corroboration.json binds GTIN. GTIN is not present in current feed fields.",
+      "gtin_evidence_url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html"
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "merchant": "top-parfuemerie",
+      "merchant_product_id": "836129",
+      "ean": "8033488155070",
+      "gtin": "8033488155070",
+      "mapping_status": "verified_current_variant",
+      "verified_at": "2026-10-26T15:19:15.629Z",
+      "evidence_url": "https://www.topparfuemerie.de/xerjoff-1861-naxos-edp-spray-gift-box",
+      "evidence_note": "Current direct browser binds selected100ml SKU, concentration and gallery; separate identifier-corroboration.json binds GTIN. GTIN is not present in current feed fields.",
+      "gtin_evidence_url": "https://monparfum.de/Xerjoff-Naxos-Eau-de-Parfum-100ml"
     }
   ]
 }

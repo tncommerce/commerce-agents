@@ -9,6 +9,7 @@ import pytest
 from pydantic import ValidationError
 
 from retail.api.merchant_offers import (
+    MerchantOffer,
     MerchantOfferStore,
     customer_offer_payload,
     offer_clickout_target,
@@ -80,7 +81,9 @@ def test_invalid_offer_cannot_supply_the_requested_product(tmp_path, verified, i
     fixture.write_text(json.dumps({"offers": [row]}))
     store = MerchantOfferStore(fixture)
     if invalid == "missing_timestamp":
+        # The source contract remains invalid; the store now rejects the
+        # complete malformed catalog instead of leaking a buyer-facing 500.
         with pytest.raises(ValidationError):
-            store.offers_for(verified["product_id"], now=checked)
-    else:
-        assert store.offers_for(verified["product_id"], now=checked) == []
+            MerchantOffer.model_validate(row)
+        assert store.eligible_offer(verified["offer_id"], now=checked) is None
+    assert store.offers_for(verified["product_id"], now=checked) == []
