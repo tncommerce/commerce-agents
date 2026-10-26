@@ -1,0 +1,9 @@
+{
+  "dry-run.json": "a9fe83579416cb73fb76c9ef033ed9ff2168cee29d7fbb1907709c3da3fdab56",
+  "README.md": "9fdce2faf9545c3b9ca95e150c22dfced3e7cc4bf8a5d15baf92a694697a08b7",
+  "verify-candidate.py": "5048df5a4ca5de1c0d5dcb6c42dd71391670c6ac4c18ec26cb78651e10c339a3",
+  "canonical-before.json": "bf6eef4e09b376aec3f67d32876ac1852a7bf57b4b5df0b928258b563fb6b21f",
+  "batch-input.json": "b61f042c5bad24d89082f0a574fe35c3441f9a15242aaef20adb448df312fc80",
+  "validation.json": "4dd93e4cb472501a464f174d996e6e2615b907baf586f971e095b0e350be1d55",
+  "source-observation.json": "33bc4ae6d945a1b74e52bf07c88f6b78eb194361a39b327a9b162631ba857e71"
+}
