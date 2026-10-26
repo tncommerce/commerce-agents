@@ -17,11 +17,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import parse_qsl, unquote, urlsplit
 
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X25519PublicKey
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-from cryptography.hazmat.primitives.kdf.hkdf import HKDF
-
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "examples"))
 from retail.api.merchant_feed_reader import read_merchant_feed_rows  # noqa: E402
@@ -180,6 +175,12 @@ def extract_rows(rows: list[dict], secret: str = "") -> dict:
 
 
 def encrypt_report(report: dict, recipient: bytes) -> bytes:
+    # The shared field/URL validators also support a stdlib-only review export.
+    from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey, X25519PublicKey
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+    from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+
     public = X25519PublicKey.from_public_bytes(recipient)
     ephemeral = X25519PrivateKey.generate()
     ephemeral_public = ephemeral.public_key().public_bytes_raw()
