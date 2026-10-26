@@ -59,10 +59,83 @@
     {
       "merchant_id": "top-parfuemerie",
       "merchant_name": "top Parfümerie",
-      "status": "pending_affiliate_link",
+      "status": "active_product_deeplink_only",
       "affiliate_url": null,
-      "last_verified_at": null,
-      "description": "Parfum und Beauty"
+      "last_verified_at": "2026-10-26T12:39:33+00:00",
+      "description": "Awin product-feed routes active only for six individually source-verified SKUs; no merchant-homepage route.",
+      "verified_product_scope": [
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-RABANNE-1-MILLION-EDT-100",
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-PDM-LAYTON-125",
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+        "SC-PDM-ALTHAIR-125"
+      ],
+      "live_routing_allowed": true,
+      "routing_scope": "verified_product_only",
+      "tracking_strategy": "verified_awin_feed_product_link",
+      "verified_feed_routes": [
+        {
+          "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+          "merchant_product_id": "924719",
+          "aw_product_id": "38332629354",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=38332629354&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+          "merchant_product_id": "707368",
+          "aw_product_id": "37127263142",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=37127263142&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+          "merchant_product_id": "849484",
+          "aw_product_id": "37127260028",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=37127260028&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-PDM-LAYTON-125",
+          "merchant_product_id": "812773",
+          "aw_product_id": "37127262708",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=37127262708&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+          "merchant_product_id": "897029",
+          "aw_product_id": "37127264452",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=37127264452&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        },
+        {
+          "product_id": "SC-PDM-ALTHAIR-125",
+          "merchant_product_id": "904707",
+          "aw_product_id": "37127265511",
+          "affiliate_url": "https://www.awin1.com/pclick.php?p=37127265511&a=3099222&m=31081",
+          "product_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
+          "feed_id": "91379",
+          "advertiser_id": "31081",
+          "source_feed_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+        }
+      ]
     },
     {
       "merchant_id": "notino",

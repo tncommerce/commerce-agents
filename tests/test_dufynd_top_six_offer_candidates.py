@@ -110,8 +110,12 @@ def test_missing_sku_and_duplicate_bindings_cannot_supply_exact_identity() -> No
     assert not approved_affiliate_route(offer, {"partners": [partner]})
 
 
-def test_pending_live_partner_cannot_use_proposed_routes_and_expiry_is_real() -> None:
+def test_pending_partner_cannot_use_proposed_routes_and_expiry_is_real() -> None:
     actual = json.loads((DATA / "merchant_partners.json").read_text())
+    # Explicit negative fixture: the reviewed six-SKU scope may now be present
+    # in development, but reverting this merchant to pending must still block.
+    top = next(x for x in actual["partners"] if x["merchant_id"] == "top-parfuemerie")
+    top["status"] = "pending_affiliate_link"
     for offer in read("proposed-offers.json")["offers"]:
         assert not approved_affiliate_route(offer, actual)
     with pytest.raises(ValueError, match="expired_or_future_source"):

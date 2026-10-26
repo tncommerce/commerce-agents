@@ -1,6 +1,7 @@
 # Libre 90 ml: freigegebene Angebotsidentität, frischer Datenkandidat
 
-**Vorbereitet, nicht angewendet.** Die öffentliche DUFYND-API lieferte am
+**Im Draft-Entwicklungsstand integriert, nicht produktiv veröffentlicht.**
+Die öffentliche DUFYND-API lieferte am
 26.10.2026 um 11:39:34 Uhr Berlin kein kaufbares Libre-Angebot. Der kanonische
 Notino-Beleg vom 20.10. war abgelaufen. Dies ist kein Nachweis eines Codefehlers.
 
@@ -55,13 +56,23 @@ Die vorhandene Grenze ist bis zu diesem Zeitpunkt inklusive gültig, danach
 abgelaufen. Eine Freigabe nach Ablauf benötigt eine neue echte Händlerbeobachtung;
 dieses Paket darf nicht durch Änderung nur des Zeitstempels verlängert werden.
 
-## Anwendung erst nach konkretem Owner-GO
+## Statischer Entwicklungsweg und spätere Produktivfreigabe
 
-Dieser Commit verändert keine kanonischen Angebotsdaten, produktiven Tabellen,
-Routing-Flags, Migrationen oder Umgebungsvariablen. `decision: verified` bestätigt
-die vorbereitete Quellenbeobachtung, keine Produktivaktivierung.
+Das bestehende kanonische Entwicklungsangebot wurde auf den echten Chrome-
+Prüfzeitpunkt vom 26.10. fortgeschrieben. Preis 130 EUR, Versand 0 EUR, Bestand,
+Produktidentität und CJ-Route bleiben unverändert. `development-integration.json`
+belegt, dass ausschließlich `last_updated_at` verändert wurde. Zwei neue Tests
+bestätigen den normalen statischen Kundenpayload und den Ablauf nach 72 Stunden;
+die zwölf vorherigen Kandidatenprüfungen wurden nicht wiederholt.
 
-Vor einem gesondert genehmigten Import muss die ausführende Stelle:
+Bei deaktivierter Runtime benötigt dieser statische Weg **keine SQL-Migration**.
+Produktion, Datenbank, Routing-Umgebungsvariablen und andere Händlerangebote
+wurden nicht geändert. Merge/Deployment bleiben einem konkreten Owner-GO
+vorbehalten. Ist für Notino die Runtime-Schicht aktiviert, verlangt sie weiterhin
+gültige DB-Snapshots; der statische Beleg umgeht diesen Schutz nicht.
+
+Nur für einen optionalen, gesondert genehmigten Runtime-Import muss die
+ausführende Stelle:
 
 1. Die aktuelle Basis und den Rollout von PR #837 samt notwendiger Migration und
    Runtime-Konfiguration prüfen. Ein vorbereiteter Datensatz aktiviert diese
@@ -80,8 +91,9 @@ Vor einem gesondert genehmigten Import muss die ausführende Stelle:
 
 ## Rücknahme vorbereiten
 
-Dieses Paket hat nichts zu löschen oder zurückzusetzen. Für einen späteren
-genehmigten Import gilt: Vorherzustand sichern, Rücknahme auf **diese eine Zeile**
+Für die statische Entwicklungsänderung enthält `development-integration.json`
+den alten und neuen Prüfzeitpunkt. Für einen späteren genehmigten Runtime-Import
+gilt: Vorherzustand sichern, Rücknahme auf **diese eine Zeile**
 begrenzen und nur ausführen, wenn die aktuelle Zeile noch exakt dem importierten
 Beleg entspricht. Bei zwischenzeitlich neuerem Händlerbeleg anhalten, ihn nicht
 überschreiben. Existierte zuvor eine Zeile, ihren tatsächlich gesicherten Inhalt
