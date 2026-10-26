@@ -73,7 +73,7 @@ def clean(value: str, secret: str) -> bool:
     return False
 
 
-def safe_field_url(value: str, field: str, secret: str) -> bool:
+def safe_field_url(value: str, field: str, secret: str, targets: dict = TARGETS) -> bool:
     """Reuse existing URL policy; allow the same selector for these six SKUs."""
     if safe_url(value, field, secret):
         return True
@@ -86,14 +86,21 @@ def safe_field_url(value: str, field: str, secret: str) -> bool:
         return (
             len(params) == 1
             and params[0][0] == "sku"
-            and params[0][1] in TARGETS
+            and params[0][1] in targets
             and safe_url(parsed._replace(query="").geturl(), field, secret)
         )
     except ValueError:
         return False
 
 
-def build_review(rows: list[dict], metadata: dict, feed_bytes: bytes, secret: str) -> dict:
+def build_review(
+    rows: list[dict],
+    metadata: dict,
+    feed_bytes: bytes,
+    secret: str,
+    *,
+    targets: dict = TARGETS,
+) -> dict:
     if not secret:
         raise ValueError("secret_scan_unavailable")
     if not (
@@ -105,14 +112,24 @@ def build_review(rows: list[dict], metadata: dict, feed_bytes: bytes, secret: st
         and metadata.get("downloaded_bytes") == len(feed_bytes)
     ):
         raise ValueError("current_feed_identity_or_bytes_not_verified")
-    selected = {sku: [] for sku in TARGETS}
+    if (
+        not targets
+        or len(targets) > 100
+        or any(
+            not re.fullmatch(r"[0-9]{1,16}", str(sku))
+            or (gtin is not None and not re.fullmatch(r"[0-9]{8,14}", str(gtin)))
+            for sku, gtin in targets.items()
+        )
+    ):
+        raise ValueError("bounded_exact_numeric_targets_required")
+    selected = {sku: [] for sku in targets}
     for row in rows:
         sku = row.get("merchant_product_id")
         if sku in selected:
             selected[sku].append(row)
     output = []
     for sku, matches in selected.items():
-        item = {"merchant_product_id": sku, "expected_gtin": TARGETS[sku]}
+        item = {"merchant_product_id": sku, "expected_gtin": targets[sku]}
         if len(matches) != 1:
             output.append({**item, "status": "HOLD", "matches": len(matches)})
             continue
@@ -126,7 +143,7 @@ def build_review(rows: list[dict], metadata: dict, feed_bytes: bytes, secret: st
             allowed = isinstance(value, str) and clean(value, secret)
             if allowed and value:
                 if name in URL_FIELDS:
-                    allowed = safe_field_url(value, URL_FIELDS[name], secret)
+                    allowed = safe_field_url(value, URL_FIELDS[name], secret, targets)
                 elif name in PATTERNS:
                     allowed = bool(re.fullmatch(PATTERNS[name], value))
                 else:
