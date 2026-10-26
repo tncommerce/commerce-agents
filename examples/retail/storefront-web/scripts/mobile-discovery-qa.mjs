@@ -10,7 +10,7 @@ import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
 export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
   const results = [];
   await mkdir(outputDir, { recursive: true });
-  for (const width of [320, 390, 768, 1440]) {
+  for (const width of [320, 390, 768, 1023, 1024, 1440]) {
     const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
     const page = await context.newPage();
     const errors = [];
@@ -38,6 +38,19 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       } });
     });
     try {
+      // A visible bottle alone is not usable discovery: the first exact product
+      // identity and variant must also fit in the first viewport.
+      const firstFoldHeight = width < 640 ? 844 : 1000;
+      await page.setViewportSize({ width, height: firstFoldHeight });
+      await page.goto(`${baseUrl}/duft?qa=1`);
+      await chooseMeasurement(page, "denied");
+      await page.evaluate(() => document.fonts.ready);
+      const firstOriginal = page.locator('.dufynd-catalog-card[data-original-photo="true"]').first();
+      const firstName = await firstOriginal.locator("h2").boundingBox();
+      const firstVariant = await firstOriginal.locator(".dufynd-product-variant").boundingBox();
+      assert.ok(firstName && firstName.y + firstName.height <= firstFoldHeight, `first exact fragrance name visible at ${width}`);
+      assert.ok(firstVariant && firstVariant.y + firstVariant.height <= firstFoldHeight, `first exact variant visible at ${width}`);
+      await page.setViewportSize({ width, height: 900 });
       await page.goto(`${baseUrl}/duft?qa=1&q=Yves%20Saint%20Laurent`);
       await chooseMeasurement(page, "denied");
       const search = page.getByRole("searchbox", { name: "Duft, Marke oder Profil" });
@@ -166,7 +179,7 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
         assert.equal(new URL(await recoveryLink.getAttribute("href"), baseUrl).searchParams.get("q"), "Yves Saint Laurent");
       }
       assert.deepEqual(errors, []);
-      results.push({ width, cases: 13, attributionWithContext: width === 390, comparisonTray: rect, offerStates: ["empty", "error", "wrong-product", "synthetic-available"] });
+      results.push({ width, cases: 14, firstName, firstVariant, attributionWithContext: width === 390, comparisonTray: rect, offerStates: ["empty", "error", "wrong-product", "synthetic-available"] });
     } finally { await context.close(); }
   }
   const event = process.env.GITHUB_EVENT_PATH

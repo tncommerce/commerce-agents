@@ -1166,17 +1166,6 @@ export default function FragranceCatalogBrowser({
       <h2 id="catalog-results" tabIndex={-1} className={styles.resultsAnchor}>
         {filtered.length} {filtered.length === 1 ? "passender Duft" : "passende Düfte"}
       </h2>
-      <details className="dufynd-brand-directory">
-        <summary>Marken A–Z <span>· {brands.length} Marken entdecken</span></summary>
-        <nav aria-label="Marken A–Z">
-          {brands.map((name) => (
-            <button key={name} type="button" aria-pressed={brand === name}
-              onClick={() => { setBrand(brand === name ? "all" : name); }}>
-              {name}<span>{fragrances.filter((item) => item.brand === name).length}</span>
-            </button>
-          ))}
-        </nav>
-      </details>
 
       {filtered.length ? (
         <>
@@ -1505,6 +1494,18 @@ export default function FragranceCatalogBrowser({
           </div>
         </section>
       )}
+      <details className="dufynd-brand-directory">
+        <summary>Marken A–Z <span>· {brands.length} Marken entdecken</span></summary>
+        <nav aria-label="Marken A–Z">
+          {brands.map((name) => (
+            <button key={name} type="button" aria-pressed={brand === name}
+              onClick={() => { setBrand(brand === name ? "all" : name); }}>
+              {name}<span>{fragrances.filter((item) => item.brand === name).length}</span>
+            </button>
+          ))}
+        </nav>
+      </details>
+
       {compareSelection.length ? (
         <aside className={styles.compareTray} aria-label="Duftvergleich vorbereiten">
           <div className={styles.trayHeading}>

@@ -556,3 +556,77 @@
   .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
     .dufynd-directory-premium [data-social-product-entry] > span:nth-child(2) strong {font-size:21px!important;}
 }
+
+/* 26.10 / Let the first results identify the perfume immediately.
+   Photographs stay unmodified; the exact brand, name and variant share their
+   row. Brand browsing follows the results instead of delaying them. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card[data-original-photo="true"] > a.group {
+  display:grid;
+  grid-template-columns:minmax(110px,.88fr) minmax(0,1.12fr);
+  column-gap:18px;
+  align-items:center;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage {
+  height:230px!important;
+  min-height:230px!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  article.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-body {
+  min-width:0;
+  padding:15px 0!important;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-catalog-card .dufynd-product-variant {
+  gap:8px 12px;
+  color:var(--ink);
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-catalog-card .dufynd-product-variant > div + div {
+  padding-left:12px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+  .dufynd-brand-directory {
+  margin-top:24px;
+}
+@media(min-width:1200px) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] section[aria-label="Passende Düfte"] {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    article.dufynd-catalog-card[data-original-photo="true"] .dufynd-catalog-card-stage {
+    height:260px!important;
+    min-height:260px!important;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card-body h2 {
+    font-size:38px;
+  }
+}
+@media(max-width:1199px) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card-body h2 {
+    font-size:28px;
+  }
+}
+@media(max-width:767px) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    .dufynd-catalog-discovery-hero.dufynd-directory-premium {
+    padding-bottom:0!important;
+    row-gap:10px;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] section[aria-label="Duftkatalog filtern"] {
+    padding-top:16px;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    article.dufynd-catalog-card[data-original-photo="true"] > a.group {
+    column-gap:16px;
+  }
+}
+@media(max-width:359px) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"]
+    article.dufynd-catalog-card[data-original-photo="true"] > a.group {
+    grid-template-columns:104px minmax(0,1fr);
+    column-gap:12px;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card-body h2 {font-size:25px;}
+}
