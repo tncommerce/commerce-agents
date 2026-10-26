@@ -630,8 +630,18 @@ def test_clickout_reads_fresh_snapshot_after_positive_listing_cache(
     runtime_offer_snapshots._cache.clear()
 
 
+@pytest.mark.parametrize(
+    ("age", "eligible"),
+    [
+        (timedelta(hours=1), True),
+        (timedelta(hours=72), True),
+        (timedelta(hours=72, seconds=1), False),
+    ],
+)
 def test_runtime_disabled_clickout_never_triggers_new_database_bypass(
     monkeypatch,
+    age,
+    eligible,
 ) -> None:
     row = canonical()
     monkeypatch.delenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", raising=False)
@@ -641,7 +651,15 @@ def test_runtime_disabled_clickout_never_triggers_new_database_bypass(
 
     monkeypatch.setattr(runtime_offer_snapshots, "load_runtime_snapshots", forbidden)
     store = MerchantOfferStore(OFFER_FILE)
-    assert store.eligible_offer(row["offer_id"]) is None
+    # A legitimate static refresh can be eligible. Its own source timestamp,
+    # never the CI wall clock or a DB fallback, determines the 72-hour boundary.
+    observed_at = datetime.fromisoformat(row["last_updated_at"].replace("Z", "+00:00"))
+    offer = store.eligible_offer(row["offer_id"], now=observed_at + age)
+    assert (offer is not None) is eligible
+    if offer is not None:
+        assert offer.last_updated_at == observed_at
+        assert offer.price == row["price"]
+        assert offer.affiliate_url == row["affiliate_url"]
 
 
 def test_slower_old_listing_response_cannot_revive_newer_clickout_hold(monkeypatch) -> None:
