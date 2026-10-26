@@ -21,9 +21,7 @@ ALLOWED_FEED_HOSTS = {
 }
 
 
-def _validate_feed_download_url(
-    url: str, *, feed_id: str, api_key: str | None = None
-) -> None:
+def _validate_feed_download_url(url: str, *, feed_id: str, api_key: str | None = None) -> None:
     """Bind a secret-bearing Awin download URL to its selected feed identity.
 
     The authenticated list row may contain a URL for a *different* feed.
@@ -69,20 +67,13 @@ def _validate_feed_download_url(
     # in the query. Different URL parsers/backends may prioritize query API
     # keys over the selected publisher key, silently changing source identity.
     try:
-        query_pairs = parse_qsl(
-            parsed.query, keep_blank_values=True, strict_parsing=True
-        )
+        query_pairs = parse_qsl(parsed.query, keep_blank_values=True, strict_parsing=True)
     except ValueError:
         raise ValueError("awin_feed_download_query_malformed") from None
-    if any(
-        key.casefold().replace("_", "").replace("-", "") == "apikey"
-        for key, _ in query_pairs
-    ):
+    if any(key.casefold().replace("_", "").replace("-", "") == "apikey" for key, _ in query_pairs):
         raise ValueError("awin_feed_download_query_api_key_override")
     # No conflicting or repeated feed-ID override may supplement the path.
-    query_feed_ids = [
-        value for key, value in query_pairs if key.casefold() == "fid"
-    ]
+    query_feed_ids = [value for key, value in query_pairs if key.casefold() == "fid"]
     if query_feed_ids and query_feed_ids != [feed_id]:
         raise ValueError("awin_feed_download_feed_id_mismatch")
 
@@ -117,36 +108,24 @@ class AwinRedirectHandler(HTTPRedirectHandler):
         if self.expected_list_api_key is not None:
             # Keep the authenticated publisher feed-list identity even across
             # allowed Awin hosts. Never include the actual key in an error.
-            expected_path = (
-                "/datafeed/list/apikey/" + quote(self.expected_list_api_key, safe="")
-            )
+            expected_path = "/datafeed/list/apikey/" + quote(self.expected_list_api_key, safe="")
             try:
                 for candidate in (req.full_url, newurl):
                     source = urlparse(candidate)
-                    params = parse_qsl(
-                        source.query, keep_blank_values=True, strict_parsing=True
-                    )
+                    params = parse_qsl(source.query, keep_blank_values=True, strict_parsing=True)
                     if source.path.rstrip("/") != expected_path or any(
-                        name.casefold() in {"apikey", "api_key", "key", "fid"}
-                        for name, _ in params
+                        name.casefold() in {"apikey", "api_key", "key", "fid"} for name, _ in params
                     ):
                         raise ValueError("invalid_feed_list_redirect")
             except ValueError:
                 raise ValueError("awin_redirect_feed_list_identity_mismatch") from None
         if self.expected_feed_id is not None:
             try:
-                _validate_feed_download_url(
-                    req.full_url, feed_id=self.expected_feed_id
-                )
-                _validate_feed_download_url(
-                    newurl, feed_id=self.expected_feed_id
-                )
+                _validate_feed_download_url(req.full_url, feed_id=self.expected_feed_id)
+                _validate_feed_download_url(newurl, feed_id=self.expected_feed_id)
                 # Same Awin hosts and feed ID do not prove the selected
                 # publisher key survived the redirect. Never log its value.
-                if (
-                    urlparse(req.full_url).path.split("/")[4]
-                    != parsed.path.split("/")[4]
-                ):
+                if urlparse(req.full_url).path.split("/")[4] != parsed.path.split("/")[4]:
                     raise ValueError("awin_redirect_api_key_mismatch")
             except ValueError:
                 raise ValueError("awin_redirect_feed_id_mismatch") from None
@@ -317,7 +296,7 @@ def download_feed_from_list(
     if output_path is not None:
         feed_payload = _maybe_decompress(
             _read_url(download_url, max_bytes=feed_max_bytes, expected_feed_id=feed_id),
-            max_bytes=feed_max_bytes
+            max_bytes=feed_max_bytes,
         )
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_bytes(feed_payload)

@@ -122,11 +122,7 @@ def prepare_batch(
         if not isinstance(supporting, dict) or not supporting:
             raise ValueError("original_source_evidence_required")
         observation = supporting.get("source_observation")
-        if (
-            not isinstance(observation, str)
-            or not observation.strip()
-            or len(observation) > 2048
-        ):
+        if not isinstance(observation, str) or not observation.strip() or len(observation) > 2048:
             raise ValueError("source_observation_reference_required")
         # A digest proves which original evidence packet was submitted,
         # NOT that the merchant independently endorsed its contents.

@@ -951,9 +951,7 @@ def test_limited_partner_scope_must_be_exact_list(bad_scope) -> None:
     }
     assert runtime_offer_snapshots.approved_affiliate_route(row, partners) is False
     with pytest.raises(ValueError, match="partner_or_approved_tracked_route_missing"):
-        prepare_batch(
-            [row], evidence(row), now=datetime.now(UTC), partners_payload=partners
-        )
+        prepare_batch([row], evidence(row), now=datetime.now(UTC), partners_payload=partners)
 
 
 def test_limited_partner_scope_exact_released_list_still_passes() -> None:
@@ -969,11 +967,8 @@ def test_limited_partner_scope_exact_released_list_still_passes() -> None:
         ]
     }
     assert runtime_offer_snapshots.approved_affiliate_route(row, partners) is True
-    prepared = prepare_batch(
-        [row], evidence(row), now=datetime.now(UTC), partners_payload=partners
-    )
+    prepared = prepare_batch([row], evidence(row), now=datetime.now(UTC), partners_payload=partners)
     assert prepared[0]["offer_id"] == row["offer_id"]
-
 
 
 @pytest.mark.parametrize(
@@ -1040,14 +1035,10 @@ def test_malformed_released_offer_file_fails_closed_before_runtime_read(
     assert store.eligible_offer(canonical()["offer_id"]) is None
 
 
-def test_duplicate_released_offer_ids_block_entire_buyer_surface(
-    monkeypatch, tmp_path
-) -> None:
+def test_duplicate_released_offer_ids_block_entire_buyer_surface(monkeypatch, tmp_path) -> None:
     row = canonical()
     offer_file = tmp_path / "merchant_offers.json"
-    offer_file.write_text(
-        json.dumps({"offers": [row, row | {"price": 1.0}]}), encoding="utf-8"
-    )
+    offer_file.write_text(json.dumps({"offers": [row, row | {"price": 1.0}]}), encoding="utf-8")
 
     def forbidden(*args, **kwargs):
         pytest.fail("Ambiguous offer IDs must never trigger a private DB call")
@@ -1080,9 +1071,7 @@ def test_invalid_released_price_or_contract_fails_closed_before_buyer_read(
 ) -> None:
     row = canonical()
     offer_file = tmp_path / "merchant_offers.json"
-    offer_file.write_text(
-        json.dumps({"offers": [row | corruption]}), encoding="utf-8"
-    )
+    offer_file.write_text(json.dumps({"offers": [row | corruption]}), encoding="utf-8")
     if runtime_enabled:
         monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
     else:
@@ -1107,9 +1096,7 @@ def test_unrelated_corrupt_canonical_row_never_partially_serves_buyers(
         "price": "Infinity",
     }
     offer_file = tmp_path / "merchant_offers.json"
-    offer_file.write_text(
-        json.dumps({"offers": [row, corrupted]}), encoding="utf-8"
-    )
+    offer_file.write_text(json.dumps({"offers": [row, corrupted]}), encoding="utf-8")
     monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
 
     def forbidden(*args, **kwargs):

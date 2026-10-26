@@ -130,8 +130,7 @@ def approved_affiliate_route(offer: dict, partners: dict) -> bool:
         # upper-case shadow (URL vs url, AWINMID vs awinmid) could otherwise
         # override the exact publisher or destination selected by our gate.
         if len(keys) != len(set(keys)) or any(
-            not name or any(ord(char) < 32 or ord(char) == 127 for char in name)
-            for name in keys
+            not name or any(ord(char) < 32 or ord(char) == 127 for char in name) for name in keys
         ):
             return False
         params = {name: [value] for name, value in pairs}
