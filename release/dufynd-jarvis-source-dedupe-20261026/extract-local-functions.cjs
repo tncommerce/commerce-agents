@@ -10,7 +10,7 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
     await db.exec(read('tests/dufynd_budget_schema_fixture.sql'));
     await db.exec(`create table public.dufynd_content_assets(id text,content_id text,platform text);
       create table public.dufynd_content_workflows(asset_id text,revision_fingerprint text,evidence jsonb);`);
-    await db.exec(read('supabase/migrations/20261026083433_jarvis_business_source_dedupe.sql'));
+    await db.exec(read('supabase/migrations/20261026122726_jarvis_business_source_dedupe.sql'));
     const result = await db.query(`select p.oid::regprocedure::text as name,
       md5(pg_get_functiondef(p.oid)) as definition_md5, pg_get_functiondef(p.oid) as definition,
       pg_get_userbyid(p.proowner) as owner,p.proacl::text as acl

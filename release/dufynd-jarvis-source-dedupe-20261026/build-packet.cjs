@@ -10,7 +10,7 @@ const baseline = JSON.parse(read('production-baseline.json'));
 const expected = JSON.parse(read('expected-functions.json'));
 const planner = expected.find(row => row.name.startsWith('plan_'));
 const helper = expected.find(row => row.name.startsWith('read_'));
-const migrationPath = 'supabase/migrations/20261026083433_jarvis_business_source_dedupe.sql';
+const migrationPath = 'supabase/migrations/20261026122726_jarvis_business_source_dedupe.sql';
 const migration = fs.readFileSync(path.join(root, migrationPath), 'utf8');
 if (sha256(migration) !== '65caae22624b26fd925d8e341a78696ed9e21e9b3ef45ced49d6335f15a04eb4') {
   throw new Error('The reviewed migration changed; do not regenerate against a different payload.');

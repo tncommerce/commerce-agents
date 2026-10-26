@@ -362,7 +362,7 @@ def test_business_source_dedupe_executes_original_sql_contract():
     """
     import psycopg
 
-    migration = ROOT / "supabase/migrations/20261026083433_jarvis_business_source_dedupe.sql"
+    migration = ROOT / "supabase/migrations/20261026122726_jarvis_business_source_dedupe.sql"
     with psycopg.connect(DSN) as db:
         db.execute(migration.read_text(encoding="utf-8"))
         # Reapplication must not enqueue tasks or rewrite existing evidence.

@@ -25,7 +25,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
         add column updated_at timestamptz;
     `);
     await db.exec(read('supabase/migrations/20261005111923_dufynd_content_workflow_control_plane.sql'));
-    const migration = read('supabase/migrations/20261026083433_jarvis_business_source_dedupe.sql');
+    const migration = read('supabase/migrations/20261026122726_jarvis_business_source_dedupe.sql');
     await db.exec(migration);
     await db.exec(migration);
     const engine = (await db.query('select version()')).rows[0].version;

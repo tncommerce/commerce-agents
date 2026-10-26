@@ -1,6 +1,9 @@
 # Jarvis: Merge-, Migrations- und Rollback-Paket
 
-**Vorbereitet, nicht produktiv ausgeführt.** Projekt `bqsdxaagklpkxioaqdqa`.
+**Datenbank-Fix am 26.10.2026 produktiv angewendet; kein Merge oder Deployment.**
+Projekt `bqsdxaagklpkxioaqdqa`. Aktueller Status und redigierte Originalnachweise:
+[PRODUCTION-COMPLETION.md](PRODUCTION-COMPLETION.md). Die nachfolgende Anleitung
+dokumentiert die Vorbereitung des bereits ausgeführten Pfads; nicht erneut anwenden.
 Merge-/Deployment-GO und SQL-GO sind getrennt. Pushes auf `scentai-mvp` lösen
 bestehende Workflows aus; angebundenes Render-Autodeployment kann zusätzlich
 deployen. Deshalb ist bereits der produktive Merge eine Freigabegrenze.
@@ -8,14 +11,20 @@ deployen. Deshalb ist bereits der produktive Merge eine Freigabegrenze.
 ## Basis und wiederverwendete Nachweise
 
 - Produktion: `7b793cf7ce1223967e66d768fcb7930ecdfc0e40`.
-- Geprüfter PR #839: `e571331222c7649a49c2758de432d6f21d6b9825`, weiterhin Draft.
+- Ursprünglich geprüfter Scheduler-HEAD von PR #839:
+  `e571331222c7649a49c2758de432d6f21d6b9825`. Bei Ausführung enthielt der
+  freigegebene HEAD `7cc25aff0dd0152124b366e7624d7b6be00eab84` zusätzlich dieses
+  Releasepaket; der PR war Ready for Review und blieb unmerged.
 - [Native CI 40303294857](https://github.com/tncommerce/commerce-agents/actions/runs/40303294857),
   Integrationscommit `3d272051c2ece547e3a5cff8f9b9bc76d61f8600`: 233 native
   PostgreSQL-Tests bestanden, einschließlich der vorhandenen 31 Dedupe-Assertions.
   Diese Nachweise wurden wiederverwendet; kein neuer CI-Lauf.
 - Unveränderte Quelldatei:
-  `supabase/migrations/20261026083433_jarvis_business_source_dedupe.sql`, SHA-256
+  `supabase/migrations/20261026122726_jarvis_business_source_dedupe.sql`, SHA-256
   `65caae22624b26fd925d8e341a78696ed9e21e9b3ef45ced49d6335f15a04eb4`.
+  Nach Ausführung wurde ausschließlich die Dateiversion von `20261026083433` auf
+  die tatsächliche Ledger-Version `20261026122726` umbenannt. Der Inhalt blieb
+  bytegleich; eine spätere versionsbasierte Migration soll sie nicht erneut spielen.
 - Read-only Sicherung **26.10.2026, 11:37:35 Berlin**: PostgreSQL 17.6;
   `production-baseline.json` enthält die vollständige Planner-Funktion, Owner
   `postgres`, INVOKER, `search_path=public`, ACL nur `postgres`/`service_role`.
@@ -118,8 +127,9 @@ Abhängigkeiten sowie atomare Rücknahme bei absichtlich fehlschlagendem Postfli
 Die bereits bestandene native CI und die 31 Dedupe-Assertions wurden nicht wiederholt.
 Separate Prüfung der atomaren Tool-Payloads: `migration-body-rehearsal.json`.
 
-Grenze: Offline PostgreSQL-WASM, kein nativer Parallelverbindungstest und kein
-ausgeführter Supabase-Migrationstransport. Checksummen stehen in `manifest.json`.
+Grenze der vorbereitenden Proben: Offline PostgreSQL-WASM, kein nativer
+Parallelverbindungstest. Der später tatsächlich ausgeführte Supabase-Transport
+ist im Produktionsabschluss belegt. Checksummen stehen in `manifest.json`.
 Die [offizielle MCP-Dokumentation](https://supabase.com/docs/guides/ai-tools/mcp)
 beschreibt die verwendeten Apply-/List-Werkzeuge; die aktuelle Tool-Signatur und
 die offizielle API-Implementierung wurden für diesen Ausführungspfad gelesen.
