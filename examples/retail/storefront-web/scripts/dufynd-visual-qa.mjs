@@ -1392,6 +1392,11 @@ try {
         );
       }
 
+      await chooseMeasurement(audiencePage, "denied");
+      const filterToggle = audiencePage.locator('button[aria-controls="catalog-filter-panel"]');
+      if (await filterToggle.isVisible() && await filterToggle.getAttribute("aria-expanded") === "false") {
+        await filterToggle.click();
+      }
       const audienceButton = audiencePage.getByRole("button", {
         name: label,
         exact: true,
