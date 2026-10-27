@@ -1,0 +1,93 @@
+name: DUFYND One-Shot Security Patch Sandbox
+on:
+  push:
+    branches: [dev/dufynd-products-20261026]
+    paths: [.github/workflows/dufynd-security-sandbox-preflight-20261027.yml]
+permissions:
+  contents: read
+jobs:
+  patched-lock-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 36cc84c34791284e4245ab4504ae020434dca89e
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: examples/package-lock.json
+      - name: Prepare isolated exact security upgrades
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import pathlib,json
+          root=pathlib.Path('examples/package.json')
+          j=json.loads(root.read_text())
+          j['overrides']={**j.get('overrides',{}),'source-map-js':'1.2.2'}
+          root.write_text(json.dumps(j,indent=2,ensure_ascii=False)+'\n')
+          web=pathlib.Path('examples/retail/storefront-web/package.json')
+          j=json.loads(web.read_text())
+          assert j['dependencies']['next']=='16.3.6'
+          assert j['dependencies']['sharp']=='0.35.4'
+          j['dependencies']['next']='16.4.3'
+          j['dependencies']['sharp']='0.35.5'
+          web.write_text(json.dumps(j,indent=2,ensure_ascii=False)+'\n')
+          PY
+          cd examples
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          python3 - <<'PY'
+          import json
+          j=json.load(open('package-lock.json'))
+          def version(n):
+              return j['packages']['node_modules/'+n]['version']
+          print('DUFYND_LOCK_PATCHED='+json.dumps({'next':version('next'),'sharp':version('sharp'),'source-map-js':version('source-map-js')}))
+          assert version('next')=='16.4.3'
+          assert version('sharp')=='0.35.5'
+          assert version('source-map-js')=='1.2.2'
+          PY
+      - name: Require production npm audit to have no known vulnerable packages
+        shell: bash
+        working-directory: examples
+        run: |
+          set -euo pipefail
+          (npm audit --omit=dev --workspace=acme-retail-storefront-web --json > /tmp/dufynd-sec-audit.json) || true
+          python3 - <<'PY'
+          import json
+          j=json.load(open('/tmp/dufynd-sec-audit.json'))
+          assert j.get('auditReportVersion') is not None,'No actual registry audit result'
+          out={'counts':j['metadata']['vulnerabilities'],'vulnerable_packages':sorted(j.get('vulnerabilities',{}))}
+          print('DUFYND_SECURITY_PATCH_AUDIT='+json.dumps(out))
+          assert j['metadata']['vulnerabilities']['total']==0, 'Production dependency audit must be clean'
+          PY
+      - name: Validate exact locked dependency installation and DUFYND static build
+        shell: bash
+        working-directory: examples
+        run: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npm run build --workspace acme-retail-storefront-web
+      - name: Emit bounded exact text replacements without repository writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json,pathlib,hashlib,subprocess
+          files=['examples/package.json','examples/retail/storefront-web/package.json','examples/package-lock.json']
+          changed=subprocess.check_output(['git','diff','--name-only'],text=True).splitlines()
+          if sorted(changed)!=sorted(files):
+              raise SystemExit('unexpected_security_patch_files:'+repr(changed))
+          for filename in files:
+              content=pathlib.Path(filename).read_text()
+              digest=hashlib.sha256(content.encode()).hexdigest()
+              s=json.dumps(content,ensure_ascii=True)
+              n=2500
+              chunks=[s[i:i+n] for i in range(0,len(s),n)]
+              print('DUFYND_SECURITY_PATCH_FILE='+json.dumps({'path':filename,'sha256':digest,'bytes':len(content.encode()),'parts':len(chunks)}))
+              for i,ch in enumerate(chunks):
+                  print('DUFYND_SECURITY_PATCH_CHUNK='+json.dumps({'path':filename,'seq':i,'count':len(chunks),'data':ch},ensure_ascii=True))
+          print('DUFYND_SECURITY_PATCH_SANDBOX_PASS=static_site_built__npm_audit_clean__no_repo_push__no_render_deploy')
+          PY
