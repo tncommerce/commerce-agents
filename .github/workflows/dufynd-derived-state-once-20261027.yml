@@ -26,11 +26,19 @@ jobs:
           allowed={
               'examples/retail/data/scentai_merchant_mapping_work_queue.json',
               'examples/retail/data/scentai_jarvis_master_status.json',
+              'examples/retail/data/scentai_jarvis_operations_status.json',
+              'examples/retail/data/scentai_release_01_gate_status.json',
+              'examples/retail/data/scentai_release_pipeline_status.json',
           }
           if set(changed)!=allowed:
               print('unexpected_derivation_delta',file=sys.stderr)
               sys.exit(2)
-          files={p:pathlib.Path(p).read_text(encoding='utf-8') for p in changed}
-          print('DUFYND_DERIVED_CONTENT_PAYLOAD='+json.dumps(files,ensure_ascii=True))
+          for p in changed:
+              file_content=pathlib.Path(p).read_text(encoding='utf-8')
+              encoded=json.dumps(file_content,ensure_ascii=True)
+              chunk_size=5000
+              parts=[encoded[i:i+chunk_size] for i in range(0,len(encoded),chunk_size)]
+              for i,part in enumerate(parts):
+                  print('DUFYND_DERIVED_CHUNK='+json.dumps({'path':p,'chunk':i,'count':len(parts),'text':part},ensure_ascii=True))
           print('Derived reconciliation complete; no Git ref, Supabase, or production changes')
           PY
