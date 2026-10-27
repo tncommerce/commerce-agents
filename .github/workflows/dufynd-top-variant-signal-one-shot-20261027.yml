@@ -114,25 +114,46 @@ jobs:
                           if depth>14 or len(found)>12:return
                           if isinstance(value,dict):
                               if isinstance(value.get('optionPrices'),dict):
-                                  found.append(value['optionPrices'])
+                                  found.append((value['optionPrices'],value.get('attributes'),value.get('index')))
                               for sub in list(value.values())[:100]:
                                   scan(sub,depth+1)
                           elif isinstance(value,list):
                               for sub in value[:100]:
                                   scan(sub,depth+1)
                       scan(structured)
-                      for entries in found:
+                      for entries,attrs,index in found:
                           exact=entries.get(sku)
                           final=None
                           if isinstance(exact,dict):
                               price=exact.get('finalPrice')
                               if isinstance(price,dict) and isinstance(price.get('amount'),(int,float)):
                                   final=price['amount']
+                          variant_options=[]
+                          if isinstance(attrs,dict):
+                              for attribute in list(attrs.values())[:10]:
+                                  if not isinstance(attribute,dict):continue
+                                  for option in attribute.get('options',[])[:24]:
+                                      if not isinstance(option,dict):continue
+                                      label=str(option.get('label',''))[:65]
+                                      pids=option.get('products',[])
+                                      if not isinstance(pids,list):pids=[]
+                                      prices=[]
+                                      for sid in pids[:5]:
+                                          record=entries.get(str(sid),{})
+                                          if not isinstance(record,dict):continue
+                                          value=record.get('finalPrice',{})
+                                          if isinstance(value,dict) and isinstance(value.get('amount'),(int,float)):
+                                              prices.append({'internal_id':str(sid)[:20],
+                                                             'price_hint':value['amount']})
+                                      if ('ml' in label.lower() or '100' in label) and prices:
+                                          variant_options.append({'label':label,'options':prices})
                           price_configs.append({
                               'config_id_count':len(entries),
                               'exact_merchant_sku_present':sku in entries,
                               'exact_sku_final_price_hint':final,
-                              'first_numeric_keys':sorted(str(x) for x in entries)[:12]})
+                              'first_numeric_keys':sorted(str(x) for x in entries)[:12],
+                              'size_label_options_with_internal_prices':variant_options[:8],
+                              'attribute_config_keys':list(attrs.keys())[:6] if isinstance(attrs,dict) else []})
                   result['parsed_magento_option_price_configs']=price_configs[:5]
                   result['script_json_parseable_option_price_nodes']=len(price_configs)
                   result['structured_price_proof_possible']=any(
