@@ -1,0 +1,36 @@
+name: DUFYND One-Shot Derived State Reconciliation
+on:
+  push:
+    branches: [dev/dufynd-products-20261026]
+    paths: [.github/workflows/dufynd-derived-state-once-20261027.yml]
+permissions:
+  contents: read
+jobs:
+  evidence:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 7beeaa6f5658ad5914789db04f78eca721a0f6cd
+          persist-credentials: false
+      - name: Rebuild committed Jarvis derived files from exact source only
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m scripts.refresh_scentai_jarvis_state --write --generated-at '2026-10-09T13:19:11+00:00' --machine-readable
+          python3 - <<'PY'
+          import json, subprocess, pathlib, sys
+          changed=subprocess.check_output(['git','diff','--name-only'],text=True).splitlines()
+          print('DUFYND_DERIVED_CHANGED_PATHS='+json.dumps(changed))
+          allowed={
+              'examples/retail/data/scentai_merchant_mapping_work_queue.json',
+              'examples/retail/data/scentai_jarvis_master_status.json',
+          }
+          if set(changed)!=allowed:
+              print('unexpected_derivation_delta',file=sys.stderr)
+              sys.exit(2)
+          files={p:pathlib.Path(p).read_text(encoding='utf-8') for p in changed}
+          print('DUFYND_DERIVED_CONTENT_PAYLOAD='+json.dumps(files,ensure_ascii=True))
+          print('Derived reconciliation complete; no Git ref, Supabase, or production changes')
+          PY
