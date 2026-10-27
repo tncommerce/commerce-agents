@@ -114,3 +114,4 @@ jobs:
                       result['http_status']=err.code
               out(result)
           PY
+# One bounded source probe, intentionally no affiliate redirects or customer session
