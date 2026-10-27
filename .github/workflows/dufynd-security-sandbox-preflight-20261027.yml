@@ -44,10 +44,14 @@ jobs:
           j=json.load(open('package-lock.json'))
           def version(n):
               return j['packages']['node_modules/'+n]['version']
-          print('DUFYND_LOCK_PATCHED='+json.dumps({'next':version('next'),'sharp':version('sharp'),'source-map-js':version('source-map-js')}))
-          assert version('next')=='16.4.3'
-          assert version('sharp')=='0.35.5'
-          assert version('source-map-js')=='1.2.2'
+          allpaths={k:v.get('version') for k,v in j['packages'].items() if k.endswith('/next') or k.endswith('/sharp') or k.endswith('/source-map-js')}
+          contract=j['packages']['retail/storefront-web']['dependencies']
+          print('DUFYND_LOCK_PATCHED='+json.dumps({'all_resolved':allpaths,'dufynd_contract':contract,'overrides':j['packages'][''].get('overrides')}))
+          assert contract['next']=='16.4.3'
+          assert contract['sharp']=='0.35.5'
+          assert '16.4.3' in [v for k,v in allpaths.items() if k.endswith('/next')]
+          assert '0.35.5' in [v for k,v in allpaths.items() if k.endswith('/sharp')]
+          assert '1.2.2' in [v for k,v in allpaths.items() if k.endswith('/source-map-js')]
           PY
       - name: Require production npm audit to have no known vulnerable packages
         shell: bash
