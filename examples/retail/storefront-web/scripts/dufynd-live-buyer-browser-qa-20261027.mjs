@@ -67,7 +67,7 @@ try {
     await section.waitFor({state:'visible',timeout:18000});
     const contents=await section.innerText();
     assert.ok(/top parfümerie/i.test(contents),'Top offer missing from rendered page '+slug);
-    assert.ok(contents.includes(ml),'Wrong volume on live offer '+slug);
+    assert.ok(contents.includes(ml),'Wrong volume on live offer '+slug+'; public_rendered_text='+JSON.stringify(contents.slice(0,1400)));
     assert.ok(contents.includes('Gesamtpreis inkl. Versand'),'Total price disclosure missing '+slug);
     const links=await section.locator('a[href*="/api/clickout/"]').evaluateAll(nodes=>nodes.map(n=>({
       href:n.getAttribute('href'),rel:n.getAttribute('rel')
