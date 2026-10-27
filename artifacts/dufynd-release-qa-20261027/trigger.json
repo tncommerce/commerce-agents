@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "phase": "api",
+  "expected_render_api_deploy": "dep-dbg7cgl9fdbs73d0b2p0",
+  "expected_prod_sha": "36cc84c34791284e4245ab4504ae020434dca89e",
+  "read_only": true,
+  "affiliate_clickouts": 0,
+  "approval_scope": "api_merchant_offers_only",
+  "triggered_after_api_live": true
+}
