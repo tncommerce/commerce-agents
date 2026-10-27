@@ -1,5 +1,5 @@
 name: DUFYND isolated batch source verification 2026-10-27
-# Recheck 3: official formatter + original test directory + Supabase service role fixture
+# Recheck 4: last archived batch-input fixture plus all 144 native checks
 on:
   push:
     branches: ['qa/dufynd-batch-isolated-20261027']
