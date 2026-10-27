@@ -12,8 +12,8 @@
     "email_received_date": "2026-10-23",
     "email_subject": "Notino affiliate: Up to 20% discount on selected products | 15% discount on every order - W44 (26.10. - 1.11.2026)",
     "source_owner": "authenticated_connected_gmail_read",
-    "source_message_id": "1a1694b1e701675c",
-    "source_has_network_transaction_report": false
+    "source_has_network_transaction_report": false,
+    "provenance_policy": "Sanitized advertiser campaign terms from authenticated CJ newsletter; mailbox item ID and personalized tracking links intentionally excluded from public repository."
   },
   "campaign_window": {
     "starts_date": "2026-10-26",
