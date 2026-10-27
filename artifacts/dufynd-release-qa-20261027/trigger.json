@@ -1,11 +1,13 @@
 {
   "schema_version": 1,
-  "phase": "api",
+  "phase": "full",
   "expected_render_api_deploy": "dep-dbg7cgl9fdbs73d0b2p0",
   "expected_prod_sha": "36cc84c34791284e4245ab4504ae020434dca89e",
   "read_only": true,
   "affiliate_clickouts": 0,
-  "approval_scope": "api_merchant_offers_only",
+  "approval_scope": "read_only_web_routes_and_merchant_offers",
   "triggered_after_api_live": true,
-  "source_diagnostic_revision": "client-affiliate-flag-schema-corrected-3"
+  "source_diagnostic_revision": "full-coupled-web-and-api-readonly-20261027",
+  "expected_render_web_deploy": "dep-dbg7q54s728c73dklukg",
+  "triggered_after_storefront_live": true
 }
