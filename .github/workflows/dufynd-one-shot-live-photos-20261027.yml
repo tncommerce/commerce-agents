@@ -19,3 +19,4 @@ jobs:
           set -euo pipefail
           python3 scripts/dufynd_live_photo_http_qa_20261027.py --self-test
           python3 scripts/dufynd_live_photo_http_qa_20261027.py
+# Revised check: exact source image instead of catalogue-only wrapper
