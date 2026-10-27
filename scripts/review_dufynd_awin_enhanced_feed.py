@@ -59,9 +59,10 @@ def read_selected_jsonl(path: Path, sku_ids: set[str]) -> tuple[dict[str, list[d
                 continue
             try:
                 row = json.loads(
-                    raw, parse_constant=lambda _: (_ for _ in ()).throw(
+                    raw,
+                    parse_constant=lambda _: (_ for _ in ()).throw(
                         ValueError("non_finite_enhanced_value")
-                    )
+                    ),
                 )
             except (UnicodeDecodeError, json.JSONDecodeError, ValueError) as exc:
                 raise ValueError("invalid_enhanced_source_line") from exc
@@ -76,13 +77,16 @@ def read_selected_jsonl(path: Path, sku_ids: set[str]) -> tuple[dict[str, list[d
 
 
 def _variant_reason(
-    source: dict[str, Any], offer: dict[str, Any],
-    mappings: list[dict[str, Any]], products: list[dict[str, Any]],
+    source: dict[str, Any],
+    offer: dict[str, Any],
+    mappings: list[dict[str, Any]],
+    products: list[dict[str, Any]],
 ) -> str:
     source_id = offer.get("merchant_product_id")
     product_id = offer.get("product_id")
     matching = [
-        row for row in mappings
+        row
+        for row in mappings
         if row.get("merchant_product_id") == source_id
         and row.get("product_id") == product_id
         and row.get("merchant") == "top-parfuemerie"
@@ -101,8 +105,8 @@ def _variant_reason(
         return "CANONICAL_VOLUME_UNKNOWN"
     sizes = [source[key] for key in ("size", "unit_pricing_measure") if source.get(key)]
     if not sizes or any(
-        not isinstance(size, str) or
-        re.fullmatch(rf"{volume}\s*ml", size.strip(), flags=re.IGNORECASE) is None
+        not isinstance(size, str)
+        or re.fullmatch(rf"{volume}\s*ml", size.strip(), flags=re.IGNORECASE) is None
         for size in sizes
     ):
         return "SIZE_MISSING_OR_DIFFERENT"
@@ -166,9 +170,7 @@ def review_enhanced_candidates(
     if not 0 <= seconds_old <= 72 * 3600:
         raise ValueError("feed_download_too_old_or_future")
 
-    candidates = [
-        o for o in canonical_offers if o.get("merchant_id") == "top-parfuemerie"
-    ]
+    candidates = [o for o in canonical_offers if o.get("merchant_id") == "top-parfuemerie"]
     ids = [o.get("offer_id") for o in candidates]
     skus = [o.get("merchant_product_id") for o in candidates]
     if not 1 <= len(candidates) <= MAX_OFFERS or any(not isinstance(x, str) for x in ids + skus):
@@ -188,18 +190,22 @@ def review_enhanced_candidates(
             reason = "DUPLICATE_ENHANCED_SKU"
         else:
             reason = _variant_reason(
-                matching[0], offer, mappings.get("mappings", []),
+                matching[0],
+                offer,
+                mappings.get("mappings", []),
                 catalog.get("products", []),
             )
-        results.append({
-            "offer_id": offer["offer_id"],
-            "status": (
-                "FIELD_COMPLETE_REVIEW_ONLY"
-                if reason == "ENHANCED_FIELDS_PRESENT_SOURCE_REVIEW_ONLY"
-                else "BLOCKED_SOURCE_FIELDS"
-            ),
-            "reason": reason,
-        })
+        results.append(
+            {
+                "offer_id": offer["offer_id"],
+                "status": (
+                    "FIELD_COMPLETE_REVIEW_ONLY"
+                    if reason == "ENHANCED_FIELDS_PRESENT_SOURCE_REVIEW_ONLY"
+                    else "BLOCKED_SOURCE_FIELDS"
+                ),
+                "reason": reason,
+            }
+        )
     return {
         "schema_version": 1,
         "status": "ENHANCED_FEED_FIELD_TRIAGE_ONLY_NOT_CERTIFIED",
@@ -214,9 +220,7 @@ def review_enhanced_candidates(
             "FIELD_COMPLETE_REVIEW_ONLY": sum(
                 r["status"] == "FIELD_COMPLETE_REVIEW_ONLY" for r in results
             ),
-            "BLOCKED_SOURCE_FIELDS": sum(
-                r["status"] == "BLOCKED_SOURCE_FIELDS" for r in results
-            ),
+            "BLOCKED_SOURCE_FIELDS": sum(r["status"] == "BLOCKED_SOURCE_FIELDS" for r in results),
         },
         "items": results,
     }
@@ -231,13 +235,20 @@ def main() -> int:
     partners = json.loads((DATA / "merchant_partners.json").read_text(encoding="utf-8"))
     mapping = json.loads((DATA / "merchant_product_mappings.json").read_text(encoding="utf-8"))
     catalog = json.loads((DATA / "catalog.json").read_text(encoding="utf-8"))
-    skus = {str(o["merchant_product_id"]) for o in offers if o.get("merchant_id") == "top-parfuemerie"}
+    skus = {
+        str(o["merchant_product_id"]) for o in offers if o.get("merchant_id") == "top-parfuemerie"
+    }
     rows, digest, row_count = read_selected_jsonl(args.feed, skus)
     receipt = json.loads(args.source_receipt.read_text(encoding="utf-8"))
     report = review_enhanced_candidates(
-        offers, partners, mapping, catalog,
-        selected_rows=rows, publisher_source=receipt,
-        original_digest=digest, now=datetime.now(UTC),
+        offers,
+        partners,
+        mapping,
+        catalog,
+        selected_rows=rows,
+        publisher_source=receipt,
+        original_digest=digest,
+        now=datetime.now(UTC),
     )
     report["source_rows_scanned"] = row_count
     print(json.dumps(report, sort_keys=True, ensure_ascii=False))
