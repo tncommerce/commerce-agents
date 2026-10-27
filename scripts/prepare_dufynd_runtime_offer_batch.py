@@ -36,11 +36,18 @@ CATALOG = Path("examples/retail/data/catalog.json")
 # Merchant-wide HOLD is an evidence-backed revocation, NOT a fresh quote.
 # The source must state why price/stock cannot be shown; we never copy an
 # old total or manufacture an out-of-stock value just to suspend an offer.
-HOLD_REASONS = frozenset({
-    "source_unavailable", "variant_ambiguous", "shipping_unverified",
-    "price_conflict", "stock_unverified", "out_of_stock",
-    "merchant_withdrawn", "network_rights_unverified",
-})
+HOLD_REASONS = frozenset(
+    {
+        "source_unavailable",
+        "variant_ambiguous",
+        "shipping_unverified",
+        "price_conflict",
+        "stock_unverified",
+        "out_of_stock",
+        "merchant_withdrawn",
+        "network_rights_unverified",
+    }
+)
 # The standalone rehydrator is specifically for the two immutable, already
 # human-reviewed browser bundles. Further merchant batches must establish a
 # new independently approved source manifest first, never trust arbitrary
@@ -63,7 +70,6 @@ def selected_merchant_price_matches(section: str, amount: Decimal) -> bool:
         numbers = line.split(" €", 1)[0].replace(".", "").replace(",-", ",00").replace(",", ".")
         values.append(Decimal(numbers))
     return len(values) == 1 and values[0] == amount
-
 
 
 # This is a source-shape gate, not cryptographic proof of a retailer's
@@ -102,7 +108,6 @@ def _require_positive_source_provenance(
         raise ValueError("source_observation_time_invalid_or_stale") from exc
     if actual != verified_stamp:
         raise ValueError("source_observation_not_equal_to_verified_at")
-
 
 
 def prepare_batch(
@@ -196,8 +201,7 @@ def prepare_batch(
         else:
             # A hold must NOT echo previously approved prices or assert stock.
             # Missing merchant observations can stop buying without a quote.
-            if any(item.get(key) is not None for key in
-                   ("price", "shipping_cost", "in_stock")):
+            if any(item.get(key) is not None for key in ("price", "shipping_cost", "in_stock")):
                 raise ValueError("hold_must_omit_price_shipping_and_stock")
             hold_reason = item.get("hold_reason")
             if hold_reason not in HOLD_REASONS:
@@ -247,8 +251,6 @@ def prepare_batch(
             }
         )
     return selected
-
-
 
 
 def restore_direct_merchant_browser_evidence(
@@ -403,7 +405,6 @@ def restore_direct_merchant_browser_evidence(
     return packet
 
 
-
 def triage_batch(
     canonical_rows: list[dict[str, Any]],
     evidence: dict[str, Any],
@@ -430,9 +431,10 @@ def triage_batch(
     if any(not isinstance(item, dict) for item in items):
         raise ValueError("invalid_offer_record")
     offer_ids = [item.get("offer_id") for item in items]
-    if any(not isinstance(offer_id, str) or
-           re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
-           for offer_id in offer_ids):
+    if any(
+        not isinstance(offer_id, str) or re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
+        for offer_id in offer_ids
+    ):
         raise ValueError("invalid_offer_id")
     if len(set(offer_ids)) != len(offer_ids):
         raise ValueError("duplicate_offer_in_batch")
@@ -448,7 +450,8 @@ def triage_batch(
     for item in items:
         try:
             inspected = prepare_batch(
-                canonical_rows, {**evidence, "offers": [item]},
+                canonical_rows,
+                {**evidence, "offers": [item]},
                 now=now,
                 partners_payload=partners_payload,
                 mappings_payload=mappings_payload,
@@ -463,20 +466,25 @@ def triage_batch(
                 if re.fullmatch(r"[a-z][a-z0-9_]{2,100}", candidate)
                 else "unverified_or_malformed_source"
             )
-            results.append({
-                "offer_id": item["offer_id"],
-                "status": "BLOCKED_SOURCE_EVIDENCE",
-                "reason": blocker,
-            })
+            results.append(
+                {
+                    "offer_id": item["offer_id"],
+                    "status": "BLOCKED_SOURCE_EVIDENCE",
+                    "reason": blocker,
+                }
+            )
             continue
-        results.append({
-            "offer_id": inspected["offer_id"],
-            "status": (
-                "HOLD_REVIEW_ONLY" if inspected["decision"] == "hold"
-                else "COMPLETE_EVIDENCE_REVIEW_ONLY"
-            ),
-            "reason": "separate_batch_approval_and_release_required",
-        })
+        results.append(
+            {
+                "offer_id": inspected["offer_id"],
+                "status": (
+                    "HOLD_REVIEW_ONLY"
+                    if inspected["decision"] == "hold"
+                    else "COMPLETE_EVIDENCE_REVIEW_ONLY"
+                ),
+                "reason": "separate_batch_approval_and_release_required",
+            }
+        )
 
     counts = {
         code: sum(row["status"] == code for row in results)
@@ -626,10 +634,16 @@ def main() -> int:
     parser.add_argument("--canonical", type=Path, default=CANONICAL)
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--owner-approval", default="")
-    parser.add_argument("--triage", action="store_true",
-                        help="Print per-offer gate results without importing anything.")
-    parser.add_argument("--merchant-browser-evidence-dir", type=Path,
-                        help="Recheck local original SHA-256 browser and DE shipping receipts.")
+    parser.add_argument(
+        "--triage",
+        action="store_true",
+        help="Print per-offer gate results without importing anything.",
+    )
+    parser.add_argument(
+        "--merchant-browser-evidence-dir",
+        type=Path,
+        help="Recheck local original SHA-256 browser and DE shipping receipts.",
+    )
     args = parser.parse_args()
 
     raw = json.loads(args.evidence.read_text(encoding="utf-8"))
@@ -637,8 +651,10 @@ def main() -> int:
     observed_at = datetime.now(UTC)
     if args.merchant_browser_evidence_dir is not None:
         raw = restore_direct_merchant_browser_evidence(
-            catalog, raw,
-            evidence_dir=args.merchant_browser_evidence_dir, now=observed_at,
+            catalog,
+            raw,
+            evidence_dir=args.merchant_browser_evidence_dir,
+            now=observed_at,
         )
     if args.triage:
         if args.apply or args.owner_approval:

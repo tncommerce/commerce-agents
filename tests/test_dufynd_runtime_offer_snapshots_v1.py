@@ -318,9 +318,6 @@ def test_hold_can_revoke_a_row_without_new_affiliate_or_ean_approval() -> None:
     assert result[0]["in_stock"] is None
 
 
-
-
-
 @pytest.mark.parametrize(
     ("field", "invalid"),
     [
@@ -332,7 +329,8 @@ def test_hold_can_revoke_a_row_without_new_affiliate_or_ean_approval() -> None:
     ],
 )
 def test_bulk_verified_offer_requires_complete_total_and_confirmed_stock(
-    field, invalid,
+    field,
+    invalid,
 ) -> None:
     row = canonical()
     packet = evidence(row)
@@ -362,7 +360,8 @@ def _source_hold(row: dict, reason: str = "source_unavailable") -> dict:
     ],
 )
 def test_bulk_hold_cannot_carry_cached_positive_or_negative_commerce_claim(
-    field, invalid,
+    field,
+    invalid,
 ) -> None:
     row = canonical()
     packet = _source_hold(row)
@@ -394,8 +393,6 @@ def test_verified_batch_cannot_hide_unchecked_delivery_with_unknown_shipping() -
     packet["offers"][0].pop("shipping_cost")
     with pytest.raises(ValueError, match="verified_total_shipping_missing"):
         prepare_batch([row], packet, now=datetime.now(UTC))
-
-
 
 
 def test_fifty_offer_triage_envelope_and_exception_only_review() -> None:
@@ -445,12 +442,10 @@ def test_triage_distinguishes_missing_shipping_from_source_hold_without_writes()
         item.pop(field)
     item["decision"] = "hold"
     item["hold_reason"] = "shipping_unverified"
-    held = triage_batch([row], packet, now=datetime.now(UTC),
-                        partners_payload={"partners": []})
+    held = triage_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
     assert held["counts"]["HOLD_REVIEW_ONLY"] == 1
     assert held["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 0
     assert held["all_source_evidence_approved"] is False
-
 
 
 def test_bulk_positive_offer_cannot_retimestamp_historical_observation() -> None:
@@ -462,14 +457,17 @@ def test_bulk_positive_offer_cannot_retimestamp_historical_observation() -> None
         prepare_batch([row], packet, now=now)
 
 
-@pytest.mark.parametrize("mutated_source", [
-    {"source_observed_at": None},
-    {"source_observed_at": "2026-08-01T00:00:00Z"},
-    {"source_observed_at": "not-a-timestamp"},
-    {"source_evidence_kind": "feed_import_timestamp_only"},
-    {"source_row_sha256": ""},
-    {"source_row_sha256": "g" * 64},
-])
+@pytest.mark.parametrize(
+    "mutated_source",
+    [
+        {"source_observed_at": None},
+        {"source_observed_at": "2026-08-01T00:00:00Z"},
+        {"source_observed_at": "not-a-timestamp"},
+        {"source_evidence_kind": "feed_import_timestamp_only"},
+        {"source_row_sha256": ""},
+        {"source_row_sha256": "g" * 64},
+    ],
+)
 def test_bulk_positive_offer_requires_original_per_sku_source_time_and_digest(
     mutated_source: dict,
 ) -> None:
@@ -506,8 +504,6 @@ def test_bulk_hold_does_not_need_false_positive_price_observation() -> None:
     assert rows[0]["shipping_cost"] is None
 
 
-
-
 @pytest.mark.parametrize(
     ("bundle", "count"),
     [
@@ -524,7 +520,10 @@ def test_original_merchant_bundle_sha_and_observation_times_rehydrate_exactly(
     canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
     now = datetime(2026, 10, 27, 12, tzinfo=UTC)
     recovered = restore_direct_merchant_browser_evidence(
-        canonical_rows, source, evidence_dir=folder, now=now,
+        canonical_rows,
+        source,
+        evidence_dir=folder,
+        now=now,
     )
     assert len(recovered["offers"]) == count
     assert source["offers"] != recovered["offers"]
@@ -546,67 +545,81 @@ def test_original_browser_witness_rejects_old_retimed_and_changed_source(
     source = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
     canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
     now = datetime(2026, 10, 27, 12, tzinfo=UTC)
-    for name in ("SHA256.json", "merchant-browser-observations.json",
-                 "shipping-browser-observation.json"):
-        (tmp_path / name).write_bytes((folder / name).read_bytes())
+    trusted_copy = tmp_path / folder.name
+    trusted_copy.mkdir()
+    for name in (
+        "SHA256.json",
+        "merchant-browser-observations.json",
+        "shipping-browser-observation.json",
+    ):
+        (trusted_copy / name).write_bytes((folder / name).read_bytes())
 
     source["offers"][0]["verified_at"] = now.isoformat()
     with pytest.raises(ValueError, match="original_batch_input_does_not_match_archived_source"):
         restore_direct_merchant_browser_evidence(
-            canonical_rows, source, evidence_dir=tmp_path, now=now,
+            canonical_rows,
+            source,
+            evidence_dir=trusted_copy,
+            now=now,
         )
     source = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
-    original_bytes = (tmp_path / "merchant-browser-observations.json").read_bytes()
-    (tmp_path / "merchant-browser-observations.json").write_bytes(original_bytes + b" ")
+    original_bytes = (trusted_copy / "merchant-browser-observations.json").read_bytes()
+    (trusted_copy / "merchant-browser-observations.json").write_bytes(original_bytes + b" ")
     with pytest.raises(ValueError, match="original_source_sha256_mismatch"):
         restore_direct_merchant_browser_evidence(
-            canonical_rows, source, evidence_dir=tmp_path, now=now,
+            canonical_rows,
+            source,
+            evidence_dir=trusted_copy,
+            now=now,
         )
-    (tmp_path / "merchant-browser-observations.json").write_bytes(original_bytes)
+    (trusted_copy / "merchant-browser-observations.json").write_bytes(original_bytes)
     with pytest.raises(ValueError, match="expired_or_future_source"):
         restore_direct_merchant_browser_evidence(
-            canonical_rows, source, evidence_dir=tmp_path,
+            canonical_rows,
+            source,
+            evidence_dir=trusted_copy,
             now=datetime(2026, 10, 31, 12, tzinfo=UTC),
         )
-
-
 
 
 def test_reviewed_manifest_anchor_rejects_forged_checksums(tmp_path: Path) -> None:
     folder = Path("artifacts/dufynd-top-six-offers-20261026")
     packet = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
     canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
-    for name in ("SHA256.json", "batch-input.json",
-                 "merchant-browser-observations.json",
-                 "shipping-browser-observation.json"):
+    for name in (
+        "SHA256.json",
+        "batch-input.json",
+        "merchant-browser-observations.json",
+        "shipping-browser-observation.json",
+    ):
         (tmp_path / name).write_bytes((folder / name).read_bytes())
     # An unapproved custom folder must not impersonate an immutable bundle.
     with pytest.raises(ValueError, match="original_source_bundle_not_approved"):
         restore_direct_merchant_browser_evidence(
-            canonical_rows, packet, evidence_dir=tmp_path,
+            canonical_rows,
+            packet,
+            evidence_dir=tmp_path,
             now=datetime(2026, 10, 27, 12, tzinfo=UTC),
         )
     from scripts.prepare_dufynd_runtime_offer_batch import (
         ARCHIVED_SOURCE_MANIFEST_GIT_BLOBS,
     )
+
     assert len(ARCHIVED_SOURCE_MANIFEST_GIT_BLOBS) == 2
 
 
 def test_buyer_price_proof_cannot_confuse_crossed_uvp_with_actual_price() -> None:
     browser = json.loads(
-        Path("artifacts/dufynd-top-six-offers-20261026/"
-             "merchant-browser-observations.json").read_text(encoding="utf-8")
+        Path(
+            "artifacts/dufynd-top-six-offers-20261026/merchant-browser-observations.json"
+        ).read_text(encoding="utf-8")
     )
     rabanne = browser["rows"][1]["main"]
-    section = rabanne.split("Artikelnummer: 707368", 1)[1].split(
-        "In den Warenkorb", 1
-    )[0]
+    section = rabanne.split("Artikelnummer: 707368", 1)[1].split("In den Warenkorb", 1)[0]
     assert selected_merchant_price_matches(section, Decimal("102.95"))
     assert not selected_merchant_price_matches(section, Decimal("119"))
     layton = browser["rows"][3]["main"]
-    layton_section = layton.split("Artikelnummer: 812773", 1)[1].split(
-        "In den Warenkorb", 1
-    )[0]
+    layton_section = layton.split("Artikelnummer: 812773", 1)[1].split("In den Warenkorb", 1)[0]
     assert selected_merchant_price_matches(layton_section, Decimal("290"))
     assert not selected_merchant_price_matches(layton_section, Decimal("229"))
 
@@ -618,7 +631,9 @@ def test_original_browser_bundle_refuses_changed_source_metadata() -> None:
     packet["offers"][0]["source_ref"] = "unsigned-marketing-claim"
     with pytest.raises(ValueError, match="original_batch_input_does_not_match_archived_source"):
         restore_direct_merchant_browser_evidence(
-            canonical_rows, packet, evidence_dir=folder,
+            canonical_rows,
+            packet,
+            evidence_dir=folder,
             now=datetime(2026, 10, 27, 12, tzinfo=UTC),
         )
 
