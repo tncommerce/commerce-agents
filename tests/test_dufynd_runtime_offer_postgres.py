@@ -33,6 +33,9 @@ def create_schema():
                 end
                 $$;"""
             )
+        # Supabase's server-side service_role bypasses RLS by design.
+        # Reproduce that only inside the disposable CI PostgreSQL service.
+        connection.execute("alter role service_role bypassrls")
         connection.execute(MIGRATION.read_text(encoding="utf-8"))
     yield
 
@@ -193,9 +196,12 @@ def test_sql_hold_audited_and_monotone(db):
         (row["offer_id"],),
     ).fetchone()
     assert current == ("hold", None, None, None)
-    assert db.execute(
-        f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
-    ).fetchone()[0] == 2
+    assert (
+        db.execute(
+            f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
+        ).fetchone()[0]
+        == 2
+    )
     with (
         pytest.raises(psycopg.errors.RaiseException, match="must advance strictly"),
         db.transaction(),
@@ -204,7 +210,6 @@ def test_sql_hold_audited_and_monotone(db):
             f"update {TABLE} set price=50,verified_at=%s where offer_id=%s",
             (newer, row["offer_id"]),
         )
-
 
 
 @pytest.mark.parametrize(
@@ -236,9 +241,12 @@ def test_sql_accepts_evidence_backed_empty_hold_and_audits(db):
         f"select decision,price,shipping_cost,in_stock from {TABLE} where offer_id=%s",
         (row["offer_id"],),
     ).fetchone() == ("hold", None, None, None)
-    assert db.execute(
-        f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
-    ).fetchone()[0] == 1
+    assert (
+        db.execute(
+            f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
+        ).fetchone()[0]
+        == 1
+    )
 
 
 @pytest.mark.parametrize(
