@@ -1,0 +1,21 @@
+name: DUFYND Exact Live Offer Release QA
+on:
+  push:
+    branches: [dev/dufynd-products-20261026]
+    paths: [artifacts/dufynd-release-qa-20261027/trigger.json]
+permissions:
+  contents: read
+jobs:
+  read-only-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Verify exact Top affiliate offers without any clickouts
+        shell: bash
+        run: |
+          set -euo pipefail
+          phase="$(python3 -c 'import json; print(json.load(open("artifacts/dufynd-release-qa-20261027/trigger.json"))["phase"])')"
+          python3 scripts/dufynd_p0_release_http_qa.py --phase "$phase"
