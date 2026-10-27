@@ -1,5 +1,49 @@
 # DUFYND · Datenbetrieb statt PR pro Händlerpreis (DEV / nicht live)
 
+## 27.10.2026 – Alternativer Awin Enhanced-/Google-Feed (nur Feldprüfung)
+
+Awin dokumentiert einen separaten Enhanced-/Google-Retail-Feed im JSONL-Format
+mit möglichen Feldern \`id\`, \`gtin\`, \`size\`, \`unit_pricing_measure\`,
+\`availability\`, \`price\` und \`shipping\`. **Ob der konkrete Advertiser
+Top Parfümerie 31081 im Konto 3099222 einen solchen Feed bereitstellt,
+ist bisher NICHT bestätigt.** Die offizielle Awin-Spezifikation ist nur
+ein Formatvertrag, kein gültiger produktbezogener Preis- oder Lizenzbeleg.
+
+Für eine möglicherweise bereitgestellte *lokale, autorisiert erworbene*
+JSONL-Datei gibt es nun die **isolierte Read-only-Quelltriage**:
+
+\`\`\`bash
+python scripts/review_dufynd_awin_enhanced_feed.py \
+  --feed /privat/authorisierte-original-feed-datei.jsonl \
+  --source-receipt /privat/geprüfter-source-receipt.json
+\`\`\`
+
+Das Source-Receipt enthält lediglich \`publisher_id=3099222\`,
+\`advertiser_id=31081\`, \`source_type=awin_enhanced_retail_jsonl\`,
+\`download_sha256\` und das echte \`downloaded_at\`; es ist **kein**
+Netzwerk-Token und darf keinen solchen enthalten. Der SHA-256 muss den
+unveränderten gesamten JSONL-Bytes entsprechen. Die Vorprüfung nutzt
+nur bestehende, freigegebene Top-Händler-SKUs (höchstens 50 pro Durchlauf),
+prüft bekannte EAN, genaue ml-Größe, in_stock, eindeutigen EUR-Artikelpreis
+ohne ungeklärte Rabatte und die explizit landesweite DE-Versandangabe.
+Falsche Größe, fremde GTIN, doppelte SKUs, unbestätigte Versandkosten,
+abgelaufene Downloadbelege oder fehlende Händlerfreigaben werden blockiert.
+
+\`FIELD_COMPLETE_REVIEW_ONLY\` bedeutet **niemals** aktivierbar!
+Auch bei vollständig gefüllten Feldern kann ein Awin-Download-Zeitstempel
+nicht die exakte SKU-Quellbeobachtungszeit ersetzen. Positives
+\`prepare_batch()\` und Live-Aktivierung verlangen einen weiteren
+belegten, aktuellen Händler-/Netzwerk-Quellvertrag. Die Ausgabe enthält
+keine angebotenen Preise, Merchants-URLs, künstlichen Affiliate-Links,
+und der neue Parser hat **0 Netzwerkzugriffe, 0 Datenbank-Schreibvorgänge
+und 0 öffentliche Angebotsaktivierungen**.
+
+Referenzen (reine Dokumentation):
+https://help.awin.com/apidocs/retail-publisher-productapidocumentation-1
+https://help.awin.com/developers/docs/enhanced-feeds-prod-spec
+
+
+
 ## 27.10.2026 – Zusätzliche Quellenhärtung: archiviertes Git-Manifest und UVP
 
 Die lokale `--merchant-browser-evidence-dir`-Wiederverwendung ist ausschließlich
