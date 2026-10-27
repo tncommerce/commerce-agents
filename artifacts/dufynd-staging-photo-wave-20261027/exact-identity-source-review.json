@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "created_for": "DUFYND revenue-first unpublished original packshots",
+  "status": "SOURCE_IMAGE_AND_GTIN_CORROBORATED_PRIVATE_REVIEW_ONLY_NOT_PUBLISHED",
+  "source": {
+    "official_feed_workflow_run": 40472385765,
+    "official_feed_job": 122082335653,
+    "checked_at": "2026-10-27T08:16:48+00:00",
+    "advertiser_id": "31081",
+    "feed_id": "91379",
+    "active": true,
+    "feed_sha256": "fc93d015d444723780f84a8aba7f3ff5b38cc0b825c3b8da4861f9d96d16f647",
+    "feed_downloaded_bytes": 12187908,
+    "selection_method": "existing Awin sanitized bounded source output plus independent historically mapped GTIN; filename alone does not verify size or photo bytes",
+    "source_profile_count": 20,
+    "total_name_sku_leads": 28
+  },
+  "rights": {
+    "basis": "awin_top_parfuemerie_feed_materials_20260928",
+    "scope": "unaltered official Awin advertiser feed material on approved DUFYND Publisher Service promoting Top Parfuemerie",
+    "independent_sku_rights_email_not_needed_under_existing_license": true,
+    "external_merchants_images_not_imported": true,
+    "retouch_or_social_reuse_not_approved": true
+  },
+  "newly_selected_for_visual_and_byte_qa": [
+    {
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "product": {
+        "brand": "Jean Paul Gaultier",
+        "name": "Le Male Le Parfum",
+        "concentration": "Eau de Parfum Intense",
+        "volume_ml": 125,
+        "canonical_historical_gtin": "8435415032315"
+      },
+      "official_feed": {
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "publisher_id": "3099222",
+        "merchant_sku": "867108",
+        "awin_product_id": "37127259350",
+        "product_name_as_supplied": "Jean Paul Gaultier Le Male Le Parfum EdP Nat. Spray",
+        "product_url": "https://www.topparfuemerie.de/jean-paul-gaultier-le-male-le-parfum-edp-nat-spray",
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/6/867108_8435415032315_051.png",
+        "original_feed_deeplink": "https://www.awin1.com/pclick.php?p=37127259350&a=3099222&m=31081",
+        "source_row_hash": "95dadeaa93bb766794896eb0acd959f39bfe3d00be8efbc0d494e48b344f0696",
+        "feed_does_not_prove_current_size": true,
+        "feed_does_not_prove_gtin_field": true,
+        "image_filename_gtin_hint": "8435415032315"
+      },
+      "independent_variant_identity": {
+        "url": "https://www.parfuem365.de/herrenduefte/22198/jean-paul-gaultier-le-male-le-parfum-eau-de-parfum-125-ml",
+        "historical_gtin": "8435415032315",
+        "external_product_variant_corroboration": true
+      },
+      "review_gates": {
+        "identity_qualified_for_private_photo_review": true,
+        "official_feed_image_source": true,
+        "source_image_bytes_sha256": null,
+        "source_image_download_verified": false,
+        "merchant_selected_size_verified_now": false,
+        "merchant_current_price_stock_shipping_verified": false,
+        "owner_visual_acceptance": false,
+        "public_image_allowed": false,
+        "new_affiliate_offer_activated": false,
+        "new_profile_published": false,
+        "exact_verified_affiliate_link_stored_only": true
+      }
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "product": {
+        "brand": "Narciso Rodriguez",
+        "name": "for her PURE MUSC",
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "canonical_historical_gtin": "3423478515956"
+      },
+      "official_feed": {
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "publisher_id": "3099222",
+        "merchant_sku": "850706",
+        "awin_product_id": "38140837150",
+        "product_name_as_supplied": "Narciso Rodriguez For Her Pure Musc EdP Nat. Spray",
+        "product_url": "https://www.topparfuemerie.de/narciso-rodriguez-for-her-pure-musc-edp-nat-spray",
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/850706_3423478515956_061.png",
+        "original_feed_deeplink": "https://www.awin1.com/pclick.php?p=38140837150&a=3099222&m=31081",
+        "source_row_hash": "1be5b686a1ffa42acdbe0821f4275127909475b5885db41d24d30411e1d5d821",
+        "feed_does_not_prove_current_size": true,
+        "feed_does_not_prove_gtin_field": true,
+        "image_filename_gtin_hint": "3423478515956"
+      },
+      "independent_variant_identity": {
+        "url": "https://www.shop-apotheke.com/beauty/upmPFYPPL/narciso-rodriguez-for-her-pure-musc-e-d-p-nat-spray.htm",
+        "historical_gtin": "3423478515956",
+        "external_product_variant_corroboration": true
+      },
+      "review_gates": {
+        "identity_qualified_for_private_photo_review": true,
+        "official_feed_image_source": true,
+        "source_image_bytes_sha256": null,
+        "source_image_download_verified": false,
+        "merchant_selected_size_verified_now": false,
+        "merchant_current_price_stock_shipping_verified": false,
+        "owner_visual_acceptance": false,
+        "public_image_allowed": false,
+        "new_affiliate_offer_activated": false,
+        "new_profile_published": false,
+        "exact_verified_affiliate_link_stored_only": true
+      }
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "product": {
+        "brand": "Hugo Boss",
+        "name": "BOSS Bottled Absolu",
+        "concentration": "Parfum Intense",
+        "volume_ml": 100,
+        "canonical_historical_gtin": "3616305480620"
+      },
+      "official_feed": {
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "publisher_id": "3099222",
+        "merchant_sku": "924267",
+        "awin_product_id": "38771477846",
+        "product_name_as_supplied": "Hugo Boss Boss Bottled Absolu Parfum Intense Nat. Spray",
+        "product_url": "https://www.topparfuemerie.de/hugo-boss-boss-bottled-absolu-parfum-intense-nat-spray",
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924267_3616305480620_051.png",
+        "original_feed_deeplink": "https://www.awin1.com/pclick.php?p=38771477846&a=3099222&m=31081",
+        "source_row_hash": "2fd052aec0c89156e5507d07f42a1c9072336275ffeca99750438170ec39587c",
+        "feed_does_not_prove_current_size": true,
+        "feed_does_not_prove_gtin_field": true,
+        "image_filename_gtin_hint": "3616305480620"
+      },
+      "independent_variant_identity": {
+        "url": "https://www.kaufland.de/product/508474566/",
+        "historical_gtin": "3616305480620",
+        "external_product_variant_corroboration": true
+      },
+      "review_gates": {
+        "identity_qualified_for_private_photo_review": true,
+        "official_feed_image_source": true,
+        "source_image_bytes_sha256": null,
+        "source_image_download_verified": false,
+        "merchant_selected_size_verified_now": false,
+        "merchant_current_price_stock_shipping_verified": false,
+        "owner_visual_acceptance": false,
+        "public_image_allowed": false,
+        "new_affiliate_offer_activated": false,
+        "new_profile_published": false,
+        "exact_verified_affiliate_link_stored_only": true
+      }
+    },
+    {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "product": {
+        "brand": "Amouage",
+        "name": "Guidance 46",
+        "concentration": "Extrait de Parfum",
+        "volume_ml": 100,
+        "canonical_historical_gtin": "0701666410980"
+      },
+      "official_feed": {
+        "advertiser_id": "31081",
+        "feed_id": "91379",
+        "publisher_id": "3099222",
+        "merchant_sku": "924069",
+        "awin_product_id": "41400419020",
+        "product_name_as_supplied": "Amouage Guidance 46 Extrait de Parfum Nat. Spray",
+        "product_url": "https://www.topparfuemerie.de/amouage-guidance-46-extrait-de-parfum-nat-spray",
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924069_701666410980_051.png",
+        "original_feed_deeplink": "https://www.awin1.com/pclick.php?p=41400419020&a=3099222&m=31081",
+        "source_row_hash": "e7a4f714e815c82238b700235431f5c13bc7e60f1e8aeb89a8832f5c8a461095",
+        "feed_does_not_prove_current_size": true,
+        "feed_does_not_prove_gtin_field": true,
+        "image_filename_gtin_hint": "701666410980"
+      },
+      "independent_variant_identity": {
+        "url": "https://www.flaconi.de/parfum/amouage/extrait-collection/amouage-extrait-collection-guidance-46-parfum.html?variant=90008104-0012635",
+        "historical_gtin": "0701666410980",
+        "external_product_variant_corroboration": true
+      },
+      "review_gates": {
+        "identity_qualified_for_private_photo_review": true,
+        "official_feed_image_source": true,
+        "source_image_bytes_sha256": null,
+        "source_image_download_verified": false,
+        "merchant_selected_size_verified_now": false,
+        "merchant_current_price_stock_shipping_verified": false,
+        "owner_visual_acceptance": false,
+        "public_image_allowed": false,
+        "new_affiliate_offer_activated": false,
+        "new_profile_published": false,
+        "exact_verified_affiliate_link_stored_only": true
+      }
+    }
+  ],
+  "excluded_variant_or_identity_holds": [
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "reason": "Official feed names EDP Nat Spray while staged identity is Le Parfum; concentration must not be assumed from GTIN filename",
+      "sku": "922283"
+    },
+    {
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "reason": "Image filename GTIN 3614270659652 mismatches historically required 3614270659706 (90 ml)",
+      "sku": "795056"
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "reason": "Source SKU 932957 filename GTIN 3700578506740 differs from staged historical GTIN 3700578505767",
+      "sku": "932957"
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "reason": "Official feed name lead also contains Reflection 45 Extrait; no matching GTIN-qualified 100ml candidate established",
+      "sku": "898066"
+    }
+  ],
+  "safety": {
+    "approved_new_images": 0,
+    "verified_new_live_offers": 0,
+    "publications": 0,
+    "affiliate_clickouts": 0,
+    "pricing_estimated": false,
+    "media_generation": false,
+    "owner_go_scope_not_extended": true,
+    "additional_spend_eur": 0,
+    "production_deploy": false
+  }
+}
