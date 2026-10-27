@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "source_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+  "observed_at": "2026-10-26T10:42:37.210Z",
+  "expires_at": "2026-10-29T10:42:37.210000+00:00",
+  "capture_method": "Connected Chrome, direct merchant URL, read-only fully loaded DOM and page JSON-LD; no affiliate/click/cart events",
+  "source_dom_sha256": "8a6fc0e10173ac6f06e1b9b1262ca7704766509082590d01709b0b6b754c3fe9",
+  "source_dom_artifact": "libre-fresh-browser.json in continuation2 review evidence bundle",
+  "offer_id": "notino-ysl-libre-edp-90",
+  "product_id": "SC-YSL-LIBRE-EDP-90",
+  "visible_merchant_product_id": "VZR11010",
+  "selected_variant": {
+    "brand": "Yves Saint Laurent",
+    "name": "Yves Saint Laurent Libre",
+    "concentration": "Eau de Parfum",
+    "volume_ml": 90,
+    "presentation": "refillable_bottle_not_refill",
+    "gtin13": "3614272648425",
+    "jsonld_sku": "YSLLBRW_AEDP10",
+    "price_eur": 130,
+    "currency": "EUR",
+    "in_stock": true,
+    "shipping_cost_eur": 0,
+    "shipping_method": "DHL",
+    "shipping_country": "DE",
+    "shipping_display": "Gratis",
+    "visible_availability": "Verfügbar"
+  },
+  "jsonld_selected_offer": {
+    "@type": "Offer",
+    "name": "Yves Saint Laurent Libre 90 ml",
+    "areaServed": {
+      "@type": "Place",
+      "name": "Germany"
+    },
+    "availability": "https://schema.org/InStock",
+    "price": 130,
+    "priceCurrency": "EUR",
+    "itemCountry": "DE",
+    "sku": "YSLLBRW_AEDP10",
+    "url": "/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/"
+  },
+  "neighbor_variant_excluded": {
+    "volume_ml": 100,
+    "price_eur": 128,
+    "jsonld_sku": "YSLLBRW_AEDP01",
+    "reason": "Different selected size and merchant URL; not the approved 90 ml SKU."
+  },
+  "source_browser_side_effects": {
+    "affiliate_clickout": false,
+    "add_to_cart": false,
+    "checkout": false
+  },
+  "affiliate_program_reverified": false,
+  "affiliate_image_rights_changed": false,
+  "runtime_write_performed": false
+}

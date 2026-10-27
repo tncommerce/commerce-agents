@@ -85,7 +85,10 @@ export async function verifyCompactFragranceSearch(browser, baseUrl, outputDir) 
       // Keep a real filter and both exact selected variants across search,
       // comparison, its explicit return link, product navigation and native back.
       await search.fill(products[0].query);
-      if(width<768) await page.locator('button[aria-controls="catalog-filter-panel"]').click();
+      const filterToggle=page.locator('button[aria-controls="catalog-filter-panel"]');
+      if(await filterToggle.isVisible() && await filterToggle.getAttribute('aria-expanded')==='false') {
+        await filterToggle.click();
+      }
       await page.getByRole('region',{name:'Duftkatalog filtern'}).getByRole('button',{name:'Damen',exact:true}).click();
       await checkCard(products[0],products[0].query);
       await cards.getByRole('button',{name:/für Vergleich auswählen/}).click();

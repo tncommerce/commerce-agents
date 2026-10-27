@@ -1,0 +1,43 @@
+{
+  "status": "APPLIED_TO_DRAFT_DEVELOPMENT_FILES_ONLY",
+  "base_commit": "2374ae55c08da75a693656d5571ace1c912f49e3",
+  "product_ids": [
+    "SC-MONTBLANC-EXPLORER-100",
+    "SC-CREED-AVENTUS-100",
+    "SC-PRADA-LHOMME-100",
+    "SC-XERJOFF-NAXOS-100"
+  ],
+  "offer_ids": [
+    "top-parfuemerie-montblanc-explorer-edp-100",
+    "top-parfuemerie-creed-aventus-edp-100",
+    "top-parfuemerie-prada-lhomme-edt-100",
+    "top-parfuemerie-xerjoff-naxos-edp-100-gift-box"
+  ],
+  "preservation": {
+    "merchant_offers.json": {
+      "preserved_rows_sha256": "79adf442d1dcfb7b805d7e798614f79b78ad373d6b59c6fe64ff2cc3bd34accd",
+      "preserved_rows_count": 59,
+      "original_rows_count": 59,
+      "development_rows_count": 63
+    },
+    "merchant_partners.json": {
+      "preserved_rows_sha256": "309aa16c81b3cba414a0983336b9038ae9585ca4e26e948c3cb5521aa39b8618",
+      "preserved_rows_count": 8,
+      "original_rows_count": 9,
+      "development_rows_count": 9
+    },
+    "merchant_product_mappings.json": {
+      "preserved_rows_sha256": "e7151b65c9e2f3824aae16abd3ef6a5f0078e09decf213c5ba42ffc1ca154395",
+      "preserved_rows_count": 106,
+      "original_rows_count": 106,
+      "development_rows_count": 110
+    }
+  },
+  "previous_top_routes_sha256": "2c8c9c3b2df01f490b3f1a4f6483c51dd5c511a2dad46b1a7715457deb64d77b",
+  "production_changed": false,
+  "runtime_sql_required_for_initial_static_release": false,
+  "runtime_environment_changed": false,
+  "merchant_homepage_route_enabled": false,
+  "image_publication_allowed": false,
+  "common_source_valid_until": "2026-10-29T15:16:31.046Z"
+}

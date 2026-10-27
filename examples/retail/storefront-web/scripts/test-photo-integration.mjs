@@ -30,9 +30,9 @@ try {
   }
   await assert.rejects(preparePhotoReview({enabled:true,destination,manifest:{items:[{...item,image_sha256:'a'.repeat(64)}]},fetchSource}),/Photo bytes changed/);
   assert.equal(existsSync(destination),false);
-  assert.equal(source.items.length,5);
-  assert.equal(new Set(source.items.map(x=>x.product_id)).size,5);
-  assert.ok(!source.items.some(x=>x.product_id==='SC-PDM-ALTHAIR-125'));
+  assert.equal(source.items.length,6);
+  assert.equal(new Set(source.items.map(x=>x.product_id)).size,6);
+  assert.ok(source.items.some(x=>x.product_id==='SC-PDM-ALTHAIR-125'&&x.volume_ml===125&&x.owner_visual_approved));
   const route=readFileSync(new URL('../app/duft/[slug]/page.tsx',import.meta.url),'utf8');
   assert.ok(!route.includes('merchantPhotoReview'),'Public route cannot opt into merchant preview');
   console.log('Photo integration gates: default-off cleanup, exact bytes, 11 negative permission/source cases and public-route separation passed.');

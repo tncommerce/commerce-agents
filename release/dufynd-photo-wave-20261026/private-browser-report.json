@@ -1,0 +1,478 @@
+{
+  "checked_at": "2026-10-26T12:58:37.226Z",
+  "source_head": "5ffd422081bbec23d1892906f9f1186190e26de0 plus local image delta",
+  "public_profile_count": 37,
+  "public_original_photo_count": 4,
+  "private_original_photo_profiles": 6,
+  "affiliate_or_analytics_requests": 0,
+  "checks": [
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_sku": "924719",
+      "route": "/review/photos/essential-parfums-bois-imperial",
+      "width": 390,
+      "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+      "source_size": [
+        286,
+        600
+      ],
+      "display_size": [
+        123.921875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 30,
+        "bottom": 30,
+        "left": 115.53125,
+        "right": 116.546875
+      },
+      "top_offer_total": 91.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant_sku": "707368",
+      "route": "/review/photos/rabanne-1-million",
+      "width": 390,
+      "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+      "source_size": [
+        229,
+        600
+      ],
+      "display_size": [
+        99.21875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 30,
+        "bottom": 30,
+        "left": 127.890625,
+        "right": 128.890625
+      },
+      "top_offer_total": 102.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Toilette · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "merchant_sku": "849484",
+      "route": "/review/photos/giorgio-armani-stronger-with-you-intensely",
+      "width": 390,
+      "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+      "source_size": [
+        381,
+        600
+      ],
+      "display_size": [
+        165.09375,
+        260
+      ],
+      "stage_gaps": {
+        "top": 30,
+        "bottom": 30,
+        "left": 94.953125,
+        "right": 95.953125
+      },
+      "top_offer_total": 107.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "merchant_sku": "812773",
+      "route": "/review/photos/parfums-de-marly-layton",
+      "width": 390,
+      "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+      "source_size": [
+        270,
+        524
+      ],
+      "display_size": [
+        133.96875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 30,
+        "bottom": 30,
+        "left": 110.515625,
+        "right": 111.515625
+      },
+      "top_offer_total": 290,
+      "shipping_cost": 0,
+      "variant_label": "125 ml · Eau de Parfum · Beim Händler 125 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "merchant_sku": "897029",
+      "route": "/review/photos/valentino-uomo-born-in-roma-intense",
+      "width": 390,
+      "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+      "source_size": [
+        361,
+        600
+      ],
+      "display_size": [
+        156.421875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 30,
+        "bottom": 30,
+        "left": 99.28125,
+        "right": 100.296875
+      },
+      "top_offer_total": 129.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "merchant_sku": "904707",
+      "route": "/review/photos/parfums-de-marly-althair",
+      "width": 390,
+      "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
+      "source_size": [
+        800,
+        800
+      ],
+      "display_size": [
+        260,
+        260
+      ],
+      "stage_gaps": {
+        "top": 30,
+        "bottom": 30,
+        "left": 47.5,
+        "right": 48.5
+      },
+      "top_offer_total": 290,
+      "shipping_cost": 0,
+      "variant_label": "125 ml · Eau de Parfum · Beim Händler 125 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_sku": "924719",
+      "route": "/review/photos/essential-parfums-bois-imperial",
+      "width": 768,
+      "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+      "source_size": [
+        286,
+        600
+      ],
+      "display_size": [
+        123.921875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 50,
+        "bottom": 50,
+        "left": 296.53125,
+        "right": 297.546875
+      },
+      "top_offer_total": 91.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant_sku": "707368",
+      "route": "/review/photos/rabanne-1-million",
+      "width": 768,
+      "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+      "source_size": [
+        229,
+        600
+      ],
+      "display_size": [
+        99.21875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 50,
+        "bottom": 50,
+        "left": 308.890625,
+        "right": 309.890625
+      },
+      "top_offer_total": 102.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Toilette · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "merchant_sku": "849484",
+      "route": "/review/photos/giorgio-armani-stronger-with-you-intensely",
+      "width": 768,
+      "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+      "source_size": [
+        381,
+        600
+      ],
+      "display_size": [
+        165.09375,
+        260
+      ],
+      "stage_gaps": {
+        "top": 50,
+        "bottom": 50,
+        "left": 275.953125,
+        "right": 276.953125
+      },
+      "top_offer_total": 107.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "merchant_sku": "812773",
+      "route": "/review/photos/parfums-de-marly-layton",
+      "width": 768,
+      "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+      "source_size": [
+        270,
+        524
+      ],
+      "display_size": [
+        133.96875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 50,
+        "bottom": 50,
+        "left": 291.515625,
+        "right": 292.515625
+      },
+      "top_offer_total": 290,
+      "shipping_cost": 0,
+      "variant_label": "125 ml · Eau de Parfum · Beim Händler 125 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "merchant_sku": "897029",
+      "route": "/review/photos/valentino-uomo-born-in-roma-intense",
+      "width": 768,
+      "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+      "source_size": [
+        361,
+        600
+      ],
+      "display_size": [
+        156.421875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 50,
+        "bottom": 50,
+        "left": 280.28125,
+        "right": 281.296875
+      },
+      "top_offer_total": 129.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "merchant_sku": "904707",
+      "route": "/review/photos/parfums-de-marly-althair",
+      "width": 768,
+      "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
+      "source_size": [
+        800,
+        800
+      ],
+      "display_size": [
+        260,
+        260
+      ],
+      "stage_gaps": {
+        "top": 50,
+        "bottom": 50,
+        "left": 228.5,
+        "right": 229.5
+      },
+      "top_offer_total": 290,
+      "shipping_cost": 0,
+      "variant_label": "125 ml · Eau de Parfum · Beim Händler 125 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_sku": "924719",
+      "route": "/review/photos/essential-parfums-bois-imperial",
+      "width": 1440,
+      "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+      "source_size": [
+        286,
+        600
+      ],
+      "display_size": [
+        123.921875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 150,
+        "bottom": 150,
+        "left": 258.828125,
+        "right": 259.84375
+      },
+      "top_offer_total": 91.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant_sku": "707368",
+      "route": "/review/photos/rabanne-1-million",
+      "width": 1440,
+      "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+      "source_size": [
+        229,
+        600
+      ],
+      "display_size": [
+        99.21875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 150,
+        "bottom": 150,
+        "left": 271.1875,
+        "right": 272.1875
+      },
+      "top_offer_total": 102.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Toilette · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "merchant_sku": "849484",
+      "route": "/review/photos/giorgio-armani-stronger-with-you-intensely",
+      "width": 1440,
+      "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+      "source_size": [
+        381,
+        600
+      ],
+      "display_size": [
+        165.09375,
+        260
+      ],
+      "stage_gaps": {
+        "top": 150,
+        "bottom": 150,
+        "left": 238.25,
+        "right": 239.25
+      },
+      "top_offer_total": 107.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "merchant_sku": "812773",
+      "route": "/review/photos/parfums-de-marly-layton",
+      "width": 1440,
+      "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+      "source_size": [
+        270,
+        524
+      ],
+      "display_size": [
+        133.96875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 150,
+        "bottom": 150,
+        "left": 253.8125,
+        "right": 254.8125
+      },
+      "top_offer_total": 290,
+      "shipping_cost": 0,
+      "variant_label": "125 ml · Eau de Parfum · Beim Händler 125 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "merchant_sku": "897029",
+      "route": "/review/photos/valentino-uomo-born-in-roma-intense",
+      "width": 1440,
+      "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+      "source_size": [
+        361,
+        600
+      ],
+      "display_size": [
+        156.421875,
+        260
+      ],
+      "stage_gaps": {
+        "top": 150,
+        "bottom": 150,
+        "left": 242.578125,
+        "right": 243.59375
+      },
+      "top_offer_total": 129.95,
+      "shipping_cost": 0,
+      "variant_label": "100 ml · Eau de Parfum · Beim Händler 100 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "merchant_sku": "904707",
+      "route": "/review/photos/parfums-de-marly-althair",
+      "width": 1440,
+      "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
+      "source_size": [
+        800,
+        800
+      ],
+      "display_size": [
+        260,
+        260
+      ],
+      "stage_gaps": {
+        "top": 150,
+        "bottom": 150,
+        "left": 190.796875,
+        "right": 191.796875
+      },
+      "top_offer_total": 290,
+      "shipping_cost": 0,
+      "variant_label": "125 ml · Eau de Parfum · Beim Händler 125 ml auswählen",
+      "purchase_button_disabled": true,
+      "status": "passed"
+    }
+  ]
+}

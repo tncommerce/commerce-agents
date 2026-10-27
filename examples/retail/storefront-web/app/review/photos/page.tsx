@@ -7,11 +7,11 @@ export const metadata: Metadata = {title:'Originalflakons · top Parfümerie · 
 export default function PhotoReviewCatalog() {
   if(!PHOTO_REVIEW_ENABLED) notFound();
   return <main className="min-h-screen bg-(--surface) text-(--ink)" data-photo-review-catalog>
-    <aside className="border-b border-(--line) bg-[#ede9df] px-5 py-3 text-center text-[12px]">Designprüfung · nicht veröffentlicht · keine Kaufangebote</aside>
+    <aside className="border-b border-(--line) bg-[#ede9df] px-5 py-3 text-center text-[12px]">Designprüfung · nicht veröffentlicht · deaktivierte Kaufbuttons</aside>
     <div className="mx-auto max-w-[1080px] px-5 py-10 sm:px-8 sm:py-14">
       <header className="mb-9 max-w-2xl"><p className="text-[11px] font-semibold uppercase tracking-[.16em] text-(--ink-soft)">DUFYND / TOP PARFÜMERIE</p>
         <h1 className="mt-3 text-[36px] font-semibold leading-[1.1] tracking-[-.04em] sm:text-[52px]">Der Flakon. Das Original.</h1>
-        <p className="mt-4 max-w-xl text-[15px] leading-6 text-(--ink-soft)">Fünf Düfte aus dem Sortiment von top Parfümerie. Originalaufnahmen, exakte Größen und dokumentierte Duftprofile.</p>
+        <p className="mt-4 max-w-xl text-[15px] leading-6 text-(--ink-soft)">Sechs Düfte aus dem Sortiment von top Parfümerie. Originalaufnahmen, exakte Größen und dokumentierte Duftprofile.</p>
       </header>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {PHOTO_REVIEW_ITEMS.map(photo=>{
@@ -25,7 +25,7 @@ export default function PhotoReviewCatalog() {
           </article>;
         })}
       </div>
-      <p className="mt-7 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">Händlergebundene Entwicklungsvorschau. Die Fotos sind unverändert; Kaufangebote, Händler-Tracking und öffentlicher Release bleiben gesondert gesperrt.</p>
+      <p className="mt-7 max-w-2xl text-[12px] leading-5 text-(--ink-soft)">Händlergebundene Entwicklungsvorschau. Die Fotos sind unverändert; Passende Top-Händlerangebote sind in den Duftporträts als Kandidaten prüfbar; Kaufbuttons und öffentlicher Release bleiben deaktiviert.</p>
     </div>
   </main>;
 }

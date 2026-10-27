@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generated_at": "2026-10-09T13:19:11+00:00",
-  "source_fingerprint_sha256": "bc4ff07d73a74167de252da60ba50bdb1757ec306b574613c86f36213c0e9c86",
+  "source_fingerprint_sha256": "36c702f60dcc633000f06a7144912055b257e9371101f48538af115bdcab79c6",
   "policy_ref": "scentai_jarvis_operating_policy.json",
   "source_files": [
     "scentai_catalog_staging.json",
@@ -1685,9 +1685,9 @@
       "name": "1 Million",
       "batch": 4,
       "researched_merchant_count": 3,
-      "mapping_count": 2,
-      "resolved_mapping_count": 2,
-      "full_mapping_count": 2,
+      "mapping_count": 3,
+      "resolved_mapping_count": 3,
+      "full_mapping_count": 3,
       "state": "mapping_data_ready",
       "blockers": [],
       "next_action": "maintain_mapping_and_verify_purchase_destination",
@@ -1712,6 +1712,19 @@
           "affiliate_program": {
             "network": "Awin",
             "program": "Perfumetrader DE",
+            "status": "approved"
+          },
+          "affiliate_activation_state": "approved"
+        },
+        {
+          "merchant_id": "top-parfuemerie",
+          "mapping_state": "full",
+          "merchant_product_id": "707368",
+          "ean": "3349666007921",
+          "gtin": "3349666007921",
+          "affiliate_program": {
+            "network": "Awin",
+            "program": "top Parfümerie DE",
             "status": "approved"
           },
           "affiliate_activation_state": "approved"

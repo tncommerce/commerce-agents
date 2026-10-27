@@ -94,3 +94,29 @@ for(const q of ['zzBlackOpium','BlackOpiumzz','BlackOpi','UnknownFragranceXYZ','
 assert.equal(variant({brand:'Test',name:'Belle',concentration:'Eau de Parfum',volume_ml:100},'Belle Le Parfum'),false);
 assert.equal(variant({brand:'Test',name:'Belle Le Parfum',concentration:'Eau de Parfum',volume_ml:100},'Belle Le Parfum'),true);
 console.log(`Compact search: ${required.length} exact public variants; ${completeNames.size} unambiguous full names; size, flanker, refill and private-profile exclusions passed.`);
+
+// This already-public profile and its purchase guide describe a refillable
+// 90-ml bottle. A shopper using that distinction must reach the bottle, while
+// refill packs, other concentrations and other sizes stay excluded.
+const libreBottle=publicProducts.find(p=>p.product_id==='SC-YSL-LIBRE-EDP-90');
+assert.ok(libreBottle);
+const refillableBottleQueries=[
+  'YSL Libre EDP 90 ml nachfüllbar',
+  'YSL Libre nachfüllbarer Flakon 90 ml',
+  'Yves Saint Laurent Libre refillable EDP 90ml',
+  'LIBRE NACHFÜLLBAR 90 ML',
+];
+for(const q of refillableBottleQueries) {
+  assert.deepEqual(publicProducts.filter(p=>matches(p,q)).map(p=>p.product_id),[libreBottle.product_id],q);
+}
+for(const q of [
+  'YSL Libre Refill 100 ml', 'YSL Libre Refill 90 ml',
+  'YSL Libre Nachfüllung 90 ml', 'YSL Libre nachfüllbar 100 ml',
+  'YSL Libre nachfüllbar 50 ml', 'YSL Libre nachfüllbar EDT 90 ml',
+  'YSL Libre Intense nachfüllbar 90 ml', 'YSL Libre Le Parfum nachfüllbar 90 ml',
+]) assert.deepEqual(publicProducts.filter(p=>matches(p,q)).map(p=>p.product_id),[],q);
+for(const changedIdentity of [
+  {product_id:'UNKNOWN'}, {brand:'Other'}, {name:'Libre Intense'},
+  {concentration:'Eau de Toilette'}, {volume_ml:100},
+]) assert.equal(matches({...libreBottle,...changedIdentity},'nachfüllbar'),false,JSON.stringify(changedIdentity));
+console.log('Libre buyer search: refillable 90-ml bottle found; refill packs, other sizes and flankers excluded.');

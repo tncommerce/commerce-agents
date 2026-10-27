@@ -1,0 +1,23 @@
+{
+  "status": "SOURCE_VERIFIED_STATIC_REFRESH_APPLIED_TO_DRAFT_ONLY",
+  "base_commit": "43bddd43e900c728db8e4eefb0968e186f44cba8",
+  "offer_id": "notino-ysl-libre-edp-90",
+  "changed_fields": [
+    "last_updated_at"
+  ],
+  "before_values": {
+    "last_updated_at": "2026-10-20T19:53:43.753Z"
+  },
+  "after_values": {
+    "last_updated_at": "2026-10-26T10:42:37.210Z"
+  },
+  "source_observation_sha256": "33bc4ae6d945a1b74e52bf07c88f6b78eb194361a39b327a9b162631ba857e71",
+  "price": 130,
+  "shipping_cost": 0,
+  "in_stock": true,
+  "affiliate_route_changed": false,
+  "product_identity_changed": false,
+  "production_changed": false,
+  "runtime_environment_changed": false,
+  "runtime_sql_required_for_static_path": false
+}

@@ -1,0 +1,47 @@
+{
+  "status": "APPLIED_TO_DRAFT_DEVELOPMENT_FILES_ONLY",
+  "base_commit": "43bddd43e900c728db8e4eefb0968e186f44cba8",
+  "product_ids": [
+    "SC-ARMANI-SWY-INTENSELY-100",
+    "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+    "SC-PDM-ALTHAIR-125",
+    "SC-PDM-LAYTON-125",
+    "SC-RABANNE-1-MILLION-EDT-100",
+    "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100"
+  ],
+  "offer_ids": [
+    "top-parfuemerie-armani-swy-intensely-100",
+    "top-parfuemerie-bois-imperial-100",
+    "top-parfuemerie-pdm-althair-125",
+    "top-parfuemerie-pdm-layton-125",
+    "top-parfuemerie-rabanne-1-million-edt-100",
+    "top-parfuemerie-valentino-born-in-roma-intense-100"
+  ],
+  "preservation": {
+    "merchant_offers.json": {
+      "preserved_rows_sha256": "3c43be6a681071f7431da7a7a32a44752703be8e51d562ec2fedbc7f8fa22098",
+      "preserved_rows_count": 52,
+      "original_rows_count": 53,
+      "development_rows_count": 59
+    },
+    "merchant_partners.json": {
+      "preserved_rows_sha256": "309aa16c81b3cba414a0983336b9038ae9585ca4e26e948c3cb5521aa39b8618",
+      "preserved_rows_count": 8,
+      "original_rows_count": 9,
+      "development_rows_count": 9
+    },
+    "merchant_product_mappings.json": {
+      "preserved_rows_sha256": "c69b93988cb3d1cb78e8ee983936cdeed70a42a7f4ad6d09f274ee08a77fafec",
+      "preserved_rows_count": 100,
+      "original_rows_count": 101,
+      "development_rows_count": 106
+    }
+  },
+  "production_changed": false,
+  "runtime_sql_required_for_initial_static_release": false,
+  "runtime_environment_changed": false,
+  "merchant_homepage_route_enabled": false,
+  "allowed_existing_offer_updates": [
+    "notino-ysl-libre-edp-90"
+  ]
+}

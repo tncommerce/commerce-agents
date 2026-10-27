@@ -191,7 +191,7 @@ const viewports = [
 ];
 
 const coreRoutes = [
-  { name: "home", route: "/", marker: "Finde den Duft," },
+  { name: "home", route: "/", marker: "Nicht irgendein" },
   {
     name: "social-start",
     route: "/start",
@@ -1336,7 +1336,10 @@ try {
     if ((await freshProfile.getAttribute("aria-pressed")) !== "true") {
       throw new Error("catalog did not restore the shared scent world");
     }
+    await chooseMeasurement(sharePage, "denied");
     await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).fill("Naxos");
+    const shareFilterToggle = sharePage.locator('button[aria-controls="catalog-filter-panel"]');
+    if (await shareFilterToggle.getAttribute("aria-expanded") === "false") await shareFilterToggle.click();
     await sharePage.getByRole("button", { name: "Herren", exact: true }).click();
     await sharePage.getByRole("combobox", { name: "Marke" }).selectOption("Xerjoff");
     if (await sharePage.getByRole("combobox", { name: "Bewertung" }).count()) throw new Error("Unlicensed community rating filter is exposed");
@@ -1351,6 +1354,8 @@ try {
         url.searchParams.get("utm_source") === "qa";
     });
     await sharePage.reload({ waitUntil: "networkidle" });
+    await chooseMeasurement(sharePage, "denied");
+    if (await shareFilterToggle.getAttribute("aria-expanded") === "false") await shareFilterToggle.click();
     if ((await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).inputValue()) !== "Naxos" ||
         (await freshProfile.getAttribute("aria-pressed")) !== "true" ||
         (await sharePage.getByRole("button", { name: "Herren", exact: true }).getAttribute("aria-pressed")) !== "true" ||
@@ -1392,6 +1397,11 @@ try {
         );
       }
 
+      await chooseMeasurement(audiencePage, "denied");
+      const filterToggle = audiencePage.locator('button[aria-controls="catalog-filter-panel"]');
+      if (await filterToggle.isVisible() && await filterToggle.getAttribute("aria-expanded") === "false") {
+        await filterToggle.click();
+      }
       const audienceButton = audiencePage.getByRole("button", {
         name: label,
         exact: true,

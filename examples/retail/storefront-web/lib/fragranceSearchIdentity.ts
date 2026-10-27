@@ -1,4 +1,5 @@
 type FragranceIdentity = {
+  product_id?: string;
   brand: string;
   name: string;
   concentration: string;
@@ -26,9 +27,19 @@ export function fragranceSearchIdentity(fragrance: FragranceIdentity): string {
   const brand = normalizeFragranceSearch(fragrance.brand);
   const productAliases = brand === "rabanne" && normalizeFragranceSearch(fragrance.name) === "1 million"
     ? "one million onemillion 1million" : "";
+  // The verified Libre purchase guide describes this exact 90-ml bottle as
+  // refillable. Do not transfer that property to other sizes or refill packs.
+  const refillableBottleAliases =
+    fragrance.product_id === "SC-YSL-LIBRE-EDP-90" &&
+    brand === "yves saint laurent" &&
+    normalizeFragranceSearch(fragrance.name) === "libre" &&
+    normalizeFragranceSearch(fragrance.concentration) === "eau de parfum" &&
+    fragrance.volume_ml === 90
+      ? "nachfüllbar nachfüllbarer Flakon refillable"
+      : "";
   return normalizeFragranceSearch([
     fragrance.brand, fragrance.name, fragrance.concentration,
-    BRAND_ALIASES[brand] || "", productAliases,
+    BRAND_ALIASES[brand] || "", productAliases, refillableBottleAliases,
     CONCENTRATION_ALIASES[normalizeFragranceSearch(fragrance.concentration)] || "",
     `${fragrance.volume_ml}ml ${fragrance.volume_ml} ml`,
   ].join(" "));
