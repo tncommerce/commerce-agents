@@ -65,7 +65,7 @@ async function catalogShare() {
     let actual = await snapshot("after-filter-change");
     for (const [key,value] of Object.entries({
       q:"Naxos", profil:"freshness", zielgruppe:"men",
-      marke:"Xerjoff", sort:"brand", utm_source:"qa",
+      marke:"Xerjoff", sort:"brand", utm_source:null,
     })) {
       assert.equal(actual[key], value, "share-URL does not match control " + key);
     }

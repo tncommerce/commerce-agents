@@ -8,7 +8,7 @@ permissions:
 jobs:
   first-party-buyer:
     runs-on: ubuntu-latest
-    timeout-minutes: 19
+    timeout-minutes: 24
     defaults:
       run:
         working-directory: examples
@@ -40,3 +40,4 @@ jobs:
             sleep 1
           done
           node retail/storefront-web/scripts/diagnose-isolated-buyer.mjs
+          node retail/storefront-web/scripts/dufynd-visual-qa.mjs --base-url http://127.0.0.1:3000 --out /tmp/dufynd-isolated-buyer-visual

@@ -1343,8 +1343,8 @@ try {
     await context.close();
   }
 
-  // The full catalog selection should survive sharing and reloads,
-  // without discarding acquisition attribution from the incoming link.
+  // Functional catalog filters must survive sharing and reloads; optional
+  // attribution parameters are intentionally removed after consent denial.
   const shareContext = await browser.newContext();
   try {
     const sharePage = await shareContext.newPage();
@@ -1377,7 +1377,7 @@ try {
           url.searchParams.get("zielgruppe") === "men" &&
           url.searchParams.get("marke") === "Xerjoff" &&
           url.searchParams.get("sort") === "brand" &&
-          url.searchParams.get("utm_source") === "qa";
+          !url.searchParams.has("utm_source");
       }, undefined, {timeout: 12_000});
     } catch (error) {
       // A timeout alone conceals the broken field. Report the local test URL
