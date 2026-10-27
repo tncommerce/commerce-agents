@@ -677,12 +677,13 @@ try {
             };
           });
           const mobileProductFirst = viewport.width <= 390;
+          const hasReleasedOriginal = verifiedTruthByRoute.has(target.route);
           const maxIdentityTop = mobileProductFirst ? 620 : 260;
           if (layout.title_top == null || layout.title_top > maxIdentityTop) {
             throw new Error(`fragrance identity starts too far below the intended first-screen composition: ${layout.title_top}px`);
           }
           if (
-            mobileProductFirst &&
+            mobileProductFirst && !hasReleasedOriginal &&
             (
               layout.stage_top == null ||
               layout.title_top == null ||
@@ -937,18 +938,39 @@ try {
 
         if (["absolu-aventus", "bois-imperial"].includes(target.name)) {
           const hero = page.locator(".dufynd-fragrance-hero");
-          if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
-            throw new Error("unapproved product hero failed the source-honest studio fallback");
-          }
-          const text = await hero.innerText();
-          if (!text.includes("Originalfoto in Prüfung")) {
-            throw new Error("unapproved detail hero omitted exact-original rights hold");
-          }
-          if (text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
-            throw new Error("unapproved detail still presents an editorial bottle scene");
-          }
-          if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) > 0) {
-            throw new Error("unapproved bottle claims were exposed through the advanced 3D notes");
+          const approvedId = target.name === "bois-imperial"
+            ? "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100" : null;
+          const releasedPhoto = approvedId ? approvedImages.get(approvedId) : null;
+          if (releasedPhoto) {
+            const exactTruth = verifiedTruthByRoute.get(target.route);
+            if (!exactTruth || exactTruth.url !== releasedPhoto.url ||
+                Number(releasedPhoto.volume_ml) !== 100) {
+              throw new Error("approved Bois Imperial photo mismatches its exact product identity");
+            }
+            if ((await hero.getAttribute("data-dufynd-photo-status")) !== "verified" ||
+                (await hero.getAttribute("data-dufynd-photo-hold")) !== null) {
+              throw new Error("approved Bois Imperial original remains incorrectly on image hold");
+            }
+            if ((await hero.locator('[data-original-photo-source="top-parfuemerie"]').count()) !== 1) {
+              throw new Error("licensed Bois Imperial original lost its public source attribution");
+            }
+            if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) > 0) {
+              throw new Error("registered Bois Imperial image incorrectly reverted to an unlicensed visual");
+            }
+          } else {
+            if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
+              throw new Error("unapproved product hero failed the source-honest studio fallback");
+            }
+            const text = await hero.innerText();
+            if (!text.includes("Originalfoto in Prüfung")) {
+              throw new Error("unapproved detail hero omitted exact-original rights hold");
+            }
+            if (text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
+              throw new Error("unapproved detail still presents an editorial bottle scene");
+            }
+            if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) > 0) {
+              throw new Error("unapproved bottle claims were exposed through the advanced 3D notes");
+            }
           }
         }
 

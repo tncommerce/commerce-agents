@@ -1,6 +1,7 @@
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 
 // The editorial atlas is deliberately stationary in both motion preferences.
 // Test the actual note display, including descendants, instead of requiring a
@@ -199,28 +200,30 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await page.screenshot({path:`${outputDir}/wow22-${name}-${width}-full.png`,fullPage:true});
         }
         if(name==='rabanne') {
-          const heldNotes=page.locator('[data-dufynd-source-honest-notes="rabanne-edt-100"]');
-          assert.equal(await heldNotes.count(),1,'Rabanne EDT 100ml has a source-honest editorial note identity during photo hold');
-          assert.equal(await heldNotes.locator('img').count(),0,'Rabanne source-hold identity is not fake original photography');
-          assert.deepEqual(await heldNotes.locator('li').allTextContents(),
-            ['Minze','Mandarine','Rose','Zimt','Amber','Leder'],
-            'Rabanne editorial notes match exact documented variant, never invented bottle or concentration claims');
-          assert.match(await heldNotes.innerText(),/Originalfoto in Prüfung/);
-          const summary=heldNotes.locator('summary');
-          const heldBounds=await heldNotes.boundingBox();
-          assert.ok(heldBounds&&heldBounds.x>=0&&heldBounds.x+heldBounds.width<=width
-            &&heldBounds.height>=44&&heldBounds.height<=64,
-            'Collapsed honest Rabanne note teaser preserves compact first-money landing');
-          assert.equal(await heldNotes.locator('li').first().isVisible(),false,
-            'Additional editorial content does not displace the initial offers CTA');
-          await summary.focus();await page.keyboard.press('Enter');
-          await heldNotes.locator('li').first().waitFor({state:'visible'});
-          const expandedBounds=await heldNotes.boundingBox();
-          assert.ok(expandedBounds&&expandedBounds.height>=160,
-            'Expanded note study stays genuinely readable on demand');
-          await summary.click();
-          assert.equal(await heldNotes.locator('li').first().isVisible(),false,
-            'Closing note study restores compact purchase journey');
+          // This release uses the original, rights-bound Rabanne 100-ml photo.
+          // A blocked external QA image request is not a reason to resurrect
+          // the old "Originalfoto in Prüfung" source-hold user interface.
+          const approvedPhoto = JSON.parse(readFileSync(
+            new URL("../lib/generated/original-photos.json", import.meta.url), "utf8",
+          )).find((photo) => photo.product_id === 'SC-RABANNE-1-MILLION-EDT-100');
+          assert.ok(approvedPhoto &&
+            approvedPhoto.url === 'https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png' &&
+            approvedPhoto.rights_basis_id === 'awin_top_parfuemerie_feed_materials_20260928',
+            'Only the released, exact 100-ml photo and its recorded rights are accepted');
+          const hero = page.locator('.dufynd-fragrance-hero[data-product-id="SC-RABANNE-1-MILLION-EDT-100"]');
+          assert.equal(await hero.getAttribute('data-dufynd-photo-status'), 'verified',
+            'A published original must not fall back to an unapproved source-hold claim');
+          assert.equal(await hero.getAttribute('data-dufynd-photo-hold'), null);
+          assert.equal(await hero.locator('[data-dufynd-source-honest-notes="rabanne-edt-100"]').count(), 0,
+            'Old photo-hold teaser must not coexist with a licensed original');
+          const photoCredit = hero.locator('[data-original-photo-source="top-parfuemerie"] a');
+          assert.equal(await photoCredit.count(), 1, 'Licensed product retains merchant image attribution');
+          assert.equal(new URL(await photoCredit.getAttribute('href')).hostname, 'www.topparfuemerie.de');
+          const noteOverview = page.locator('#duftnoten.dufynd-notes-overview');
+          assert.equal(await noteOverview.count(), 1, 'Released product retains its genuine notes overview');
+          const ctaBounds = await page.locator('#dufynd-hero-offer-cta').boundingBox();
+          assert.ok(ctaBounds && ctaBounds.height >= 44,
+            'Buyer access must remain keyboard/touch accessible after image release');
           const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:'2026-10-14T00:00:00Z'};
           let available=true;
           await page.route('**/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100',r=>r.fulfill({json:{product_id:offer.product_id,best_offer_id:available?offer.offer_id:null,offers:available?[offer]:[],affiliate_disclosure:'Isolated QA fixture'}}));

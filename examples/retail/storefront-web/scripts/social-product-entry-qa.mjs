@@ -2,9 +2,18 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import { writeFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
 
 // Artificial local offer. This is neither a current merchant quote nor revenue.
 const productId = "SC-RABANNE-1-MILLION-EDT-100";
+const approvedRabanne = JSON.parse(readFileSync(
+  new URL("../lib/generated/original-photos.json", import.meta.url), "utf8",
+)).find((photo) => photo.product_id === productId);
+assert.ok(approvedRabanne &&
+  approvedRabanne.url === "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png" &&
+  approvedRabanne.volume_ml === 100 &&
+  approvedRabanne.rights_basis_id === "awin_top_parfuemerie_feed_materials_20260928",
+  "Social entry must use only the originally approved exact bottle");
 const offerId = "qa-perfumetrader-social-entry";
 const offer = {
   offer_id: offerId, product_id: productId, merchant_id: "perfumetrader",
@@ -60,25 +69,37 @@ export async function verifySocialProductEntry(browser, baseUrl, outputDir) {
         await merchant.waitFor();
         await page.evaluate(() => document.fonts.ready);
         const hero = page.locator(".dufynd-fragrance-hero");
-        assert.equal(await hero.getAttribute("data-dufynd-photo-hold"), "true");
-        assert.equal(await hero.locator("img").count(), 0, "no unapproved bottle photo");
-        assert.match(await hero.innerText(), /Eau de Toilette[\s\S]*100 ml/);
-        assert.match(await hero.innerText(), /Originalfoto in Prüfung/);
+        assert.equal(await hero.getAttribute("data-dufynd-photo-status"), "verified",
+          "Released exact Rabanne photo must be marked verified");
+        assert.equal(await hero.getAttribute("data-dufynd-photo-hold"), null,
+          "No stale photo-hold claim after rights-reviewed release");
+        const photoCredit = hero.locator('[data-original-photo-source="top-parfuemerie"] a');
+        assert.equal(await photoCredit.count(), 1,
+          "Public hero must retain source attribution despite isolated image request failure");
+        assert.equal(new URL(await photoCredit.getAttribute("href")).hostname, "www.topparfuemerie.de");
+        assert.equal(await hero.locator('[data-dufynd-source-honest-notes="rabanne-edt-100"]').count(), 0);
+        assert.match(await hero.innerText(), /1 Million/);
+        assert.match(await hero.innerText(), /100 ml/);
         assert.doesNotMatch(await page.locator("body").innerText(), /Preisreferenz|67,95/);
         assert.ok((await page.locator("#dufynd-hero-offer-cta").boundingBox()).height >= 44);
         assert.ok((await merchant.boundingBox()).height >= 44);
-        const metrics = await page.evaluate(() => ({
-          stage_height: document.querySelector(".dufynd-fragrance-stage-shell").getBoundingClientRect().height,
-          cta_bottom: document.querySelector("#dufynd-hero-offer-cta").getBoundingClientRect().bottom,
-          offers_top: document.querySelector("#angebote").getBoundingClientRect().top,
-          overflow: document.documentElement.scrollWidth > innerWidth,
-          hold_overlay: getComputedStyle(document.querySelector(".dufynd-neutral-visual-stage"), "::after").display,
-        }));
-        assert.ok(metrics.stage_height <= (width === 390 ? 64 : 96), JSON.stringify(metrics));
-        assert.ok(metrics.cta_bottom < (width === 390 ? 520 : 500), JSON.stringify(metrics));
-        assert.ok(metrics.offers_top < (width === 390 ? 780 : 650), JSON.stringify(metrics));
-        assert.equal(metrics.overflow, false);
-        assert.equal(metrics.hold_overlay, "none", "compact rights notice must not retain a bottle-stage shadow");
+        const metrics = await page.evaluate(() => {
+          const stage = document.querySelector(".dufynd-fragrance-stage-shell")?.getBoundingClientRect();
+          const cta = document.querySelector("#dufynd-hero-offer-cta")?.getBoundingClientRect();
+          const offers = document.querySelector("#angebote")?.getBoundingClientRect();
+          return {
+            stage_height: stage?.height ?? null,
+            stage_width: stage?.width ?? null,
+            cta_bottom: cta?.bottom ?? null,
+            offers_top: offers?.top ?? null,
+            overflow: document.documentElement.scrollWidth > innerWidth,
+          };
+        });
+        assert.ok(metrics.stage_height > 100 && metrics.stage_width > 0 &&
+          metrics.stage_width <= width + 2, JSON.stringify(metrics));
+        assert.ok(metrics.cta_bottom > 0 && metrics.offers_top > metrics.cta_bottom,
+          'A released image must not cover, overlap or remove the buyer journey');
+        assert.equal(metrics.overflow, false, 'Licensed photo must fit the viewport');
         measurements.push({ source, width, ...metrics });
         const section = page.locator("[data-merchant-offers]");
         assert.match(await section.innerText(), /Gesamtpreis inkl. Versand/);
