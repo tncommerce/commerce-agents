@@ -28,3 +28,4 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Read ten public product journeys without analytics or clickouts
         run: node retail/storefront-web/scripts/dufynd-live-buyer-browser-qa-20261027.mjs
+# Buyer-flow correction: distinct product lists for source photos and Top offer SKUs
