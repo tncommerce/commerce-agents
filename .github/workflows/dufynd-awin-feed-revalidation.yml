@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  # One bounded source refresh on an isolated development branch. No paid
+  # One source refresh for *previously unreviewed staging products* on an isolated branch. No paid
   # runner, dependency install, cache, artifact, clickout or deployment.
   review-next-public-photo-gaps:
     if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'push') && github.ref == 'refs/heads/dev/dufynd-products-20261026' }}
@@ -22,20 +22,20 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Read official Awin feed and emit bounded next-wave review rows
+      - name: Verify staging guards and emit bounded review-only source rows
         env:
           AWIN_DATA_FEED_API_KEY: ${{ secrets.AWIN_DATA_FEED_API_KEY }}
         shell: bash
         run: |
           set -euo pipefail
+          python3 -m unittest discover -s tests -p 'test_dufynd_awin_staging_photo_leads.py' -v
           python3 scripts/fetch_dufynd_awin_data_feed.py \
             --advertiser-id 31081 --feed-id 91379 \
             --output "${RUNNER_TEMP}/top-parfuemerie.csv" \
             --report "${RUNNER_TEMP}/awin-feed-metadata.json"
-          python3 scripts/export_dufynd_awin_public_photo_gaps.py \
+          python3 scripts/export_dufynd_awin_staging_photo_leads.py \
             --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
-            --metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
-            --gap-manifest artifacts/dufynd-wave2-discovery-20261026/public-photo-gaps.json
+            --metadata "${RUNNER_TEMP}/awin-feed-metadata.json"
       - name: Remove downloaded source files
         if: ${{ always() }}
         shell: bash
