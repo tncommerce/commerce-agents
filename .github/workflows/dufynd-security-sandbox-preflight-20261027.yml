@@ -39,6 +39,7 @@ jobs:
           PY
           cd examples
           npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npm update source-map-js --package-lock-only --ignore-scripts --no-audit --no-fund
           python3 - <<'PY'
           import json
           j=json.load(open('package-lock.json'))
