@@ -297,7 +297,7 @@ def restore_direct_merchant_browser_evidence(
     if len(manifest_bytes) > 32_000:
         raise ValueError("source_hash_manifest_too_large")
     # Git's object ID is SHA-1(b"blob <size>\\0" + bytes), not SHA-1(bytes).
-    blob_prefix = b"blob " + str(len(manifest_bytes)).encode("ascii") + b"\\0"
+    blob_prefix = b"blob " + str(len(manifest_bytes)).encode("ascii") + b"\0"
     if hashlib.sha1(blob_prefix + manifest_bytes).hexdigest() != anchor:
         raise ValueError("original_manifest_git_object_mismatch")
     manifest = json.loads(manifest_bytes)
