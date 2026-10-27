@@ -528,7 +528,7 @@ def test_original_merchant_bundle_sha_and_observation_times_rehydrate_exactly(
     )
     assert len(recovered["offers"]) == count
     assert source["offers"] != recovered["offers"]
-    for original, checked in zip(source["offers"], recovered["offers"]):
+    for original, checked in zip(source["offers"], recovered["offers"], strict=True):
         assert checked["verified_at"] == original["verified_at"]
         assert checked["price"] == original["price"]
         assert checked["shipping_cost"] == original["shipping_cost"]

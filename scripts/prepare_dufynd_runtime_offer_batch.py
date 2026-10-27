@@ -328,7 +328,7 @@ def restore_direct_merchant_browser_evidence(
 
     packet = json.loads(json.dumps(original_batch, allow_nan=False))
     seen: set[str] = set()
-    for item, row, updated in zip(items, observations, packet["offers"]):
+    for item, row, updated in zip(items, observations, packet["offers"], strict=True):
         offer_id = item.get("offer_id")
         if not isinstance(offer_id, str) or offer_id in seen or offer_id not in canonical:
             raise ValueError("unreleased_or_duplicate_browser_offer")

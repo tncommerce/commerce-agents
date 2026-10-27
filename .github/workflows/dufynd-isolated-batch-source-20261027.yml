@@ -30,9 +30,13 @@ jobs:
           python-version: "3.12"
       - name: Install pinned project test dependencies
         run: pip install -r requirements-dev.txt psycopg[binary]==3.3.6
-      - name: Offline source format and safety checks
+      - name: Offline Ruff lint
+        run: ruff check scripts/prepare_dufynd_runtime_offer_batch.py examples/retail/api/runtime_offer_snapshots.py tests/test_dufynd_runtime_offer_snapshots_v1.py tests/test_dufynd_runtime_offer_postgres.py
+      - name: Offline Ruff format diff and check
+        if: always()
         run: |
-          ruff check scripts/prepare_dufynd_runtime_offer_batch.py examples/retail/api/runtime_offer_snapshots.py tests/test_dufynd_runtime_offer_snapshots_v1.py tests/test_dufynd_runtime_offer_postgres.py
+          ruff format --diff scripts/prepare_dufynd_runtime_offer_batch.py examples/retail/api/runtime_offer_snapshots.py tests/test_dufynd_runtime_offer_snapshots_v1.py tests/test_dufynd_runtime_offer_postgres.py
           ruff format --check scripts/prepare_dufynd_runtime_offer_batch.py examples/retail/api/runtime_offer_snapshots.py tests/test_dufynd_runtime_offer_snapshots_v1.py tests/test_dufynd_runtime_offer_postgres.py
       - name: Source-bound Python and actual isolated PostgreSQL regressions
+        if: always()
         run: pytest -q tests/test_dufynd_runtime_offer_snapshots_v1.py tests/test_dufynd_runtime_offer_postgres.py
