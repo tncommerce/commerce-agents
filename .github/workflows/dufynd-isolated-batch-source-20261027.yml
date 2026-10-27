@@ -1,0 +1,38 @@
+name: DUFYND isolated batch source verification 2026-10-27
+on:
+  push:
+    branches: ['qa/dufynd-batch-isolated-20261027']
+    paths: ['.github/workflows/dufynd-isolated-batch-source-20261027.yml']
+permissions:
+  contents: read
+jobs:
+  batch-source-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: dufynd_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      DUFYND_TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/dufynd_test
+      PYTHONPATH: .:examples
+      DUFYND_RUNTIME_OFFER_SNAPSHOTS: disabled
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.12"
+      - name: Install pinned project test dependencies
+        run: pip install -r requirements-dev.txt psycopg[binary]==3.3.6
+      - name: Offline source format and safety checks
+        run: |
+          ruff check scripts/prepare_dufynd_runtime_offer_batch.py examples/retail/api/runtime_offer_snapshots.py tests/test_dufynd_runtime_offer_snapshots_v1.py tests/test_dufynd_runtime_offer_postgres.py
+          ruff format --check scripts/prepare_dufynd_runtime_offer_batch.py examples/retail/api/runtime_offer_snapshots.py tests/test_dufynd_runtime_offer_snapshots_v1.py tests/test_dufynd_runtime_offer_postgres.py
+      - name: Source-bound Python and actual isolated PostgreSQL regressions
+        run: pytest -q tests/test_dufynd_runtime_offer_snapshots_v1.py tests/test_dufynd_runtime_offer_postgres.py
