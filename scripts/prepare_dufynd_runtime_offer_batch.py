@@ -33,6 +33,14 @@ CANONICAL = Path("examples/retail/data/merchant_offers.json")
 PARTNERS = Path("examples/retail/data/merchant_partners.json")
 MAPPINGS = Path("examples/retail/data/merchant_product_mappings.json")
 CATALOG = Path("examples/retail/data/catalog.json")
+# Merchant-wide HOLD is an evidence-backed revocation, NOT a fresh quote.
+# The source must state why price/stock cannot be shown; we never copy an
+# old total or manufacture an out-of-stock value just to suspend an offer.
+HOLD_REASONS = frozenset({
+    "source_unavailable", "variant_ambiguous", "shipping_unverified",
+    "price_conflict", "stock_unverified", "out_of_stock",
+    "merchant_withdrawn", "network_rights_unverified",
+})
 
 
 def prepare_batch(
@@ -112,12 +120,27 @@ def prepare_batch(
         ):
             raise ValueError("source_reference_required")
         stamp = _verified_at(item.get("verified_at"), now=now)
-        if not isinstance(item.get("in_stock"), bool):
-            raise ValueError("stock_must_be_boolean")
-        price = _safe_amount(item.get("price"))
-        shipping = _safe_amount(item.get("shipping_cost"), allow_zero=True)
-        if price is None:
-            raise ValueError("verified_price_missing")
+        hold_reason = None
+        if decision == "verified":
+            if item.get("in_stock") is not True:
+                raise ValueError("verified_offer_requires_confirmed_in_stock")
+            price = _safe_amount(item.get("price"))
+            shipping = _safe_amount(item.get("shipping_cost"), allow_zero=True)
+            if price is None:
+                raise ValueError("verified_price_missing")
+            if shipping is None:
+                raise ValueError("verified_total_shipping_missing")
+            stock = True
+        else:
+            # A hold must NOT echo previously approved prices or assert stock.
+            # Missing merchant observations can stop buying without a quote.
+            if any(item.get(key) is not None for key in
+                   ("price", "shipping_cost", "in_stock")):
+                raise ValueError("hold_must_omit_price_shipping_and_stock")
+            hold_reason = item.get("hold_reason")
+            if hold_reason not in HOLD_REASONS:
+                raise ValueError("explicit_hold_reason_required")
+            price = shipping = stock = None
         supporting = item.get("evidence")
         if not isinstance(supporting, dict) or not supporting:
             raise ValueError("original_source_evidence_required")
@@ -126,13 +149,16 @@ def prepare_batch(
             raise ValueError("source_observation_reference_required")
         # A digest proves which original evidence packet was submitted,
         # NOT that the merchant independently endorsed its contents.
+        proof_fields = {
+            "batch_id": batch_id,
+            "offer_id": offer_id,
+            "observation": supporting,
+            "verified_at": stamp.isoformat(),
+        }
+        if hold_reason is not None:
+            proof_fields["hold_reason"] = hold_reason
         proof = json.dumps(
-            {
-                "batch_id": batch_id,
-                "offer_id": offer_id,
-                "observation": supporting,
-                "verified_at": stamp.isoformat(),
-            },
+            proof_fields,
             sort_keys=True,
             ensure_ascii=False,
             separators=(",", ":"),
@@ -148,7 +174,7 @@ def prepare_batch(
                 "currency": "EUR",
                 "price": price,
                 "shipping_cost": shipping,
-                "in_stock": item["in_stock"],
+                "in_stock": stock,
                 "verified_at": stamp.isoformat(),
                 "decision": decision,
                 "source_type": kind,

@@ -183,15 +183,19 @@ def test_sql_hold_audited_and_monotone(db):
     insert(db, row)
     newer = row["verified_at"] + timedelta(minutes=5)
     db.execute(
-        f"update {TABLE} set decision='hold',verified_at=%s where offer_id=%s",
+        f"""update {TABLE}
+        set decision='hold',price=null,shipping_cost=null,in_stock=null,verified_at=%s
+        where offer_id=%s""",
         (newer, row["offer_id"]),
     )
-    assert (
-        db.execute(
-            f"select decision from {TABLE} where offer_id=%s", (row["offer_id"],)
-        ).fetchone()[0]
-        == "hold"
-    )
+    current = db.execute(
+        f"select decision,price,shipping_cost,in_stock from {TABLE} where offer_id=%s",
+        (row["offer_id"],),
+    ).fetchone()
+    assert current == ("hold", None, None, None)
+    assert db.execute(
+        f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
+    ).fetchone()[0] == 2
     with (
         pytest.raises(psycopg.errors.RaiseException, match="must advance strictly"),
         db.transaction(),
@@ -200,3 +204,53 @@ def test_sql_hold_audited_and_monotone(db):
             f"update {TABLE} set price=50,verified_at=%s where offer_id=%s",
             (newer, row["offer_id"]),
         )
+
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("price", None),
+        ("shipping_cost", None),
+        ("in_stock", None),
+        ("in_stock", False),
+    ],
+)
+def test_sql_verified_requires_known_total_and_real_stock(db, field, value):
+    import psycopg
+
+    row = observation("ci-incomplete-" + field + "-" + str(value))
+    row[field] = value
+    row["decision"] = "verified"
+    db.execute("set local role service_role")
+    with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
+        insert(db, row)
+
+
+def test_sql_accepts_evidence_backed_empty_hold_and_audits(db):
+    row = observation("ci-nullable-hold-100")
+    row.update(decision="hold", price=None, shipping_cost=None, in_stock=None)
+    db.execute("set local role service_role")
+    insert(db, row)
+    assert db.execute(
+        f"select decision,price,shipping_cost,in_stock from {TABLE} where offer_id=%s",
+        (row["offer_id"],),
+    ).fetchone() == ("hold", None, None, None)
+    assert db.execute(
+        f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
+    ).fetchone()[0] == 1
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [("price", "100.00"), ("shipping_cost", "0.00"), ("in_stock", False)],
+)
+def test_sql_hold_rejects_stale_price_or_asserted_stock(db, field, value):
+    import psycopg
+
+    row = observation("ci-unsafe-hold-" + field)
+    row.update(decision="hold", price=None, shipping_cost=None, in_stock=None)
+    row[field] = value
+    db.execute("set local role service_role")
+    with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
+        insert(db, row)

@@ -292,9 +292,93 @@ def test_hold_can_revoke_a_row_without_new_affiliate_or_ean_approval() -> None:
     row = canonical()
     packet = evidence(row)
     packet["offers"][0]["decision"] = "hold"
+    packet["offers"][0]["hold_reason"] = "source_unavailable"
     packet["offers"][0].pop("ean")
+    for field in ("price", "shipping_cost", "in_stock"):
+        packet["offers"][0].pop(field)
     result = prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
     assert result[0]["decision"] == "hold"
+    assert result[0]["price"] is None
+    assert result[0]["shipping_cost"] is None
+    assert result[0]["in_stock"] is None
+
+
+
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid"),
+    [
+        ("price", None),
+        ("shipping_cost", None),
+        ("in_stock", None),
+        ("in_stock", False),
+        ("in_stock", "true"),
+    ],
+)
+def test_bulk_verified_offer_requires_complete_total_and_confirmed_stock(
+    field, invalid,
+) -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0][field] = invalid
+    with pytest.raises(ValueError, match="verified_"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+def _source_hold(row: dict, reason: str = "source_unavailable") -> dict:
+    packet = evidence(row)
+    item = packet["offers"][0]
+    item["decision"] = "hold"
+    item["hold_reason"] = reason
+    item.pop("ean")
+    for field in ("price", "shipping_cost", "in_stock"):
+        item.pop(field)
+    return packet
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid"),
+    [
+        ("price", 99.0),
+        ("shipping_cost", 0),
+        ("in_stock", False),
+        ("in_stock", True),
+    ],
+)
+def test_bulk_hold_cannot_carry_cached_positive_or_negative_commerce_claim(
+    field, invalid,
+) -> None:
+    row = canonical()
+    packet = _source_hold(row)
+    packet["offers"][0][field] = invalid
+    with pytest.raises(ValueError, match="hold_must_omit"):
+        prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
+
+
+def test_bulk_hold_requires_specific_reason_and_rebinds_proof_digest() -> None:
+    row = canonical()
+    first = _source_hold(row, "source_unavailable")
+    second = _source_hold(row, "price_conflict")
+    now = datetime.now(UTC)
+    a = prepare_batch([row], first, now=now, partners_payload={"partners": []})
+    b = prepare_batch([row], second, now=now, partners_payload={"partners": []})
+    assert a[0]["decision"] == "hold" and b[0]["decision"] == "hold"
+    assert a[0]["evidence_sha256"] != b[0]["evidence_sha256"]
+    assert batch_digest(a, batch_id=first["batch_id"]) != batch_digest(
+        b, batch_id=second["batch_id"]
+    )
+    first["offers"][0].pop("hold_reason")
+    with pytest.raises(ValueError, match="explicit_hold_reason_required"):
+        prepare_batch([row], first, now=now, partners_payload={"partners": []})
+
+
+def test_verified_batch_cannot_hide_unchecked_delivery_with_unknown_shipping() -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0].pop("shipping_cost")
+    with pytest.raises(ValueError, match="verified_total_shipping_missing"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
 
 
 def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> None:

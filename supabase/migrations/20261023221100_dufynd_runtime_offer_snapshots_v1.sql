@@ -10,11 +10,18 @@ create table if not exists public.dufynd_runtime_offer_snapshots_v1 (
   merchant_product_id text,
   identity_sha256 text not null check (identity_sha256 ~ '^[0-9a-f]{64}$'),
   currency text not null default 'EUR' check (currency = 'EUR'),
-  price numeric(12,2) not null check (price > 0 and price <= 100000),
+  -- A HOLD must not duplicate a historical amount or invent a stock claim.
+  price numeric(12,2) check (price is null or (price > 0 and price <= 100000)),
   shipping_cost numeric(12,2) check (shipping_cost >= 0 and shipping_cost <= 100000),
-  in_stock boolean not null,
+  in_stock boolean,
   verified_at timestamptz not null,
   decision text not null check (decision in ('verified','hold')),
+  constraint dufynd_runtime_offer_decision_values_check check (
+    (decision = 'verified' and price is not null
+      and shipping_cost is not null and in_stock is true)
+    or (decision = 'hold' and price is null
+      and shipping_cost is null and in_stock is null)
+  ),
   source_type text not null check (
     source_type in ('official_network_feed','authorized_merchant_api','direct_merchant_review')
   ),
