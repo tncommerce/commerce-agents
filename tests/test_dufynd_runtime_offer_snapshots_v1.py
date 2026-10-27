@@ -549,6 +549,7 @@ def test_original_browser_witness_rejects_old_retimed_and_changed_source(
     trusted_copy.mkdir()
     for name in (
         "SHA256.json",
+        "batch-input.json",
         "merchant-browser-observations.json",
         "shipping-browser-observation.json",
     ):
