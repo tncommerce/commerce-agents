@@ -110,8 +110,11 @@ def assert_top_ten() -> dict:
             mismatches.append("variant_label")
         if offer.get("clickout_path") != "/api/clickout/" + offer.get("offer_id", ""):
             mismatches.append("clickout_path")
-        if not exact_awin_link(str(offer.get("affiliate_link") or ""), awid):
-            mismatches.append("original_awin_product_route")
+        # The customer API deliberately exposes only a Boolean indicating
+        # affiliate routing. The original Awin URL remains server-side and is
+        # separately source-bound in canonical merchant_offers/partner records.
+        if offer.get("affiliate_link") is not True:
+            mismatches.append("affiliate_disclosure_boolean")
         if mismatches:
             # Report only names of failed public contract fields, never the
             # merchant's complete destination/tracking URL or credentials.
