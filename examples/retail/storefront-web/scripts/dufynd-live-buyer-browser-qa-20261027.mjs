@@ -61,7 +61,7 @@ async function safePage(slug,operation,callback){
  }finally{await p.close();}
 }
 try {
- for(const [pid,slug,filename,ml,sku] of OFFERS){
+ for(const [pid,slug,ml,sku] of OFFERS){
   const data=await safePage(slug,'offer',async page=>{
     const section=page.locator('[data-merchant-offers][data-offer-state="available"]');
     await section.waitFor({state:'visible',timeout:18000});
