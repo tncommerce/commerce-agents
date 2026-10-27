@@ -43,6 +43,46 @@ HOLD_REASONS = frozenset({
 })
 
 
+
+# This is a source-shape gate, not cryptographic proof of a retailer's
+# endorsement. Reviewers must still inspect the immutable bytes/digest.
+# A feed's global "Last Imported" field cannot serve as a per-SKU observation.
+POSITIVE_SOURCE_PROOFS = {
+    "direct_merchant_review": ("selected_variant_page", "browser_observation_sha256"),
+    "official_network_feed": ("exact_sku_stock_price_shipping_row", "source_row_sha256"),
+    "authorized_merchant_api": ("authorized_exact_sku_response", "api_observation_sha256"),
+}
+
+
+def _require_positive_source_provenance(
+    supporting: dict[str, Any],
+    source_type: str,
+    verified_stamp: datetime,
+    *,
+    now: datetime,
+) -> None:
+    """Reject retimed old evidence before any positive DB snapshot is prepared."""
+    expected = POSITIVE_SOURCE_PROOFS.get(source_type)
+    if expected is None:
+        raise ValueError("unsupported_positive_source_type")
+    evidence_kind, digest_field = expected
+    if supporting.get("source_evidence_kind") != evidence_kind:
+        raise ValueError("source_per_variant_evidence_kind_required")
+    digest = supporting.get(digest_field)
+    if not isinstance(digest, str) or re.fullmatch(r"[0-9a-f]{64}", digest) is None:
+        raise ValueError("source_original_evidence_digest_required")
+    source_observed_at = supporting.get("source_observed_at")
+    if not isinstance(source_observed_at, str):
+        raise ValueError("source_observation_time_required")
+    try:
+        actual = _verified_at(source_observed_at, now=now)
+    except (ValueError, TypeError, OverflowError) as exc:
+        raise ValueError("source_observation_time_invalid_or_stale") from exc
+    if actual != verified_stamp:
+        raise ValueError("source_observation_not_equal_to_verified_at")
+
+
+
 def prepare_batch(
     canonical_rows: list[dict[str, Any]],
     evidence: dict[str, Any],
@@ -147,6 +187,8 @@ def prepare_batch(
         observation = supporting.get("source_observation")
         if not isinstance(observation, str) or not observation.strip() or len(observation) > 2048:
             raise ValueError("source_observation_reference_required")
+        if decision == "verified":
+            _require_positive_source_provenance(supporting, kind, stamp, now=now)
         # A digest proves which original evidence packet was submitted,
         # NOT that the merchant independently endorsed its contents.
         proof_fields = {

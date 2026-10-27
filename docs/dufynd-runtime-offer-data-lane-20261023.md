@@ -1,5 +1,36 @@
 # DUFYND · Datenbetrieb statt PR pro Händlerpreis (DEV / nicht live)
 
+## 27.10.2026 – Positivnachweise an Original-Beobachtungszeit binden (DEV)
+
+Auch ein formal gültiger Batch darf **keine alten Preisdaten neu datieren**.
+Ein `verified`-Satz erfordert daher ab diesem Entwicklungsschritt im
+bestehenden `evidence`-Objekt einen genauen
+`source_observed_at`-Zeitpunkt, der mit `verified_at` übereinstimmt,
+sowie einen quelltypspezifischen Originaldigest und Belegtyp:
+
+- `direct_merchant_review`: `source_evidence_kind=selected_variant_page`,
+  `browser_observation_sha256` (64 Hexzeichen);
+- `official_network_feed`:
+  `source_evidence_kind=exact_sku_stock_price_shipping_row`,
+  `source_row_sha256`;
+- `authorized_merchant_api`:
+  `source_evidence_kind=authorized_exact_sku_response`,
+  `api_observation_sha256`.
+
+Die strukturelle Prüfung bestätigt **nicht** selbst die Händler-Autorisierung
+oder Byte-Integrität: Der Operator muss vor dem separaten exakten Batch-GO
+Originalsource und Hash tatsächlich abgleichen. `Last Imported` einer
+Feedliste ist ausdrücklich **kein** solcher per-SKU-Preis-/Bestandsnachweis.
+Die zehn am 26.10. archivierten Quellpakete behalten ihre ursprünglichen
+Hash-/Zeitstempel und werden **nicht** nachträglich verändert oder verlängert.
+Ein bewusstes `hold` ohne Preis/Bestandsbehauptung bleibt auch ohne
+positiven Händler-Zeitstempel möglich.
+
+Regressionen für alte Zeitstempel, falsche Hash-/Belegfelder, reine
+Feed-Import-Zeit und fail-closed HOLD sind vorbereitet. **Kein Live-Rollout
+oder neue 72h-Frische durch diese Änderung.**
+
+
 ## 27.10.2026 – Sammelprüfung und wahrheitsgemäße HOLD-Sperren (DEV / nicht live)
 
 **Ziel:** Eine Quelle für mehrere Händlerangebote prüfen, statt für jeden Duft

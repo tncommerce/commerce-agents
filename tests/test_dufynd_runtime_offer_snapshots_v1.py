@@ -46,6 +46,7 @@ def snapshot(row: dict, *, now: datetime | None = None) -> dict:
 
 
 def evidence(row: dict, *, now: datetime | None = None) -> dict:
+    observed_at = (now or datetime.now(UTC)).isoformat()
     return {
         "schema_version": 1,
         "batch_id": "notino-batch-20261023",
@@ -62,11 +63,16 @@ def evidence(row: dict, *, now: datetime | None = None) -> dict:
                 "price": 119.0,
                 "shipping_cost": 0.0,
                 "in_stock": True,
-                "verified_at": (now or datetime.now(UTC)).isoformat(),
+                "verified_at": observed_at,
                 "decision": "verified",
                 "source_type": "official_network_feed",
                 "source_ref": "network:cj-fixture-allowed",
-                "evidence": {"source_observation": "isolated-test-fixture-no-real-feed"},
+                "evidence": {
+                    "source_observation": "isolated-test-fixture-no-real-feed",
+                    "source_evidence_kind": "exact_sku_stock_price_shipping_row",
+                    "source_row_sha256": "a" * 64,
+                    "source_observed_at": observed_at,
+                },
             }
         ],
     }
@@ -435,6 +441,61 @@ def test_triage_distinguishes_missing_shipping_from_source_hold_without_writes()
     assert held["counts"]["HOLD_REVIEW_ONLY"] == 1
     assert held["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 0
     assert held["all_source_evidence_approved"] is False
+
+
+
+def test_bulk_positive_offer_cannot_retimestamp_historical_observation() -> None:
+    row = canonical()
+    now = datetime.now(UTC)
+    packet = evidence(row, now=now - timedelta(hours=48))
+    packet["offers"][0]["verified_at"] = now.isoformat()
+    with pytest.raises(ValueError, match="source_observation_not_equal_to_verified_at"):
+        prepare_batch([row], packet, now=now)
+
+
+@pytest.mark.parametrize("mutated_source", [
+    {"source_observed_at": None},
+    {"source_observed_at": "2026-08-01T00:00:00Z"},
+    {"source_observed_at": "not-a-timestamp"},
+    {"source_evidence_kind": "feed_import_timestamp_only"},
+    {"source_row_sha256": ""},
+    {"source_row_sha256": "g" * 64},
+])
+def test_bulk_positive_offer_requires_original_per_sku_source_time_and_digest(
+    mutated_source: dict,
+) -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0]["evidence"].update(mutated_source)
+    with pytest.raises(ValueError, match="source_"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+def test_global_feed_import_time_never_refreshes_sku_price() -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0]["evidence"] = {
+        "source_observation": "Awin import metadata 2026-10-26",
+        "feed_imported_at": datetime.now(UTC).isoformat(),
+        "source_evidence_kind": "feed_import_timestamp_only",
+    }
+    report = triage_batch([row], packet, now=datetime.now(UTC))
+    assert report["counts"]["COMPLETE_EVIDENCE_REVIEW_ONLY"] == 0
+    assert report["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 1
+    assert report["items"][0]["reason"] == "source_per_variant_evidence_kind_required"
+
+
+def test_bulk_hold_does_not_need_false_positive_price_observation() -> None:
+    row = canonical()
+    packet = _source_hold(row)
+    packet["offers"][0]["evidence"].pop("source_evidence_kind")
+    packet["offers"][0]["evidence"].pop("source_row_sha256")
+    packet["offers"][0]["evidence"].pop("source_observed_at")
+    rows = prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
+    assert rows[0]["decision"] == "hold"
+    assert rows[0]["price"] is None
+    assert rows[0]["shipping_cost"] is None
+
 
 
 def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> None:
