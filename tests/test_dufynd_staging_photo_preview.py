@@ -1,4 +1,5 @@
 """Fail-closed, no-network DUFYND staging preview tests."""
+
 from __future__ import annotations
 
 import copy
@@ -8,7 +9,12 @@ from datetime import UTC, datetime, timedelta
 import pytest
 
 from scripts.prepare_dufynd_staging_photo_preview import (
-    DATA, MANIFEST, PUBLIC, _image_source, build_private_review, render_html,
+    DATA,
+    MANIFEST,
+    PUBLIC,
+    _image_source,
+    build_private_review,
+    render_html,
 )
 
 NOW = datetime(2026, 10, 27, 10, 30, tzinfo=UTC)
@@ -17,6 +23,7 @@ NOW = datetime(2026, 10, 27, 10, 30, tzinfo=UTC)
 def data():
     def read(path):
         return json.loads(path.read_text(encoding="utf-8-sig"))
+
     return [
         read(MANIFEST),
         read(DATA / "scentai_catalog_staging.json"),
@@ -76,46 +83,81 @@ def test_html_is_unpublished_and_never_links_to_merchants():
         (lambda x: x[0]["source"].update({"active": False}), "source_provenance"),
         (lambda x: x[0]["source"].update({"feed_id": "0"}), "source_provenance"),
         (lambda x: x[0]["source"].update({"feed_sha256": "x"}), "source_provenance"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"].append(
-            copy.deepcopy(x[0]["newly_selected_for_visual_and_byte_qa"][0])
-        ), "exact_four"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][1].update(
-            {"product_id": "SC-JPG-LE-MALE-LE-PARFUM-125"}
-        ), "staging_only"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["product"].update(
-            {"volume_ml": 75}
-        ), "unverified_staging"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["product"].update(
-            {"name": "Le Male Elixir"}
-        ), "unverified_staging"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["official_feed"].update(
-            {"merchant_sku": "999"}
-        ), "image_sku_gtin"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["official_feed"].update(
-            {"original_feed_deeplink": "https://example.com/tracker"}
-        ), "unexpected_awin"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["review_gates"].update(
-            {"source_image_download_verified": False}
-        ), "source_bytes"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["review_gates"].update(
-            {"owner_visual_acceptance": True}
-        ), "source_bytes"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["review_gates"].update(
-            {"new_affiliate_offer_activated": True}
-        ), "source_bytes"),
-        (lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["review_gates"].update(
-            {"source_image_bytes_sha256": "not-a-hash"}
-        ), "source_bytes"),
-        (lambda x: x[2]["products"].append(
-            {"product_id": "SC-JPG-LE-MALE-LE-PARFUM-125"}
-        ), "staging_only"),
-        (lambda x: x[4].append(
-            {"product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100"}
-        ), "staging_only"),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"].append(
+                copy.deepcopy(x[0]["newly_selected_for_visual_and_byte_qa"][0])
+            ),
+            "exact_four",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][1].update(
+                {"product_id": "SC-JPG-LE-MALE-LE-PARFUM-125"}
+            ),
+            "staging_only",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["product"].update(
+                {"volume_ml": 75}
+            ),
+            "unverified_staging",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["product"].update(
+                {"name": "Le Male Elixir"}
+            ),
+            "unverified_staging",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["official_feed"].update(
+                {"merchant_sku": "999"}
+            ),
+            "image_sku_gtin",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["official_feed"].update(
+                {"original_feed_deeplink": "https://example.com/tracker"}
+            ),
+            "unexpected_awin",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["review_gates"].update(
+                {"source_image_download_verified": False}
+            ),
+            "source_bytes",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["review_gates"].update(
+                {"owner_visual_acceptance": True}
+            ),
+            "source_bytes",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["review_gates"].update(
+                {"new_affiliate_offer_activated": True}
+            ),
+            "source_bytes",
+        ),
+        (
+            lambda x: x[0]["newly_selected_for_visual_and_byte_qa"][0]["review_gates"].update(
+                {"source_image_bytes_sha256": "not-a-hash"}
+            ),
+            "source_bytes",
+        ),
+        (
+            lambda x: x[2]["products"].append({"product_id": "SC-JPG-LE-MALE-LE-PARFUM-125"}),
+            "staging_only",
+        ),
+        (
+            lambda x: x[4].append({"product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100"}),
+            "staging_only",
+        ),
         (lambda x: x[6]["entries"][1].update({"program_status": "pending"}), "active_official"),
-        (lambda x: x[3]["mappings"].append(
-            {"product_id": "SC-JPG-LE-MALE-LE-PARFUM-125", "ean": "9999999999999"}
-        ), "contradictory"),
+        (
+            lambda x: x[3]["mappings"].append(
+                {"product_id": "SC-JPG-LE-MALE-LE-PARFUM-125", "ean": "9999999999999"}
+            ),
+            "contradictory",
+        ),
     ],
 )
 def test_no_auto_approval_when_provenance_or_variant_changes(change, error):

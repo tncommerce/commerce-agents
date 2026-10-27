@@ -19,9 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "examples/retail/data"
 PUBLIC = ROOT / "examples/retail/storefront-web/lib/generated"
 MANIFEST = ROOT / "artifacts/dufynd-staging-photo-wave-20261027/exact-identity-source-review.json"
-IMAGE = re.compile(
-    r"/media/catalog/product/(?:[a-z0-9]/){2}([0-9]+)_([0-9]+)_[0-9]+\.png"
-)
+IMAGE = re.compile(r"/media/catalog/product/(?:[a-z0-9]/){2}([0-9]+)_([0-9]+)_[0-9]+\.png")
 HASH = re.compile(r"[0-9a-f]{64}")
 NUMERIC = re.compile(r"[0-9]{1,16}")
 RIGHTS_BASIS = "awin_top_parfuemerie_feed_materials_20260928"
@@ -57,17 +55,13 @@ def _image_source(url: str, sku: str, gtin: str) -> None:
 
 def _original_awin_route(url: str, aw_product_id: str) -> None:
     u = urlsplit(url)
-    if (u.scheme, u.netloc, u.path, u.fragment) != (
-        "https", "www.awin1.com", "/pclick.php", ""
-    ):
+    if (u.scheme, u.netloc, u.path, u.fragment) != ("https", "www.awin1.com", "/pclick.php", ""):
         raise ValueError("unexpected_awin_route")
     try:
         pairs = parse_qsl(u.query, keep_blank_values=True, strict_parsing=True)
     except ValueError as error:
         raise ValueError("invalid_awin_query") from error
-    if len(pairs) != 3 or dict(pairs) != {
-        "p": aw_product_id, "a": "3099222", "m": "31081"
-    }:
+    if len(pairs) != 3 or dict(pairs) != {"p": aw_product_id, "a": "3099222", "m": "31081"}:
         raise ValueError("awin_publisher_product_mismatch")
 
 
@@ -99,27 +93,27 @@ def build_private_review(
         or manifest.get("rights", {}).get("basis") != RIGHTS_BASIS
     ):
         raise ValueError("source_provenance_or_rights_manifest_unverified")
-    feed_date = _timestamp(
-        source.get("checked_at"), now=clock, horizon=timedelta(days=7)
-    )
+    feed_date = _timestamp(source.get("checked_at"), now=clock, horizon=timedelta(days=7))
     byte_date = _timestamp(
         source.get("original_image_byte_receipt_date"),
-        now=clock, horizon=timedelta(days=7),
+        now=clock,
+        horizon=timedelta(days=7),
     )
     license_rows = [
-        x for x in rights.get("entries", [])
+        x
+        for x in rights.get("entries", [])
         if x.get("rights_basis_id") == RIGHTS_BASIS
         and x.get("merchant_id") == "top-parfuemerie"
         and x.get("advertiser_id") == "31081"
         and x.get("program_status") == "approved"
         and x.get("rights_status") == "verified_for_publisher_service"
-        and x.get("asset_scope")
-        == "unaltered_advertiser_materials_from_official_awin_product_feed"
+        and x.get("asset_scope") == "unaltered_advertiser_materials_from_official_awin_product_feed"
     ]
     if len(license_rows) != 1:
         raise ValueError("active_official_feed_image_license_required")
     publishers = [
-        p for p in partners.get("partners", [])
+        p
+        for p in partners.get("partners", [])
         if p.get("merchant_id") == "top-parfuemerie"
         and p.get("status") == "active_product_deeplink_only"
     ]
@@ -182,8 +176,13 @@ def build_private_review(
         _image_source(url, sku, item["canonical_historical_gtin"])
         _original_awin_route(str(feed.get("original_feed_deeplink", "")), awid)
         product_page = urlsplit(str(feed.get("product_url", "")))
-        if (product_page.scheme != "https" or product_page.netloc != "www.topparfuemerie.de"
-                or product_page.query or product_page.fragment or not product_page.path.startswith("/")):
+        if (
+            product_page.scheme != "https"
+            or product_page.netloc != "www.topparfuemerie.de"
+            or product_page.query
+            or product_page.fragment
+            or not product_page.path.startswith("/")
+        ):
             raise ValueError("unexpected_merchant_product_url")
         if (
             gate.get("source_image_download_verified") is not True
@@ -201,32 +200,32 @@ def build_private_review(
             or not 150 <= gate.get("source_png_dimensions", {}).get("height", 0) <= 2000
         ):
             raise ValueError("source_bytes_or_owner_publication_gate_failed")
-        _timestamp(
-            gate.get("source_verified_at_utc"), now=clock, horizon=timedelta(days=7)
+        _timestamp(gate.get("source_verified_at_utc"), now=clock, horizon=timedelta(days=7))
+        items.append(
+            {
+                "product_id": pid,
+                "brand": item["brand"],
+                "name": item["name"],
+                "concentration": item["concentration"],
+                "volume_ml": item["volume_ml"],
+                "gtin": item["canonical_historical_gtin"],
+                "merchant_sku": sku,
+                "awin_product_id": awid,
+                "image_url": url,
+                "image_sha256": gate["source_image_bytes_sha256"],
+                "image_dimensions": gate["source_png_dimensions"],
+                "scent_family": original.get("fragrance_profile", {}).get("scent_family"),
+                "key_notes": original.get("fragrance_profile", {}).get("key_notes", []),
+                "merchants_historically_mapped": len(known_mappings.get(pid, [])),
+                "status": "ORIGINAL_SOURCE_VERIFIED_OWNER_REVIEW_REQUIRED",
+                "price_eur": None,
+                "stock_confirmed": False,
+                "discount_claim_allowed": False,
+                "merchant_clickout_enabled": False,
+                "photo_publication_allowed": False,
+                "catalog_publication_allowed": False,
+            }
         )
-        items.append({
-            "product_id": pid,
-            "brand": item["brand"],
-            "name": item["name"],
-            "concentration": item["concentration"],
-            "volume_ml": item["volume_ml"],
-            "gtin": item["canonical_historical_gtin"],
-            "merchant_sku": sku,
-            "awin_product_id": awid,
-            "image_url": url,
-            "image_sha256": gate["source_image_bytes_sha256"],
-            "image_dimensions": gate["source_png_dimensions"],
-            "scent_family": original.get("fragrance_profile", {}).get("scent_family"),
-            "key_notes": original.get("fragrance_profile", {}).get("key_notes", []),
-            "merchants_historically_mapped": len(known_mappings.get(pid, [])),
-            "status": "ORIGINAL_SOURCE_VERIFIED_OWNER_REVIEW_REQUIRED",
-            "price_eur": None,
-            "stock_confirmed": False,
-            "discount_claim_allowed": False,
-            "merchant_clickout_enabled": False,
-            "photo_publication_allowed": False,
-            "catalog_publication_allowed": False,
-        })
     return {
         "schema_version": 1,
         "status": "PRIVATE_STAGING_REVIEW_NO_PRODUCTION_OR_MERCHANT_ACTIVATION",
@@ -248,8 +247,10 @@ def render_html(review: dict) -> str:
     """Self-contained local preview; no merchant/affiliate requests or JS."""
     cards = []
     for p in review["items"]:
+
         def esc(x: object) -> str:
             return html.escape(str(x), quote=True)
+
         notes = ", ".join(str(n) for n in p["key_notes"][:5])
         cards.append(
             '<article class="card">'
@@ -260,12 +261,12 @@ def render_html(review: dict) -> str:
             f'alt="Offizielles Originalfoto {esc(p["brand"])} {esc(p["name"])}"></div>'
             '<div class="copy">'
             f'<div class="eyebrow">{esc(p["brand"])}</div>'
-            f'<h2>{esc(p["name"])}</h2>'
+            f"<h2>{esc(p['name'])}</h2>"
             f'<p class="variant">{esc(p["concentration"])} · {p["volume_ml"]} ml</p>'
             f'<p class="accord">{esc(p["scent_family"] or "")}</p>'
             f'<p class="notes">Noten: {esc(notes)}</p>'
             f'<p class="evidence">EAN {esc(p["gtin"])} · Händler-SKU {esc(p["merchant_sku"])}'
-            f'<br>Originalbild-SHA256: <code>{esc(p["image_sha256"])}</code></p>'
+            f"<br>Originalbild-SHA256: <code>{esc(p['image_sha256'])}</code></p>"
             '<button type="button" disabled>Kein Kaufbutton · Bildprüfung</button></div></article>'
         )
     css = """*{box-sizing:border-box}body{margin:0;background:#0c0e12;color:#ece8e1;
@@ -292,21 +293,21 @@ footer{padding:24px 0 40px;color:#aaa;border-top:1px solid #383838;font-size:12p
         '<!doctype html><html lang="de"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width,initial-scale=1">'
         '<meta name="robots" content="noindex,nofollow">'
-        '<title>DUFYND – Vier neue Originalflakons · interne Prüfung</title>'
+        "<title>DUFYND – Vier neue Originalflakons · interne Prüfung</title>"
         f'<style>{css}</style></head><body><div class="shell">'
         '<header><strong class="logo">DUFYND</strong>'
         '<span class="chip">ORIGINALFOTOS · PRIVATER REVIEW · NICHT LIVE</span></header>'
-        '<main><h1>Vier neue Originalflakons.<br>Vier echte Duftprofile.</h1>'
+        "<main><h1>Vier neue Originalflakons.<br>Vier echte Duftprofile.</h1>"
         '<p class="lede">Unveränderte, quellgeprüfte Flakonbilder aus dem offiziellen '
-        'Top-Parfümerie-Awin-Feed. Varianten und historische EAN-Abgleiche geprüft. '
-        'Noch keine visuelle Freigabe, kein aktueller Händlerpreis und keine Kaufoption.'
+        "Top-Parfümerie-Awin-Feed. Varianten und historische EAN-Abgleiche geprüft. "
+        "Noch keine visuelle Freigabe, kein aktueller Händlerpreis und keine Kaufoption."
         ' Keine Neuveröffentlichung.</p><section class="grid">'
         + "".join(cards)
-        + '</section></main><footer>Quelle: Awin-Feed 31081 / 91379, Prüfläufe '
-        '#40472385765 und #40473278522 · '
-        'Hinweis: Originalbilder werden beim Öffnen direkt vom Händler geladen. '
-        'Dieses Dokument speichert keine Zugangsdaten oder Affiliate-Klickziele.'
-        '</footer></div></body></html>'
+        + "</section></main><footer>Quelle: Awin-Feed 31081 / 91379, Prüfläufe "
+        "#40472385765 und #40473278522 · "
+        "Hinweis: Originalbilder werden beim Öffnen direkt vom Händler geladen. "
+        "Dieses Dokument speichert keine Zugangsdaten oder Affiliate-Klickziele."
+        "</footer></div></body></html>"
     )
 
 
@@ -315,8 +316,10 @@ def main() -> int:
     ap.add_argument("--format", choices=("json", "html"), default="json")
     ap.add_argument("--output", type=Path)
     args = ap.parse_args()
+
     def load(path: Path):
         return json.loads(path.read_text(encoding="utf-8-sig"))
+
     review = build_private_review(
         load(MANIFEST),
         load(DATA / "scentai_catalog_staging.json"),
@@ -327,9 +330,11 @@ def main() -> int:
         load(DATA / "dufynd_affiliate_feed_image_rights.json"),
         now=datetime.now(UTC),
     )
-    output = render_html(review) if args.format == "html" else json.dumps(
-        review, ensure_ascii=False, indent=2
-    ) + "\n"
+    output = (
+        render_html(review)
+        if args.format == "html"
+        else json.dumps(review, ensure_ascii=False, indent=2) + "\n"
+    )
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(output, encoding="utf-8")
