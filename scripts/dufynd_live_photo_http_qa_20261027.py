@@ -48,10 +48,10 @@ class Assets(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         d = dict(attrs)
+        if "data-dufynd-original-photo" in d:
+            self.original_elements.append(d)
         if tag == "img":
             self.photos.append(d)
-            if "data-dufynd-original-photo" in d:
-                self.original_elements.append(d)
         if tag == "title":
             self.in_title = True
         if tag == "link" and d.get("rel") == "canonical":
@@ -123,8 +123,8 @@ def main():
                 raise ValueError("exact_registered_original_missing_or_duplicate_" + slug)
             if not parsed.original_elements:
                 raise ValueError("approved_original_not_marked_" + slug)
-            if not any(file_name in a.get("src", "") for a in parsed.original_elements):
-                raise ValueError("wrong_original_photo_attribute_" + slug)
+            if not any(a.get("data-dufynd-original-photo") in {"", "true"} for a in parsed.original_elements):
+                raise ValueError("approved_original_marker_incorrect_" + slug)
             if not parsed.title or not parsed.canonicals:
                 raise ValueError("public_meta_or_canonical_missing_" + slug)
             if "noindex" in " ".join(parsed.meta_robots).lower():
