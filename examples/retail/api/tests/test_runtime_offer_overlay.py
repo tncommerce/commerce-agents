@@ -1,5 +1,6 @@
 """No live network/merchant calls: exact-identity commerce snapshot contract."""
 
+import json
 from datetime import UTC, datetime, timedelta
 
 from retail.api.runtime_offer_overlay import (
@@ -95,3 +96,49 @@ def test_default_runtime_reader_never_accesses_network(monkeypatch):
     monkeypatch.setenv("DUFYND_RUNTIME_OFFERS_ENABLED", "1")
     monkeypatch.delenv("SUPABASE_URL", raising=False)
     assert runtime_snapshot(ROW["offer_id"]) is None
+
+
+def test_store_accepts_certified_snapshot_after_static_expiry(tmp_path, monkeypatch):
+    """A new verified price can replace an expired Git price, but never bypass gates."""
+    from retail.api import purchase_freshness, runtime_offer_overlay
+    from retail.api.merchant_offers import MerchantOfferStore
+
+    now = datetime.now(UTC)
+    row = ROW | {
+        "merchant_name": "NOTINO.de",
+        "last_updated_at": (now - timedelta(hours=80)).isoformat(),
+    }
+    fixture_path = tmp_path / "merchant_offers.json"
+    fixture_path.write_text(json.dumps({"offers": [row]}), encoding="utf-8")
+    store = MerchantOfferStore(fixture_path)
+
+    # Neither merchant pages nor Supabase nor affiliate redirect routes are called.
+    monkeypatch.setattr(purchase_freshness, "evidence_for", lambda _offer_id: None)
+    monkeypatch.setattr(runtime_offer_overlay, "runtime_snapshot", lambda _offer_id: None)
+    assert store.offers_for(row["product_id"], now=now) == []
+    assert store.eligible_offer(row["offer_id"], now=now) is None
+
+    verified = receipt(
+        identity_sha256=contract_fingerprint(row),
+        verified_at=(now - timedelta(minutes=3)).isoformat(),
+    )
+    monkeypatch.setattr(runtime_offer_overlay, "runtime_snapshot", lambda _offer_id: verified)
+    eligible = store.offers_for(row["product_id"], now=now)
+    assert len(eligible) == 1
+    assert eligible[0].price == 128.5
+    assert eligible[0].shipping_cost == 0
+    assert eligible[0].affiliate_url == row["affiliate_url"]
+    assert eligible[0].merchant_product_id == row["merchant_product_id"]
+    assert eligible[0].product_url == row["product_url"]
+    assert store.eligible_offer(row["offer_id"], now=now) is not None
+
+    for invalid in (
+        verified | {"identity_sha256": "0" * 64},
+        verified | {"verified_at": (now - timedelta(hours=73)).isoformat()},
+        verified | {"in_stock": False},
+    ):
+        monkeypatch.setattr(
+            runtime_offer_overlay, "runtime_snapshot", lambda _offer_id, value=invalid: value
+        )
+        assert store.offers_for(row["product_id"], now=now) == []
+        assert store.eligible_offer(row["offer_id"], now=now) is None
