@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from pathlib import Path
 from threading import Event, Lock, Thread
 
@@ -13,6 +14,7 @@ from scripts.prepare_dufynd_runtime_offer_batch import (
     batch_digest,
     prepare_batch,
     restore_direct_merchant_browser_evidence,
+    selected_merchant_price_matches,
     triage_batch,
 )
 
@@ -549,7 +551,7 @@ def test_original_browser_witness_rejects_old_retimed_and_changed_source(
         (tmp_path / name).write_bytes((folder / name).read_bytes())
 
     source["offers"][0]["verified_at"] = now.isoformat()
-    with pytest.raises(ValueError, match="original_observation_timestamp_not_equal"):
+    with pytest.raises(ValueError, match="original_batch_input_does_not_match_archived_source"):
         restore_direct_merchant_browser_evidence(
             canonical_rows, source, evidence_dir=tmp_path, now=now,
         )
@@ -567,6 +569,58 @@ def test_original_browser_witness_rejects_old_retimed_and_changed_source(
             now=datetime(2026, 10, 31, 12, tzinfo=UTC),
         )
 
+
+
+
+def test_reviewed_manifest_anchor_rejects_forged_checksums(tmp_path: Path) -> None:
+    folder = Path("artifacts/dufynd-top-six-offers-20261026")
+    packet = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    for name in ("SHA256.json", "batch-input.json",
+                 "merchant-browser-observations.json",
+                 "shipping-browser-observation.json"):
+        (tmp_path / name).write_bytes((folder / name).read_bytes())
+    # An unapproved custom folder must not impersonate an immutable bundle.
+    with pytest.raises(ValueError, match="original_source_bundle_not_approved"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows, packet, evidence_dir=tmp_path,
+            now=datetime(2026, 10, 27, 12, tzinfo=UTC),
+        )
+    from scripts.prepare_dufynd_runtime_offer_batch import (
+        ARCHIVED_SOURCE_MANIFEST_GIT_BLOBS,
+    )
+    assert len(ARCHIVED_SOURCE_MANIFEST_GIT_BLOBS) == 2
+
+
+def test_buyer_price_proof_cannot_confuse_crossed_uvp_with_actual_price() -> None:
+    browser = json.loads(
+        Path("artifacts/dufynd-top-six-offers-20261026/"
+             "merchant-browser-observations.json").read_text(encoding="utf-8")
+    )
+    rabanne = browser["rows"][1]["main"]
+    section = rabanne.split("Artikelnummer: 707368", 1)[1].split(
+        "In den Warenkorb", 1
+    )[0]
+    assert selected_merchant_price_matches(section, Decimal("102.95"))
+    assert not selected_merchant_price_matches(section, Decimal("119"))
+    layton = browser["rows"][3]["main"]
+    layton_section = layton.split("Artikelnummer: 812773", 1)[1].split(
+        "In den Warenkorb", 1
+    )[0]
+    assert selected_merchant_price_matches(layton_section, Decimal("290"))
+    assert not selected_merchant_price_matches(layton_section, Decimal("229"))
+
+
+def test_original_browser_bundle_refuses_changed_source_metadata() -> None:
+    folder = Path("artifacts/dufynd-top-six-offers-20261026")
+    packet = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    packet["offers"][0]["source_ref"] = "unsigned-marketing-claim"
+    with pytest.raises(ValueError, match="original_batch_input_does_not_match_archived_source"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows, packet, evidence_dir=folder,
+            now=datetime(2026, 10, 27, 12, tzinfo=UTC),
+        )
 
 
 def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> None:

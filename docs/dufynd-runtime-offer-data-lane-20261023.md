@@ -1,5 +1,27 @@
 # DUFYND · Datenbetrieb statt PR pro Händlerpreis (DEV / nicht live)
 
+## 27.10.2026 – Zusätzliche Quellenhärtung: archiviertes Git-Manifest und UVP
+
+Die lokale `--merchant-browser-evidence-dir`-Wiederverwendung ist ausschließlich
+für die **zwei bereits verifizierten** 26.10.-Browser-Quellpakete vorgesehen.
+Ein selbst erstelltes Verzeichnis oder eine neue `SHA256.json` wird nicht als
+vertrauenswürdiger Ursprung akzeptiert. Der ursprüngliche Git-Blob-Hash
+des Quellmanifests ist explizit gebunden, jede Browser-/Versanddatei muss
+ihren SHA-256-Eintrag erfüllen, und `batch-input.json` muss bytegeprüft
+dem übergebenen Original-Batchobjekt entsprechen. Neue Händlerfeeds können
+nach separater Quellfreigabe ihren eigenen Batch-Prozess erhalten.
+
+Außerdem darf ein durchgestrichener `UVP`-Preis niemals als
+aktueller ausgewählter Variantengesamtpreis gelten. Der Parser prüft
+genau eine tatsächliche Preiszeile im ausgewählten SKU-Abschnitt
+und ignoriert UVP und Literpreise.
+
+Diese Härtung verändert keine der ursprünglichen 10 Datenpunkte,
+keine Live-Angebote, keine ausgeführten Verkäufe oder Provisionen.
+Testfälle für fremde Quellen, geänderte Batch-Metadaten und UVP sind
+hinzugefügt, auf diesem exakten GitHub-Head **noch nicht ausgeführt**.
+
+
 ## 27.10.2026 – vorhandene Original-Browser-Batches wiederverwendbar prüfen (DEV)
 
 Der neue optionale CLI-Modus

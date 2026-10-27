@@ -41,6 +41,28 @@ HOLD_REASONS = frozenset({
     "price_conflict", "stock_unverified", "out_of_stock",
     "merchant_withdrawn", "network_rights_unverified",
 })
+# The standalone rehydrator is specifically for the two immutable, already
+# human-reviewed browser bundles. Further merchant batches must establish a
+# new independently approved source manifest first, never trust arbitrary
+# path-provided hash lists. These IDs are source Git blob checksums.
+ARCHIVED_SOURCE_MANIFEST_GIT_BLOBS = {
+    "dufynd-top-six-offers-20261026": "7d67409bf865bbf2689056b80bccfe3eac8e44a7",
+    "dufynd-top-wave2-offers-20261026": "d76be5bfcfe3ffa2a0730b0f28cdca54c37e7803",
+}
+
+
+def selected_merchant_price_matches(section: str, amount: Decimal) -> bool:
+    """Read the one actual selected-option euro amount, never a crossed UVP."""
+    values: list[Decimal] = []
+    for raw in section.splitlines():
+        line = raw.strip()
+        if line.startswith("UVP") or "/ Liter" in line:
+            continue
+        if not re.fullmatch(r"(?:\d{1,3}(?:\.\d{3})*|\d+)(?:,\d{2}|,-) €", line):
+            continue
+        numbers = line.split(" €", 1)[0].replace(".", "").replace(",-", ",00").replace(",", ".")
+        values.append(Decimal(numbers))
+    return len(values) == 1 and values[0] == amount
 
 
 
@@ -268,10 +290,24 @@ def restore_direct_merchant_browser_evidence(
             raise ValueError("original_source_shape_invalid")
         return parsed, checksum
 
-    manifest = json.loads((evidence_dir / "SHA256.json").read_text(encoding="utf-8"))
+    anchor = ARCHIVED_SOURCE_MANIFEST_GIT_BLOBS.get(evidence_dir.name)
+    if anchor is None:
+        raise ValueError("original_source_bundle_not_approved")
+    manifest_bytes = (evidence_dir / "SHA256.json").read_bytes()
+    if len(manifest_bytes) > 32_000:
+        raise ValueError("source_hash_manifest_too_large")
+    # Git's object ID is SHA-1(b"blob <size>\\0" + bytes), not SHA-1(bytes).
+    blob_prefix = b"blob " + str(len(manifest_bytes)).encode("ascii") + b"\\0"
+    if hashlib.sha1(blob_prefix + manifest_bytes).hexdigest() != anchor:
+        raise ValueError("original_manifest_git_object_mismatch")
+    manifest = json.loads(manifest_bytes)
     if not isinstance(manifest, dict):
         raise ValueError("source_hash_manifest_invalid")
     expected_hashes = manifest
+    # The incoming batch must be exactly the archived reviewed source object.
+    original_input, _ = checked_json("batch-input.json")
+    if original_input != original_batch:
+        raise ValueError("original_batch_input_does_not_match_archived_source")
     browser, browser_hash = checked_json("merchant-browser-observations.json")
     shipping, shipping_hash = checked_json("shipping-browser-observation.json")
     observations = browser.get("rows", browser.get("observations"))
@@ -342,10 +378,7 @@ def restore_direct_merchant_browser_evidence(
             if type(ml) is not int or f"Menge: {ml} ml" not in part:
                 raise ValueError("merchant_selected_volume_not_visible")
             amount = Decimal(str(price))
-            variants = {f"{amount:.2f}".replace(".", ",") + " €"}
-            if amount == amount.to_integral_value():
-                variants.add(f"{int(amount)},- €")
-            if not any(needle in part for needle in variants):
+            if not selected_merchant_price_matches(part, amount):
                 raise ValueError("merchant_selected_sku_price_not_visible")
             if row.get("buyVisible") is not True or row.get("buyEnabled") is not True:
                 raise ValueError("merchant_buy_button_not_enabled")
