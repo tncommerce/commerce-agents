@@ -27,9 +27,15 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       if(outputDir) await page.screenshot({path:`${outputDir}/conversion-search-${width}-catalog.png`,fullPage:true});
       // Only the Rabanne RC1 card has a separate catalog offer shortcut.
       // Other released offers are accessible through the respective product profile.
-      assert.equal(await page.locator('a[data-dufynd-catalog-rc1-offer]').count(),0);
+      // The catalog may show other matched cards (including Rabanne).
+      // Assert the Libre card itself cannot inherit a Rabanne-only shortcut.
+      const libreCard = page.locator('article.dufynd-catalog-card').filter({
+        has: page.getByRole('heading', {name: 'Libre', exact: true}),
+      }).first();
+      await libreCard.waitFor({state: 'visible'});
+      assert.equal(await libreCard.locator('a[data-dufynd-catalog-rc1-offer]').count(),0);
       assert.equal(
-        (await page.locator('.dufynd-catalog-card-cta').first().innerText()).trim(),
+        (await libreCard.locator('.dufynd-catalog-card-cta').innerText()).trim(),
         'Duftprofil entdecken →',
       );
       await page.goto(`${baseUrl}/duft?q=Rabanne%201%20Million&qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});

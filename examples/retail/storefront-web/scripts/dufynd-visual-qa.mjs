@@ -661,7 +661,9 @@ try {
             const rect = (selector) =>
               document.querySelector(selector)?.getBoundingClientRect() || null;
             const title = rect(".dufynd-fragrance-hero h1");
-            const stage = rect(".dufynd-fragrance-hero[data-product-id=\"SC-RABANNE-1-MILLION-EDT-100\"][data-dufynd-photo-hold=\"true\"] .dufynd-fragrance-stage-shell, .dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
+            // The released original uses the ordinary stage shell, not the
+            // former Rabanne-only [data-dufynd-photo-hold] state.
+            const stage = rect(".dufynd-fragrance-hero .dufynd-fragrance-stage-shell");
             const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
             const offers = rect("#angebote");
             const exploded = rect(".dufynd-exploded-notes");
@@ -696,7 +698,8 @@ try {
           }
           if (
             mobileProductFirst &&
-            (layout.stage_height == null || layout.stage_height > 270)
+            (layout.stage_height == null ||
+              layout.stage_height > (hasReleasedOriginal ? 520 : 270))
           ) {
             throw new Error(`mobile fragrance visual is too tall: ${layout.stage_height}px`);
           }
@@ -1366,15 +1369,27 @@ try {
     await sharePage.getByRole("combobox", { name: "Marke" }).selectOption("Xerjoff");
     if (await sharePage.getByRole("combobox", { name: "Bewertung" }).count()) throw new Error("Unlicensed community rating filter is exposed");
     await sharePage.getByRole("combobox", { name: "Sortierung" }).selectOption("brand");
-    await sharePage.waitForFunction(() => {
-      const url = new URL(window.location.href);
-      return url.searchParams.get("q") === "Naxos" &&
-        url.searchParams.get("profil") === "freshness" &&
-        url.searchParams.get("zielgruppe") === "men" &&
-        url.searchParams.get("marke") === "Xerjoff" &&
-        url.searchParams.get("sort") === "brand" &&
-        url.searchParams.get("utm_source") === "qa";
-    });
+    try {
+      await sharePage.waitForFunction(() => {
+        const url = new URL(window.location.href);
+        return url.searchParams.get("q") === "Naxos" &&
+          url.searchParams.get("profil") === "freshness" &&
+          url.searchParams.get("zielgruppe") === "men" &&
+          url.searchParams.get("marke") === "Xerjoff" &&
+          url.searchParams.get("sort") === "brand" &&
+          url.searchParams.get("utm_source") === "qa";
+      }, undefined, {timeout: 12_000});
+    } catch (error) {
+      // A timeout alone conceals the broken field. Report the local test URL
+      // and visible field values, never drop any of the required assertions.
+      const diagnostic = await sharePage.evaluate(() => ({
+        url: location.pathname + location.search,
+        search: document.querySelector('input[type="search"]')?.value ?? null,
+        brand: document.querySelector('select[aria-label="Marke"]')?.value ?? null,
+      }));
+      throw new Error("catalog shared filters did not converge: " +
+        JSON.stringify(diagnostic), {cause: error});
+    }
     await sharePage.reload({ waitUntil: "networkidle" });
     await chooseMeasurement(sharePage, "denied");
     if (await shareFilterToggle.getAttribute("aria-expanded") === "false") await shareFilterToggle.click();
