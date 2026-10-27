@@ -98,16 +98,24 @@ def assert_top_ten() -> dict:
         if len(chosen) != 1:
             raise ValueError(f"missing_or_duplicate_top_offer_for_{pid}")
         offer = chosen[0]
-        if (offer.get("merchant_product_id") != sku
-                or offer.get("in_stock") is not True
-                or not isinstance(offer.get("total_price"), (float, int))
-                or abs(float(offer["total_price"]) - total) > 0.01
-                or not isinstance(offer.get("variant_label"), str)
-                or f"{ml} ml" not in offer["variant_label"]
-                or offer.get("clickout_path") != "/api/clickout/" + offer["offer_id"]
-                or not exact_awin_link(str(offer.get("affiliate_link") or ""), awid)
-        ):
-            raise ValueError("wrong_variant_price_or_link_" + pid)
+        mismatches = []
+        if offer.get("merchant_product_id") != sku:
+            mismatches.append("merchant_sku")
+        if offer.get("in_stock") is not True:
+            mismatches.append("in_stock")
+        actual_total = offer.get("total_price")
+        if not isinstance(actual_total, (float, int)) or abs(float(actual_total) - total) > 0.01:
+            mismatches.append("total_price")
+        if not isinstance(offer.get("variant_label"), str) or f"{ml} ml" not in offer["variant_label"]:
+            mismatches.append("variant_label")
+        if offer.get("clickout_path") != "/api/clickout/" + offer.get("offer_id", ""):
+            mismatches.append("clickout_path")
+        if not exact_awin_link(str(offer.get("affiliate_link") or ""), awid):
+            mismatches.append("original_awin_product_route")
+        if mismatches:
+            # Report only names of failed public contract fields, never the
+            # merchant's complete destination/tracking URL or credentials.
+            raise ValueError("wrong_" + pid + "_" + ",".join(mismatches))
         try:
             checked = datetime.fromisoformat(offer["last_updated_at"].replace("Z", "+00:00"))
             age = datetime.now(UTC) - checked.astimezone(UTC)
