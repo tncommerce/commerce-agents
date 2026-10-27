@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "status": "MERCHANT_VARIANT_PRICES_OBSERVED_ONLY_NOT_SHOPPER_STOCK_OR_TOTAL_VERIFIED",
+  "market": "DE",
+  "observed_at_utc": "2026-10-27T11:41:45Z",
+  "merchant": "top-parfuemerie",
+  "advertiser_id": "31081",
+  "feed_id": "91379",
+  "source_check_run": 40498052180,
+  "source_check_job": 122168431697,
+  "probe_type": "two independent direct HTTPS GET of public official product pages; no affiliate URLs visited",
+  "requests": 2,
+  "products": [
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "page_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+      "expected_sku": "707368",
+      "historical_ean": "3349666007921",
+      "source_response_status": 200,
+      "merchant_sku_html_occurrences": 8,
+      "ean_html_occurrences": 6,
+      "price_option_candidates": [
+        {
+          "size_ml": 50,
+          "magento_internal_variant_id": "15570",
+          "source_option_price_eur": 77.95
+        },
+        {
+          "size_ml": 100,
+          "magento_internal_variant_id": "15571",
+          "source_option_price_eur": 102.95
+        },
+        {
+          "size_ml": 200,
+          "magento_internal_variant_id": "15572",
+          "source_option_price_eur": 140.95
+        }
+      ],
+      "chosen_variant": {
+        "size_ml": 100,
+        "amount_hint_eur": 102.95,
+        "source": "Magento configurable optionPrices embedded in public HTML",
+        "merchant_sku_to_internal_variant_id_explicitly_bound": false
+      },
+      "historical_published_total_eur": 102.95
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "page_url": "https://www.topparfuemerie.de/montblanc-explorer-edp-nat-spray",
+      "expected_sku": "849457",
+      "historical_ean": "3386460101035",
+      "source_response_status": 200,
+      "merchant_sku_html_occurrences": 11,
+      "ean_html_occurrences": 9,
+      "price_option_candidates": [
+        {
+          "size_ml": 30,
+          "magento_internal_variant_id": "10338",
+          "source_option_price_eur": 57
+        },
+        {
+          "size_ml": 60,
+          "magento_internal_variant_id": "10339",
+          "source_option_price_eur": 86
+        },
+        {
+          "size_ml": 100,
+          "magento_internal_variant_id": "10340",
+          "source_option_price_eur": 113
+        }
+      ],
+      "chosen_variant": {
+        "size_ml": 100,
+        "amount_hint_eur": 113,
+        "source": "Magento configurable optionPrices embedded in public HTML",
+        "merchant_sku_to_internal_variant_id_explicitly_bound": false
+      },
+      "historical_published_total_eur": 113
+    }
+  ],
+  "discrepancies": [],
+  "limits": {
+    "stock_for_selected_variant_verified": false,
+    "checkout_selected_variant_verified": false,
+    "exact_magento_internal_variant_to_feed_merchant_sku_unequivocally_mapped": false,
+    "shipping_entitlement_for_specific_cart_verified": false,
+    "final_customer_total_current_verified": false,
+    "price_last_updated_timestamp_can_be_changed": false,
+    "approved_offer_refreshes": 0,
+    "live_store_or_database_mutations": 0,
+    "affiliate_clickouts": 0,
+    "additional_cost_eur": 0
+  },
+  "disposition": "NO_72H_REFRESH__PRIVATE_REVIEW_ONLY",
+  "next_evidence_needed": "Explicit vendor selected-size-to-SKU/GTIN mapping, size-specific stock/availability and exact DE checkout total for each verified merchant offer. Do not stamp older canonical prices with the HTML fetch timestamp."
+}
