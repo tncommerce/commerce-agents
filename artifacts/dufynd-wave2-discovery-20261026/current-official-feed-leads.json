@@ -1,0 +1,1936 @@
+{
+  "schema_version": 1,
+  "status": "PUBLIC_GAP_DISCOVERY_ONLY_NOT_VARIANT_APPROVED",
+  "feed": {
+    "checked_at": "2026-10-26T15:15:27+00:00",
+    "source": "awin_product_feed_list",
+    "advertiser_id": "31081",
+    "feed_id": "91379",
+    "membership_status": "active",
+    "joined": true,
+    "last_imported": "2026-10-26 00:04:22",
+    "downloaded": true,
+    "downloaded_bytes": 12194085,
+    "download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+  },
+  "rows": [
+    {
+      "merchant_product_id": "100002729",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "4d46fdaf7d8ce853b9a2ec3a5b5f73c5dc1d14d61a49d9008a82d1ee4a370412",
+      "fields": {
+        "aw_product_id": "41961101238",
+        "merchant_product_id": "100002729",
+        "last_updated": "2026-08-13 10:30:58",
+        "product_name": "Zugaben Montblanc Explorer Shower Gel",
+        "brand_name": "",
+        "description": "",
+        "merchant_deep_link": "https://www.topparfuemerie.de/zugaben-montblanc-explorer-shower-gel",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=41961101238&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/1/0/100002729_100002729_061.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "search_price",
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "780879",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "ac62c23622de460c721fe0478faabf1c0e89f862134414a251068d03d4706700",
+      "fields": {
+        "aw_product_id": "37127261933",
+        "merchant_product_id": "780879",
+        "search_price": "150",
+        "last_updated": "2026-10-21 10:31:08",
+        "product_name": "Lancôme La vie est belle EdP Vapo",
+        "brand_name": "",
+        "description": "Mit dem nachfüllbaren La vie est belle Eau de Parfum präsentiert Lancôme eine zeitlose Duftikone  die feminine Lebensfreude und modernen Luxus vereint. Dieses blumige Eau de Parfum für Damen basiert auf einer exzellenten Komposition hochwertiger Inhaltsstoffe  die von den renommiertesten Parfümeuren Frankreichs kreiert wurde. Im Herzen des Duftes entfaltet sich ein kostbarer Iris-Akkord  der durch die Eleganz von Patschuli und die Süße eines Gourmand-Vanille-Akkords perfekt abgerundet wird. Der legendäre Flakon mit dem „kristallenen Lächeln“ ist außerdem wiederbefüllbar.• Köstlicher Iris-Akkord: Eine einzigartige Duftsignatur basierend auf edler Iris Pallida  ergänzt durch Orangenblüte und Jasmin. • Wiederbefüllbarer Flakon: Der ikonische Flakon lässt sich dank des Refill-Verschlusses einfach nachfüllen. • Eleganter Gourmand-Charakter: Eine harmonische Verbindung von warmem Patschuli  Tonkabohne und Vanille für eine sinnliche  feminine Ausstrahlung.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/lanc-me-la-vie-est-belle-edp-vapo",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127261933&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/780879_3605533286555_061.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+      ]
+    },
+    {
+      "merchant_product_id": "787670",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "2b5802c1d06d297b3d7f7dcccd7a4003f8b677e282b69460b0b9811d852f7aab",
+      "fields": {
+        "aw_product_id": "37127262871",
+        "merchant_product_id": "787670",
+        "search_price": "143.95",
+        "last_updated": "2026-10-13 01:20:27",
+        "product_name": "Yves Saint Laurent Black Opium EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Noch PROVOKANTER. Noch ROCKIGER. Noch LAUTER. Das neue BLACK OPIUM - für die rebellischste aller Yves Saint Laurent Frauen. Sie ist frei und folgt ihrem Rhythmus  zwischen Tradition und Rebellion tut sie nur das was sie liebt! Sie ist extravagant  ruhelos  eine komplexe Mischung aus Dunkelheit und Licht  voll weiblicher Sinnlichkeit  spielerisch und doch unwiderstehlich seriös. Nichts kann sie stoppen. BLACK OPIUM besticht durch die Intensität  die aus der Begegnung von Dunkelheit und einem zarten Lichtschein entsteht. Der Auftakt weckt mit einer kraftvollen Kaffeebohnen-Note die Lebensgeister und kitzelt die Sinne wach. Danach entfalten die weicheren  feminineren Akkorde von Sambac-Jasmin und Orangenblüten-Absolu ihre Sinnlichkeit  die von betörender Vanille und holzigen Zedern- und Patschuli-Noten abgerundet wird  um in einer faszinierenden Vielschichtigkeit  Tiefe und Eleganz auszuklingen. What's stopping you? • Eau de Parfum • Erster Kaffee-Floral Duft • Für die rebellischste aller Frauen",
+        "merchant_deep_link": "https://www.topparfuemerie.de/yves-saint-laurent-black-opium-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262871&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-YSL-BLACK-OPIUM-EDP-90"
+      ]
+    },
+    {
+      "merchant_product_id": "815680",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "6a53ccb8c1cb3ba80790595b44f12e8166a449ac8f30572cd88d0604c3028b8a",
+      "fields": {
+        "aw_product_id": "37127262687",
+        "merchant_product_id": "815680",
+        "search_price": "83.95",
+        "last_updated": "2026-08-31 01:35:22",
+        "product_name": "Prada L'Homme Prada EdT Nat. Spray",
+        "brand_name": "",
+        "description": "L’Homme Eau de Toilette von Prada Duftrichtung: holzig-aromatisch Kopfnote: Karottensamen  schwarzer Pfeffer  Kardamom Herznote: Veilchen  Iris  Matetee Basisnote: Zedernholz  Patschuli  AmberDas L’Homme Eau de Toilette von Prada bietet seinem Träger ein elegantes Dufterlebnis  das seinen einzigartigen Charakter auf moderne Weise unterstreicht. Der luxuriöse Duft beherrscht das Spiel mit den Gegensätzen perfekt. Das Prada Eau de Toilette verbindet holzig aromatische Facetten mit floralen Elementen für eine elegant sinnliche Signatur  die es in sich hat.Der trotzige und persönliche Herrenduft läutet die Kopfnote mit Karottensamen ein  die durch schwarzen Pfeffer und Kardamom einen Hauch von Exotik verliehen bekommen. Anschließend wird der olfaktorische Hochgenuss in der Herznote von blumigen Nuancen von Veilchen  Iris und Matetee stilvoll fortgeführt. Abgerundet wird das Eau de Toilette für Männer in der Basisnote von intensivem Zedernholz  Patschuli sowie einem Amber-Akkord.Der außergewöhnliche Charakter des Mannes wird mit dem L’Homme Eau de Toilette von Prada perfekt eingefangen. Der Herrenduft spielt mit Gegensätzen und schafft so ein exklusives und einzigartiges Eau de Toilette. Dies spiegelt auch der stilvoll designte Glasflakon wider  der sich unaufdringlich in einer Kombination der Farben Schwarz  Silber und Blau präsentiert. Damit wird der ikonische Duft elegant umschlossen und wartet nur darauf  seinen Träger mit den maskulinen und modernen Nuancen zu umhüllen.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/prada-l-homme-prada-edt-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262687&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/815680_8435137749591_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-PRADA-LHOMME-100"
+      ]
+    },
+    {
+      "merchant_product_id": "815682",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "af7817407d882dd82578e22f0b17d8c84159929296245176b010d62ec966f0ab",
+      "fields": {
+        "aw_product_id": "43999996888",
+        "merchant_product_id": "815682",
+        "search_price": "117.95",
+        "last_updated": "2026-08-31 01:35:23",
+        "product_name": "Prada L'Homme Prada EdT Nat. Spray",
+        "brand_name": "",
+        "description": "L’Homme Eau de Toilette von Prada Duftrichtung: holzig-aromatisch Kopfnote: Karottensamen  schwarzer Pfeffer  Kardamom Herznote: Veilchen  Iris  Matetee Basisnote: Zedernholz  Patschuli  AmberDas L’Homme Eau de Toilette von Prada bietet seinem Träger ein elegantes Dufterlebnis  das seinen einzigartigen Charakter auf moderne Weise unterstreicht. Der luxuriöse Duft beherrscht das Spiel mit den Gegensätzen perfekt. Das Prada Eau de Toilette verbindet holzig aromatische Facetten mit floralen Elementen für eine elegant sinnliche Signatur  die es in sich hat.Der trotzige und persönliche Herrenduft läutet die Kopfnote mit Karottensamen ein  die durch schwarzen Pfeffer und Kardamom einen Hauch von Exotik verliehen bekommen. Anschließend wird der olfaktorische Hochgenuss in der Herznote von blumigen Nuancen von Veilchen  Iris und Matetee stilvoll fortgeführt. Abgerundet wird das Eau de Toilette für Männer in der Basisnote von intensivem Zedernholz  Patschuli sowie einem Amber-Akkord.Der außergewöhnliche Charakter des Mannes wird mit dem L’Homme Eau de Toilette von Prada perfekt eingefangen. Der Herrenduft spielt mit Gegensätzen und schafft so ein exklusives und einzigartiges Eau de Toilette. Dies spiegelt auch der stilvoll designte Glasflakon wider  der sich unaufdringlich in einer Kombination der Farben Schwarz  Silber und Blau präsentiert. Damit wird der ikonische Duft elegant umschlossen und wartet nur darauf  seinen Träger mit den maskulinen und modernen Nuancen zu umhüllen.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/prada-l-homme-prada-edt-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=43999996888&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/815682_815682_061.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-PRADA-LHOMME-100"
+      ]
+    },
+    {
+      "merchant_product_id": "815820",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "f64ac2632d61eb9df1af89d3cf19a1d8ac35c6fce306f28cafe4c05d9da5131e",
+      "fields": {
+        "aw_product_id": "37127260414",
+        "merchant_product_id": "815820",
+        "search_price": "178",
+        "last_updated": "2026-10-16 01:30:01",
+        "product_name": "Creed Aventus for Her EdP Nat. Spray",
+        "brand_name": "",
+        "description": "AVENTUS FOR HER ist der sehnlich erwartete  die Sinne beflügelnde neue Damenduft  der perfekt die Aura  den anbetungswürdigen Charakter seines maskulinen Gegenparts reflektiert. Die filigrane  über Jahre dauernde Kreation des faszinierenden Parfums ist inspiriert von der Kraft  Schönheit und Mystik der Amazonen – sagenumwobene Heldinnen  die auf dem Rücken ihrer Pferde unerschrocken für ihre Freiheit und ihre Ziele kämpfen. Gleichzeitig ist es eine Hommage an die starke  moderne Frau von heute.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/creed-aventus-for-her-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127260414&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/815820_3508441103665_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-CREED-AVENTUS-100"
+      ]
+    },
+    {
+      "merchant_product_id": "815822",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "cb539d39e1da84b4608b8acd04871ce47722f4559fe6230f7bee6c39f29a9cad",
+      "fields": {
+        "aw_product_id": "37127260415",
+        "merchant_product_id": "815822",
+        "search_price": "311",
+        "last_updated": "2026-10-16 01:30:02",
+        "product_name": "Creed Aventus for Her EdP Nat. Spray",
+        "brand_name": "",
+        "description": "AVENTUS FOR HER ist der sehnlich erwartete  die Sinne beflügelnde neue Damenduft  der perfekt die Aura  den anbetungswürdigen Charakter seines maskulinen Gegenparts reflektiert. Die filigrane  über Jahre dauernde Kreation des faszinierenden Parfums ist inspiriert von der Kraft  Schönheit und Mystik der Amazonen – sagenumwobene Heldinnen  die auf dem Rücken ihrer Pferde unerschrocken für ihre Freiheit und ihre Ziele kämpfen. Gleichzeitig ist es eine Hommage an die starke  moderne Frau von heute.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/creed-aventus-for-her-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127260415&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/815822_3508441104662_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-CREED-AVENTUS-100"
+      ]
+    },
+    {
+      "merchant_product_id": "824025",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "e138cc6891d8d0a50e9789e96725f00a67385fa370efe7c63a9a19eb2e254989",
+      "fields": {
+        "aw_product_id": "37127260322",
+        "merchant_product_id": "824025",
+        "search_price": "252",
+        "last_updated": "2026-10-16 01:29:29",
+        "product_name": "Creed Aventus EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Der energisch-dynamische Männerduft  der auch Frauen fasziniert  verströmt eine Aura von Kraft  Macht und Erfolg. Aventus ist eine Komposition aus unvergleichlich superben Nuancen. Nur handverlesene Duft-Ingredienzien kamen zum Einsatz  die Olivier Creed mit seinem Sohn Erwin  Nachkomme und Erbe in der 7. Creed-Generation  persönlich auswählten. Das fruchtig  moosig-holzige Parfum ist inspiriert von den dramatischen Leben historischer Eroberer  die hoch zu Ross ihre Schlachten schlugen  ihre Siege feierten. Eine schwarze Ledermanschette umspannt den klassischen Creed-Flakon; darauf in Silber das Motiv eines Pferdes mit Reiter. Symbol für grenzenlose Freiheit und Abenteuer.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/creed-aventus-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127260322&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/824025_3508440505118_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-CREED-AVENTUS-100"
+      ]
+    },
+    {
+      "merchant_product_id": "825869",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "1b725ff61ab4fb156cddda7a9b0ba0ea1973dd90829c6f58224529c1eed71eb4",
+      "fields": {
+        "aw_product_id": "37127262515",
+        "merchant_product_id": "825869",
+        "search_price": "285",
+        "last_updated": "2026-10-20 17:31:07",
+        "product_name": "Parfums de Marly Delina EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Das sinnliche Bouquet aus türkischer Rose  Maiglöckchen und Pfingstrose gewinnt an Kraft und Komplexität durch ein fruchtiges Trio aus Litschi  Rhabarber und Bergamotte  gewürzt mit Muskatnuss.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/parfums-de-marly-delina-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262515&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-PDM-DELINA-EDP-75"
+      ]
+    },
+    {
+      "merchant_product_id": "827407",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "34f665d0801790ce54ad7acadbe18334471fa9eed61a5079e6ad7be05e938d71",
+      "fields": {
+        "aw_product_id": "37127260323",
+        "merchant_product_id": "827407",
+        "search_price": "354",
+        "last_updated": "2026-10-24 17:31:08",
+        "product_name": "Creed Aventus EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Inspiriert vom bewegten Leben eines Eroberers aus längst vergessener Zeit… ein Felsvorsprung aus Stahl und Glas – frei schwebend zwischen Himmel und Erde. Die Ellenbogen auf das Geländer gestützt  beobachtet er den Horizont. Er – der Eroberer – der Inbegriff von Männlichkeit auf dem Weg in die nächste Schlacht . An seiner Seite der irdische Pegasus – still wie er selbst  voller Harmonie  ruhend bei der Rast. Der furchtlose Reiter und sein Pferd verweilen auf der Schwelle zwischen dem Jetzt und Gleich – zwischen dem was war und was kommt.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/creed-aventus-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127260323&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/827407_3508441001114_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-CREED-AVENTUS-100"
+      ]
+    },
+    {
+      "merchant_product_id": "836129",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "26a35a02d94640497dd3bdde401b57170663cdfbbb5c96faefaf296754eaa309",
+      "fields": {
+        "aw_product_id": "46356123604",
+        "merchant_product_id": "836129",
+        "search_price": "242",
+        "last_updated": "2026-10-24 16:31:09",
+        "product_name": "Xerjoff XJ 1861 Naxos EdP Spray Gift Box",
+        "brand_name": "",
+        "description": "Xerjoff XJ 1861 Naxos Eau de Parfum Gift Box – Italienische Sinnlichkeit in exklusiver GeschenkboxErleben Sie mit der Xerjoff XJ 1861 Naxos Gift Box ein Meisterwerk italienischer Parfumkunst – ein opulentes Geschenkset  das Luxus  Tradition und moderne Eleganz vereint. Der Duft ist eine Hommage an Sizilien und verbindet die Wärme mediterraner Zitrusnoten mit der Sinnlichkeit von Honig  Tabak und Vanille.Duftnoten von Xerjoff Naxos:Kopfnote: Bergamotte  Zitrone  LavendelHerznote: Zimt  Honig  Cashmeran  Jasmin SambacBasisnote: Tabakblätter  Tonkabohne  VanilleDer Auftakt aus spritziger Zitrone und würzigem Lavendel verleiht dem Duft eine belebende Frische  während Zimt und Honig im Herzen für Wärme und Tiefe sorgen. Abgerundet wird Naxos von einer sinnlichen Basis aus edlem Tabak und cremiger Vanille – ein Eau de Parfum mit Charakter und Nachhall.Das perfekte Geschenk für Parfumliebhaber:Die stilvoll gestaltete Gift Box macht dieses Set zur idealen Wahl für besondere Anlässe – sei es als luxuriöses Geschenk für einen geliebten Menschen oder als exklusives Highlight für die eigene Duftsammlung.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/xerjoff-1861-naxos-edp-spray-gift-box",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=46356123604&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/3/836129_8033488155070_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-XERJOFF-NAXOS-100"
+      ]
+    },
+    {
+      "merchant_product_id": "849413",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "46d60f877485b3c1f506f2bae699f204c7f15b180edc9cdce90c06530cc2afc5",
+      "fields": {
+        "aw_product_id": "37127262222",
+        "merchant_product_id": "849413",
+        "search_price": "57",
+        "last_updated": "2026-10-16 01:28:24",
+        "product_name": "Montblanc Explorer EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Die Rezeptur dieser außergewöhnlichen Kreation liest sich was Tagebuch einer weltumspannenden Reise: Bergamotte aus Italien  Vetiver aus Haiti  Patschuli aus Indonesien. Montblanc EXPLORER  der außergewöhnliche  holzig-aromatisch-ledrige Duft fängt das Flair exotischer Destinationen und jungfräulicher Flecken auf der Landkarte ein und verschmilzt sie zu einem unvergesslichen olfaktorischen Erlebnis für die Sinne.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262222&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849413_3386460101059_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "849448",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "089a8872586c6c5f37ba6f872a508fb14d8693a6e77390ea428c678d949c839f",
+      "fields": {
+        "aw_product_id": "37127262223",
+        "merchant_product_id": "849448",
+        "search_price": "86",
+        "last_updated": "2026-10-22 08:31:14",
+        "product_name": "Montblanc Explorer EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Die Rezeptur dieser außergewöhnlichen Kreation liest sich was Tagebuch einer weltumspannenden Reise: Bergamotte aus Italien  Vetiver aus Haiti  Patschuli aus Indonesien. Montblanc EXPLORER  der außergewöhnliche  holzig-aromatisch-ledrige Duft fängt das Flair exotischer Destinationen und jungfräulicher Flecken auf der Landkarte ein und verschmilzt sie zu einem unvergesslichen olfaktorischen Erlebnis für die Sinne.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262223&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849448_3386460101042_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "849457",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "965bbfd49cdd7657e1571288a2ad31999ef3f5415636cd80db9985b9aa25a9a3",
+      "fields": {
+        "aw_product_id": "37127262224",
+        "merchant_product_id": "849457",
+        "search_price": "113",
+        "last_updated": "2026-10-16 01:28:25",
+        "product_name": "Montblanc Explorer EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Die Rezeptur dieser außergewöhnlichen Kreation liest sich was Tagebuch einer weltumspannenden Reise: Bergamotte aus Italien  Vetiver aus Haiti  Patschuli aus Indonesien. Montblanc EXPLORER  der außergewöhnliche  holzig-aromatisch-ledrige Duft fängt das Flair exotischer Destinationen und jungfräulicher Flecken auf der Landkarte ein und verschmilzt sie zu einem unvergesslichen olfaktorischen Erlebnis für die Sinne.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262224&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849457_3386460101035_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "849463",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "04680550a28990ef25fa9e65a7d9d024d3dd47dbd4ed5eb6739501cf612aff10",
+      "fields": {
+        "aw_product_id": "37127262221",
+        "merchant_product_id": "849463",
+        "search_price": "14.95",
+        "last_updated": "2026-10-16 01:28:23",
+        "product_name": "Montblanc Explorer Shower Gel",
+        "brand_name": "",
+        "description": "Erleben Sie den Duft Montblanc Explorer EdP in Form eines Duschgels!",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-shower-gel",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262221&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849463_3386460101073_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "849464",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "e1e03143e9155c482e3329a4abe31fdadc31b3e146caa74f2b6e280e1f1ed998",
+      "fields": {
+        "aw_product_id": "43668691437",
+        "merchant_product_id": "849464",
+        "search_price": "23",
+        "last_updated": "2026-10-16 01:28:23",
+        "product_name": "Montblanc Explorer Deodorant Stick",
+        "brand_name": "",
+        "description": "Erleben Sie den Duft Montblanc Explorer EdP in Form eines Deosticks!",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-deodorant-stick",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=43668691437&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849464_3386460101080_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "849465",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "472e1ecc27da333366da43d3996a8d3f0010cbefb41f53c54e61dd667fb72fe6",
+      "fields": {
+        "aw_product_id": "37127262219",
+        "merchant_product_id": "849465",
+        "search_price": "31",
+        "last_updated": "2026-10-16 01:28:22",
+        "product_name": "Montblanc Explorer After Shave Balm",
+        "brand_name": "",
+        "description": "Erleben Sie den Duft Montblanc Explorer EdP in Form eines Aftershave Balms!",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-after-shave-balm",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262219&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849465_3386460101066_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "855950",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "fc2eed04c3ebcfabf577c1b7899b5199d2e219d8a27927b81edc1e455de7c325",
+      "fields": {
+        "aw_product_id": "37127259793",
+        "merchant_product_id": "855950",
+        "search_price": "220",
+        "last_updated": "2026-10-16 01:27:51",
+        "product_name": "Creed Aventus Cologne EdP",
+        "brand_name": "",
+        "description": "Ein Eau de Cologne auf royalem Niveau  sprich  mit einer Parfumkonzentration eines Eau de Parfums. Fruchtig-frisch  mit einer Kopfnote aus Bergamotte  schwarzer Johannisbeere  Ananas  grünem Apfel und Minze. Die Herznote aus Birke  Patchouli  Rose und Jasmin verleihen AVENTUS COLOGNE eine einzigartige Aura. Moschus  Eichenmoos und Vanille in der Basis vollenden die Komposition – eine neue Dufterfahrung im meisterlichen CREED-Universum.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/creed-aventus-cologne-edp",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127259793&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/855950_3508441001268_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-CREED-AVENTUS-100"
+      ]
+    },
+    {
+      "merchant_product_id": "855951",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "8658c06d59401ece4039fcb0630e83499f00a15cf81695ee4dfc5d7ef4d72a92",
+      "fields": {
+        "aw_product_id": "37127259794",
+        "merchant_product_id": "855951",
+        "search_price": "317",
+        "last_updated": "2026-10-16 01:27:51",
+        "product_name": "Creed Aventus Cologne EdP",
+        "brand_name": "",
+        "description": "Ein Eau de Cologne auf royalem Niveau  sprich  mit einer Parfumkonzentration eines Eau de Parfums. Fruchtig-frisch  mit einer Kopfnote aus Bergamotte  schwarzer Johannisbeere  Ananas  grünem Apfel und Minze. Die Herznote aus Birke  Patchouli  Rose und Jasmin verleihen AVENTUS COLOGNE eine einzigartige Aura. Moschus  Eichenmoos und Vanille in der Basis vollenden die Komposition – eine neue Dufterfahrung im meisterlichen CREED-Universum.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/creed-aventus-cologne-edp",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127259794&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/855951_3508441001275_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-CREED-AVENTUS-100"
+      ]
+    },
+    {
+      "merchant_product_id": "856448",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "0332b9777f086f840e32230ad934b4d4e237d151a075cd52b9042afa148fe38e",
+      "fields": {
+        "aw_product_id": "37127262034",
+        "merchant_product_id": "856448",
+        "search_price": "153.95",
+        "last_updated": "2026-10-07 01:21:17",
+        "product_name": "Yves Saint Laurent Libre EdP Vapo",
+        "brand_name": "",
+        "description": "LIBRE Eau de Parfum  der ikonische  nachfüllbare Duft von YSL Beauté. Der Duft ist ein Spiel aus Kontrasten. Warme  feminine Orangenblüte trifft auf maskulinen  kühlen Lavendel und vereinen sich zu einem Duft  der sinnlich  kühl und floral zugleich ist. YSL Beauté hat für dieses Produkt eine nachfüllbare Verpackung gewählt.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/yves-saint-laurent-libre-edp-vapo",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262034&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-YSL-LIBRE-EDP-90"
+      ]
+    },
+    {
+      "merchant_product_id": "874371",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "f4c4f614ea3f0eee0a6411a24ec5e73aa5b80b26fdb95b9eb57b7ce2771a9125",
+      "fields": {
+        "aw_product_id": "37127261420",
+        "merchant_product_id": "874371",
+        "search_price": "59.95",
+        "last_updated": "2026-10-16 01:27:04",
+        "product_name": "Montblanc Explorer Ultra Blue EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Inspiriert vom Blau des Himmels  der Meere und der eisbedeckten Berge fängt Montblanc Explorer Ultra Blue die Abenteuerlust des Entdeckers ein  der zu einer epischen Duftreise aufbricht. Ein zitrisch-maritimer  holziger Duft mit einer strahlenden Kopfnote aus prickelnder  italienischer Bergamotte und feinsten Zitrusfrüchten  ein maritimer Akkord als schlagendes Herz des Duftes und erdige Basisnoten aus Patchouli  kombiniert mit edlen Hölzern und ledrigen Facetten. Der massive Glasboden  das Markenzeichen für herausragendes Design und Qualität  offenbart den ikonischen Montblanc Stern. Er stellt die sechs Gletscherhänge dar  die den verschneiten Berggipfel bilden. Der lederähnliche Einband wird in der hauseigenen Pelleteria in Florenz von Hand gefertigt. Er ist mit dem eleganten Ultra Blue Saffiano-Motiv bedruckt und mit dem in der Hamburger Montblanc Manufaktur gefertigten Montblanc-Emblem verziert.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-ultra-blue-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127261420&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/7/874371_3386460121514_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "874372",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "14677ec3e1c63cb22d9dfd1b8371b32354ab525a620b954ebd82c0b7adcf0000",
+      "fields": {
+        "aw_product_id": "37127261418",
+        "merchant_product_id": "874372",
+        "search_price": "55",
+        "last_updated": "2026-10-16 01:27:04",
+        "product_name": "Montblanc Explorer Ultra Blue EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Inspiriert vom Blau des Himmels  der Meere und der eisbedeckten Berge fängt Montblanc Explorer Ultra Blue die Abenteuerlust des Entdeckers ein  der zu einer epischen Duftreise aufbricht. Ein zitrisch-maritimer  holziger Duft mit einer strahlenden Kopfnote aus prickelnder  italienischer Bergamotte und feinsten Zitrusfrüchten  ein maritimer Akkord als schlagendes Herz des Duftes und erdige Basisnoten aus Patchouli  kombiniert mit edlen Hölzern und ledrigen Facetten. Der massive Glasboden  das Markenzeichen für herausragendes Design und Qualität  offenbart den ikonischen Montblanc Stern. Er stellt die sechs Gletscherhänge dar  die den verschneiten Berggipfel bilden. Der lederähnliche Einband wird in der hauseigenen Pelleteria in Florenz von Hand gefertigt. Er ist mit dem eleganten Ultra Blue Saffiano-Motiv bedruckt und mit dem in der Hamburger Montblanc Manufaktur gefertigten Montblanc-Emblem verziert.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-ultra-blue-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127261418&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/7/874372_3386460121538_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "903594",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "d64052df1e665facd3e9ae9c78e4092bc43d4dda82a4a5e9b085a9b323141591",
+      "fields": {
+        "aw_product_id": "37127265046",
+        "merchant_product_id": "903594",
+        "search_price": "111",
+        "last_updated": "2026-10-16 01:24:56",
+        "product_name": "Montblanc Explorer Platinum EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Explorer Platinum erinnert an den Aufbruch eines Abenteurers in die Berge. Ein olfaktorisches Abenteuer  das von den renommierten Parfümeuren Bruno Jovanovic  Nathalie Lorson und Fabrice Pellegrin kreiert wurde. Das neue Eau de Parfum eröffnet mit spritzig-knackigen grünen Noten voin Grapefruit  Veilchenblättern und Muskatellersalbei. Die Intensität von Alaska-Zedernholz und elegante Ambra-Noten schaffen eine holzige Duftstruktur  die eine kühne  raffinierte Männlichkeit verkörpern.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-platinum-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127265046&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/903594_3386460135818_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "903598",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "c6666eaf225cb3339445edb0bdef93b03761f20287e2342a41561b6c32461c29",
+      "fields": {
+        "aw_product_id": "37127265044",
+        "merchant_product_id": "903598",
+        "search_price": "55",
+        "last_updated": "2026-10-16 01:24:56",
+        "product_name": "Montblanc Explorer Platinum EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Explorer Platinum erinnert an den Aufbruch eines Abenteurers in die Berge. Ein olfaktorisches Abenteuer  das von den renommierten Parfümeuren Bruno Jovanovic  Nathalie Lorson und Fabrice Pellegrin kreiert wurde. Das neue Eau de Parfum eröffnet mit spritzig-knackigen grünen Noten voin Grapefruit  Veilchenblättern und Muskatellersalbei. Die Intensität von Alaska-Zedernholz und elegante Ambra-Noten schaffen eine holzige Duftstruktur  die eine kühne  raffinierte Männlichkeit verkörpern.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-platinum-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127265044&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/903598_3386460135832_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "903599",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "ddd816b6c5c3261f29caca918b1d65dcbf350b460fa58c8bda7d02abcc36e7f8",
+      "fields": {
+        "aw_product_id": "37127265045",
+        "merchant_product_id": "903599",
+        "search_price": "83",
+        "last_updated": "2026-10-16 01:24:56",
+        "product_name": "Montblanc Explorer Platinum EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Explorer Platinum erinnert an den Aufbruch eines Abenteurers in die Berge. Ein olfaktorisches Abenteuer  das von den renommierten Parfümeuren Bruno Jovanovic  Nathalie Lorson und Fabrice Pellegrin kreiert wurde. Das neue Eau de Parfum eröffnet mit spritzig-knackigen grünen Noten voin Grapefruit  Veilchenblättern und Muskatellersalbei. Die Intensität von Alaska-Zedernholz und elegante Ambra-Noten schaffen eine holzige Duftstruktur  die eine kühne  raffinierte Männlichkeit verkörpern.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-platinum-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127265045&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/903599_3386460135825_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "903600",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "8cae488856703f5715fda599aa72a41a8f0b316cd21a1114418fa6ef7d18afa4",
+      "fields": {
+        "aw_product_id": "37127265043",
+        "merchant_product_id": "903600",
+        "search_price": "14.95",
+        "last_updated": "2026-10-16 01:24:55",
+        "product_name": "Montblanc Explorer Platinum Shower Gel",
+        "brand_name": "",
+        "description": "Explorer Platinum erinnert an den Aufbruch eines Abenteurers in die Berge. Ein olfaktorisches Abenteuer  das von den renommierten Parfümeuren Bruno Jovanovic  Nathalie Lorson und Fabrice Pellegrin kreiert wurde. Das neue Eau de Parfum eröffnet mit spritzig-knackigen grünen Noten voin Grapefruit  Veilchenblättern und Muskatellersalbei. Die Intensität von Alaska-Zedernholz und elegante Ambra-Noten schaffen eine holzige Duftstruktur  die eine kühne  raffinierte Männlichkeit verkörpern.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-platinum-shower-gel",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127265043&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/903600_3386460135887_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "906142",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "0a9bf4211aad1a9e5d67c44f40173e969879dad2b385bffc81e2f5dd4dee66a4",
+      "fields": {
+        "aw_product_id": "40158027886",
+        "merchant_product_id": "906142",
+        "search_price": "365",
+        "last_updated": "2026-10-16 01:24:45",
+        "product_name": "Creed Absolu Aventus",
+        "brand_name": "",
+        "description": "Absolu Aventus ist eine sinnlich gewagte Ergänzung zu der weltweit beliebten Aventus Linie. Inspiriert von dem lateinischen Wort ‚absolvere‘  was so viel bedeutet wie befreien oder erlösen  ist Absolu Aventus ein spontaner Akt der Kreation und damit eine freie Interpretation von Aventus. Absolu unterstreicht den Gegensatz zwischen der spritzigen Energie von Zitrusfrüchten und der markanten Wirkung von Hölzern  zwischen opulenter  saftiger Fruchtigkeit und den warmen  sinnlichen Noten von Amber. Dieser kraftvolle Duft eröffnet mit kräftigen und doch zarten Noten aus Bergamotte  schwarzer Johannisbeere und raffinierten Grapefruit-Noten  ein intensives Dufterlebnis. Die frischen  fruchtigen Noten umhüllt von holzigen  berauschenden Herznoten aus Patchouli  Vetiver und rosa Pfeffer  geben Absolu Aventus seine außergewöhnliche Persönlichkeit. Zimt  Ingwer und Kardamom unterstreichen diese fesselnde Komposition und sorgen dafür  dass sie ewig anhält.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/creed-absolu-aventus-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=40158027886&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/906142_3508440251749_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-CREED-ABSOLU-AVENTUS-100",
+        "SC-CREED-AVENTUS-100"
+      ]
+    },
+    {
+      "merchant_product_id": "932753",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "e647b77e98719350f2c7ecdd4a1e5f8f1d8105d4a91e67c3e434e21d0beba980",
+      "fields": {
+        "aw_product_id": "40786664982",
+        "merchant_product_id": "932753",
+        "search_price": "86",
+        "last_updated": "2026-10-16 01:22:14",
+        "product_name": "Montblanc Explorer Set = EdP Nat. Spray 60 ml + Shower Gel 100 ml",
+        "brand_name": "",
+        "description": "Explorer Set EdP 60ml + SG 100ml",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-set-edp-nat-spray-60-ml-shower-gel-100-ml",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=40786664982&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/3/932753_3386460154925_052.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "935702",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "4fa8e76dd4ce4c187be60d18c54876107267accd3627a5e36aa06a2a58398db1",
+      "fields": {
+        "aw_product_id": "41809317953",
+        "merchant_product_id": "935702",
+        "search_price": "26",
+        "last_updated": "2026-10-22 08:31:14",
+        "product_name": "Montblanc Explorer Extreme Deo Stick",
+        "brand_name": "",
+        "description": "Montblanc Explorer Extreme  ein intensiver Duft  der sinnliches Amber mit maskulinem Leder vereint.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-extreme-deo-stick",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=41809317953&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/3/935702_3386460153775_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "935703",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "81bdbbf259e1570195150dff5370b7c0d38a2a5bf76a5c7d163bf37fa3899028",
+      "fields": {
+        "aw_product_id": "41809317952",
+        "merchant_product_id": "935703",
+        "search_price": "125",
+        "last_updated": "2026-10-16 01:21:53",
+        "product_name": "Montblanc Explorer Extreme Parfum Nat. Spray",
+        "brand_name": "",
+        "description": "",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-extreme-parfum-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=41809317952&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/3/935703_3386460153720_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "935704",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "e788ba3357d47c4a671f421f2fbb47e0670bb855d12829fc9943c0b92632752c",
+      "fields": {
+        "aw_product_id": "41809317951",
+        "merchant_product_id": "935704",
+        "search_price": "95",
+        "last_updated": "2026-10-16 01:21:53",
+        "product_name": "Montblanc Explorer Extreme Parfum Nat. Spray",
+        "brand_name": "",
+        "description": "",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-extreme-parfum-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=41809317951&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/3/935704_3386460153737_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "935705",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "869536643b2482f8bb775ce69f4fdbb2cd0b886561a5d3b977d50ae0fdc067dd",
+      "fields": {
+        "aw_product_id": "41809317950",
+        "merchant_product_id": "935705",
+        "search_price": "32",
+        "last_updated": "2026-10-16 01:21:52",
+        "product_name": "Montblanc Explorer Extreme Shower Gel",
+        "brand_name": "",
+        "description": "Montblanc Explorer Extreme  ein intensiver Duft  der sinnliches Amber mit maskulinem Leder vereint.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-extreme-shower-gel",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=41809317950&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/3/935705_3386460153768_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "956804",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "be62b24732346b71109dcfb10131dffcc49f5c4b4d1a9b1e8204157181cf1cd2",
+      "fields": {
+        "aw_product_id": "46344749851",
+        "merchant_product_id": "956804",
+        "search_price": "113",
+        "last_updated": "2026-10-16 01:20:23",
+        "product_name": "Montblanc Explorer Infinite EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Montblanc Explorer Infinite lädt den modernen Abenteurer ein  neue Horizonte zu entdecken – unter dem grenzenlosen Himmel der Wüste  wo die glühende Hitze des Tages langsam in die geheimnisvolle Kühle der Nacht übergeht. Der Duft fängt genau diesen einzigartigen Kontrast ein: die intensive Wärme des Tages vereint sich mit der klaren Frische der Nacht. Ein frisch-holziger Duft  der die Grenzen des Abenteuers neu definiert. Saftige Zitrusnoten und elegantes Patchouli fangen das Geheimnis der Wüste ein. Die Komposition wird durch einen sinnlichen Moschus-Akkord veredelt und hinterlässt eine markante Spur. Der tiefblau lackierte Glasflakon präsentiert das ikonische Saffiano-Muster der Maison. Ein wahres Kunstwerk für ein Eau de Parfum  das die exzellente Handwerkskunst von Montblanc feiert. Eine kraftvolle Komposition  die Freiheit  Ausstrahlung und unendliche Möglichkeiten verkörpert – geschaffen für Männer  die ihren eigenen Weg gehen.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-infinite-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=46344749851&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/5/956804_3386460175593_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "956805",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "e32d48409f75c1f1bdb3fb3017cde361b7dd0df9b08639be2779576b84518a24",
+      "fields": {
+        "aw_product_id": "46344749850",
+        "merchant_product_id": "956805",
+        "search_price": "86",
+        "last_updated": "2026-10-20 15:31:07",
+        "product_name": "Montblanc Explorer Infinite EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Montblanc Explorer Infinite lädt den modernen Abenteurer ein  neue Horizonte zu entdecken – unter dem grenzenlosen Himmel der Wüste  wo die glühende Hitze des Tages langsam in die geheimnisvolle Kühle der Nacht übergeht. Der Duft fängt genau diesen einzigartigen Kontrast ein: die intensive Wärme des Tages vereint sich mit der klaren Frische der Nacht. Ein frisch-holziger Duft  der die Grenzen des Abenteuers neu definiert. Saftige Zitrusnoten und elegantes Patchouli fangen das Geheimnis der Wüste ein. Die Komposition wird durch einen sinnlichen Moschus-Akkord veredelt und hinterlässt eine markante Spur. Der tiefblau lackierte Glasflakon präsentiert das ikonische Saffiano-Muster der Maison. Ein wahres Kunstwerk für ein Eau de Parfum  das die exzellente Handwerkskunst von Montblanc feiert. Eine kraftvolle Komposition  die Freiheit  Ausstrahlung und unendliche Möglichkeiten verkörpert – geschaffen für Männer  die ihren eigenen Weg gehen",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-infinite-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=46344749850&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/5/956805_3386460175609_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    },
+    {
+      "merchant_product_id": "956806",
+      "expected_gtin": null,
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "1b8aa85052aa36b9356b6ab85de64bf44a9219d65711125f589559f70ff1d961",
+      "fields": {
+        "aw_product_id": "46344749849",
+        "merchant_product_id": "956806",
+        "search_price": "30",
+        "last_updated": "2026-10-21 19:31:08",
+        "product_name": "Montblanc Explorer Infinite Shower Gel",
+        "brand_name": "",
+        "description": "Montblanc Explorer Infinite lädt den modernen Abenteurer ein  neue Horizonte zu entdecken – unter dem grenzenlosen Himmel der Wüste  wo die glühende Hitze des Tages langsam in die geheimnisvolle Kühle der Nacht übergeht. Der Duft fängt genau diesen einzigartigen Kontrast ein: die intensive Wärme des Tages vereint sich mit der klaren Frische der Nacht. Ein frisch-holziger Duft  der die Grenzen des Abenteuers neu definiert. Saftige Zitrusnoten und elegantes Patchouli fangen das Geheimnis der Wüste ein. Die Komposition wird durch einen sinnlichen Moschus-Akkord veredelt und hinterlässt eine markante Spur. Der tiefblau lackierte Glasflakon präsentiert das ikonische Saffiano-Muster der Maison. Ein wahres Kunstwerk für ein Eau de Parfum  das die exzellente Handwerkskunst von Montblanc feiert. Eine kraftvolle Komposition  die Freiheit  Ausstrahlung und unendliche Möglichkeiten verkörpert – geschaffen für Männer  die ihren eigenen Weg gehen.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/montblanc-explorer-infinite-shower-gel",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=46344749849&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/5/956806_3386460175616_052.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ],
+      "candidate_public_profile_ids": [
+        "SC-MONTBLANC-EXPLORER-100"
+      ]
+    }
+  ],
+  "activation_allowed": false,
+  "image_publication_allowed": false,
+  "tracking_clicks_executed": 0,
+  "price_verified_at_not_inferred_from_import": true,
+  "scope": [
+    {
+      "product_id": "SC-LV-IMAGINATION-100",
+      "brand": "Louis Vuitton",
+      "name": "Imagination",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+      "brand": "Arabiyat Prestige",
+      "name": "Marwa",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+      "brand": "Arabiyat Prestige",
+      "name": "Marwa Extrait",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 60,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-BUJAIRAMI-HECTIC-100",
+      "brand": "Bujairami",
+      "name": "Hectic",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Aventus",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [
+        "815820",
+        "815822",
+        "824025",
+        "827407",
+        "855950",
+        "855951",
+        "906142"
+      ],
+      "status": "REVIEW_LEADS_ONLY"
+    },
+    {
+      "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Absolu Aventus",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [
+        "906142"
+      ],
+      "status": "REVIEW_LEADS_ONLY"
+    },
+    {
+      "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+      "brand": "Afnan Perfumes",
+      "name": "Supremacy Collector's Edition",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+      "brand": "Maison Asrar",
+      "name": "Vanguard",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-ARMAF-CDNIM-EDP-200",
+      "brand": "Armaf",
+      "name": "Club de Nuit Intense Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 200,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "brand": "Montblanc",
+      "name": "Explorer",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [
+        "100002729",
+        "849413",
+        "849448",
+        "849457",
+        "849463",
+        "849464",
+        "849465",
+        "874371",
+        "874372",
+        "903594",
+        "903598",
+        "903599",
+        "903600",
+        "932753",
+        "935702",
+        "935703",
+        "935704",
+        "935705",
+        "956804",
+        "956805",
+        "956806"
+      ],
+      "status": "REVIEW_LEADS_ONLY"
+    },
+    {
+      "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+      "brand": "Al Haramain",
+      "name": "Détour Noir",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+      "brand": "Orientica",
+      "name": "Royal Bleu",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 80,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+      "brand": "French Avenue",
+      "name": "Liquid Brun",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-BVLGARI-TYGAR-125",
+      "brand": "Bvlgari",
+      "name": "Le Gemme Tygar",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-SOSPIRO-VIBRATO-100",
+      "brand": "Sospiro",
+      "name": "Vibrato",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+      "brand": "Afnan Perfumes",
+      "name": "Turathi Blue",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-REGENT-100",
+      "brand": "Maison Asrar",
+      "name": "Regent",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "brand": "Xerjoff",
+      "name": "Naxos",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [
+        "836129"
+      ],
+      "status": "REVIEW_LEADS_ONLY"
+    },
+    {
+      "product_id": "SC-NUSUK-ATEEQ-100",
+      "brand": "Nusuk",
+      "name": "Ateeq",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-RAYHAAN-ITALIA-100",
+      "brand": "Rayhaan",
+      "name": "Italia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-DIOR-HOMME-INTENSE-100",
+      "brand": "Dior",
+      "name": "Dior Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+      "brand": "Al Wataniah",
+      "name": "Kayaan Classic",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
+      "brand": "Clive Christian",
+      "name": "Jump Up and Kiss Me Hedonistic",
+      "concentration": "Parfum",
+      "volume_ml": 50,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+      "brand": "Chanel",
+      "name": "Bleu de Chanel",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-EDP-100",
+      "brand": "Dior",
+      "name": "Sauvage",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "brand": "Prada",
+      "name": "L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "matched_merchant_skus": [
+        "815680",
+        "815682"
+      ],
+      "status": "REVIEW_LEADS_ONLY"
+    },
+    {
+      "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
+      "brand": "Al Ambra",
+      "name": "Dubai Musk",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 50,
+      "matched_merchant_skus": [],
+      "status": "NO_CURRENT_TOP_FEED_LEAD"
+    }
+  ],
+  "offer_only_existing_originals": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant_product_id": "780879"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant_product_id": "825869"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "856448"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant_product_id": "787670"
+    }
+  ],
+  "source_website_head": "d953d3ad6aff48fe915c298acc40fdd352c94f81",
+  "existing_original_photos_excluded": 10,
+  "no_size_or_gtin_inferred_from_filename": true
+}

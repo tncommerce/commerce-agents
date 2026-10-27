@@ -26,5 +26,6 @@ writeFileSync(new URL('public-fragrances.json',dir), JSON.stringify({products:re
 console.log('Public fragrance projection: third-party community metrics excluded.');
 const approved = [...read('dufynd_approved_feed_image_candidates.json').candidates,...read('dufynd_rights_cleared_image_candidates.json').candidates]
   .filter(c=>c.review_status==='approved' && c.exact_variant_verified===true && c.rights_status==='verified_for_publisher_service')
-  .map(c=>({product_id:c.product_id,url:c.image_url,volume_ml:c.volume_ml,rights_basis_id:c.rights_basis_id}));
+  .map(c=>({product_id:c.product_id,url:c.image_url,volume_ml:c.volume_ml,rights_basis_id:c.rights_basis_id,
+    ...Object.fromEntries(['width','height','image_sha256'].filter(key=>c[key]!==undefined).map(key=>[key,c[key]]))}));
 writeFileSync(new URL('original-photos.json',dir),JSON.stringify(approved,null,2)+'\n');

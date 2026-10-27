@@ -4,6 +4,15 @@ export async function chooseMeasurement(page, choice = "granted") {
   const expected = choice === "granted" ? "granted" : "denied";
   const region = page.locator("[data-measurement-choice]").first();
   await region.waitFor({ state: "attached", timeout: 10_000 });
+  // The server renders "unknown" before reading the saved browser choice.
+  // Wait for either the hydrated choice or the initial choice controls so a
+  // subsequent page does not race a persisted denial and click a removed button.
+  await page.waitForFunction(() => {
+    const region = document.querySelector("[data-measurement-choice]");
+    return region?.getAttribute("data-measurement-choice") !== "unknown" ||
+      [...document.querySelectorAll("button")].some(button =>
+        button.textContent?.trim() === "Nur notwendige Funktionen");
+  });
   const current = await region.getAttribute("data-measurement-choice");
   if (current === expected) return;
   if (current === "granted" && expected === "denied") {

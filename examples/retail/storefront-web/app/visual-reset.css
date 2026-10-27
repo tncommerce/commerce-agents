@@ -1,0 +1,456 @@
+/* DUFYND VISUAL-FIRST / 2026-10-23. Scoped to homepage and editorial surfaces.
+   No product imagery is invented: the featured photo comes from the verified
+   original registry, preserving source integrity and visible attribution. */
+.vr-home {
+  --vr-ink: #151b1e;
+  --vr-deep: #101719;
+  --vr-paper: #f5f1e9;
+  --vr-copper: #d2a780;
+  --vr-muted: #d0c9bf;
+  gap: 32px;
+  color: var(--vr-ink);
+  padding-bottom: 26px;
+}
+.vr-home .vr-hero {
+  overflow: hidden;
+  isolation: isolate;
+  border: 0;
+  border-radius: 2px;
+  background: var(--vr-ink);
+  color: #f8f4ec;
+  box-shadow: 0 28px 65px -50px rgba(13, 20, 21, .72);
+}
+.vr-home .vr-hero .vr-hero-top {
+  padding: 14px clamp(20px, 4vw, 46px);
+  background: #111719;
+  border-bottom: 1px solid rgba(255,255,255,.16);
+  color: #e9ddd0;
+}
+.vr-hero-top .wow-kicker {font-size: 10px; font-weight: 580; letter-spacing: .16em;}
+.vr-hero-top nav {display:flex;gap:clamp(9px,2.3vw,30px);align-items:center;flex-wrap:wrap}
+.vr-hero-top nav a {font-size:12px; min-height:42px; text-decoration:none; color: #f0ede4; border-bottom:1px solid transparent}
+.vr-hero-top nav a:hover,.vr-hero-top nav a:focus-visible {border-color:var(--vr-copper)}
+.vr-home .vr-hero .vr-hero-composition {
+  display: grid;
+  grid-template-columns: minmax(0,1.14fr) minmax(0,.86fr);
+  min-height: 540px;
+  background: linear-gradient(117deg,#1b2426 0%,#11181a 76%);
+}
+.vr-home .vr-hero .vr-hero-copy {
+  position:relative;
+  z-index:1;
+  padding: clamp(28px, 4.4vw, 64px) clamp(24px, 4.1vw, 60px) 38px clamp(24px, 4vw, 54px);
+  align-self:center;
+}
+.vr-hero-eyebrow {margin:0 0 22px!important; font-size:11px!important; font-weight:650; line-height:1.5!important; letter-spacing:.19em; text-transform:uppercase; color:var(--vr-copper)!important}
+.vr-home .vr-hero h1 {
+  margin:0 0 24px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(58px, 6.35vw, 100px);
+  line-height:.91;
+  letter-spacing:-.075em;
+  font-weight:400;
+  max-width:750px;
+}
+.vr-home .vr-hero h1 em {font-family:inherit;font-weight:400;color:#d6a47f;letter-spacing:-.078em}
+.vr-home .vr-hero .vr-hero-intro {
+  font-size:clamp(14px,1.3vw,17px);
+  line-height:1.65;
+  color:#d0d2cb;
+  max-width:515px;
+  margin:0 0 25px;
+}
+.vr-home .vr-hero .vr-hero-search {
+  display:flex;
+  width:100%;
+  max-width:555px;
+  border:1px solid rgba(236,228,212,.46);
+  border-radius:2px;
+  padding:5px;
+  margin:0;
+  background:#f7f2e8;
+  box-shadow:0 14px 28px -20px rgba(0,0,0,.75);
+}
+.vr-home .vr-hero .vr-hero-search input {color:#1c2424; font-size:15px; min-width:0; padding:12px 14px}
+.vr-hero-search input::placeholder {color:#756f67}
+.vr-home .vr-hero .vr-hero-search button {border-radius:0;background:#a46c4d;color:#fff;white-space:nowrap;letter-spacing:.025em;gap:14px}
+.vr-home .vr-hero .vr-hero-search button:hover {background:#795039}
+.vr-home .vr-hero .vr-hero-actions {align-items:center;gap:10px 22px;margin-top:19px}
+.vr-hero-actions a {text-decoration:none!important; min-height:45px; font-size:13px; font-weight:600; color:#f0ebe0}
+.vr-hero-actions a:hover,.vr-hero-actions a:focus-visible{text-decoration:underline!important;text-underline-offset:6px}
+.vr-hero-actions a.dufynd-hero-primary {color:var(--vr-deep)!important;background:#e2c4a3;border:1px solid #e2c4a3;padding:11px 16px;box-shadow:none;display:inline-flex;gap:13px}
+.vr-hero-actions a.dufynd-hero-primary:hover {background:#f0d7b9}
+.vr-hero-aside {display:block;margin-top:19px;font-size:10px;line-height:1.5;letter-spacing:.025em;color:#acb3ae}
+.vr-home .vr-hero .vr-hero-feature {
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  background:#e1d9ce;
+  color:var(--vr-ink);
+  border-left:1px solid #414846;
+}
+.vr-feature-overline {display:flex;justify-content:space-between;gap:8px; padding:18px 24px 8px;font-size:9px;letter-spacing:.15em;color:#5a574f;text-transform:uppercase}
+.vr-feature-profile {display:flex;flex-direction:column;text-decoration:none;color:inherit;outline-offset:-5px;min-height:0;flex:1}
+.vr-feature-photo {height:clamp(225px,22vw,315px);margin:0 19px;position:relative;isolation:isolate;overflow:hidden;border:1px solid #d5c9b7;background:#ddd3c7}
+.vr-feature-visual {display:block;width:100%;height:100%!important;min-height:0}
+.vr-feature-photo .dufynd-product-stage {height:100%!important;min-height:0;background:#e5ded2!important;}
+.vr-feature-photo .dufynd-product-object {inset:7% 8% 6%!important;}
+.vr-feature-photo .dufynd-product-image {max-height:100%;object-fit:contain;}
+.vr-feature-caption {display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:16px 25px 14px;flex:1;min-height:126px}
+.vr-feature-kicker {font-size:10px;letter-spacing:.17em;font-weight:650;text-transform:uppercase;color:#856449}
+.vr-feature-caption strong {font-family:Georgia,"Times New Roman",serif;font-size:clamp(30px,2.9vw,42px);font-weight:400;line-height:1;letter-spacing:-.055em}
+.vr-feature-caption > span:nth-child(3) {font-size:11px;color:#645c51;line-height:1.55}
+.vr-feature-cta {display:flex;align-items:center;justify-content:space-between;gap:22px;margin-top:auto;padding-top:10px;border-bottom:1px solid #6f5144;font-size:12px;font-weight:650;color:#624333}
+.vr-feature-profile:hover .vr-feature-cta {color:#a15730}
+.vr-feature-credit {padding:0 25px 9px;min-height:19px}
+.vr-feature-credit p {font-size:9px;line-height:1.35;color:#716b61}
+.vr-feature-credit a {color:#624333}
+.vr-feature-fallback {display:grid;place-content:center;flex:1;min-height:320px;text-align:center;gap:30px}
+.vr-feature-fallback span {font-family:Georgia,serif;font-size:clamp(145px,20vw,260px);line-height:.72;color:#a58a79}
+.vr-feature-fallback p {font-size:14px;max-width:230px;margin:auto;color:#534f49}
+.vr-home .vr-hero a.vr-feature-atlas {
+  position:relative;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex:none;
+  min-height:48px;
+  margin:0;
+  padding:12px 24px;
+  background:#b6a392;
+  color:#242320;
+  border:0;
+  border-top:1px solid #a49382;
+  border-radius:0;
+  font-size:12px;
+  letter-spacing:.025em;
+  text-decoration:none;
+}
+.vr-feature-atlas:hover {background:#cebca7!important}
+.vr-home .vr-hero .vr-hero-foot {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  padding:15px clamp(20px,4vw,46px);
+  border-top:1px solid rgba(255,255,255,.16);
+  background:#111719;
+  color:#e0dfd7;
+  font-size:11px;
+  letter-spacing:.025em;
+}
+.vr-hero-foot span {white-space:nowrap}
+.vr-hero-foot b {display:inline-block;margin-right:8px;font-size:10px;color:var(--vr-copper);font-weight:700;letter-spacing:.09em}
+/* The first scroll introduces source-bound bottles; the complex note atlas
+   follows, rather than demanding an abstract tool before the user sees perfume. */
+.vr-home .wow-selection {padding:34px clamp(20px,3vw,46px) 25px;background:#e9e4db;border:1px solid #d8d0c4;border-radius:2px}
+.vr-home .wow-section-heading h2 {font-family:Georgia,serif;font-size:clamp(34px,3.8vw,57px);font-weight:400;letter-spacing:-.055em;line-height:1.06}
+.vr-home .wow-selection-photo {border:0;background:#f6f4ef;height:345px}
+.vr-home .wow-selection-item:nth-child(2) {padding-top:46px}
+.vr-home .wow-selection-item:nth-child(2) .wow-selection-photo{height:295px}
+.vr-home .wow-selection-copy {padding:18px 3px 5px}
+.vr-home .wow-selection-copy h3 {font-family:Georgia,serif;font-size:35px;font-weight:400}
+.vr-home .wow-selection-notes {color:#584e44}
+.vr-home .wow-atlas {background:#182224;color:#f4ede2;border-radius:2px;padding:30px clamp(18px,3vw,38px) 22px}
+.vr-home .wow-atlas h2 {font-family:Georgia,serif;font-weight:400}
+.vr-home .wow-atlas select {background:#1f2c2c;border-color:#788481}
+.vr-home .wow-atlas-layer-buttons button {background:#23302e}
+.vr-home .wow-audiences {padding:20px 0}
+.vr-home .wow-audience-index {gap:12px}
+.vr-home .wow-audience-index > a {border:1px solid #cfc6b7;border-radius:1px;background:#ede8de;color:#182224;box-shadow:none}
+.vr-home .wow-audience-index > a:hover {border-color:#8f7562;background:#e1d7c8}
+.vr-home .wow-advisor {border-radius:2px;border:1px solid #d3cabd;background:#eae4d9;box-shadow:none}
+.vr-home .wow-advisor h2 {font-family:Georgia,serif;font-size:clamp(32px,4vw,52px);font-weight:400}
+.vr-home .wow-affiliate-note {border-color:#cfc6b7}
+/* Not all designs support mouse or motion: no scroll hijacking, scroll-triggered
+   motion or auto-playing imagery. Focus and local reduced-motion rules remain. */
+@media(max-width:1050px){
+  .vr-home .vr-hero h1 {font-size:clamp(51px,6.35vw,72px)}
+  .vr-home .vr-hero .vr-hero-composition {min-height:0;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr)}
+  .vr-feature-photo {height:265px}
+  .vr-feature-overline {padding:13px 16px 7px}
+  .vr-feature-caption {padding:13px 18px 10px}
+  .vr-feature-credit {padding-inline:18px}
+}
+@media(max-width:760px){
+  .vr-home {gap:24px}
+  .vr-home .vr-hero .vr-hero-top {padding:8px 18px;gap:7px;align-items:center}
+  .vr-hero-top .wow-kicker {font-size:9px;letter-spacing:.08em}
+  .vr-hero-top nav {gap:7px}
+  .vr-hero-top nav a {font-size:10px;min-height:36px}
+  .vr-hero-top nav a:last-child {display:none}
+  .vr-home .vr-hero .vr-hero-composition {display:block}
+  .vr-home .vr-hero .vr-hero-copy {padding:22px 21px 26px}
+  .vr-hero-eyebrow {font-size:9px!important;letter-spacing:.13em;margin-bottom:15px!important}
+  .vr-home .vr-hero h1 {font-size:clamp(48px,13vw,73px);line-height:.94;letter-spacing:-.068em;margin-bottom:15px}
+  .vr-home .vr-hero .vr-hero-intro {font-size:13px;line-height:1.55;margin-bottom:16px;max-width:480px}
+  .vr-home .vr-hero .vr-hero-search input {font-size:14px;padding:9px}
+  .vr-home .vr-hero .vr-hero-search button {min-height:43px;padding:9px 12px;font-size:12px}
+  .vr-home .vr-hero .vr-hero-actions {margin-top:12px;gap:8px 16px}
+  .vr-hero-actions a {font-size:12px!important;min-height:42px}
+  .vr-hero-actions a.dufynd-hero-primary {padding:9px 12px}
+  .vr-hero-aside {margin-top:10px;font-size:9px}
+  .vr-home .vr-hero .vr-hero-feature {border-left:0;border-top:1px solid #a89a8a;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch}
+  .vr-feature-overline {grid-column:1/-1;padding:10px 16px 7px;font-size:9px}
+  .vr-feature-profile {display:contents}
+  .vr-feature-photo {height:190px;margin:0 0 0 14px}
+  .vr-feature-caption {min-height:0;padding:10px 14px;align-self:stretch}
+  .vr-feature-caption strong {font-size:clamp(24px,6vw,35px)}
+  .vr-feature-caption > span:nth-child(3) {font-size:10px}
+  .vr-feature-cta {font-size:10px;gap:6px}
+  .vr-feature-credit {grid-column:1/-1;padding:7px 16px 10px}
+  .vr-feature-fallback {grid-column:1/-1;min-height:170px}
+  .vr-feature-fallback span {font-size:120px}
+  .vr-home .vr-hero a.vr-feature-atlas {grid-column:1/-1;min-height:45px;font-size:11px;padding:11px 16px}
+  .vr-home .vr-hero .vr-hero-foot {padding:10px 14px;gap:3px;font-size:9px}
+  .vr-hero-foot span {white-space:normal;line-height:1.45}
+  .vr-hero-foot b {display:block;margin:0 0 2px}
+  .vr-home .wow-selection {padding:20px 17px}
+  .vr-home .wow-selection-grid {grid-template-columns:1fr;gap:20px}
+  .vr-home .wow-selection-item:nth-child(2) {padding-top:0}
+  .vr-home .wow-selection-photo,.vr-home .wow-selection-item:nth-child(2) .wow-selection-photo {height:235px}
+  .vr-home .wow-selection-copy h3 {font-size:27px}
+  .vr-home .wow-atlas {padding:20px 15px}
+  .vr-home .wow-audiences {padding:0}
+}
+@media(max-width:390px){
+  .vr-home .vr-hero .vr-hero-top {flex-wrap:wrap}
+  .vr-hero-top nav {width:100%;justify-content:space-between}
+  .vr-home .vr-hero h1 {font-size:clamp(46px,12.6vw,50px)}
+  .vr-home .vr-hero .vr-hero-copy {padding:18px 15px 20px}
+  .vr-home .vr-hero .vr-hero-search {padding:3px}
+  .vr-home .vr-hero .vr-hero-search input {font-size:13px}
+  .vr-feature-photo {height:165px}
+  .vr-feature-caption {padding:6px 12px 9px}
+  .vr-feature-caption strong {font-size:25px}
+  .vr-home .wow-selection-photo,.vr-home .wow-selection-item:nth-child(2) .wow-selection-photo {height:210px}
+}
+
+
+/* Compact genuine mobile perfume discovery: keep the full decision journey
+   without forcing four screenfuls of navigation before the advisor. */
+@media(max-width:639px) {
+  .vr-home .vr-hero .vr-hero-top {min-height:38px;padding:6px 14px;gap:0;}
+  .vr-home .vr-hero-top > .wow-kicker {display:none;}
+  .vr-home .vr-hero-top nav {width:100%;justify-content:space-between;gap:9px;}
+  .vr-home .vr-hero-top nav a {min-height:37px;}
+  .vr-home .vr-hero .vr-hero-copy {padding:18px 16px 17px;}
+  .vr-home .vr-hero h1 {font-size:clamp(43px,12.4vw,51px);margin-bottom:12px;}
+  .vr-home .vr-hero .vr-hero-intro {margin-bottom:12px;line-height:1.45;}
+  .vr-home .vr-hero .vr-hero-actions {margin-top:9px;gap:4px 10px;}
+  .vr-home .vr-hero .vr-hero-actions a {min-height:39px;}
+  .vr-home .vr-hero .vr-hero-aside {margin-top:7px;}
+  .vr-home .wow-selection {padding:15px 15px 16px;}
+  .vr-home .wow-selection-grid {gap:11px;}
+  .vr-home .wow-section-heading {margin-bottom:15px;}
+  .vr-home .wow-selection-link {min-height:190px;}
+  .vr-home .wow-selection-photo,
+  .vr-home .wow-selection-item:nth-child(2) .wow-selection-photo {height:190px;min-height:190px;}
+  .vr-home .wow-selection-copy {padding:10px 11px 8px;}
+  .vr-home .wow-selection-copy h3 {font-size:clamp(21px,5.5vw,25px);margin:5px 0 7px;}
+  .vr-home .wow-selection-copy p {min-height:0;}
+  .vr-home .wow-selection-notes {min-height:0;margin:6px 0;line-height:1.35;}
+  .vr-home .wow-selection-item > p {padding:7px 10px;}
+  .vr-home .wow-text-link {padding:7px 0 2px;}
+  .vr-home .wow-atlas {padding-top:16px;padding-bottom:13px;}
+  .vr-home .wow-atlas-top {padding-bottom:9px;}
+  .vr-home .wow-atlas h2 {margin:12px 0 8px;}
+  .vr-home .wow-atlas-grid {padding-top:9px;}
+  .vr-home .wow-atlas-label {margin-top:7px;}
+  .vr-home .wow-atlas-material {height:140px;margin:0 0 5px;}
+  .vr-home .wow-atlas-instrument {min-height:0;}
+  .vr-home .wow-atlas-notes {min-height:0;}
+  .vr-home .wow-atlas-bottom {padding-top:10px;}
+}
+
+
+/* VISUAL-FIRST phase 2 / public catalogue and product detail only.
+   A neutral editorial surface must stand on its own when original bottle
+   photographs are unavailable. Existing merchant/image rights gates win. */
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"],
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] {
+  --vr-ui-ink: #192326;
+  --vr-ui-copper: #a76c4e;
+  --vr-ui-rule: #d3c9bd;
+  color: var(--vr-ui-ink);
+  background: #f6f3ed;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] > header,
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] > header {
+  background: #f8f6f1;
+  border-color: var(--vr-ui-rule);
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] header a,
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] header a {
+  transition: color 160ms ease,border-color 160ms ease;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-discovery-hero {
+  border-top: 2px solid #ab7b5b;
+  border-bottom: 1px solid #d2c6b6;
+  background: transparent;
+  padding-top: 24px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-discovery-hero h1 {
+  font-family: Georgia,"Times New Roman",serif;
+  font-size: clamp(36px,5.4vw,68px);
+  font-weight: 400;
+  line-height: 1.025;
+  letter-spacing: -.065em;
+  color: #1b292a;
+  text-wrap: balance;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-discovery-hero [data-social-product-entry] {
+  border-radius: 2px;
+  border-color: #3c4a48;
+  background: linear-gradient(118deg,#1a2829 0%,#263536 100%);
+  color: #f5efe5;
+  box-shadow: none;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] [data-social-product-entry] > span {
+  color: #eaded0;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] [data-social-product-entry] strong {
+  color: #f7f2e9;
+  font-family: Georgia,"Times New Roman",serif;
+  font-weight: 400;
+  font-size: clamp(29px,3.1vw,43px);
+  line-height: 1.1;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] [data-social-product-entry]:hover {
+  border-color: #ba8d6b;
+  background: #25383a;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] [data-social-product-entry]:focus-visible,
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] :is(a,button):focus-visible {
+  outline: 2px solid #ae7552;
+  outline-offset: 3px;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card {
+  border-radius: 2px!important;
+  border-color: #d8cec1!important;
+  box-shadow: none!important;
+  background:#fbfaf7;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card-stage {
+  background:#f1ede6;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card-body h2 {
+  font-family: Georgia,"Times New Roman",serif;
+  font-weight:400;
+  letter-spacing:-.055em;
+  line-height:1.12;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card-cta {
+  color:#6f422d;
+  border-color:#d6c8bb;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card-actions {
+  border-color:#d9cfc2;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-photo-pending {
+  border-radius:0;
+  background:transparent;
+}
+.dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-card[data-original-photo="true"] .dufynd-product-image {
+  filter:none!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-product-presentation] {
+  border:1px solid #d9cbbd!important;
+  border-radius:2px!important;
+  box-shadow:none!important;
+  background:#f4eee5;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-identity {
+  background:#f5f0e8;
+  color:#1b2828;
+  border-bottom:1px solid #ddd4c9;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-identity > div:first-child {
+  color:#7c5039;
+  font-size:11px;
+  letter-spacing:.18em;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-identity h1 {
+  color:#1b2828;
+  font-family:Georgia,"Times New Roman",serif;
+  font-weight:400;
+  font-size:clamp(38px,4.9vw,67px);
+  letter-spacing:-.07em;
+  line-height:1.03;
+  overflow-wrap:break-word;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-product-variant dt {
+  color:#776e63;
+  font-size:10px;
+  letter-spacing:.13em;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-product-variant dd {
+  color:#233633;
+  font-size:15px;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-stage-shell {
+  background:#f5f0e8;
+  border-bottom:1px solid #ded5c9;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-hero-copy {
+  background:#f9f6f0;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-hero-copy #dufynd-hero-offer-cta {
+  background:#1c3031!important;
+  color:#fff!important;
+  font-size:13px;
+  font-weight:650;
+  border:1px solid #1c3031;
+  border-radius:2px;
+  box-shadow:none;
+  transform:none!important;
+  min-height:48px;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-hero-copy #dufynd-hero-offer-cta:hover {
+  background:#294748!important;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] [data-dufynd-photo-hold] .dufynd-fragrance-stage-shell {
+  border:0;
+  background:#243c32;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-scent-index {
+  background:#1d3132;
+  color:#faf2e5;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-scent-index-toggle {
+  border-radius:0;
+  border-color:#b69a77;
+}
+.dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-hero .dufynd-fragrance-panel-section {
+  box-shadow:none!important;
+}
+@media (max-width:767px) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-discovery-hero {
+    padding-top:16px;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] .dufynd-catalog-discovery-hero h1 {
+    font-size:clamp(37px,10.3vw,48px);
+    letter-spacing:-.058em;
+  }
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] [data-social-product-entry] strong {
+    font-size:clamp(32px,8vw,43px);
+  }
+  .dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-identity {
+    padding:21px 19px!important;
+  }
+  .dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-identity h1 {
+    font-size:clamp(40px,10.6vw,53px);
+    margin-top:10px;
+  }
+  .dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-hero-copy {
+    padding:19px!important;
+  }
+  .dufynd-detail-page[data-dufynd-visual-reset="editorial"] .dufynd-fragrance-hero-grid {
+    grid-template-columns:minmax(0,1fr);
+  }
+}
+@media (prefers-reduced-motion:reduce) {
+  .dufynd-catalog-page[data-dufynd-visual-reset="editorial"] *,
+  .dufynd-detail-page[data-dufynd-visual-reset="editorial"] * {
+    transition-duration:.01ms!important;
+  }
+}

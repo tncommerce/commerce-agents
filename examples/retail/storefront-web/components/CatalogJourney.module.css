@@ -26,6 +26,10 @@
   .trayBody { grid-template-columns: minmax(0, 1fr) auto; align-items: stretch; }
   .slot { padding-right: 30px; }
 }
+/* Keep the same explicit filter disclosure at every width, so crossing the
+   desktop breakpoint does not push the first fragrance below the viewport. */
 @media (min-width: 768px) {
-  .showResults { display: none; }
+  .searchRow { grid-template-columns: minmax(0, 1fr) 108px; align-items: end; }
+  .searchRow > label { grid-column: 1; }
+  .searchRow > button { grid-column: 2; align-self: end; }
 }

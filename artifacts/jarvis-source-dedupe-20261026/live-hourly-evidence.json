@@ -1,0 +1,62 @@
+{
+  "source": "Supabase read-only SELECT; project bqsdxaagklpkxioaqdqa",
+  "scope": "Existing live hourly audit creation; not a proof of unchanged external event rows over the entire interval",
+  "observations": [
+    {
+      "observed_at": "2026-10-26 08:48:58.027857+00",
+      "planner_definition_md5": "229acd42dc117f9419a750aa3b52f67c",
+      "runtime_publication_false_literal": true,
+      "today_audit_count": 9,
+      "latest_eight": [
+        {
+          "status": "done",
+          "task_id": "bizplan:social-truth:2026102601",
+          "created_at": "2026-10-26T01:00:00.088496+00:00",
+          "worker_state": "done"
+        },
+        {
+          "status": "done",
+          "task_id": "bizplan:social-truth:2026102602",
+          "created_at": "2026-10-26T02:00:00.137682+00:00",
+          "worker_state": "done"
+        },
+        {
+          "status": "done",
+          "task_id": "bizplan:social-truth:2026102603",
+          "created_at": "2026-10-26T03:00:00.127672+00:00",
+          "worker_state": "done"
+        },
+        {
+          "status": "done",
+          "task_id": "bizplan:social-truth:2026102604",
+          "created_at": "2026-10-26T04:00:00.098876+00:00",
+          "worker_state": "done"
+        },
+        {
+          "status": "done",
+          "task_id": "bizplan:social-truth:2026102605",
+          "created_at": "2026-10-26T05:00:00.100001+00:00",
+          "worker_state": "done"
+        },
+        {
+          "status": "done",
+          "task_id": "bizplan:social-truth:2026102606",
+          "created_at": "2026-10-26T06:00:00.135724+00:00",
+          "worker_state": "done"
+        },
+        {
+          "status": "done",
+          "task_id": "bizplan:social-truth:2026102607",
+          "created_at": "2026-10-26T07:00:00.120984+00:00",
+          "worker_state": "done"
+        },
+        {
+          "status": "done",
+          "task_id": "bizplan:social-truth:2026102608",
+          "created_at": "2026-10-26T08:00:00.108825+00:00",
+          "worker_state": "done"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "batch_id": "notino-libre-20261026T104237Z",
+  "offers": [
+    {
+      "offer_id": "notino-ysl-libre-edp-90",
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "VZR11010",
+      "variant_label": "90 ml · Eau de Parfum · nachfüllbarer Flakon",
+      "brand": "Yves Saint Laurent",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "ean": "3614272648425",
+      "price": 130,
+      "shipping_cost": 0,
+      "in_stock": true,
+      "verified_at": "2026-10-26T10:42:37.210Z",
+      "decision": "verified",
+      "source_type": "direct_merchant_review",
+      "source_ref": "repo:artifacts/dufynd-libre-recovery-20261026/source-observation.json",
+      "evidence": {
+        "source_observation": "Connected Chrome direct selected 90 ml Notino page; matching visible VZR11010 and JSON-LD GTIN3614272648425; price130EUR, DHL DE gratis, available; no tracked clickout.",
+        "source_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/",
+        "source_observation_sha256": "33bc4ae6d945a1b74e52bf07c88f6b78eb194361a39b327a9b162631ba857e71",
+        "original_dom_sha256": "8a6fc0e10173ac6f06e1b9b1262ca7704766509082590d01709b0b6b754c3fe9",
+        "jsonld_selected_sku": "YSLLBRW_AEDP10",
+        "presentation": "refillable_bottle_not_refill",
+        "delivery_country": "DE"
+      }
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "status": "ORIGINAL_CAMPAIGN_CONDITIONS_REVIEWED_NO_ACTIVATION",
+  "reviewed_on": "2026-10-26",
+  "source": {
+    "provider": "Gmail read-only connector",
+    "message_id": "1a1694b1e701675c",
+    "sent_at": "2026-10-23T15:04:50Z",
+    "sender": "Notino DE-AT-CH via CJ Affiliate",
+    "subject": "Notino affiliate: Up to 20% discount on selected products | 15% discount on every order - W44 (26.10. - 1.11.2026)",
+    "original_body_read": true,
+    "authentication_results": {"dkim": "pass", "spf": "pass", "dmarc": "pass"}
+  },
+  "campaign_window": {"from": "2026-10-26", "through": "2026-11-01"},
+  "restrictions": {
+    "brand_bidding": "prohibited in any match",
+    "prohibited_brands_for_affiliate_promotion": ["HERMES", "DIOR", "GUERLAIN"]
+  },
+  "candidate": {
+    "product_id": "SC-YSL-LIBRE-EDP-90",
+    "merchant": "notino",
+    "gtin": "3614272648425",
+    "volume_ml": 90,
+    "concentration": "Eau de Parfum",
+    "batch_id": "notino-libre-20261026T104237Z",
+    "batch_sha256": "6820e001e75663dcf689810748588784b6538ef6997e0b3ade00e95ea4637996",
+    "price_eur": 130,
+    "shipping_eur": 0,
+    "coupon_applied": false,
+    "discount_claim_added": false,
+    "listed_brand_restriction_matches": false,
+    "original_exact_product_approval": "examples/retail/data/dufynd_notino_ysl_libre_live_routing_20261001.json",
+    "existing_validation_reused": "validation.json"
+  },
+  "limits": [
+    "Campaign conditions supplement the existing exact-product approval; this newsletter is not new partner or product approval.",
+    "No listed exclusion names Yves Saint Laurent or Libre; that absence does not prove coupon eligibility.",
+    "No campaign coupon, new deeplink, image permission, or product activation is inferred.",
+    "Original source observation, expiry, batch identity and existing 12 validation results are unchanged."
+  ],
+  "production_changed": false,
+  "affiliate_clickouts": 0,
+  "analytics_events": 0
+}
