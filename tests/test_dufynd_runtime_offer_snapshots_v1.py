@@ -150,6 +150,8 @@ def test_no_database_observation_never_republishes_stale_file(monkeypatch, datab
         {"price": -50},
         {"price": "NaN"},
         {"shipping_cost": -1},
+        {"shipping_cost": None},
+        {"in_stock": False},
         {"in_stock": "true"},
         {"currency": "USD"},
     ],
@@ -174,7 +176,7 @@ def test_hold_and_out_of_stock_are_never_eligible(monkeypatch) -> None:
     checked = snapshot(row)
     checked["in_stock"] = False
     out_of_stock = runtime_offer_snapshots.apply_runtime_snapshot(row, checked)
-    assert out_of_stock is not None and out_of_stock["in_stock"] is False
+    assert out_of_stock is None  # No buyable offer can carry stock=false.
     checked["decision"] = "hold"
     assert runtime_offer_snapshots.apply_runtime_snapshot(row, checked) is None
     monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")

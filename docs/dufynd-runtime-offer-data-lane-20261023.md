@@ -1,5 +1,17 @@
 # DUFYND · Datenbetrieb statt PR pro Händlerpreis (DEV / nicht live)
 
+### Käufer-API prüft die gleichen Handelswerte (DEV)
+
+Die Runtime-Entscheidung `apply_runtime_snapshot` akzeptiert eine positive
+Supabase-Zeile nun nur mit **Preis + bekannten DE-Versandkosten + `in_stock=true`**.
+Ein Datenbank-/Transportfehler, ein HOLD, unbekannter Versand oder ein explizit
+nicht verfügbarer Artikel ergeben für Listing **und** Clickout
+`None`/kein Angebot. Damit kann kein unvollständiges Datenbankobjekt die
+strengeren Importer- und SQL-Check-Regeln umgehen. Das gilt nur, falls der
+Runtime-Modus nach einem späteren, eigenständig genehmigten Release
+überhaupt aktiviert wird. Noch keine Produktion umgestellt.
+
+
 ## 27.10.2026 – Positivnachweise an Original-Beobachtungszeit binden (DEV)
 
 Auch ein formal gültiger Batch darf **keine alten Preisdaten neu datieren**.

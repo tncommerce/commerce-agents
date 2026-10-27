@@ -299,14 +299,13 @@ def apply_runtime_snapshot(
         shipping = _safe_amount(snapshot.get("shipping_cost"), allow_zero=True)
     except (TypeError, ValueError, OverflowError):
         return None
-    if price is None:
+    # A buyer-facing "total" requires both parts of the total and a
+    # strictly positive real-stock decision. Do not trust a malformed
+    # database payload even when its source digest and identity match.
+    if price is None or shipping is None or snapshot["in_stock"] is not True:
         return None
 
-    label = (
-        "Versand beim Händler prüfen"
-        if shipping is None
-        else ("Gratis Versand" if shipping == 0 else f"{shipping:.2f} € Versand")
-    )
+    label = "Gratis Versand" if shipping == 0 else f"{shipping:.2f} € Versand"
     # No URLs, network links, SKU names, merchant IDs, claims or price labels
     # from untrusted runtime data are allowed to replace the released contract.
     return canonical | {
