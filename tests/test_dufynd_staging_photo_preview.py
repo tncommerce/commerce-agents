@@ -7,7 +7,6 @@ import json
 from datetime import UTC, datetime, timedelta
 
 import pytest
-
 from scripts.prepare_dufynd_staging_photo_preview import (
     DATA,
     MANIFEST,
