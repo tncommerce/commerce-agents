@@ -13,7 +13,10 @@
     "feed_downloaded_bytes": 12187908,
     "selection_method": "existing Awin sanitized bounded source output plus independent historically mapped GTIN; filename alone does not verify size or photo bytes",
     "source_profile_count": 20,
-    "total_name_sku_leads": 28
+    "total_name_sku_leads": 28,
+    "original_image_byte_receipt_run": 40473278522,
+    "original_image_byte_receipt_job": 122085263334,
+    "original_image_byte_receipt_date": "2026-10-27T08:24:51.743162+00:00"
   },
   "rights": {
     "basis": "awin_top_parfuemerie_feed_materials_20260928",
@@ -55,15 +58,22 @@
       "review_gates": {
         "identity_qualified_for_private_photo_review": true,
         "official_feed_image_source": true,
-        "source_image_bytes_sha256": null,
-        "source_image_download_verified": false,
+        "source_image_bytes_sha256": "e7cf1f550458b8da3d1460b003c2636fb4e020aa6fb262e3063b4bfb71d6dd26",
+        "source_image_download_verified": true,
         "merchant_selected_size_verified_now": false,
         "merchant_current_price_stock_shipping_verified": false,
         "owner_visual_acceptance": false,
         "public_image_allowed": false,
         "new_affiliate_offer_activated": false,
         "new_profile_published": false,
-        "exact_verified_affiliate_link_stored_only": true
+        "exact_verified_affiliate_link_stored_only": true,
+        "byte_count": 86831,
+        "source_png_dimensions": {
+          "width": 270,
+          "height": 600
+        },
+        "source_png_unchanged": true,
+        "source_verified_at_utc": "2026-10-27T08:24:51.743162+00:00"
       }
     },
     {
@@ -98,15 +108,22 @@
       "review_gates": {
         "identity_qualified_for_private_photo_review": true,
         "official_feed_image_source": true,
-        "source_image_bytes_sha256": null,
-        "source_image_download_verified": false,
+        "source_image_bytes_sha256": "30556964681c2fd61f866e2311396da919bf987d35f7dcb56f1175d745dcda36",
+        "source_image_download_verified": true,
         "merchant_selected_size_verified_now": false,
         "merchant_current_price_stock_shipping_verified": false,
         "owner_visual_acceptance": false,
         "public_image_allowed": false,
         "new_affiliate_offer_activated": false,
         "new_profile_published": false,
-        "exact_verified_affiliate_link_stored_only": true
+        "exact_verified_affiliate_link_stored_only": true,
+        "byte_count": 114333,
+        "source_png_dimensions": {
+          "width": 286,
+          "height": 600
+        },
+        "source_png_unchanged": true,
+        "source_verified_at_utc": "2026-10-27T08:24:51.743162+00:00"
       }
     },
     {
@@ -141,15 +158,22 @@
       "review_gates": {
         "identity_qualified_for_private_photo_review": true,
         "official_feed_image_source": true,
-        "source_image_bytes_sha256": null,
-        "source_image_download_verified": false,
+        "source_image_bytes_sha256": "8420a949e6cfe6732790e6b9c4d5bb77742b1003b9facf5815d768154ca0a293",
+        "source_image_download_verified": true,
         "merchant_selected_size_verified_now": false,
         "merchant_current_price_stock_shipping_verified": false,
         "owner_visual_acceptance": false,
         "public_image_allowed": false,
         "new_affiliate_offer_activated": false,
         "new_profile_published": false,
-        "exact_verified_affiliate_link_stored_only": true
+        "exact_verified_affiliate_link_stored_only": true,
+        "byte_count": 169006,
+        "source_png_dimensions": {
+          "width": 260,
+          "height": 600
+        },
+        "source_png_unchanged": true,
+        "source_verified_at_utc": "2026-10-27T08:24:51.743162+00:00"
       }
     },
     {
@@ -184,15 +208,22 @@
       "review_gates": {
         "identity_qualified_for_private_photo_review": true,
         "official_feed_image_source": true,
-        "source_image_bytes_sha256": null,
-        "source_image_download_verified": false,
+        "source_image_bytes_sha256": "deed08f542a4505b2e539455cc421836b14184c4fd71b1129b505d9f71beb3a7",
+        "source_image_download_verified": true,
         "merchant_selected_size_verified_now": false,
         "merchant_current_price_stock_shipping_verified": false,
         "owner_visual_acceptance": false,
         "public_image_allowed": false,
         "new_affiliate_offer_activated": false,
         "new_profile_published": false,
-        "exact_verified_affiliate_link_stored_only": true
+        "exact_verified_affiliate_link_stored_only": true,
+        "byte_count": 297615,
+        "source_png_dimensions": {
+          "width": 454,
+          "height": 600
+        },
+        "source_png_unchanged": true,
+        "source_verified_at_utc": "2026-10-27T08:24:51.743162+00:00"
       }
     }
   ],
@@ -227,6 +258,8 @@
     "media_generation": false,
     "owner_go_scope_not_extended": true,
     "additional_spend_eur": 0,
-    "production_deploy": false
+    "production_deploy": false,
+    "source_pngs_verified": 4,
+    "images_publicly_approved": 0
   }
 }
