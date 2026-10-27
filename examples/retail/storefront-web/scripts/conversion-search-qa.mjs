@@ -25,18 +25,12 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.equal(new URL(page.url()).searchParams.get('src'),'instagram');
       assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion');
       if(outputDir) await page.screenshot({path:`${outputDir}/conversion-search-${width}-catalog.png`,fullPage:true});
-      // The 27 Oct release includes an independently reviewed Libre 90-ml
-      // offer. The old "only Rabanne may display an offer" assertion is stale.
-      const libreOffer = page.locator('a[data-dufynd-catalog-rc1-offer]');
-      assert.equal(await libreOffer.count(), 1,
-        'Exactly one current Libre EDP 90-ml offer shortcut must survive search');
-      const libreTarget = new URL(await libreOffer.getAttribute('href'), baseUrl);
-      assert.equal(libreTarget.pathname, '/duft/yves-saint-laurent-libre');
-      assert.equal(libreTarget.hash, '#angebote');
-      assert.match(await libreOffer.getAttribute('aria-label'), /Libre.*90 ml/i);
-      assert.match(
+      // Only the Rabanne RC1 card has a separate catalog offer shortcut.
+      // Other released offers are accessible through the respective product profile.
+      assert.equal(await page.locator('a[data-dufynd-catalog-rc1-offer]').count(),0);
+      assert.equal(
         (await page.locator('.dufynd-catalog-card-cta').first().innerText()).trim(),
-        /Händlerangebote prüfen/,
+        'Duftprofil entdecken →',
       );
       await page.goto(`${baseUrl}/duft?q=Rabanne%201%20Million&qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
       const verifiedRc1Entry=page.locator('a[data-dufynd-catalog-rc1-offer]');
