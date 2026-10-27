@@ -20,7 +20,8 @@ NOW = datetime(2026, 10, 27, 12, 0, tzinfo=UTC)
 def context():
     offers = json.loads((ROOT / "merchant_offers.json").read_text(encoding="utf-8"))
     top = next(
-        item for item in offers["offers"]
+        item
+        for item in offers["offers"]
         if item["offer_id"] == "top-parfuemerie-rabanne-1-million-edt-100"
     )
     partner = json.loads((ROOT / "merchant_partners.json").read_text(encoding="utf-8"))
@@ -46,9 +47,7 @@ def sample_row():
 
 def scan(tmp_path: Path, rows):
     path = tmp_path / "synthetic-enhanced-feed.jsonl"
-    payload = b"".join(
-        (json.dumps(item, sort_keys=True) + "\n").encode("utf-8") for item in rows
-    )
+    payload = b"".join((json.dumps(item, sort_keys=True) + "\n").encode("utf-8") for item in rows)
     path.write_bytes(payload)
     selected, sha, scanned = read_selected_jsonl(path, {"707368"})
     return selected, sha, scanned
@@ -67,9 +66,14 @@ def receipt(sha):
 def analyze(rows, sha, *, receipt_override=None):
     top, partners, mappings, catalog = context()
     return review_enhanced_candidates(
-        [top], partners, mappings, catalog,
-        selected_rows=rows, publisher_source=receipt_override or receipt(sha),
-        original_digest=sha, now=NOW,
+        [top],
+        partners,
+        mappings,
+        catalog,
+        selected_rows=rows,
+        publisher_source=receipt_override or receipt(sha),
+        original_digest=sha,
+        now=NOW,
     )
 
 
@@ -104,13 +108,20 @@ def test_exact_variant_fields_are_only_review_candidates(tmp_path):
         ({"price": "95.99 USD"}, "EUR_PRICE_MISSING_OR_INVALID"),
         ({"sale_price": "90.00 EUR"}, "PROMOTIONAL_PRICE_NEEDS_APPROVAL"),
         ({"shipping": []}, "DE_SHIPPING_MISSING_OR_AMBIGUOUS"),
-        ({"shipping": [{"country": "DE", "region": "NW", "price": "0.00 EUR"}]},
-         "DE_SHIPPING_REGION_SPECIFIC"),
-        ({"shipping": [{"country": "DE", "price": "5.00 USD"}]},
-         "DE_SHIPPING_PRICE_UNCONFIRMED"),
-        ({"shipping": [{"country": "DE", "price": "0.00 EUR"},
-                       {"country": "DE", "price": "4.99 EUR"}]},
-         "DE_SHIPPING_MISSING_OR_AMBIGUOUS"),
+        (
+            {"shipping": [{"country": "DE", "region": "NW", "price": "0.00 EUR"}]},
+            "DE_SHIPPING_REGION_SPECIFIC",
+        ),
+        ({"shipping": [{"country": "DE", "price": "5.00 USD"}]}, "DE_SHIPPING_PRICE_UNCONFIRMED"),
+        (
+            {
+                "shipping": [
+                    {"country": "DE", "price": "0.00 EUR"},
+                    {"country": "DE", "price": "4.99 EUR"},
+                ]
+            },
+            "DE_SHIPPING_MISSING_OR_AMBIGUOUS",
+        ),
         ({"brand": "Other Brand"}, "BRAND_NEEDS_REVIEW"),
     ],
 )
@@ -155,9 +166,12 @@ def test_source_hash_covers_every_line_not_only_selected_skus(tmp_path):
     other = sample_row() | {"id": "does-not-match-any-canonical"}
     selected, sha, scanned = scan(tmp_path, [sample_row(), other])
     assert scanned == 2
-    assert sha != hashlib.sha256(
-        (json.dumps(sample_row(), sort_keys=True) + "\n").encode("utf-8")
-    ).hexdigest()
+    assert (
+        sha
+        != hashlib.sha256(
+            (json.dumps(sample_row(), sort_keys=True) + "\n").encode("utf-8")
+        ).hexdigest()
+    )
     assert len(selected["707368"]) == 1
     assert analyze(selected, sha)["counts"]["FIELD_COMPLETE_REVIEW_ONLY"] == 1
 
