@@ -70,9 +70,9 @@
   "candidate_products": [
     {
       "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
-      "name": null,
-      "concentration": null,
-      "volume_ml": null,
+      "name": "Lattafa Eclaire",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
       "merchant_product_id": "LTF00869",
       "canonical_offer_id": "notino-lattafa-eclaire-edp-100",
       "original_affiliate_link_in_canonical_data": true,
@@ -82,7 +82,8 @@
       "affiliate_promotion_brand_excluded": false,
       "exact_product_coupon_eligibility_confirmed": false,
       "promotional_discounted_price_verified": false,
-      "state": "HOLD_IDENTITY_OR_PROGRAM"
+      "state": "HOLD_STAGING_PRODUCT_NOT_PUBLIC",
+      "public_profile_available": false
     },
     {
       "product_id": "SC-PDM-DELINA-EDP-75",
@@ -98,7 +99,8 @@
       "affiliate_promotion_brand_excluded": false,
       "exact_product_coupon_eligibility_confirmed": false,
       "promotional_discounted_price_verified": false,
-      "state": "HOLD_EXPIRED_BASE_OFFER"
+      "state": "HOLD_EXPIRED_BASE_OFFER",
+      "public_profile_available": true
     },
     {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
@@ -114,7 +116,8 @@
       "affiliate_promotion_brand_excluded": false,
       "exact_product_coupon_eligibility_confirmed": false,
       "promotional_discounted_price_verified": false,
-      "state": "HOLD_EXPIRED_BASE_OFFER"
+      "state": "HOLD_EXPIRED_BASE_OFFER",
+      "public_profile_available": true
     },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
@@ -130,7 +133,8 @@
       "affiliate_promotion_brand_excluded": false,
       "exact_product_coupon_eligibility_confirmed": false,
       "promotional_discounted_price_verified": false,
-      "state": "REVIEW_ONLY_FRESH_BASE_OFFER"
+      "state": "REVIEW_ONLY_FRESH_BASE_OFFER",
+      "public_profile_available": true
     }
   ],
   "approval": {
