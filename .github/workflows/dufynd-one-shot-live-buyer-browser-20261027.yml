@@ -30,3 +30,4 @@ jobs:
         run: node retail/storefront-web/scripts/dufynd-live-buyer-browser-qa-20261027.mjs
 # Buyer-flow correction: distinct product lists for source photos and Top offer SKUs
 # Third pass: inspect public rendered variant label text on Rabanne
+# Final QA pass: corrected four-field buyer-offer tuple in no-clickout probe
