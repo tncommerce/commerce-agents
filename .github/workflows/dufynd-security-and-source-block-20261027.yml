@@ -1,0 +1,74 @@
+name: DUFYND Security Candidate and Merchant Source Block
+on:
+  push:
+    branches: [dev/dufynd-products-20261026]
+    paths: [.github/workflows/dufynd-security-and-source-block-20261027.yml]
+permissions:
+  contents: read
+jobs:
+  isolated-browser-and-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 833feefcd6e4c525ef83fcd0a3a3f9f9b72629f3
+          path: candidate
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: candidate/examples/package-lock.json
+      - name: Install pinned candidate and existing browser harness
+        id: prepare
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git -C candidate rev-parse HEAD)" = '833feefcd6e4c525ef83fcd0a3a3f9f9b72629f3'
+          node --check scripts/dufynd_qa_source_block_20261027.cjs
+          cd candidate/examples
+          npm ci --no-audit --no-fund
+          npm install --no-save --package-lock=false playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Build exact candidate and verify buyer layout at four widths
+        id: candidate_browser
+        shell: bash
+        env:
+          NEXT_PUBLIC_API_URL: http://127.0.0.1:3019
+          NEXT_PUBLIC_SITE_URL: http://127.0.0.1:3019
+          NEXT_PUBLIC_SITE_INDEXABLE: 'true'
+          NEXT_TELEMETRY_DISABLED: '1'
+        run: |
+          set -euo pipefail
+          (cd candidate/examples && npm run build --workspace acme-retail-storefront-web)
+          node candidate/examples/retail/storefront-web/scripts/serve-static-export.mjs --root candidate/examples/retail/storefront-web/out --port 3019 >/tmp/dufynd-candidate-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:3019/duft/rabanne-1-million >/dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/dufynd_qa_source_block_20261027.cjs security
+      - name: Inspect ten exact merchant variants without checkout or tracking
+        if: always() && steps.prepare.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'JS'
+          const log=console.log;
+          console.log=(message)=>{
+            if(typeof message==='string'&&message.startsWith('MERCHANT_VARIANT_READONLY=')){
+              const obj=JSON.parse(message.slice('MERCHANT_VARIANT_READONLY='.length));
+              for(const row of obj.observations) log('MERCHANT_VARIANT_OBSERVATION='+JSON.stringify(row));
+              obj.observation_count=obj.observations.length;
+              delete obj.observations;
+              log('MERCHANT_VARIANT_SUMMARY='+JSON.stringify(obj));
+            }else log(message);
+          };
+          process.argv[2]='merchant';
+          require('./scripts/dufynd_qa_source_block_20261027.cjs');
+          JS
