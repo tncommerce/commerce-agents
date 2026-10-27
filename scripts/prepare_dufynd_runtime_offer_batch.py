@@ -228,6 +228,149 @@ def prepare_batch(
 
 
 
+
+def restore_direct_merchant_browser_evidence(
+    canonical_rows: list[dict[str, Any]],
+    original_batch: dict[str, Any],
+    *,
+    evidence_dir: Path,
+    now: datetime,
+) -> dict[str, Any]:
+    """Bind one pre-existing browser observation bundle to its exact source bytes.
+
+    This is a read-only, in-memory source attestation. Neither a file digest nor
+    a browser observation proves current stock after its original 72-hour age.
+    Never re-date the observation or manufacture an offer or tracking URL.
+    """
+    if not isinstance(original_batch, dict) or not isinstance(original_batch.get("offers"), list):
+        raise ValueError("invalid_original_batch")
+    items = original_batch["offers"]
+    if not 1 <= len(items) <= 50 or any(not isinstance(x, dict) for x in items):
+        raise ValueError("original_batch_size_or_type_invalid")
+    if not isinstance(canonical_rows, list) or any(not isinstance(x, dict) for x in canonical_rows):
+        raise ValueError("canonical_rows_invalid")
+    ids = [x.get("offer_id") for x in canonical_rows]
+    if any(not isinstance(v, str) for v in ids) or len(set(ids)) != len(ids):
+        raise ValueError("canonical_offer_ids_ambiguous")
+    canonical = {x["offer_id"]: x for x in canonical_rows}
+
+    def checked_json(name: str) -> tuple[dict[str, Any], str]:
+        # Fixed basename only: never read a path supplied by an untrusted row.
+        path = evidence_dir / name
+        payload = path.read_bytes()
+        if len(payload) > 2_000_000:
+            raise ValueError("source_evidence_too_large")
+        checksum = hashlib.sha256(payload).hexdigest()
+        if expected_hashes.get(name) != checksum:
+            raise ValueError("original_source_sha256_mismatch")
+        parsed = json.loads(payload)
+        if not isinstance(parsed, dict):
+            raise ValueError("original_source_shape_invalid")
+        return parsed, checksum
+
+    manifest = json.loads((evidence_dir / "SHA256.json").read_text(encoding="utf-8"))
+    if not isinstance(manifest, dict):
+        raise ValueError("source_hash_manifest_invalid")
+    expected_hashes = manifest
+    browser, browser_hash = checked_json("merchant-browser-observations.json")
+    shipping, shipping_hash = checked_json("shipping-browser-observation.json")
+    observations = browser.get("rows", browser.get("observations"))
+    if not isinstance(observations, list) or len(observations) != len(items):
+        raise ValueError("browser_observation_count_mismatch")
+    if shipping.get("url") != "https://www.topparfuemerie.de/zahlung-versand":
+        raise ValueError("merchant_shipping_source_wrong")
+    _verified_at(shipping.get("checked_at"), now=now)
+    shipping_text = str(shipping.get("main") or "").replace("\u00a0", " ")
+    fee_match = re.search(r"pauschal mit\s+(\d+,\d{2})\s*€", shipping_text)
+    free_match = re.search(r"Ab einem Bestellwert von\s+(\d+,\d{2})\s*€", shipping_text)
+    if not fee_match or not free_match:
+        raise ValueError("merchant_shipping_rule_not_verified")
+    fee = Decimal(fee_match.group(1).replace(",", "."))
+    free_threshold = Decimal(free_match.group(1).replace(",", "."))
+    if fee < 0 or free_threshold <= 0:
+        raise ValueError("merchant_shipping_rule_invalid")
+
+    packet = json.loads(json.dumps(original_batch, allow_nan=False))
+    seen: set[str] = set()
+    for item, row, updated in zip(items, observations, packet["offers"]):
+        offer_id = item.get("offer_id")
+        if not isinstance(offer_id, str) or offer_id in seen or offer_id not in canonical:
+            raise ValueError("unreleased_or_duplicate_browser_offer")
+        seen.add(offer_id)
+        original = canonical[offer_id]
+        if (
+            item.get("decision") != "verified"
+            or item.get("source_type") != "direct_merchant_review"
+            or original.get("merchant_id") != "top-parfuemerie"
+            or item.get("merchant_product_id") != original.get("merchant_product_id")
+            or row.get("url") != original.get("product_url")
+            or not isinstance(row.get("checked_at"), str)
+            or not isinstance(item.get("verified_at"), str)
+        ):
+            raise ValueError("merchant_browser_identity_or_source_mismatch")
+        stamp = _verified_at(item["verified_at"], now=now)
+        actual = _verified_at(row["checked_at"], now=now)
+        if stamp != actual:
+            raise ValueError("original_observation_timestamp_not_equal")
+        proof = item.get("evidence")
+        if (
+            not isinstance(proof, dict)
+            or proof.get("browser_observation_sha256") != browser_hash
+            or proof.get("shipping_observation_sha256") != shipping_hash
+        ):
+            raise ValueError("source_digest_not_bound_to_offer")
+        if item.get("in_stock") is not True:
+            raise ValueError("source_stock_not_confirmed")
+        price = _safe_amount(item.get("price"))
+        shipping_cost = _safe_amount(item.get("shipping_cost"), allow_zero=True)
+        if price is None or shipping_cost is None:
+            raise ValueError("source_total_price_not_confirmed")
+        wanted_shipping = Decimal("0") if Decimal(str(price)) >= free_threshold else fee
+        if Decimal(str(shipping_cost)) != wanted_shipping:
+            raise ValueError("original_shipping_total_mismatch")
+
+        if "main" in row:
+            # The older six-source package is faithful page text rather than
+            # normalized option JSON. Match the SELECTED SKU's price section,
+            # not a different size, promotional UVP or per-litre price.
+            main = row.get("main")
+            marker = f"Artikelnummer: {item['merchant_product_id']}"
+            if not isinstance(main, str) or main.count(marker) != 1:
+                raise ValueError("merchant_selected_sku_not_visible")
+            part = main.split(marker, 1)[1].split("In den Warenkorb", 1)[0][:320]
+            ml = item.get("volume_ml")
+            if type(ml) is not int or f"Menge: {ml} ml" not in part:
+                raise ValueError("merchant_selected_volume_not_visible")
+            amount = Decimal(str(price))
+            variants = {f"{amount:.2f}".replace(".", ",") + " €"}
+            if amount == amount.to_integral_value():
+                variants.add(f"{int(amount)},- €")
+            if not any(needle in part for needle in variants):
+                raise ValueError("merchant_selected_sku_price_not_visible")
+            if row.get("buyVisible") is not True or row.get("buyEnabled") is not True:
+                raise ValueError("merchant_buy_button_not_enabled")
+            if not ("Sofort versandfertig" in part or "Lieferzeit" in part):
+                raise ValueError("merchant_selected_variant_availability_missing")
+        else:
+            if (
+                row.get("product_id") != item.get("product_id")
+                or row.get("merchant_product_id") != item.get("merchant_product_id")
+                or row.get("volume_ml") != item.get("volume_ml")
+                or row.get("concentration") != item.get("concentration")
+                or row.get("in_stock") is not True
+                or row.get("purchase_button_visible") is not True
+                or row.get("purchase_button_enabled") is not True
+                or row.get("price") != price
+                or row.get("total_price") != price + shipping_cost
+                or row.get("selected_option") != f"{item['volume_ml']} ml"
+            ):
+                raise ValueError("merchant_structured_option_does_not_match")
+        updated["evidence"]["source_observed_at"] = row["checked_at"]
+        updated["evidence"]["source_evidence_kind"] = "selected_variant_page"
+    return packet
+
+
+
 def triage_batch(
     canonical_rows: list[dict[str, Any]],
     evidence: dict[str, Any],
@@ -452,17 +595,25 @@ def main() -> int:
     parser.add_argument("--owner-approval", default="")
     parser.add_argument("--triage", action="store_true",
                         help="Print per-offer gate results without importing anything.")
+    parser.add_argument("--merchant-browser-evidence-dir", type=Path,
+                        help="Recheck local original SHA-256 browser and DE shipping receipts.")
     args = parser.parse_args()
 
     raw = json.loads(args.evidence.read_text(encoding="utf-8"))
     catalog = json.loads(args.canonical.read_text(encoding="utf-8"))["offers"]
+    observed_at = datetime.now(UTC)
+    if args.merchant_browser_evidence_dir is not None:
+        raw = restore_direct_merchant_browser_evidence(
+            catalog, raw,
+            evidence_dir=args.merchant_browser_evidence_dir, now=observed_at,
+        )
     if args.triage:
         if args.apply or args.owner_approval:
             parser.error("--triage cannot be combined with --apply or owner approval")
-        report = triage_batch(catalog, raw, now=datetime.now(UTC))
+        report = triage_batch(catalog, raw, now=observed_at)
         print(json.dumps(report, ensure_ascii=False))
         return 0
-    prepared = prepare_batch(catalog, raw, now=datetime.now(UTC))
+    prepared = prepare_batch(catalog, raw, now=observed_at)
     if args.apply:
         try:
             apply_batch(

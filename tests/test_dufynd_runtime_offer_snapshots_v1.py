@@ -9,7 +9,12 @@ from threading import Event, Lock, Thread
 
 import httpx
 import pytest
-from scripts.prepare_dufynd_runtime_offer_batch import batch_digest, prepare_batch, triage_batch
+from scripts.prepare_dufynd_runtime_offer_batch import (
+    batch_digest,
+    prepare_batch,
+    restore_direct_merchant_browser_evidence,
+    triage_batch,
+)
 
 from retail.api import purchase_freshness, runtime_offer_snapshots
 from retail.api.merchant_offers import MerchantOfferStore, offer_clickout_target
@@ -497,6 +502,70 @@ def test_bulk_hold_does_not_need_false_positive_price_observation() -> None:
     assert rows[0]["decision"] == "hold"
     assert rows[0]["price"] is None
     assert rows[0]["shipping_cost"] is None
+
+
+
+
+@pytest.mark.parametrize(
+    ("bundle", "count"),
+    [
+        ("dufynd-top-six-offers-20261026", 6),
+        ("dufynd-top-wave2-offers-20261026", 4),
+    ],
+)
+def test_original_merchant_bundle_sha_and_observation_times_rehydrate_exactly(
+    bundle: str,
+    count: int,
+) -> None:
+    folder = Path("artifacts") / bundle
+    source = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    now = datetime(2026, 10, 27, 12, tzinfo=UTC)
+    recovered = restore_direct_merchant_browser_evidence(
+        canonical_rows, source, evidence_dir=folder, now=now,
+    )
+    assert len(recovered["offers"]) == count
+    assert source["offers"] != recovered["offers"]
+    for original, checked in zip(source["offers"], recovered["offers"]):
+        assert checked["verified_at"] == original["verified_at"]
+        assert checked["price"] == original["price"]
+        assert checked["shipping_cost"] == original["shipping_cost"]
+        assert checked["evidence"]["source_observed_at"] == original["verified_at"]
+        assert checked["evidence"]["source_evidence_kind"] == "selected_variant_page"
+    prepared = prepare_batch(canonical_rows, recovered, now=now)
+    assert len(prepared) == count
+    assert all(row["decision"] == "verified" for row in prepared)
+
+
+def test_original_browser_witness_rejects_old_retimed_and_changed_source(
+    tmp_path: Path,
+) -> None:
+    folder = Path("artifacts/dufynd-top-six-offers-20261026")
+    source = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    now = datetime(2026, 10, 27, 12, tzinfo=UTC)
+    for name in ("SHA256.json", "merchant-browser-observations.json",
+                 "shipping-browser-observation.json"):
+        (tmp_path / name).write_bytes((folder / name).read_bytes())
+
+    source["offers"][0]["verified_at"] = now.isoformat()
+    with pytest.raises(ValueError, match="original_observation_timestamp_not_equal"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows, source, evidence_dir=tmp_path, now=now,
+        )
+    source = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    original_bytes = (tmp_path / "merchant-browser-observations.json").read_bytes()
+    (tmp_path / "merchant-browser-observations.json").write_bytes(original_bytes + b" ")
+    with pytest.raises(ValueError, match="original_source_sha256_mismatch"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows, source, evidence_dir=tmp_path, now=now,
+        )
+    (tmp_path / "merchant-browser-observations.json").write_bytes(original_bytes)
+    with pytest.raises(ValueError, match="expired_or_future_source"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows, source, evidence_dir=tmp_path,
+            now=datetime(2026, 10, 31, 12, tzinfo=UTC),
+        )
 
 
 

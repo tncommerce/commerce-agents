@@ -1,5 +1,28 @@
 # DUFYND · Datenbetrieb statt PR pro Händlerpreis (DEV / nicht live)
 
+## 27.10.2026 – vorhandene Original-Browser-Batches wiederverwendbar prüfen (DEV)
+
+Der neue optionale CLI-Modus
+`--merchant-browser-evidence-dir artifacts/dufynd-top-six-offers-20261026`
+(bzw. `dufynd-top-wave2-offers-20261026`) liest **nur** die drei
+lokalen SHA-256-archivierten Quelldateien. Das Manifest muss mit deren
+unveränderten Bytes übereinstimmen; pro Angebot müssen Quelle, geprüfter
+Händlerlink, Händler-SKU, ausgewählte ml-Variante, Preis, positiver
+Kaufbutton, Lageranzeige und die **ursprüngliche** `checked_at`-Zeit
+zum kanonischen Angebot passen. Der originale Deutschlandversand wird
+aus der archivierten Händlerbedingung gemeinsam für den Batch geprüft.
+Die Funktion ergänzt den Belegtyp/Zeitstempel **nur im Speicher**,
+überschreibt keine historische Quelldatei und verlängert keine Preise.
+
+Für beide Pakete (6 + 4) sind eigene reale Archiv-Fixture-Tests und
+SHA-/Zeitänderungs-Negativfälle vorbereitet; kein GitHub-Testlauf auf
+dem neuen HEAD ist hiermit behauptet. Browser-Beobachtungen enthalten
+keine Echtzeit-Verfügbarkeit für einen späteren Tag, deshalb sperrt der
+72h-Quellstempel den Batch nach Ablauf. Ursprüngliche Repo-Quellen
+werden nicht automatisch wiederveröffentlicht, und `--apply` bleibt
+an die exakte zusätzliche Owner-/Datenbankfreigabe gebunden.
+
+
 ### Käufer-API prüft die gleichen Handelswerte (DEV)
 
 Die Runtime-Entscheidung `apply_runtime_snapshot` akzeptiert eine positive
