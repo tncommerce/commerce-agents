@@ -42,16 +42,25 @@ jobs:
           node --check scripts/dufynd_qa_source_block_20261027.cjs
           node --check scripts/dufynd_top_browser_observer_20261027.cjs
           (cd candidate/examples && npm ci --no-audit --no-fund)
-          npm install --prefix /tmp/dufynd-browser-harness --no-package-lock --no-audit --no-fund playwright@1.55.0
-          node /tmp/dufynd-browser-harness/node_modules/playwright/cli.js install --with-deps chromium
-          git -C candidate diff --exit-code -- examples/package.json examples/package-lock.json examples/retail/storefront-web/package.json
           node - <<'JS'
-          const assert=require('node:assert/strict'),{createRequire}=require('node:module'),path=require('node:path');
-          const req=createRequire(path.resolve('candidate/examples/retail/storefront-web/package.json'));
-          const versions=Object.fromEntries(['next','sharp','source-map-js'].map(p=>[p,req(p+'/package.json').version]));
+          const assert=require('node:assert/strict'),{createRequire}=require('node:module'),path=require('node:path'),fs=require('node:fs');
+          const root=path.resolve('candidate');
+          const req=createRequire(path.join(root,'examples/retail/storefront-web/package.json'));
+          function version(name){
+            let dir=path.dirname(req.resolve(name));
+            for(let i=0;i<8&&dir.startsWith(root+path.sep);i++,dir=path.dirname(dir)){
+              const file=path.join(dir,'package.json');
+              if(fs.existsSync(file)){const p=JSON.parse(fs.readFileSync(file,'utf8'));if(p.name===name)return p.version;}
+            }
+            throw Error('Installed version not located: '+name);
+          }
+          const versions=Object.fromEntries(['next','sharp','source-map-js'].map(p=>[p,version(p)]));
           assert.deepEqual(versions,{next:'16.4.3',sharp:'0.35.5','source-map-js':'1.2.2'});
           console.log('EXACT_SECURITY_MODULE_VERSIONS='+JSON.stringify(versions));
           JS
+          npm install --prefix /tmp/dufynd-browser-harness --no-package-lock --no-audit --no-fund playwright@1.55.0
+          node /tmp/dufynd-browser-harness/node_modules/playwright/cli.js install --with-deps chromium
+          git -C candidate diff --exit-code -- examples/package.json examples/package-lock.json examples/retail/storefront-web/package.json
       - name: Build exact locked candidate and verify buyer layout at four widths
         id: candidate_browser
         shell: bash
