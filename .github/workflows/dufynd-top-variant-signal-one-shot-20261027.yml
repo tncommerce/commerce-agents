@@ -104,6 +104,41 @@ jobs:
                                                   'currency':str(o.get('priceCurrency',''))[:10],
                                                   'availability':avail})
                   result['jsonld_product_offers']=product_json[:3]
+                  price_configs=[]
+                  for ty,script in capture.scripts:
+                      if 'optionPrices' not in script:continue
+                      try:structured=json.loads(script)
+                      except (ValueError,TypeError):continue
+                      found=[]
+                      def scan(value,depth=0):
+                          if depth>14 or len(found)>12:return
+                          if isinstance(value,dict):
+                              if isinstance(value.get('optionPrices'),dict):
+                                  found.append(value['optionPrices'])
+                              for sub in list(value.values())[:100]:
+                                  scan(sub,depth+1)
+                          elif isinstance(value,list):
+                              for sub in value[:100]:
+                                  scan(sub,depth+1)
+                      scan(structured)
+                      for entries in found:
+                          exact=entries.get(sku)
+                          final=None
+                          if isinstance(exact,dict):
+                              price=exact.get('finalPrice')
+                              if isinstance(price,dict) and isinstance(price.get('amount'),(int,float)):
+                                  final=price['amount']
+                          price_configs.append({
+                              'config_id_count':len(entries),
+                              'exact_merchant_sku_present':sku in entries,
+                              'exact_sku_final_price_hint':final,
+                              'first_numeric_keys':sorted(str(x) for x in entries)[:12]})
+                  result['parsed_magento_option_price_configs']=price_configs[:5]
+                  result['script_json_parseable_option_price_nodes']=len(price_configs)
+                  result['structured_price_proof_possible']=any(
+                      p['exact_merchant_sku_present'] and p['exact_sku_final_price_hint'] is not None
+                      for p in price_configs
+                  )
                   # Read-only hint only. A literal SKU in a multi-size product
                   # page never independently confirms current selected variant.
                   result['status']='SOURCE_PARSED_REVIEW_ONLY_NO_BUYER_PRICE_CERTIFICATION'
@@ -114,4 +149,4 @@ jobs:
                       result['http_status']=err.code
               out(result)
           PY
-# One bounded source probe, intentionally no affiliate redirects or customer session
+# Extended one-time structured variant config read, no affiliate redirects or shopper sessions
