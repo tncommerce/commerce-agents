@@ -4,6 +4,17 @@ import json
 from pathlib import Path
 
 DATA_DIR = Path("examples/retail/data")
+PUBLIC_ROOT = Path("examples/retail/storefront-web/public")
+# These prepared social assets retain their original channel-specific use.
+# The new storefront feed-photo permission does not authorize replacing them
+# with retailer photographs in existing social/launch packs.
+RETAINED_PREPARED_ASSETS = {
+    "SC-PDM-LAYTON-125": "/products/pilot/pdm-layton-editorial.webp",
+    "SC-PDM-ALTHAIR-125": "/products/pilot/pdm-althair-editorial.webp",
+    "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100": "/products/pilot/bois-imperial-editorial.webp",
+    "SC-ARMANI-SWY-INTENSELY-100": "/products/armani-swy-intensely-100-cutout-production.webp",
+    "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+}
 PACK_SCRIPT_PAIRS = (
     (
         "scentai_launch_production_pack_01.json",
@@ -37,6 +48,7 @@ def test_launch_production_packs_match_scripts_and_product_assets() -> None:
     product_by_id = {row["product_id"]: row for row in products["products"]}
 
     all_content_ids: list[str] = []
+    retained_product_ids: set[str] = set()
 
     for pack_name, script_name in PACK_SCRIPT_PAIRS:
         pack = load_json(DATA_DIR / pack_name)
@@ -58,8 +70,27 @@ def test_launch_production_packs_match_scripts_and_product_assets() -> None:
 
             for asset in creative["required_product_assets"]:
                 product = product_by_id[asset["product_id"]]
-                assert asset["image_url"] == product["image_url"]
                 assert asset["image_url"].startswith("/products/")
+                assert (PUBLIC_ROOT / asset["image_url"].removeprefix("/")).is_file()
+                if asset["image_url"] != product["image_url"]:
+                    assert asset["image_url"] == RETAINED_PREPARED_ASSETS[asset["product_id"]]
+                    retained_product_ids.add(asset["product_id"])
+                    matches = [
+                        visual
+                        for visual in product["visuals"]
+                        if visual["url"] == asset["image_url"]
+                    ]
+                    assert len(matches) == 1
+                    visual = matches[0]
+                    assert visual["variant"] == f"{product['volume_ml']}ml"
+                    if asset["product_id"] == "SC-ARMANI-SWY-INTENSELY-100":
+                        assert visual["provenance"] == "dufynd_generated"
+                        assert visual["role"] == "cutout"
+                        assert visual["fidelity_status"] == "verified"
+                    else:
+                        assert visual["provenance"] == "legacy_catalog"
+                        assert visual["role"] == "editorial"
+                        assert visual["fidelity_status"] == "editorial_only"
 
             assert creative["production_status"] in {
                 "asset_ready",
@@ -68,6 +99,7 @@ def test_launch_production_packs_match_scripts_and_product_assets() -> None:
 
     assert len(all_content_ids) == 15
     assert len(all_content_ids) == len(set(all_content_ids))
+    assert retained_product_ids == set(RETAINED_PREPARED_ASSETS)
 
 
 def test_production_packs_keep_relationship_labels_explicit() -> None:

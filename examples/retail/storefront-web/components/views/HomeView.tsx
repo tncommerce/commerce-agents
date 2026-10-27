@@ -62,10 +62,10 @@ export default function HomeView({ shopperName: _shopperName, sessionSettled }: 
     },
     { women: 0, men: 0, unisex: 0 },
   );
-  return <div className="wow-home wow-polish mx-auto w-full">
+  return <div className="wow-home wow-polish vr-home mx-auto w-full">
     <AtelierHero />
-    <div id="duft-atlas"><ScentAtlas /></div>
     <AtelierSelection />
+    <div id="duft-atlas"><ScentAtlas /></div>
     <section className="wow-audiences" data-dufynd-home-audience-stage aria-labelledby="dufynd-audience-discovery-heading">
       <div className="wow-section-heading"><div><p className="wow-kicker">03 / Deine Duftwelt</p><h2 id="dufynd-audience-discovery-heading">Wo zieht es dich hin?</h2></div></div>
       <div className="wow-audience-index">{AUDIENCES.map(({ key, label, world }, i) => <AcquisitionInternalLink key={key} href={`/duft?zielgruppe=${key}`} data-dufynd-home-audience-card data-dufynd-home-world={world}>

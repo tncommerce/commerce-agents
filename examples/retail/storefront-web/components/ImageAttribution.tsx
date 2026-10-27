@@ -11,6 +11,16 @@ export default function ImageAttribution({
   const licenseName = String(visual?.license_name || "").trim();
   const licenseUrl = String(visual?.license_url || "").trim();
 
+  const merchantSource = visual?.provenance === "merchant_feed" &&
+    visual.source_merchant_id === "top-parfuemerie" &&
+    visual.source_page_url?.startsWith("https://www.topparfuemerie.de/");
+  if (merchantSource) {
+    if (compact) return null;
+    return (
+      <p data-original-photo-source="top-parfuemerie" className="text-[10px] leading-4 text-(--ink-soft)">Bild: <a href={visual.source_page_url!} target="_blank" rel="nofollow noopener noreferrer" className="font-medium text-(--accent-ink) hover:underline">top Parfümerie · Originalaufnahme</a></p>
+    );
+  }
+
   if (!attribution || !licenseName) return null;
 
   if (compact) {

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "updated_at": "2026-09-30",
+  "updated_at": "2026-10-26",
   "purpose": "Machine-readable DUFYND product visual fidelity queue. `items` contains active blocking reviews; `approved_product_truth` records human-approved DUFYND-generated assets promoted after fidelity review.",
   "rules": [
     "P0 items in `items` must not be promoted to verified primary product depictions until resolved.",
@@ -71,7 +71,14 @@
       "provenance": "dufynd_generated",
       "fidelity_status": "verified",
       "variant": "100ml",
-      "evidence_url": "https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html"
+      "evidence_url": "https://www.armanibeauty.de/dufte/herrenduft/stronger-with-you/stronger-with-you-intensely-eau-de-parfum/3614272225718.html",
+      "storefront_primary_replacement": {
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+        "provenance": "merchant_feed",
+        "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "approval_basis": "explicit_user_visual_approval_2026-10-26",
+        "scope": "dufynd_storefront_primary_only"
+      }
     },
     {
       "product_id": "SC-PRADA-LHOMME-100",

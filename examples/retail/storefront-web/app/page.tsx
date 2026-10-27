@@ -29,16 +29,8 @@ const ASSISTANT = "DUFYND Advisor";
 
 function Wordmark() {
   return (
-    <span className="flex items-center gap-2.5 pr-1">
-      <img
-        src="/icon.svg"
-        alt=""
-        aria-hidden
-        width={30}
-        height={30}
-        className="h-[30px] w-[30px] rounded-lg"
-      />
-      <span className="text-[17px] font-bold tracking-[-0.02em] text-(--ink)">DUFYND</span>
+    <span className="flex items-center pr-1">
+      <span className="text-[24px] font-bold tracking-[-0.065em] text-[#30252d]">DUFYND</span>
     </span>
   );
 }

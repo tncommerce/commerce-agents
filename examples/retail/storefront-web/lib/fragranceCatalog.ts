@@ -55,6 +55,8 @@ export interface FragranceVisualAsset {
   license_name?: string | null;
   license_url?: string | null;
   attribution_text?: string | null;
+  source_page_url?: string | null;
+  source_merchant_id?: string | null;
   share_alike_required?: boolean | null;
 }
 

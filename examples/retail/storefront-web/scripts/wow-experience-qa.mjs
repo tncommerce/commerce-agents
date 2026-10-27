@@ -2,6 +2,20 @@ import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 
+// The editorial atlas is deliberately stationary in both motion preferences.
+// Test the actual note display, including descendants, instead of requiring a
+// decorative SVG. Interaction and source-truth checks below remain unchanged.
+async function assertStationaryAtlas(atlas, mode) {
+  const core = atlas.locator('.wow-atlas-core');
+  assert.equal(await core.count(), 1, `${mode}: one selected-note composition`);
+  const styles = await core.evaluate(el => [el, ...el.querySelectorAll('*')].map(node => {
+    const css = getComputedStyle(node);
+    return { transition: css.transitionDuration, animation: css.animationName, transform: css.transform };
+  }));
+  assert.ok(styles.every(css => css.transition.split(',').every(value => parseFloat(value) === 0) && css.animation === 'none' && css.transform === 'none'), `${mode}: selected-note composition remains stationary`);
+  assert.equal(await atlas.locator('.wow-atlas-material svg, .wow-atlas-material canvas, .wow-atlas-material img').count(), 0, 'note composition uses source text, without fabricated imagery');
+}
+
 // CI-only, localhost/static export. Every API response is a fixture: no live sessions,
 // no merchant navigation, no analytics delivery, no advisor/model calls.
 // Page load + explicit DOM, client interaction and offer-state assertions are our
@@ -36,6 +50,32 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
         if (name === 'home') {
           await page.locator('.wow-search input').waitFor({state:'visible'});
           await page.locator('[data-scent-atlas] select').waitFor({state:'visible'});
+        }
+        if(name==='catalog') {
+          const editorial=page.locator('[data-dufynd-directory-original]');
+          assert.equal(await editorial.count(),1,'catalog firstfold shows one exact licensed original editorial profile');
+          const previewLink=editorial.locator('a.dufynd-directory-feature-link');
+          assert.equal(await previewLink.count(),1,'editorial photo remains a native accessible product link');
+          assert.match(String(await previewLink.getAttribute('href')),/\/duft\/.*libre/);
+          assert.equal(await page.locator('[data-social-product-entry]').count(),1,'separate Rabanne social product card remains available');
+          const sourceImage=editorial.locator('img').first();
+          await sourceImage.evaluate(image=>image.decode());
+          assert.ok(await sourceImage.evaluate(image=>image.naturalWidth>0),'original Libre EDP photo must decode before editorial publication');
+          const mediaLabel=editorial.locator('.dufynd-directory-original-tag');
+          assert.equal(await mediaLabel.count(),1,'exact approved editorial photo shows its original-image identity');
+          assert.match(await mediaLabel.innerText(),/Originalaufnahme/);
+          // Not all approved affiliate feed assets require/source a visible
+          // attribution paragraph. Never invent a license or assume one exists.
+          const credits=editorial.locator('p');
+          if(await credits.count()) {
+            assert.match(await credits.last().innerText(),/Bild:/);
+          }
+          const hero=page.locator('.dufynd-catalog-discovery-hero');
+          const bounds=await hero.boundingBox();
+          assert.ok(bounds && bounds.height<=350,'the photographic catalog introduction must not displace firstfold search');
+          const imageBounds=await sourceImage.boundingBox();
+          assert.ok(imageBounds && imageBounds.x>=-1 && imageBounds.x+imageBounds.width<=width+1,
+            'actual original product photo stays inside the viewport');
         }
         if(name==='lancome') {
           assert.match(await page.locator('h1').innerText(),/La Vie est Belle/);
@@ -78,8 +118,8 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
             await link.focus(); // Existing link contract refreshes attribution on native focus/pointerdown.
             assert.equal(new URL(await link.getAttribute('href'),baseUrl).searchParams.get('cmp'),'wow22_fixture');
           }
-          const transition=await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration);
-          assert.equal(transition,'0s','reduced motion removes atlas transitions');
+          await assertStationaryAtlas(atlas, 'reduced motion');
+          assert.equal(await atlas.locator('.wow-atlas-core strong').innerText(), 'Leder', 'selected documented note is reflected in the typographic composition');
           await atlas.scrollIntoViewIfNeeded();
           await page.screenshot({path:`${outputDir}/wow22-atlas-${width}-interaction.png`});
           await atlas.screenshot({path:`${outputDir}/polish23-atlas-${width}-complete.png`});
@@ -209,9 +249,11 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
     await context.route('**/api/**',r=>r.fulfill({json:{session_id:'wow22-motion-fixture',products:[],partners:[],ok:true}}));
     const p=await context.newPage();await p.goto(baseUrl,{waitUntil:'load'});await chooseMeasurement(p,'denied');
     const atlas=p.locator('[data-scent-atlas]');
-    assert.notEqual(await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration),'0s');
+    await assertStationaryAtlas(atlas, 'normal motion');
     await atlas.locator('select').selectOption('1');
     await atlas.locator('.wow-atlas-notes button').first().click();
+    assert.equal(await atlas.locator('.wow-atlas-core strong').innerText(), await atlas.locator('.wow-atlas-notes button').first().innerText(), 'normal-motion choice updates the displayed documented note');
+    await assertStationaryAtlas(atlas, 'normal motion after note change');
     await p.screenshot({path:`${outputDir}/wow22-atlas-390-motion.png`});
     results.push({normalMotion:true});
   } finally {await context.close();}
