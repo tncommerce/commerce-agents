@@ -7,5 +7,5 @@
   "affiliate_clickouts": 0,
   "approval_scope": "api_merchant_offers_only",
   "triggered_after_api_live": true,
-  "source_diagnostic_revision": "field-specific-audit-2"
+  "source_diagnostic_revision": "client-affiliate-flag-schema-corrected-3"
 }
