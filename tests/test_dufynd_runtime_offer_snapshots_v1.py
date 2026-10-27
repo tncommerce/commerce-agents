@@ -9,7 +9,7 @@ from threading import Event, Lock, Thread
 
 import httpx
 import pytest
-from scripts.prepare_dufynd_runtime_offer_batch import batch_digest, prepare_batch
+from scripts.prepare_dufynd_runtime_offer_batch import batch_digest, prepare_batch, triage_batch
 
 from retail.api import purchase_freshness, runtime_offer_snapshots
 from retail.api.merchant_offers import MerchantOfferStore, offer_clickout_target
@@ -379,6 +379,62 @@ def test_verified_batch_cannot_hide_unchecked_delivery_with_unknown_shipping() -
     packet["offers"][0].pop("shipping_cost")
     with pytest.raises(ValueError, match="verified_total_shipping_missing"):
         prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+
+
+def test_fifty_offer_triage_envelope_and_exception_only_review() -> None:
+    row = canonical()
+    packet = evidence(row)
+    # Positive exact source plus a well-formed but unapproved offer identifier.
+    phantom = dict(packet["offers"][0])
+    phantom["offer_id"] = "review-only-unreleased-offer"
+    phantom["price"] = 1
+    packet["offers"].append(phantom)
+    report = triage_batch([row], packet, now=datetime.now(UTC))
+    assert report["status"] == "REVIEW_ONLY_NO_IMPORT_OR_ACTIVATION"
+    assert report["offer_count"] == 2
+    assert report["counts"] == {
+        "COMPLETE_EVIDENCE_REVIEW_ONLY": 1,
+        "HOLD_REVIEW_ONLY": 0,
+        "BLOCKED_SOURCE_EVIDENCE": 1,
+    }
+    assert report["items"][0]["offer_id"] == row["offer_id"]
+    assert report["items"][1]["reason"] == "unknown_or_unreleased_offer"
+    assert report["database_writes"] == 0
+    assert report["affiliate_clickouts"] == 0
+    assert report["public_offer_activation"] is False
+    # No URLs, tracked links, old prices or proof material in the concise review.
+    serialized = json.dumps(report)
+    assert "affiliate_url" not in serialized
+    assert "source_observation" not in serialized
+    assert "119.0" not in serialized
+
+    packet["offers"] = [dict(phantom, offer_id=f"review-unknown-{n}") for n in range(51)]
+    with pytest.raises(ValueError, match="batch_size_out_of_bounds"):
+        triage_batch([row], packet, now=datetime.now(UTC))
+    packet["offers"] = [packet["offers"][0]] * 2
+    with pytest.raises(ValueError, match="duplicate_offer_in_batch"):
+        triage_batch([row], packet, now=datetime.now(UTC))
+
+
+def test_triage_distinguishes_missing_shipping_from_source_hold_without_writes() -> None:
+    row = canonical()
+    packet = evidence(row)
+    item = packet["offers"][0]
+    item.pop("shipping_cost")
+    invalid = triage_batch([row], packet, now=datetime.now(UTC))
+    assert invalid["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 1
+    assert invalid["items"][0]["reason"] == "verified_total_shipping_missing"
+    for field in ("price", "in_stock"):
+        item.pop(field)
+    item["decision"] = "hold"
+    item["hold_reason"] = "shipping_unverified"
+    held = triage_batch([row], packet, now=datetime.now(UTC),
+                        partners_payload={"partners": []})
+    assert held["counts"]["HOLD_REVIEW_ONLY"] == 1
+    assert held["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 0
+    assert held["all_source_evidence_approved"] is False
 
 
 def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> None:

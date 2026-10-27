@@ -185,6 +185,103 @@ def prepare_batch(
     return selected
 
 
+
+def triage_batch(
+    canonical_rows: list[dict[str, Any]],
+    evidence: dict[str, Any],
+    *,
+    now: datetime,
+    partners_payload: dict[str, Any] | None = None,
+    mappings_payload: dict[str, Any] | None = None,
+    catalog_payload: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Read-only, exception-first review for up to 50 independent offer sources.
+
+    This never partially applies a batch: even structurally valid rows remain
+    review-only until the whole exact digest is separately owner-approved.
+    Source observations, merchant URLs and monetary figures are never echoed.
+    """
+    if not isinstance(evidence, dict) or evidence.get("schema_version") != 1:
+        raise ValueError("unsupported_batch_schema")
+    batch_id = evidence.get("batch_id")
+    if not isinstance(batch_id, str) or not re.fullmatch(r"[A-Za-z0-9._:-]{8,120}", batch_id):
+        raise ValueError("invalid_batch_id")
+    items = evidence.get("offers")
+    if not isinstance(items, list) or not 1 <= len(items) <= 50:
+        raise ValueError("batch_size_out_of_bounds")
+    if any(not isinstance(item, dict) for item in items):
+        raise ValueError("invalid_offer_record")
+    offer_ids = [item.get("offer_id") for item in items]
+    if any(not isinstance(offer_id, str) or
+           re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
+           for offer_id in offer_ids):
+        raise ValueError("invalid_offer_id")
+    if len(set(offer_ids)) != len(offer_ids):
+        raise ValueError("duplicate_offer_in_batch")
+
+    if partners_payload is None:
+        partners_payload = json.loads(PARTNERS.read_text(encoding="utf-8"))
+    if mappings_payload is None:
+        mappings_payload = json.loads(MAPPINGS.read_text(encoding="utf-8"))
+    if catalog_payload is None:
+        catalog_payload = json.loads(CATALOG.read_text(encoding="utf-8"))
+
+    results: list[dict[str, str]] = []
+    for item in items:
+        try:
+            inspected = prepare_batch(
+                canonical_rows, {**evidence, "offers": [item]},
+                now=now,
+                partners_payload=partners_payload,
+                mappings_payload=mappings_payload,
+                catalog_payload=catalog_payload,
+            )[0]
+        except (ValueError, TypeError, KeyError) as exc:
+            # These errors are stable machine-readable gate codes. Never echo
+            # arbitrary source/URL text or merchant-provided exception details.
+            candidate = str(exc)
+            blocker = (
+                candidate
+                if re.fullmatch(r"[a-z][a-z0-9_]{2,100}", candidate)
+                else "unverified_or_malformed_source"
+            )
+            results.append({
+                "offer_id": item["offer_id"],
+                "status": "BLOCKED_SOURCE_EVIDENCE",
+                "reason": blocker,
+            })
+            continue
+        results.append({
+            "offer_id": inspected["offer_id"],
+            "status": (
+                "HOLD_REVIEW_ONLY" if inspected["decision"] == "hold"
+                else "COMPLETE_EVIDENCE_REVIEW_ONLY"
+            ),
+            "reason": "separate_batch_approval_and_release_required",
+        })
+
+    counts = {
+        code: sum(row["status"] == code for row in results)
+        for code in (
+            "COMPLETE_EVIDENCE_REVIEW_ONLY",
+            "HOLD_REVIEW_ONLY",
+            "BLOCKED_SOURCE_EVIDENCE",
+        )
+    }
+    return {
+        "schema_version": 1,
+        "batch_id": batch_id,
+        "status": "REVIEW_ONLY_NO_IMPORT_OR_ACTIVATION",
+        "offer_count": len(results),
+        "counts": counts,
+        "items": results,
+        "database_writes": 0,
+        "affiliate_clickouts": 0,
+        "public_offer_activation": False,
+        "all_source_evidence_approved": False,
+    }
+
+
 def batch_digest(prepared: list[dict[str, Any]], *, batch_id: str) -> str:
     """Content-address the exact evidence-backed rows, not merely a reusable ID."""
     payload = json.dumps(
@@ -311,10 +408,18 @@ def main() -> int:
     parser.add_argument("--canonical", type=Path, default=CANONICAL)
     parser.add_argument("--apply", action="store_true")
     parser.add_argument("--owner-approval", default="")
+    parser.add_argument("--triage", action="store_true",
+                        help="Print per-offer gate results without importing anything.")
     args = parser.parse_args()
 
     raw = json.loads(args.evidence.read_text(encoding="utf-8"))
     catalog = json.loads(args.canonical.read_text(encoding="utf-8"))["offers"]
+    if args.triage:
+        if args.apply or args.owner_approval:
+            parser.error("--triage cannot be combined with --apply or owner approval")
+        report = triage_batch(catalog, raw, now=datetime.now(UTC))
+        print(json.dumps(report, ensure_ascii=False))
+        return 0
     prepared = prepare_batch(catalog, raw, now=datetime.now(UTC))
     if args.apply:
         try:

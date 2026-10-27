@@ -1,5 +1,44 @@
 # DUFYND · Datenbetrieb statt PR pro Händlerpreis (DEV / nicht live)
 
+## 27.10.2026 – Sammelprüfung und wahrheitsgemäße HOLD-Sperren (DEV / nicht live)
+
+**Ziel:** Eine Quelle für mehrere Händlerangebote prüfen, statt für jeden Duft
+einen eigenen Git-Release oder einen künstlich verlängerten Preissnapshot zu erzeugen.
+
+- \`scripts/prepare_dufynd_runtime_offer_batch.py --evidence <batch.json> --triage\`
+  erzeugt für **1–50 eindeutige Angebots-IDs** einen einzigen lokalen,
+  nicht schreibenden Bericht: \`COMPLETE_EVIDENCE_REVIEW_ONLY\`,
+  \`HOLD_REVIEW_ONLY\` oder \`BLOCKED_SOURCE_EVIDENCE\` mit festem
+  Fehlercode. Die Auswertung druckt weder Händler-/Affiliate-URLs noch
+  alte Preise, Quelltexte oder Geheimnisse. **Auch vollständig plausible
+  Kandidaten werden dadurch nicht aktiviert.**
+- Ein \`verified\`-Datensatz benötigt eine aktuell unabhängig belegte exakte
+  Variante, verifizierte offizielle Affiliate-Route, **positiven Bestand,
+  Preis und bestätigten DE-Versand**. Ein neuer Feed-Import-Zeitstempel oder
+  ein altes Preissignal allein erfüllt das nicht.
+- Ein \`hold\`-Datensatz trägt dagegen **keinen Preis, keinen Versandwert
+  und keinerlei Behauptung zum Lagerbestand**. Ein expliziter Sperrgrund
+  wie \`shipping_unverified\`, \`stock_unverified\` oder
+  \`variant_ambiguous\` ist erforderlich und verändert den
+  SHA-256-gebundenen Batch-Inhalt. Dies ist eine Quellenentscheidung,
+  keine neue positive Händlerfreigabe.
+- Die vorbereitete **noch nicht angewandte** Supabase-Migration erzwingt
+  die Unterscheidung zusätzlich durch einen SQL-CHECK. Bestehende
+  identitätsgebundene Affiliate-URLs, Produkt-IDs und die 72h-Gates
+  bleiben unberührt. Ohne \`DUFYND_RUNTIME_OFFER_SNAPSHOTS=enabled\`
+  ändert sich die Live-Kaufstrecke nicht.
+- Für den 26.10. existieren bereits zwei originale Top-Parfümerie-Batches
+  mit **6 + 4** Angebotssätzen. Deren Prüfuhrzeit darf am 27./29.10. nicht
+  durch dieses Tool hochgesetzt werden. Sobald ein gesamter Batch später
+  vollständig verifiziert ist, bleibt die separate exakte
+  \`batch_id:batch_sha256\`-Freigabe Voraussetzung für
+  \`--apply\`. Keine Teilaktivierung anhand des Triages.
+- Zusätzliche Pytest- und echte PostgreSQL-Fälle sind in den bestehenden
+  Testdateien vorbereitet. **Kein neuer CI-Erfolg und keine Live-SQL-
+  Migration in diesem DEV-Schritt behauptet.**
+
+
+
 Stand: 23.10.2026. Die ersten produktiven Preisquellen bleiben **unverändert**.
 Dieses Paket ist eine vorbereitete einmalige Umstellung; es ist **kein** bereits
 aktivierter Notino-Feed oder eine Freigabe zur Veröffentlichung.
