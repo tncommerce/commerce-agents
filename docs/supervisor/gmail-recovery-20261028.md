@@ -2,8 +2,9 @@
 
 ## Lokaler Owner-Helfer: einmalige Gmail-Neuverknüpfung
 
-Der vorhandene Broker benötigt zunächst einen privaten authentifizierten Start;
-erst dessen Antwort enthält den kurz gültigen Google-Link. Dafür steht jetzt
+Die Neuverknüpfung setzt einen verifizierten laufenden Broker voraus. Dieser
+benötigt zunächst einen privaten authentifizierten Start; erst dessen Antwort
+enthält den kurz gültigen Google-Link. Dafür steht jetzt
 `scripts/dufynd_gmail_owner_reauthorize.py` bereit. Der Helfer verwendet nur die
 Python-Standardbibliothek und läuft auf dem **eigenen lokalen Desktop**. Er führt
 keine Google-Freigabe aus und wartet auf keine Callback-Daten. Ein Broker-Deployment,
@@ -11,18 +12,35 @@ PR #802, neue Cloud-Ressourcen oder neue IAM-Rechte sind dafür nicht erforderli
 
 ### Vorbereitung im vorhandenen privaten Zugang
 
-1. Den bereits bestehenden privaten Dienst im Projekt
-   `dufynd-private-broker-01`, Region `europe-west3`, Service
-   `dufynd-private-observer` ansehen. Aus seiner vorhandenen Konfiguration nur
-   **`BROKER_ORIGIN`** und **`GOOGLE_CLIENT_ID`** ablesen. Diese beiden Werte sind
-   keine geheimen Schlüssel. Keine neue URL ableiten und keinen Dienst anlegen.
-   Der Helfer akzeptiert ausschließlich den vorhandenen HTTPS-Cloud-Run-Origin
-   dieser Service-Namensfamilie, ohne Pfad, Port, Query oder Fragment.
-2. Den bestehenden Owner-Key im eigenen privaten Passwortmanager bereithalten.
+1. Im GitHub-Repository `tncommerce/commerce-agents` unter **Settings → Secrets
+   and variables → Actions → Variables** den tatsächlichen Wert von
+   **`DUFYND_PRIVATE_BROKER_ORIGIN`** ablesen. Der vorhandene Observer-Workflow
+   verwendet genau diese nicht geheime Repository-Variable. Eine eingetragene URL
+   allein belegt noch keinen laufenden Dienst. Keine URL aus einer Vorlage oder
+   einem Projektnamen ableiten; konkrete Originwerte nicht in diese öffentliche
+   Anleitung übernehmen.
+2. In der Google Cloud Console das Google-Konto mit dem tatsächlichen
+   Betreiberzugang verwenden. Eine vorgeschaltete Anmeldung oder
+   Mehrfaktor-Authentifizierung übernimmt ausschließlich der Owner auf der
+   offiziellen Google-Seite. Passwörter, Sicherheitscodes, Wiederherstellungscodes
+   und Freigaben am eigenen Gerät bleiben beim Owner. Erst nach abgeschlossener
+   Anmeldung mit der Konfigurationsprüfung fortfahren.
+3. Die Zuordnung anhand von **Projekt-ID, Projektnummer und laufendem
+   Cloud-Run-Dienst** prüfen; dessen tatsächliche URL muss mit dem abgelesenen
+   Origin übereinstimmen. Gleiche Anzeigenamen belegen keine identischen Projekte.
+   Projekt- oder Dienstnamen aus Deployment-Skripten sind keine Live-Nachweise.
+   Bei leerer Dienstliste oder ungeklärter Zuordnung keinen neuen Dienst anlegen
+   oder ins leere Projekt deployen. Zuerst den tatsächlichen Betreiberzugang
+   klären. Erst am verifizierten Dienst aus der produktiven Revision ausschließlich
+   **`BROKER_ORIGIN`** und **`GOOGLE_CLIENT_ID`** ablesen und den Origin erneut
+   abgleichen. Diese beiden Werte sind keine geheimen Schlüssel. Der Helfer
+   akzeptiert ausschließlich einen HTTPS-Cloud-Run-Origin mit Host-Präfix
+   `dufynd-private-observer-` und Endung `.run.app`, ohne Pfad, Port, Query oder Fragment.
+4. Den bestehenden Owner-Key im eigenen privaten Passwortmanager bereithalten.
    Er gehört **nicht** in einen Befehl, eine Umgebungsvariable, eine Datei, einen
    Screenshot oder den Chat. Der Helfer liest ihn ausschließlich verdeckt im
    lokalen Terminal. Er liest selbst keine Secret-Manager-Werte.
-3. Die geprüfte Skriptversion auf dem eigenen Rechner verwenden. Python 3.11 oder
+5. Die geprüfte Skriptversion auf dem eigenen Rechner verwenden. Python 3.11 oder
    neuer und ein lokaler grafischer Browser reichen aus; kein `pip install` nötig.
    Nicht in GitHub Actions, einer aufgezeichneten Remote-Sitzung oder einer
    browserlosen Cloud Shell ausführen. Der Deployment-Helfer
