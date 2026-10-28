@@ -1,5 +1,26 @@
 # Gmail recovery: one owner renewal, then a new complete observer run
 
+## Stoppsignal: Google kann die Identität nicht bestätigen
+
+Lehnt Google die persönliche Identitätsprüfung auch auf einem bereits vertrauten,
+angemeldeten Gerät ab, wird die Wiederherstellung pausiert. Weitere Login- oder
+OAuth-Starts, Kontowechsel und neue Geräteversuche sind dann kein Arbeitsauftrag.
+Der lokale Owner-Helfer führt ebenfalls zur normalen Google-Freigabe und ist kein
+belegter alternativer Weg durch diese Sperre. Keine Passwörter oder
+Wiederherstellungsnummern vorsorglich ändern und keine neuen Konten, Dienste oder
+Berechtigungen als Ersatz anlegen. Einen festen Freigabetermin nicht behaupten;
+maßgeblich ist die kontospezifische Rückmeldung von Google.
+
+Die Pause mit Ursache und fehlendem Erfolgsnachweis im bestehenden Masterstatus
+festhalten. Erst fortsetzen, wenn der Owner wieder erfolgreichen Zugang meldet
+oder einen konkreten anderen, zulässigen Wiederherstellungsweg beauftragt. Der
+widerrufene Gmail-Grant bleibt bis zur neuen tatsächlichen Freigabe als blockiert
+markiert. Unabhängige technische Arbeit und die öffentliche API-Erreichbarkeits-
+prüfung können weiterlaufen; sie belegen keinen Gmail-Erfolg und keine vollständige
+Read-/Ingest-/ACK-/Finalize-Kette.
+
+Offizielle Hinweise: [Google: Identität vor einer sensiblen Aktion bestätigen](https://support.google.com/accounts/answer/7162782?hl=de).
+
 ## Lokaler Owner-Helfer: einmalige Gmail-Neuverknüpfung
 
 Die Neuverknüpfung setzt einen verifizierten laufenden Broker voraus. Dieser
