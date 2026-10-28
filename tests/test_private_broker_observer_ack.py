@@ -79,6 +79,7 @@ def configure_oidc(monkeypatch) -> None:
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://oidc.example/token")
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "request-token")
     monkeypatch.setenv("GITHUB_RUN_ID", "123456789")
+    monkeypatch.setenv("GITHUB_RUN_ATTEMPT", "1")
     monkeypatch.setenv("GITHUB_SHA", "a" * 40)
 
 
@@ -111,6 +112,7 @@ def test_acknowledges_fixed_plan_then_verifies_idempotency(monkeypatch, tmp_path
             plan,
             expected_run_id="123456789",
             expected_sha="a" * 40,
+            expected_run_attempt="1",
         )
     ):
         first_url, first_kwargs = client.post_calls[index]
@@ -237,6 +239,7 @@ def test_write_receipt_is_provenance_bound_and_bounded(tmp_path: Path) -> None:
         summary,
         expected_run_id="123456789",
         expected_sha="a" * 40,
+        expected_run_attempt="1",
     )
 
     payload = json.loads(receipt.read_text(encoding="utf-8"))
@@ -263,6 +266,7 @@ def test_write_receipt_rejects_foreign_run(tmp_path: Path) -> None:
             },
             expected_run_id="999999999",
             expected_sha="a" * 40,
+            expected_run_attempt="1",
         )
 
     assert not receipt.exists()
