@@ -49,14 +49,17 @@ def db():
                   last_snapshot jsonb,etag text,page_token text,request_id bigint,
                   request_started_at timestamptz,request_kind text,pending_cursor text,
                   pending_page_token text);
-                UPDATE public.dufynd_external_observers SET enabled=false;
+                -- Disabled legacy observers can still have pending responses;
+                -- isolate those identities from this fixture's net namespace.
+                UPDATE public.dufynd_external_observers
+                  SET enabled=false,request_id=null,request_started_at=null;
                 DELETE FROM public.dufynd_master_status WHERE key='ops.public_api_health_v1';
                 CREATE SCHEMA net;
                 CREATE TABLE net.http_request_queue(
                   id bigserial primary key,url text,headers jsonb,timeout_milliseconds int);
                 CREATE TABLE net._http_response(
                   id bigint primary key,status_code int,content_type text,content text,
-                  created timestamptz,timed_out boolean,error_msg text);
+                  created timestamptz,headers jsonb,timed_out boolean,error_msg text);
                 CREATE FUNCTION net.http_get(url text,headers jsonb,timeout_milliseconds int)
                 RETURNS bigint LANGUAGE sql AS $stub$
                   INSERT INTO net.http_request_queue(url,headers,timeout_milliseconds)
@@ -108,6 +111,7 @@ def respond(
     db.execute("DELETE FROM net.http_request_queue WHERE id=%s", (request_id,))
     db.execute(
         """INSERT INTO net._http_response
+        (id,status_code,content_type,content,created,timed_out,error_msg)
         VALUES(%s,%s,%s,%s,clock_timestamp()-make_interval(secs=>%s),%s,%s)""",
         (request_id, status, content_type, body, age_seconds, timed_out, error),
     )
