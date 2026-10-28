@@ -12,6 +12,9 @@ DSN = os.getenv("DUFYND_TEST_DATABASE_URL")
 pytestmark = pytest.mark.skipif(not DSN, reason="dedicated disposable PostgreSQL required")
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION = ROOT / "supabase/migrations/20261028130335_dufynd_public_api_health_monitor.sql"
+PENDING_GRACE_MIGRATION = (
+    ROOT / "supabase/migrations/20261028134501_dufynd_public_api_pending_grace.sql"
+)
 KEY = "ops.public_api_health_v1"
 URL = "https://scentai-api-kxhe.onrender.com/api/health"
 
@@ -67,6 +70,7 @@ def db():
                 $stub$;
             """)
             connection.execute(MIGRATION.read_text())
+            connection.execute(PENDING_GRACE_MIGRATION.read_text())
             yield connection
         finally:
             connection.rollback()
@@ -166,6 +170,56 @@ def test_one_pending_identity_and_no_backlog_when_worker_is_unavailable(db):
         assert stored(db)["request_id"] == request_id
     assert db.execute("SELECT count(*) FROM net.http_request_queue").fetchone()[0] == 1
     assert read(db)["last_success_at"] is None
+
+
+@pytest.mark.parametrize("age_seconds", [90, 120])
+def test_pending_reader_allows_consumer_cadence_without_claiming_http_success(db, age_seconds):
+    enable(db)
+    poll(db)
+    set_old_request(db, age_seconds)
+    request_id = respond(db, age_seconds=age_seconds - 1)
+    # Reproduce the real rollout: a valid response is already in pg_net, but
+    # the scheduled consumer has not yet projected it into monitor state.
+    db.execute(MIGRATION.read_text())
+    previous = read(db)
+    assert previous["status"] == "unavailable"
+    assert previous["last_error"] == "request_overdue"
+    before = stored(db)
+    before_acl = db.execute(
+        "SELECT proacl FROM pg_proc WHERE oid='public.read_dufynd_public_api_health_v1()'::regprocedure"
+    ).fetchone()[0]
+    db.execute(PENDING_GRACE_MIGRATION.read_text())
+    result = read(db)
+    assert result["status"] == "pending" and result["healthy"] is False
+    assert result["last_success_at"] is None
+    assert stored(db) == before
+    assert (
+        db.execute(
+            "SELECT proacl FROM pg_proc WHERE oid='public.read_dufynd_public_api_health_v1()'::regprocedure"
+        ).fetchone()[0]
+        == before_acl
+    )
+    accepted = poll(db)
+    assert accepted["healthy"] is True
+    assert (
+        db.execute(
+            """SELECT (value->>'last_success_at')::timestamptz=r.created
+        FROM public.dufynd_master_status s CROSS JOIN net._http_response r
+        WHERE s.key=%s AND r.id=%s""",
+            (KEY, request_id),
+        ).fetchone()[0]
+        is True
+    )
+
+
+def test_pending_reader_still_reports_overdue_after_grace_without_consumer(db):
+    enable(db)
+    poll(db)
+    set_old_request(db, 181)
+    result = read(db)
+    assert result["status"] == "unavailable" and result["healthy"] is False
+    assert result["last_error"] == "request_overdue"
+    assert result["last_success_at"] is None
 
 
 def test_only_actual_typed_health_response_sets_success_time(db):
@@ -311,8 +365,8 @@ def test_reader_expires_success_when_no_cron_tick_runs(db):
     poll(db)
     db.execute(
         """UPDATE public.dufynd_master_status SET value=value||jsonb_build_object(
-      'last_success_at',clock_timestamp()-interval '601 seconds',
-      'valid_until',clock_timestamp()-interval '1 second') WHERE key=%s""",
+      'last_success_at',now()-interval '601 seconds',
+      'valid_until',now()-interval '1 second') WHERE key=%s""",
         (KEY,),
     )
     assert stored(db)["status"] == "healthy"
@@ -407,4 +461,5 @@ def test_reapplying_migration_preserves_monitor_state(db):
     poll(db)
     before = stored(db)
     db.execute(MIGRATION.read_text())
+    db.execute(PENDING_GRACE_MIGRATION.read_text())
     assert stored(db) == before
