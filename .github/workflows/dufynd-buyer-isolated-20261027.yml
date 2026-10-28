@@ -1,4 +1,5 @@
 name: DUFYND buyer catalog and mobile test - isolated
+# Verify PR823 original-photo metadata and independent desktop actions
 on:
   push:
     branches: ["qa/dufynd-buyer-20261027"]
