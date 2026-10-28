@@ -53,7 +53,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
         const rect=node=>{const b=node.getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height,right:b.right,centerY:b.y+b.height/2};};
         const card=link.closest('article');
         const actions=card?.querySelector('.dufynd-catalog-card-actions');
-        return {button:rect(link),label:rect(label),arrow:rect(arrow),actions:actions?rect(actions):null,caption:label.textContent?.trim()};
+        return {button:rect(link),label:rect(label),arrow:rect(arrow),actions:actions?rect(actions):null,card:card?rect(card):null,caption:label.textContent?.trim()};
       });
       assert.ok(rc1Layout,'Exact RC1 must have a meaningful label and separate arrow');
       assert.equal(rc1Layout.caption,'Händlerangebote prüfen');
@@ -62,10 +62,11 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
         `${width}: CTA arrow must share the text line (not wrap below it)`);
       assert.ok(rc1Layout.arrow.x>rc1Layout.label.x+rc1Layout.label.w,
         `${width}: arrow must be placed after the text`);
-      if(width>=1024) assert.ok(rc1Layout.actions &&
-        rc1Layout.actions.x>=rc1Layout.button.x-2 &&
-        rc1Layout.actions.right<=rc1Layout.button.right+2,
-        'Desktop archive action buttons must share the RC1 right-hand column');
+      if(width>=1024) assert.ok(rc1Layout.actions && rc1Layout.card &&
+        rc1Layout.actions.x>=rc1Layout.card.x-2 &&
+        rc1Layout.actions.right<=rc1Layout.card.right+2 &&
+        rc1Layout.actions.y>=rc1Layout.button.y+rc1Layout.button.h-2,
+        'Desktop save/compare actions must stay inside the card and below its offer CTA');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,
         'RC1 catalog CTA must not add horizontal overflow');
       const rc1Card=page.locator('.dufynd-catalog-card').filter({has:verifiedRc1Entry});
