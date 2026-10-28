@@ -1,10 +1,116 @@
 # Gmail recovery: one owner renewal, then a new complete observer run
 
-Evidence date: 28 October 2026. This change is prepared locally on production
-commit `89aae8925e606caa33f8f7dafa3edbeafab32c3c`. It does not perform OAuth,
-read a credential, modify activation, deploy a broker, or create a scheduler.
+## Lokaler Owner-Helfer: einmalige Gmail-Neuverknüpfung
 
-## Live delta and the scope of PR #802
+Der vorhandene Broker benötigt zunächst einen privaten authentifizierten Start;
+erst dessen Antwort enthält den kurz gültigen Google-Link. Dafür steht jetzt
+`scripts/dufynd_gmail_owner_reauthorize.py` bereit. Der Helfer verwendet nur die
+Python-Standardbibliothek und läuft auf dem **eigenen lokalen Desktop**. Er führt
+keine Google-Freigabe aus und wartet auf keine Callback-Daten. Ein Broker-Deployment,
+PR #802, neue Cloud-Ressourcen oder neue IAM-Rechte sind dafür nicht erforderlich.
+
+### Vorbereitung im vorhandenen privaten Zugang
+
+1. Den bereits bestehenden privaten Dienst im Projekt
+   `dufynd-private-broker-01`, Region `europe-west3`, Service
+   `dufynd-private-observer` ansehen. Aus seiner vorhandenen Konfiguration nur
+   **`BROKER_ORIGIN`** und **`GOOGLE_CLIENT_ID`** ablesen. Diese beiden Werte sind
+   keine geheimen Schlüssel. Keine neue URL ableiten und keinen Dienst anlegen.
+   Der Helfer akzeptiert ausschließlich den vorhandenen HTTPS-Cloud-Run-Origin
+   dieser Service-Namensfamilie, ohne Pfad, Port, Query oder Fragment.
+2. Den bestehenden Owner-Key im eigenen privaten Passwortmanager bereithalten.
+   Er gehört **nicht** in einen Befehl, eine Umgebungsvariable, eine Datei, einen
+   Screenshot oder den Chat. Der Helfer liest ihn ausschließlich verdeckt im
+   lokalen Terminal. Er liest selbst keine Secret-Manager-Werte.
+3. Die geprüfte Skriptversion auf dem eigenen Rechner verwenden. Python 3.11 oder
+   neuer und ein lokaler grafischer Browser reichen aus; kein `pip install` nötig.
+   Nicht in GitHub Actions, einer aufgezeichneten Remote-Sitzung oder einer
+   browserlosen Cloud Shell ausführen. Der Deployment-Helfer
+   `deploy_dufynd_private_broker.sh` ist hierfür **nicht** erforderlich.
+
+### Windows / PowerShell
+
+Im Repository-Verzeichnis ausführen; die beiden Platzhalter vorher ausschließlich
+durch die eben abgelesenen **nicht geheimen** Werte ersetzen:
+
+```powershell
+py -3 scripts\dufynd_gmail_owner_reauthorize.py --broker-origin "VORHANDENER_BROKER_ORIGIN" --client-id "OEFFENTLICHE_GOOGLE_CLIENT_ID"
+```
+
+Mit macOS oder einem Linux-Desktop lautet derselbe Aufruf `python3
+scripts/dufynd_gmail_owner_reauthorize.py` mit denselben zwei Optionen. Unter Linux
+wird ein grafischer Desktop mit `xdg-open` benötigt. Eine gesetzte
+`BROWSER`-Überschreibung wird aus Sicherheitsgründen nicht ausgeführt. Bei
+gesetztem **`SSLKEYLOGFILE`** bricht der Helfer bereits vor der Schlüsseleingabe
+ab; diese lokale TLS-Diagnosekonfiguration muss vor dem Start entfernt sein.
+
+1. Den angezeigten Broker-Origin mit dem vorhandenen privaten Dienst vergleichen.
+   Nur dann den einmaligen Start mit **`ja`** bestätigen.
+2. Den Owner-Key in die **unsichtbare lokale Eingabe** einfügen. Der Helfer sendet
+   genau einen HTTPS-POST an `/owner/oauth/gmail/start`. TLS-Prüfung bleibt aktiv;
+   Weiterleitungen, Proxy-Übernahme aus der Umgebung und automatische Wiederholungen
+   sind gesperrt. Der TLS-Kontext übernimmt keine Keylog-Datei aus der Umgebung.
+   Falls verdeckte Eingabe nicht möglich ist, bricht er ab.
+3. Der Helfer prüft die Antwort: ausschließlich Googles fester OAuth-Endpunkt,
+   die zuvor angegebene Client-ID, der eigene exakte Callback, nur `gmail.metadata`,
+   offline-Zugriff, PKCE S256, einmaliger Zustand und keine zusätzlichen Parameter.
+   Erst nach einem zweiten lokalen **`ja`** öffnet er diesen Link im Browser.
+   Link, Zustand und Schlüssel werden nicht auf stdout/stderr ausgegeben oder in
+   eine Datei des Helfers geschrieben. Unter Linux/macOS startet der Helfer den
+   festen Betriebssystem-Launcher ohne Shell und mit stdin/stdout/stderr auf
+   `DEVNULL`; auch dessen Fehlerausgaben können den Link nicht im Terminal
+   ausgeben. Windows verwendet die native URL-Zuordnung. Die Sitzung gilt
+   insgesamt zehn Minuten ab Start.
+4. Im Browser das bereits konfigurierte Postfach wählen und die bestehende
+   Metadaten-Berechtigung einmal bestätigen. Erfolg ist die Callback-Antwort
+   **`{"status":"authorized"}`**. Die vorherige Meldung „Google-Öffnung angefordert“
+   allein bestätigt noch keine erfolgreiche Freigabe.
+5. Danach genügt die Rückmeldung **„Gmail autorisiert“**. Keine Adresszeile,
+   Callback-URL, Codes, Schlüssel oder Token teilen. Die nachfolgende echte
+   Read-/Ingest-/ACK-/Finalize-Prüfung übernimmt wieder der technische Ablauf.
+
+Bei einem Fehler zeigt der Helfer nur einen festen redigierten Grund. Er öffnet
+keine unvalidierte URL und wiederholt den privaten Start nicht. Ein abgebrochener
+oder abgelaufener Start ist kein Grund für Login-Schleifen: zuerst den angezeigten
+Grund im privaten Zugang klären. Der Helfer speichert nichts dauerhaft; er kann
+allerdings keine sichere Löschung aus dem Python-Prozessspeicher garantieren.
+
+### Prüfung des Helfers
+
+**Aktueller, im Root-Review geprüfter Nachweis vom 28.10.2026:**
+**90/90 gezielte Helper-Tests bestanden** unter den bestehenden
+Repository-Abhängigkeiten; Ruff und `git diff --check` ebenfalls erfolgreich.
+Die beiden Review-Funde zu TLS-Keylogging und Launcher-Fehlerausgaben sind dabei
+behoben und mit eigenen Regressionen abgedeckt. Das ist ein lokaler
+Sicherheitsnachweis des Helfers, kein Nachweis einer ausgeführten Gmail-Freigabe.
+
+Die gezielten Tests verwenden den echten `urllib`-Opener einschließlich
+HTTP-Fehler-/Redirect-Verarbeitung mit einer kontrollierten HTTPS-Grenze. Sie
+decken Weiterleitungen ohne Weitergabe des Owner-Headers, Antwortgrößen, falsche
+OAuth-Ziele/Client-IDs/Scopes/Callbacks, doppelte Parameter, Terminal-/Browser-
+Grenzen und die Redigierung von Fehlern ab. Weitere Regressionen verhindern
+TLS-Keylog-Dateien und führen einen echten lokalen Test-Kindprozess aus, der
+seine ausschließlich fingierte OAuth-URL absichtlich nach stdout und stderr
+schreibt: keine dieser Ausgaben erscheint im Terminal. Ein zusätzlicher positiver Test
+verwendet den wirklichen `OAuth.start()`-Vertrag des bestehenden Brokers.
+Kein Test führt einen echten Consent-Start oder einen Google-Aufruf aus.
+
+## Historische Entwicklungsnachweise vor dem produktiven Release #843
+
+Alle nachfolgenden Unterabschnitte dokumentieren die frühere Vorbereitung von
+**#843**, einschließlich damaliger Aussagen zu noch fehlender CI, PR-Publikation,
+Merge und Deployment. Sie beschreiben weder den heutigen Release-Status noch
+eine neue Freigabeschranke für den lokalen Owner-Helfer. Der dort beschriebene
+Run-/Attempt-Schutz ist inzwischen über
+#843 auf `7f63836c1e1f837e1dc72e3ab0e12090a97d8112` produktiv; das ersetzt keinen
+echten Nachweis einer erneuerten Gmail-Freigabe.
+
+Historical evidence date: 28 October 2026, before release #843. That patch was
+prepared locally against production commit
+`89aae8925e606caa33f8f7dafa3edbeafab32c3c`. That preparation did not perform OAuth,
+read a credential, modify activation, deploy a broker or create a scheduler.
+
+### Historical live delta during #843 preparation and the scope of PR #802
 
 - [PR #802](https://github.com/tncommerce/commerce-agents/pull/802) is still draft
   at `39978a57820e7dbd68d22b803c748fe46a556554`, with five changed files. Its
@@ -27,7 +133,7 @@ read a credential, modify activation, deploy a broker, or create a scheduler.
   executions. Recovery must cite a new actual workflow run, not infer one from
   cron configuration or reuse the old failed run's receipt.
 
-## Confirmed new handoff defect and bounded fix
+### Historical handoff defect and bounded fix released in #843
 
 The failure path already checked `run_attempt`. The successful path checked only
 `run_id` and SHA, while its filtered-read, ACK-plan and ACK-receipt artifact names
@@ -54,7 +160,7 @@ No credential, OAuth scope, broker endpoint, provider identity, activation gate,
 database function or scheduled job changes. ACK remains contingent on all four
 durable captures; three idempotent ACK rechecks remain required before finalize.
 
-## Exactly what the owner must do
+### Existing owner protocol documented during #843 preparation
 
 The private broker reports a terminal revoked state. Its refresh implementation
 intentionally refuses that state; repeating refresh jobs cannot restore it.
@@ -85,7 +191,7 @@ that existing app's publishing/policy metadata once before treating consent as
 a durable repair. The app's actual status was not read in this review; no
 publishing or policy setting was changed. See [Google's refresh-token guidance](https://developers.google.com/identity/protocols/oauth2#expiration).
 
-## Full-chain acceptance after that intervention
+### Full-chain acceptance contract, unchanged since #843 preparation
 
 Use a **new workflow run ID** from the existing trusted production observer
 workflow. The existing dispatcher may supply it; if delayed, the existing
@@ -113,7 +219,14 @@ or re-run only later jobs with prior-attempt artifacts. A second attempt before
 any acceptance began can use its own newly produced evidence. Neither case
 requires repeated owner consent once the credential is healthy.
 
-## Verification and remaining release gate
+### Historical verification and pre-release gate for #843 — superseded
+
+The normal integration gate described below was subsequently completed by
+[#843](https://github.com/tncommerce/commerce-agents/pull/843):
+[CI 40669372863](https://github.com/tncommerce/commerce-agents/actions/runs/40669372863)
+passed all six required checks before the protected merge and production rollout.
+The bullets below preserve the earlier preparation record; they are not current
+claims that #843 remains unpublished, untested or undeployed.
 
 - 72 focused Python cases passed, including 13 new attempt-boundary cases:
   old/future attempt rejection before side effects, successful current-attempt
@@ -124,11 +237,11 @@ requires repeated owner consent once the credential is healthy.
 - The unchanged database acceptance contract already passed in production
   release CI [40661816326](https://github.com/tncommerce/commerce-agents/actions/runs/40661816326)
   (262 PostgreSQL tests). No database migration is included in this patch.
-- No remote CI, PR publication, merge, workflow dispatch, credential read,
-  consent, activation or deployment was performed by this review.
-- Before releasing this patch to production, bind normal required CI to its
-  final integrated head and coordinate the workflow change with the active release.
-  Local fake success is not an actual Gmail recovery receipt.
+- During that earlier preparation review, no remote CI, PR publication, merge,
+  workflow dispatch, credential read, consent, activation or deployment was performed.
+- The then-pending gate required normal CI on the final integrated head and
+  coordination with the active release; #843 subsequently satisfied that gate.
+  Local fake success still does not constitute an actual Gmail recovery receipt.
 
 Focused local command (existing isolated Python environment; no package install):
 

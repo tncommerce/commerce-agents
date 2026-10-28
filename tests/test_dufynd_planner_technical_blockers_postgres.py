@@ -12,6 +12,12 @@ DSN = os.getenv("DUFYND_TEST_DATABASE_URL")
 pytestmark = pytest.mark.skipif(not DSN, reason="dedicated disposable PostgreSQL required")
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION = ROOT / "supabase/migrations/20261028082303_jarvis_planner_technical_blockers.sql"
+PUBLIC_HEALTH_MIGRATION = (
+    ROOT / "supabase/migrations/20261028130335_dufynd_public_api_health_monitor.sql"
+)
+PUBLIC_PLANNER_MIGRATION = (
+    ROOT / "supabase/migrations/20261028131239_dufynd_public_api_health_planner.sql"
+)
 SHA = "36cc84c34791284e4245ab4504ae020434dca89e"
 
 
@@ -34,6 +40,11 @@ def db():
             # Minimal contracts allow this module to run alone; CI's migrated
             # tables already exist. No production connection is used by CI.
             connection.execute("""
+                DO $roles$ BEGIN
+                  IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='anon') THEN CREATE ROLE anon; END IF;
+                  IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='authenticated') THEN CREATE ROLE authenticated; END IF;
+                  IF NOT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='service_role') THEN CREATE ROLE service_role; END IF;
+                END $roles$;
                 CREATE TABLE IF NOT EXISTS public.dufynd_external_observers(
                   observer_id text primary key,source_type text,source_id text,
                   enabled boolean,health_status text,last_success_at timestamptz,
@@ -119,6 +130,8 @@ def db():
                     (task,),
                 )
             connection.execute(MIGRATION.read_text())
+            connection.execute(PUBLIC_HEALTH_MIGRATION.read_text())
+            connection.execute(PUBLIC_PLANNER_MIGRATION.read_text())
             yield connection
         finally:
             connection.rollback()
@@ -216,6 +229,7 @@ def test_existing_real_work_or_owner_gate_still_takes_precedence(db, state):
 
 def test_migration_reapply_acl_and_read_only_classifier(db):
     db.execute(MIGRATION.read_text())
+    db.execute(PUBLIC_PLANNER_MIGRATION.read_text())
     for name in (
         "read_dufynd_technical_work_blockers_v1",
         "read_dufynd_safe_work_exhaustion_v1",
@@ -231,7 +245,7 @@ def test_migration_reapply_acl_and_read_only_classifier(db):
     assert db.execute(
         "SELECT provolatile='s' AND NOT prosecdef FROM pg_proc WHERE oid='public.read_dufynd_technical_work_blockers_v1()'::regprocedure"
     ).fetchone()[0]
-    source = MIGRATION.read_text().lower()
+    source = (MIGRATION.read_text() + PUBLIC_PLANNER_MIGRATION.read_text()).lower()
     for forbidden in (
         "cron.schedule",
         "insert into public.dufynd_autonomy_tasks",
@@ -256,3 +270,82 @@ def test_partial_or_unfinalized_or_wrong_revision_receipt_never_completes_chain(
     assert report["status"] == "degraded"
     assert report["last_broker_complete_capture_at"] is None
     assert "private_broker_capture_unverified" in report["issues"]
+
+
+def set_public_health(db, status, *, enabled=True, age_seconds=0):
+    db.execute(
+        """UPDATE public.dufynd_master_status SET value=value||jsonb_build_object(
+        'enabled',%s::boolean,'status',%s::text,'last_status_code',200,
+        'last_success_at',now()-make_interval(secs=>%s),
+        'valid_until',now()-make_interval(secs=>%s)+interval '600 seconds',
+        'requested_at',now()) WHERE key='ops.public_api_health_v1'""",
+        (enabled, status, age_seconds, age_seconds),
+    )
+
+
+@pytest.mark.parametrize(
+    "status,age_seconds,issue",
+    [
+        ("pending", 0, "public_api_health_pending"),
+        ("healthy", 601, "public_api_health_stale"),
+        ("unhealthy", 0, "public_api_unhealthy"),
+        ("unavailable", 0, "public_api_health_unavailable"),
+    ],
+)
+def test_public_health_failures_reach_planner_without_creating_tasks(
+    db, status, age_seconds, issue
+):
+    set_public_health(db, status, age_seconds=age_seconds)
+    before = db.execute("SELECT count(*) FROM public.dufynd_autonomy_tasks").fetchone()[0]
+    technical = call(db, "read_dufynd_technical_work_blockers_v1")
+    assert technical["issues"] == [issue]
+    assert technical["private_technical_work_remaining"] is False
+    assert technical["public_api_health"]["healthy"] is False
+    report = call(db, "plan_dufynd_free_work_v1")
+    assert report["state"] == "technical_remediation_required"
+    assert report["action"] == "diagnose_public_api_health"
+    assert report["technical_repair_executed"] is False
+    assert report["new_spend_usd"] == 0
+    assert report["queue"]["waiting_external_count"] == 14
+    assert db.execute("SELECT count(*) FROM public.dufynd_autonomy_tasks").fetchone()[0] == before
+
+
+def test_fresh_public_health_cannot_clear_private_blockers_or_complete_capture(db):
+    set_public_health(db, "healthy")
+    db.execute(
+        "UPDATE public.dufynd_external_observers SET health_status='blocked_configuration' WHERE source_type='gmail'"
+    )
+    db.execute(
+        "UPDATE public.dufynd_external_observers SET last_success_at=now()-interval '1 hour' WHERE source_type='render'"
+    )
+    db.execute("UPDATE public.dufynd_broker_acceptance_sessions SET status='failed'")
+    technical = call(db, "read_dufynd_technical_work_blockers_v1")
+    assert technical["public_api_health"]["healthy"] is True
+    assert technical["public_api_health"]["full_chain_complete"] is False
+    assert technical["private_technical_work_remaining"] is True
+    assert {
+        "blocked_observer_configuration",
+        "private_observer_stale",
+        "private_broker_capture_unverified",
+    } <= set(technical["issues"])
+    report = call(db, "plan_dufynd_free_work_v1")
+    assert report["state"] == "technical_remediation_required"
+    assert report["action"] == "diagnose_private_observer_runtime"
+
+
+def test_disabled_public_monitor_preserves_existing_healthy_technical_wait(db):
+    set_public_health(db, "healthy", enabled=False, age_seconds=86400)
+    technical = call(db, "read_dufynd_technical_work_blockers_v1")
+    assert technical["status"] == "healthy" and technical["issues"] == []
+    assert technical["public_api_health"]["status"] == "disabled"
+    assert call(db, "plan_dufynd_free_work_v1")["state"] == "waiting_market_signal"
+
+
+@pytest.mark.parametrize("state", ["work_available", "work_in_progress", "owner_gate"])
+def test_public_health_diagnostics_preserve_existing_real_work_priority(db, state):
+    set_public_health(db, "unhealthy")
+    db.execute(
+        "UPDATE pg_temp.planner_technical_case SET value=jsonb_set(value,'{state}',%s::jsonb) WHERE key='get_dufynd_next_autonomous_action'",
+        (json.dumps(state),),
+    )
+    assert call(db, "plan_dufynd_free_work_v1")["state"] == state
