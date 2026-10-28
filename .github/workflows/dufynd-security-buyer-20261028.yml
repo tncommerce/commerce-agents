@@ -1,0 +1,47 @@
+name: DUFYND security + buyer integration (isolated, no artifacts)
+on:
+  push:
+    branches: ['qa/dufynd-security-buyer-20261028']
+    paths: ['.github/workflows/dufynd-security-buyer-20261028.yml']
+permissions:
+  contents: read
+jobs:
+  security-and-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 27
+    defaults:
+      run:
+        working-directory: examples
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      DUFYND_RUNTIME_OFFER_SNAPSHOTS: "disabled"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+      - name: Install the exact security-patched lockfile
+        run: |
+          npm ci
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Check resolved production dependencies without changing lockfile
+        run: |
+          npm ls next sharp source-map-js --workspace acme-retail-storefront-web
+          npm audit --omit=dev --workspace=acme-retail-storefront-web --audit-level=high
+      - name: Build patched site and run existing offline buyer/security gates
+        run: npm run build --workspace acme-retail-storefront-web
+      - name: Verify full real Chromium buyer and consent/offer scenarios
+        shell: bash
+        run: |
+          set -euo pipefail
+          node retail/storefront-web/scripts/serve-static-export.mjs --root retail/storefront-web/out --port 3000 >/tmp/dufynd-integrated-static.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..60}; do
+            if curl --fail --silent --location http://127.0.0.1:3000/duft/xerjoff-naxos >/dev/null; then break; fi
+            if [ "$attempt" -eq 60 ]; then cat /tmp/dufynd-integrated-static.log; exit 1; fi
+            sleep 1
+          done
+          node retail/storefront-web/scripts/test-funnel-pending-image.mjs http://127.0.0.1:3000
+          node retail/storefront-web/scripts/dufynd-visual-qa.mjs --base-url http://127.0.0.1:3000 --out /tmp/dufynd-security-buyer-qa
