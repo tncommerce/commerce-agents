@@ -9,7 +9,7 @@ permissions:
 jobs:
   first-party-buyer:
     runs-on: ubuntu-latest
-    timeout-minutes: 24
+    timeout-minutes: 25
     defaults:
       run:
         working-directory: examples
@@ -40,4 +40,4 @@ jobs:
             if [ "$attempt" -eq 45 ]; then cat /tmp/dufynd-buyer.log; exit 1; fi
             sleep 1
           done
-          node retail/storefront-web/scripts/diagnose-conversion-search.mjs
+          node retail/storefront-web/scripts/dufynd-visual-qa.mjs --base-url http://127.0.0.1:3000 --out /tmp/dufynd-visual-final-check
