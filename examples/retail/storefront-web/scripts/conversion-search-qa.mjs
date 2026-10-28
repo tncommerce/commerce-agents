@@ -2,6 +2,7 @@ import { emptyOfferFixture } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { verifyCompactFragranceSearch } from "./compact-fragrance-search-qa.mjs";
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 // Route readiness is verified by the semantic headings and controls below.
 // Network-idle is not a valid readiness gate while analytics, image decoding or
@@ -125,12 +126,25 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.equal(new URL(page.url()).searchParams.get('src'),'instagram','Catalog RC1 offer link preserves campaign source');
       assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion','Catalog RC1 offer link preserves campaign ID');
       await page.locator('#angebote').waitFor({state:'visible'});
-      // The independently rejected editorial creative is excluded. Product
-      // metadata stays truthful and uses a compact text-only social summary.
-      assert.equal(await page.locator('meta[property="og:image"]').count(),0);
-      assert.equal(await page.locator('meta[name="twitter:image"]').count(),0);
-      assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute('content'),'summary');
-      assert.match(await page.locator('meta[property="og:title"]').getAttribute('content'),/Rabanne 1 Million.*100 ml/);
+      // The rejected editorial creative must stay excluded. The 27 Oct
+      // released exact 100-ml original is now legal for the social preview.
+      // Ground its metadata in the immutable public rights/variant register.
+      const registeredRabanne = JSON.parse(readFileSync(
+        new URL("../lib/generated/original-photos.json", import.meta.url), "utf8",
+      )).filter(photo => photo.product_id === 'SC-RABANNE-1-MILLION-EDT-100');
+      assert.equal(registeredRabanne.length, 1, 'Exactly one reviewed RC1 image');
+      const approvedImage = registeredRabanne[0];
+      assert.equal(approvedImage.volume_ml, 100);
+      assert.equal(approvedImage.rights_basis_id, 'awin_top_parfuemerie_feed_materials_20260928');
+      assert.equal(approvedImage.url,
+        'https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png');
+      assert.equal(await page.locator('meta[property="og:image"]').count(), 1,
+        'Only a source-reviewed original may appear in the open-graph preview');
+      assert.equal(await page.locator('meta[property="og:image"]').getAttribute('content'), approvedImage.url);
+      assert.equal(await page.locator('meta[name="twitter:image"]').count(), 1);
+      assert.equal(await page.locator('meta[name="twitter:image"]').getAttribute('content'), approvedImage.url);
+      assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute('content'), 'summary_large_image');
+      assert.match(await page.locator('meta[property="og:title"]').getAttribute('content'), /Rabanne 1 Million.*100 ml/);
 
       await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'domcontentloaded'});
       await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
