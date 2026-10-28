@@ -19,6 +19,21 @@ def db():
 
     with psycopg.connect(DSN) as connection:
         try:
+            # Earlier PostgreSQL modules install a simplified net stub. These
+            # cases deliberately exercise the no-transport freshness path.
+            # Preserve its objects/OIDs and restore its name on rollback.
+            connection.execute(
+                """do $fixture$
+                begin
+                  if to_regnamespace('dufynd_stale_fixture_net') is not null then
+                    raise exception 'stale fixture isolation schema already exists';
+                  end if;
+                  if to_regnamespace('net') is not null then
+                    alter schema net rename to dufynd_stale_fixture_net;
+                  end if;
+                end;
+                $fixture$;"""
+            )
             connection.execute(MIGRATION.read_text())
             connection.execute("update public.dufynd_external_observers set enabled=false")
             yield connection

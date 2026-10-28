@@ -17,11 +17,20 @@ The release combines exactly:
 | #841 — private observer/planner truth | `edce91d35aaa6bd4ebdf13124d99ecc784801743` | 24 |
 
 Base: `36cc84c34791284e4245ab4504ae020434dca89e`.
-All 35 paths are disjoint; each staged source blob matches its original PR
-exactly. The source-only union tree is
+All 35 original paths are disjoint; the initial merged source blobs matched their
+original PRs exactly. The initial source-only union tree is
 `048d693436406c08bb946de110dff6b3ff15af55`.
 Release/rollback documentation is additional evidence, not a code change to the
 three reviewed proposals. Their Git ancestry is retained.
+
+The first integrated CI (40661309522) passed five required jobs and exposed one
+test-fixture isolation defect in `budget-postgres`: earlier cases retain a
+simplified `net._http_response` stub, while the new freshness cases explicitly
+exercise the no-network-module path. The release adds a test-only correction:
+rename that schema within each test's rollback transaction, preserving its
+objects/OIDs and restoring the original name afterwards. No production function
+is changed for this fixture issue. The corrected candidate requires its own
+normal required checks; the prior five successes are diagnostic evidence only.
 
 ## Validation without repeated QA
 
