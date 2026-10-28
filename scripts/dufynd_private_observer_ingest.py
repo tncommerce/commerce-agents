@@ -15,7 +15,11 @@ import re
 from pathlib import Path
 from typing import Any, Protocol
 
-from private_broker.observer_contract import ProvenanceError, validate_source
+from private_broker.observer_contract import (
+    ProvenanceError,
+    validate_render_recovery_evidence,
+    validate_source,
+)
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 MAX_ARTIFACT_BYTES = 262_144
@@ -28,6 +32,7 @@ GMAIL_PATHS = {
     "/v1/gmail/threads/1a0f6a90772a743d/metadata": "1a0f6a90772a743d",
 }
 EXPECTED_PATHS = frozenset({META_KEY, HEALTH_PATH, RENDER_PATH, *GMAIL_PATHS})
+RENDER_RECOVERY_PATHS = frozenset({META_KEY, HEALTH_PATH, RENDER_PATH})
 GMAIL_RESPONSE_KEYS = frozenset({"observation_id", "evidence"})
 GMAIL_EVIDENCE_KEYS = frozenset({"thread_id", "history_id", "messages"})
 GMAIL_MESSAGE_KEYS = frozenset(
@@ -54,6 +59,10 @@ class ControlPlane(Protocol):
 
     def begin_broker_acceptance(self, source: dict[str, Any]) -> dict[str, Any]: ...
 
+    def capture_broker_observation(
+        self, *, credential_id: str, observer_id: str, evidence: Any
+    ) -> dict[str, Any]: ...
+
     def capture_broker_acceptance_observation(
         self,
         *,
@@ -73,6 +82,7 @@ def load_artifact(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_paths: frozenset[str] = EXPECTED_PATHS,
 ) -> dict[str, Any]:
     try:
         if path.stat().st_size > MAX_ARTIFACT_BYTES:
@@ -83,7 +93,7 @@ def load_artifact(
     except Exception:
         raise ArtifactError("observer artifact is unreadable") from None
 
-    if not isinstance(payload, dict) or set(payload) != EXPECTED_PATHS:
+    if not isinstance(payload, dict) or set(payload) != expected_paths:
         raise ArtifactError("observer artifact path set mismatch")
     try:
         payload[META_KEY] = validate_source(
@@ -94,6 +104,55 @@ def load_artifact(
     except ProvenanceError as exc:
         raise ArtifactError(f"observer artifact provenance {exc}") from None
     return payload
+
+
+def ingest_render_recovery(
+    bridge: ControlPlane,
+    artifact_path: Path,
+    *,
+    failure_source: dict[str, Any],
+    expected_run_id: str,
+    expected_sha: str,
+    expected_run_attempt: str,
+) -> dict[str, Any]:
+    """Capture an independent Render observation from a failed Gmail run.
+
+    Existing RPCs enforce fresh provider health, the exact allowed service and
+    prior activation. This cannot start/finalize acceptance or acknowledge Gmail.
+    """
+    artifact = load_artifact(
+        artifact_path,
+        expected_run_id=expected_run_id,
+        expected_sha=expected_sha,
+        expected_paths=RENDER_RECOVERY_PATHS,
+    )
+    if artifact[META_KEY] != failure_source or artifact[META_KEY]["run_attempt"] != str(
+        expected_run_attempt
+    ):
+        raise ArtifactError("render recovery failure provenance mismatch")
+    health, render = artifact[HEALTH_PATH], artifact[RENDER_PATH]
+    try:
+        validate_render_recovery_evidence(health, render)
+    except ProvenanceError:
+        raise ArtifactError("render recovery evidence shape mismatch") from None
+    projection = bridge.project_broker_health(health)
+    if projection.get("projected") != 2 or projection.get("activation_changed") is not False:
+        raise ArtifactError("broker health projection mismatch")
+    _accepted(
+        bridge.capture_broker_observation(
+            credential_id="render_deploy_broker",
+            observer_id="render:srv-dakpfrnf3r2c73dr3f20",
+            evidence=render,
+        ),
+        "render",
+    )
+    return {
+        "render_captures": 1,
+        "gmail_captures": 0,
+        "acks": 0,
+        "activation_changed": False,
+        "full_chain_complete": False,
+    }
 
 
 def _sanitize_gmail(path: str, raw: Any) -> tuple[str, dict[str, Any]]:
