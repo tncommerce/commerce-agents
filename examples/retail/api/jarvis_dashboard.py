@@ -1430,6 +1430,8 @@ def build_snapshot(
         if operator["state"] == "MASTER_ACTION_REQUIRED"
         else "ARBEIT BEREIT"
         if operator["state"] == "READY"
+        else "TECHNIKARBEIT OFFEN"
+        if operator["state"] == "TECHNICAL_REMEDIATION_REQUIRED"
         else "PLANUNG NÖTIG"
         if operator["state"] == "PLANNING_REQUIRED"
         else "ARBEIT GEPLANT"

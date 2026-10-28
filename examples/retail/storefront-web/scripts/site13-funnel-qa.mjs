@@ -1,7 +1,12 @@
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 
 // Entirely local, default-deny QA. Artificial quotes never enter public data.
+const approvedPhotoById = new Map(JSON.parse(readFileSync(
+  new URL("../lib/generated/original-photos.json", import.meta.url), "utf8",
+)).map((photo) => [photo.product_id, photo]));
+
 export async function verifySite13Funnel(browser, baseUrl) {
   const origin = new URL(baseUrl).origin;
   assert.ok(["localhost", "127.0.0.1"].includes(new URL(baseUrl).hostname));
@@ -76,7 +81,16 @@ export async function verifySite13Funnel(browser, baseUrl) {
           }
           assert.ok((await merchant.boundingBox()).height >= 44);
           assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-          assert.equal(await page.locator('.dufynd-fragrance-hero img').count(), 0, "unlicensed bottle remains absent");
+          const approved = approvedPhotoById.get(productId);
+          assert.ok(approved && approved.url.startsWith('https://www.topparfuemerie.de/media/catalog/product/'),
+            'First-money test must use the exact approved released image, not a fabricated bottle');
+          const photoHero = page.locator('.dufynd-fragrance-hero');
+          assert.equal(await photoHero.getAttribute('data-dufynd-photo-status'), 'verified');
+          assert.equal(await photoHero.getAttribute('data-dufynd-photo-hold'), null);
+          assert.equal(await photoHero.locator('[data-original-photo-source="top-parfuemerie"]').count(), 1,
+            'Released merchant photo requires its visible source disclosure');
+          // The QA browser may block the off-origin photo request. The neutral
+          // network fallback must not be misclassified as missing usage rights.
           await page.getByText("Merken, teilen & vergleichen", { exact: true }).click();
           await page.getByRole("button", { name: /Merken/ }).first().waitFor();
           if (source === "tiktok" && !denied) {
