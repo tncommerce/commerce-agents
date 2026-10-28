@@ -661,7 +661,9 @@ try {
             const rect = (selector) =>
               document.querySelector(selector)?.getBoundingClientRect() || null;
             const title = rect(".dufynd-fragrance-hero h1");
-            const stage = rect(".dufynd-fragrance-hero[data-product-id=\"SC-RABANNE-1-MILLION-EDT-100\"][data-dufynd-photo-hold=\"true\"] .dufynd-fragrance-stage-shell, .dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
+            // The released original uses the ordinary stage shell, not the
+            // former Rabanne-only [data-dufynd-photo-hold] state.
+            const stage = rect(".dufynd-fragrance-hero .dufynd-fragrance-stage-shell");
             const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
             const offers = rect("#angebote");
             const exploded = rect(".dufynd-exploded-notes");
@@ -677,12 +679,13 @@ try {
             };
           });
           const mobileProductFirst = viewport.width <= 390;
+          const hasReleasedOriginal = verifiedTruthByRoute.has(target.route);
           const maxIdentityTop = mobileProductFirst ? 620 : 260;
           if (layout.title_top == null || layout.title_top > maxIdentityTop) {
             throw new Error(`fragrance identity starts too far below the intended first-screen composition: ${layout.title_top}px`);
           }
           if (
-            mobileProductFirst &&
+            mobileProductFirst && !hasReleasedOriginal &&
             (
               layout.stage_top == null ||
               layout.title_top == null ||
@@ -695,7 +698,8 @@ try {
           }
           if (
             mobileProductFirst &&
-            (layout.stage_height == null || layout.stage_height > 270)
+            (layout.stage_height == null ||
+              layout.stage_height > (hasReleasedOriginal ? 520 : 270))
           ) {
             throw new Error(`mobile fragrance visual is too tall: ${layout.stage_height}px`);
           }
@@ -937,18 +941,39 @@ try {
 
         if (["absolu-aventus", "bois-imperial"].includes(target.name)) {
           const hero = page.locator(".dufynd-fragrance-hero");
-          if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
-            throw new Error("unapproved product hero failed the source-honest studio fallback");
-          }
-          const text = await hero.innerText();
-          if (!text.includes("Originalfoto in Prüfung")) {
-            throw new Error("unapproved detail hero omitted exact-original rights hold");
-          }
-          if (text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
-            throw new Error("unapproved detail still presents an editorial bottle scene");
-          }
-          if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) > 0) {
-            throw new Error("unapproved bottle claims were exposed through the advanced 3D notes");
+          const approvedId = target.name === "bois-imperial"
+            ? "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100" : null;
+          const releasedPhoto = approvedId ? approvedImages.get(approvedId) : null;
+          if (releasedPhoto) {
+            const exactTruth = verifiedTruthByRoute.get(target.route);
+            if (!exactTruth || exactTruth.url !== releasedPhoto.url ||
+                Number(releasedPhoto.volume_ml) !== 100) {
+              throw new Error("approved Bois Imperial photo mismatches its exact product identity");
+            }
+            if ((await hero.getAttribute("data-dufynd-photo-status")) !== "verified" ||
+                (await hero.getAttribute("data-dufynd-photo-hold")) !== null) {
+              throw new Error("approved Bois Imperial original remains incorrectly on image hold");
+            }
+            if ((await hero.locator('[data-original-photo-source="top-parfuemerie"]').count()) !== 1) {
+              throw new Error("licensed Bois Imperial original lost its public source attribution");
+            }
+            if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) > 0) {
+              throw new Error("registered Bois Imperial image incorrectly reverted to an unlicensed visual");
+            }
+          } else {
+            if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
+              throw new Error("unapproved product hero failed the source-honest studio fallback");
+            }
+            const text = await hero.innerText();
+            if (!text.includes("Originalfoto in Prüfung")) {
+              throw new Error("unapproved detail hero omitted exact-original rights hold");
+            }
+            if (text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
+              throw new Error("unapproved detail still presents an editorial bottle scene");
+            }
+            if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) > 0) {
+              throw new Error("unapproved bottle claims were exposed through the advanced 3D notes");
+            }
           }
         }
 
@@ -1318,8 +1343,8 @@ try {
     await context.close();
   }
 
-  // The full catalog selection should survive sharing and reloads,
-  // without discarding acquisition attribution from the incoming link.
+  // Functional catalog filters must survive sharing and reloads; optional
+  // attribution parameters are intentionally removed after consent denial.
   const shareContext = await browser.newContext();
   try {
     const sharePage = await shareContext.newPage();
@@ -1344,15 +1369,27 @@ try {
     await sharePage.getByRole("combobox", { name: "Marke" }).selectOption("Xerjoff");
     if (await sharePage.getByRole("combobox", { name: "Bewertung" }).count()) throw new Error("Unlicensed community rating filter is exposed");
     await sharePage.getByRole("combobox", { name: "Sortierung" }).selectOption("brand");
-    await sharePage.waitForFunction(() => {
-      const url = new URL(window.location.href);
-      return url.searchParams.get("q") === "Naxos" &&
-        url.searchParams.get("profil") === "freshness" &&
-        url.searchParams.get("zielgruppe") === "men" &&
-        url.searchParams.get("marke") === "Xerjoff" &&
-        url.searchParams.get("sort") === "brand" &&
-        url.searchParams.get("utm_source") === "qa";
-    });
+    try {
+      await sharePage.waitForFunction(() => {
+        const url = new URL(window.location.href);
+        return url.searchParams.get("q") === "Naxos" &&
+          url.searchParams.get("profil") === "freshness" &&
+          url.searchParams.get("zielgruppe") === "men" &&
+          url.searchParams.get("marke") === "Xerjoff" &&
+          url.searchParams.get("sort") === "brand" &&
+          !url.searchParams.has("utm_source");
+      }, undefined, {timeout: 12_000});
+    } catch (error) {
+      // A timeout alone conceals the broken field. Report the local test URL
+      // and visible field values, never drop any of the required assertions.
+      const diagnostic = await sharePage.evaluate(() => ({
+        url: location.pathname + location.search,
+        search: document.querySelector('input[type="search"]')?.value ?? null,
+        brand: document.querySelector('select[aria-label="Marke"]')?.value ?? null,
+      }));
+      throw new Error("catalog shared filters did not converge: " +
+        JSON.stringify(diagnostic), {cause: error});
+    }
     await sharePage.reload({ waitUntil: "networkidle" });
     await chooseMeasurement(sharePage, "denied");
     if (await shareFilterToggle.getAttribute("aria-expanded") === "false") await shareFilterToggle.click();

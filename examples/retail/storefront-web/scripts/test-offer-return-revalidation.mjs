@@ -21,7 +21,7 @@ const offerPayload = (id = PRODUCT_A, price = 71.9) => ({
 });
 const emptyPayload = (id = PRODUCT_A) => ({ product_id: id, offers: [], best_offer_id: null });
 
-function makeHarness(input = source, { consent = false, productId = PRODUCT_A } = {}) {
+function makeHarness(input = source, { consent = false, productId = PRODUCT_A, intersectionObserver = false } = {}) {
   const compiled = ts.transpileModule(input, { reportDiagnostics: true, compilerOptions: {
     module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022,
     jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true,
@@ -32,6 +32,22 @@ function makeHarness(input = source, { consent = false, productId = PRODUCT_A } 
   let writesAfterUnmount = 0;
   const slots = [], requests = [], analytics = [], subscribers = new Set();
   const listeners = { document: new Map(), window: new Map() };
+  const activeObservers = new Set();
+  class FixtureIntersectionObserver {
+    constructor(callback, options) {
+      this.callback = callback;
+      assert.deepEqual(Array.from(options.threshold), [0.35], 'Visibility threshold changed');
+    }
+    observe(node) {
+      assert.ok(node?.fixtureNode, 'Observer must inspect the rendered offers section');
+      this.node = node;
+      activeObservers.add(this);
+    }
+    disconnect() {
+      this.node = null;
+      activeObservers.delete(this);
+    }
+  }
   const sameDeps = (a, b) => a && b && a.length === b.length && a.every((v, i) => Object.is(v, b[i]));
   const useSlot = (kind, create) => {
     const at = index++;
@@ -98,6 +114,7 @@ function makeHarness(input = source, { consent = false, productId = PRODUCT_A } 
   const module = { exports: {} };
   vm.runInNewContext(compiled.outputText, {
     module, exports: module.exports, document, window,
+    IntersectionObserver: intersectionObserver ? FixtureIntersectionObserver : undefined,
     Date: class ClockDate extends Date { static now() { return now; } },
     require(id) { assert.ok(id in stubs, `Unexpected import ${id}`); return stubs[id]; },
     setTimeout() { throw new Error('Unexpected timer'); },
@@ -127,6 +144,12 @@ function makeHarness(input = source, { consent = false, productId = PRODUCT_A } 
   render(); commit();
   return {
     requests, analytics, listeners, subscribers, document, flush, emit,
+    get observedCount() { return activeObservers.size; },
+    intersect(ratio, isIntersecting = ratio > 0) {
+      for (const observer of [...activeObservers]) {
+        observer.callback([{ isIntersecting, intersectionRatio: ratio }]);
+      }
+    },
     get tree() { return tree; }, get state() { return tree?.props['data-offer-state']; },
     get sessionCalls() { return sessionCalls; }, get writesAfterUnmount() { return writesAfterUnmount; },
     get reloads() { return slots.filter(s => s.kind === 'state')[2].value; },
@@ -179,6 +202,52 @@ test('consent changes never replace a verified CTA with a blocked placeholder', 
   assert.equal(nodes(h.tree, n => n.props?.['data-clickout-preparing']).length, 0);
   h.unmount();
 });
+
+async function assertNoSyntheticOfferImpression(input = source) {
+  const h = makeHarness(input, { consent: true, intersectionObserver: false });
+  await h.resolve(0, offerPayload());
+  assert.equal(h.state, 'available');
+  assert.equal(merchantLinks(h.tree).length, 1, 'Missing observer must not disable functional buying');
+  assert.deepEqual(h.analytics.map(e => e.event), ['fragrance_detail_view'],
+    'A missing visibility API is not evidence of an offer impression');
+  assert.equal(h.observedCount, 0);
+  h.unmount();
+}
+test('unsupported IntersectionObserver does not invent an offer impression', assertNoSyntheticOfferImpression);
+test('visible-offer impression only after verified 35% intersection', async () => {
+  const h = makeHarness(source, { consent: true, intersectionObserver: true });
+  await h.resolve(0, offerPayload());
+  assert.equal(h.analytics.length, 1, 'No view before intersection callback');
+  assert.equal(h.observedCount, 1);
+  h.intersect(0.34); assert.equal(h.analytics.length, 1, 'Below threshold is not a view');
+  h.intersect(0.9, false); assert.equal(h.analytics.length, 1, 'Not intersecting is not a view');
+  h.intersect(0.35, true);
+  assert.deepEqual(h.analytics.map(e => e.event), ['fragrance_detail_view', 'offer_section_view']);
+  h.intersect(1, true);
+  assert.equal(h.analytics.length, 2, 'Repeated observer callbacks never duplicate events');
+  assert.equal(h.observedCount, 0, 'Observer disconnects after success');
+  h.unmount();
+});
+test('no eligible offer does not produce view or observer', async () => {
+  const h = makeHarness(source, { consent: true, intersectionObserver: true });
+  await h.resolve(0, emptyPayload());
+  assert.equal(h.observedCount, 0);
+  h.intersect(1);
+  assert.deepEqual(h.analytics.map(e => e.event), ['fragrance_detail_view']);
+  assert.equal(merchantLinks(h.tree).length, 0); h.unmount();
+});
+test('grant after load never equates to a visible-offer event', async () => {
+  const h = makeHarness(source, { consent: false, intersectionObserver: true });
+  await h.resolve(0, offerPayload());
+  assert.equal(h.analytics.length, 0);
+  h.consent(true); await h.flush();
+  assert.deepEqual(h.analytics.map(e => e.event), ['fragrance_detail_view']);
+  assert.equal(h.observedCount, 1);
+  h.consent(false); await h.flush(); h.intersect(1);
+  assert.equal(h.analytics.length, 1, 'Withdrawal prevents view event');
+  assert.equal(h.observedCount, 0); h.unmount();
+});
+
 test('hidden tabs do not fetch', async () => {
   const h = makeHarness(); await h.resolve(0, offerPayload()); h.advance();
   h.document.visibilityState = 'hidden'; h.emit('document', 'visibilitychange');
@@ -239,13 +308,17 @@ test('unmount removes listeners and ignores pending response', async () => {
   await h.resolve(0, offerPayload()); assert.equal(h.writesAfterUnmount, 0);
 });
 test('consented refresh never creates duplicate view or clickout events', async () => {
-  const h = makeHarness(source, { consent: true }); await h.resolve(0, offerPayload());
+  const h = makeHarness(source, { consent: true, intersectionObserver: true }); await h.resolve(0, offerPayload());
+  assert.equal(h.analytics.length, 1, 'Loading an offer is not proof of visibility');
+  h.intersect(0.5);
   const baseline = h.analytics.length; assert.equal(baseline, 2);
   h.advance(); h.emit('window', 'pageshow'); await h.flush(); await h.resolve(1, offerPayload());
   assert.equal(h.analytics.length, baseline); assert.ok(h.analytics.every(e => e.event !== 'merchant_clickout')); h.unmount();
 });
 test('consent grant and revoke do not reload functional offers', async () => {
-  const h = makeHarness(); await h.resolve(0, offerPayload()); h.consent(true); await h.flush();
+  const h = makeHarness(source, { intersectionObserver: true }); await h.resolve(0, offerPayload()); h.consent(true); await h.flush();
+  assert.equal(h.analytics.length, 1, 'Consent alone must not assert offer visibility');
+  h.intersect(0.5);
   assert.equal(h.requests.length, 1); assert.equal(h.analytics.length, 2);
   h.consent(false); await h.flush(); assert.equal(h.requests.length, 1); h.unmount();
 });
@@ -294,6 +367,10 @@ assert.ok(source.includes(dependencyAnchor));
 const mutants = [
   { name: 'missing functional reload dependency', text: source.replace(dependencyAnchor, dependencyAnchor.replace('productId, reloadToken,', 'productId,')), run: realReload },
   { name: 'old response guard removed', text: source.replace('      .then((value) => {\n        if (!active) return;', '      .then((value) => {'), run: lateReply },
+  { name: 'unsupported observer falsely counts an impression',
+    text: source.replace('if (typeof IntersectionObserver === "undefined") {\n        // No viewport proof:',
+                         'if (typeof IntersectionObserver === "undefined") {\n        trackImpression();\n        // No viewport proof:'),
+    run: assertNoSyntheticOfferImpression },
 ];
 const mutationResults = [];
 for (const mutant of mutants) {

@@ -1,0 +1,36 @@
+{
+  "project_id": "bqsdxaagklpkxioaqdqa",
+  "scope": "Two technical observer/planner migrations only; no commerce migration",
+  "baseline_observation": "Fresh live catalog fingerprints supplied by release coordinator on 2026-10-28; all three full definitions reconstructed/canonicalized locally and match exact live MD5s.",
+  "baseline_definition_origin": {
+    "poll_dufynd_observers()": "Exact production function saved by release coordinator at /tmp/dufynd-poll-baseline.sql",
+    "read_dufynd_safe_work_exhaustion_v1()": "Committed 20261021130229 migration, canonicalized; exact fresh live MD5 match",
+    "plan_dufynd_free_work_v1()": "Committed 20261021130229 migration, canonicalized; exact fresh live MD5 match"
+  },
+  "baseline_owner": "postgres",
+  "baseline_acl": "{postgres=X/postgres,service_role=X/postgres}",
+  "new_helper_precondition": "read_dufynd_technical_work_blockers_v1() absent",
+  "canonicalization_runtime": "PostgreSQL16.15; transaction rolled back; no live DDL; not a repeat of the 29 regression tests",
+  "source_migrations": [
+    {
+      "path": "supabase/migrations/20261028081434_jarvis_private_observer_stale_truth.sql",
+      "sha256": "730c392386428fdacd6a79b04e7c03eb6476978e3ed08ed64fc5139f81107fc5"
+    },
+    {
+      "path": "supabase/migrations/20261028082303_jarvis_planner_technical_blockers.sql",
+      "sha256": "4e193e588d874eb4d4eae83ce583e3a75e3ae5c3c1ff22d16b68c21b070b4c8a"
+    }
+  ],
+  "prior_test_evidence": {
+    "native_postgresql_regressions": 29,
+    "repeated": false
+  },
+  "production_application_status": "Not applied by preparation agent",
+  "post_advisor_expectation": {
+    "policyless_rls_tables": 50,
+    "mutable_search_path_procedures": 2,
+    "leaked_password_protection": "disabled on existing free plan; unchanged",
+    "new_publicly_callable_definer_rpcs": 0
+  },
+  "blocked_or_missing": "Preparation agent live-MCP query timed out; release coordinator provided successful fresh small catalog query. No new advisor query run by preparation agent."
+}
