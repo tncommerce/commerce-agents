@@ -82,6 +82,7 @@ def load_artifact(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_run_attempt: str,
     expected_paths: frozenset[str] = EXPECTED_PATHS,
 ) -> dict[str, Any]:
     try:
@@ -100,6 +101,7 @@ def load_artifact(
             payload[META_KEY],
             expected_run_id=expected_run_id,
             expected_sha=expected_sha,
+            expected_run_attempt=expected_run_attempt,
         )
     except ProvenanceError as exc:
         raise ArtifactError(f"observer artifact provenance {exc}") from None
@@ -124,6 +126,7 @@ def ingest_render_recovery(
         artifact_path,
         expected_run_id=expected_run_id,
         expected_sha=expected_sha,
+        expected_run_attempt=expected_run_attempt,
         expected_paths=RENDER_RECOVERY_PATHS,
     )
     if artifact[META_KEY] != failure_source or artifact[META_KEY]["run_attempt"] != str(
@@ -207,11 +210,13 @@ def ingest_artifact(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_run_attempt: str,
 ) -> dict[str, int]:
     artifact = load_artifact(
         artifact_path,
         expected_run_id=expected_run_id,
         expected_sha=expected_sha,
+        expected_run_attempt=expected_run_attempt,
     )
 
     health = artifact[HEALTH_PATH]
@@ -281,8 +286,9 @@ def main() -> int:
     parser.add_argument("--ack-plan", type=Path, default=Path("broker-acks.json"))
     parser.add_argument("--expected-run-id", default=os.getenv("GITHUB_RUN_ID"))
     parser.add_argument("--expected-sha", default=os.getenv("GITHUB_SHA"))
+    parser.add_argument("--expected-run-attempt", default=os.getenv("GITHUB_RUN_ATTEMPT"))
     args = parser.parse_args()
-    if not args.expected_run_id or not args.expected_sha:
+    if not args.expected_run_id or not args.expected_sha or not args.expected_run_attempt:
         raise SystemExit("private observer ingest failed: expected workflow provenance is required")
 
     try:
@@ -292,6 +298,7 @@ def main() -> int:
             args.ack_plan,
             expected_run_id=args.expected_run_id,
             expected_sha=args.expected_sha,
+            expected_run_attempt=args.expected_run_attempt,
         )
     except ArtifactError as exc:
         raise SystemExit(f"private observer ingest failed: {exc}") from None

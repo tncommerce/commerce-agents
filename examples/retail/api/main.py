@@ -59,9 +59,12 @@ backend = MockRetail(offer_store=offer_store)
 
 
 def _live_dufynd_offer_product(product_id: str) -> bool:
-    product = backend.customer_product(product_id)
+    # Scope is local catalog state. customer_product also reads live price
+    # evidence synchronously, before the offer route reaches its worker pool.
+    product = backend.product(product_id)
     return bool(
         product is not None
+        and backend._customer_visible_product(product)
         and product.product_id.startswith("SC-")
         and product.category == "fragrance"
         and product.in_stock
@@ -101,6 +104,8 @@ host = build_storefront_host(
     ),
     product_of=backend.customer_product,
     product_detail=product_detail,
+    # These read callbacks may perform synchronous merchant-evidence I/O.
+    catalog_in_threadpool=True,
 )
 app = host.app
 app.add_exception_handler(HTTPException, clickout_exception_handler)

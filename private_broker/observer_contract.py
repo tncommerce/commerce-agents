@@ -125,6 +125,7 @@ def validate_source(
     *,
     expected_run_id: str | None = None,
     expected_sha: str | None = None,
+    expected_run_attempt: str | None = None,
 ) -> dict[str, Any]:
     if not isinstance(source, dict) or set(source) != SOURCE_KEYS:
         raise ProvenanceError("source_shape_mismatch")
@@ -153,6 +154,8 @@ def validate_source(
         raise ProvenanceError("source_run_mismatch")
     if expected_sha is not None and sha != str(expected_sha):
         raise ProvenanceError("source_sha_mismatch")
+    if expected_run_attempt is not None and run_attempt != str(expected_run_attempt):
+        raise ProvenanceError("source_run_attempt_mismatch")
 
     return {
         **source,

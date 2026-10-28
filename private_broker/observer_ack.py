@@ -49,6 +49,7 @@ def load_ack_plan(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_run_attempt: str,
 ) -> list[tuple[str, str]]:
     try:
         if path.stat().st_size > MAX_ACK_PLAN_BYTES:
@@ -68,6 +69,7 @@ def load_ack_plan(
             payload.get("source"),
             expected_run_id=expected_run_id,
             expected_sha=expected_sha,
+            expected_run_attempt=expected_run_attempt,
         )
     except ProvenanceError as exc:
         raise AckFailure("plan", f"provenance_{exc}") from None
@@ -100,6 +102,7 @@ def acknowledge(
     *,
     expected_run_id: str | None = None,
     expected_sha: str | None = None,
+    expected_run_attempt: str | None = None,
     client_factory=httpx.Client,
 ) -> dict[str, int]:
     url = urlsplit(origin)
@@ -116,12 +119,14 @@ def acknowledge(
 
     run_id = expected_run_id or os.getenv("GITHUB_RUN_ID")
     sha = expected_sha or os.getenv("GITHUB_SHA")
-    if not run_id or not sha:
+    run_attempt = expected_run_attempt or os.getenv("GITHUB_RUN_ATTEMPT")
+    if not run_id or not sha or not run_attempt:
         raise AckFailure("plan", "provenance_required")
     acks = load_ack_plan(
         ack_plan_path,
         expected_run_id=run_id,
         expected_sha=sha,
+        expected_run_attempt=run_attempt,
     )
     with client_factory(trust_env=False, timeout=30, follow_redirects=False) as client:
         identity = client.get(
@@ -178,6 +183,7 @@ def write_receipt(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_run_attempt: str,
 ) -> None:
     try:
         payload = json.loads(ack_plan_path.read_text(encoding="utf-8"))
@@ -189,6 +195,7 @@ def write_receipt(
             source,
             expected_run_id=expected_run_id,
             expected_sha=expected_sha,
+            expected_run_attempt=expected_run_attempt,
         )
     except ProvenanceError as exc:
         raise AckFailure("receipt", f"provenance_{exc}") from None
@@ -209,6 +216,7 @@ def main() -> int:
     origin = os.environ.get("BROKER_ORIGIN", "")
     run_id = os.environ.get("GITHUB_RUN_ID", "")
     sha = os.environ.get("GITHUB_SHA", "")
+    run_attempt = os.environ.get("GITHUB_RUN_ATTEMPT", "")
 
     try:
         summary = acknowledge(origin, args.ack_plan)
@@ -218,6 +226,7 @@ def main() -> int:
             summary,
             expected_run_id=run_id,
             expected_sha=sha,
+            expected_run_attempt=run_attempt,
         )
     except AckFailure as exc:
         raise SystemExit(f"private observer ack failed at {exc.stage}:{exc.reason}") from None
