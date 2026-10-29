@@ -36,7 +36,24 @@ jobs:
       - name: Dispatch the existing trusted read path after scentai-mvp changes
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY" --ref scentai-mvp
+          DUFYND_PRIVATE_BROKER_ENABLED: ${{ vars.DUFYND_PRIVATE_BROKER_ENABLED }}
+          DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED: ${{ vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED }}
+          DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED: ${{ vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED }}
+        run: |
+          set -euo pipefail
+          mode=render
+          capture_v2=false
+          if [[ "${DUFYND_PRIVATE_BROKER_ENABLED}" == "1" &&
+                "${DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED}" == "1" &&
+                "${DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED}" == "1" ]]; then
+            mode=render_services_v2
+            capture_v2=true
+          fi
+          gh workflow run dufynd-private-observer.yml \
+            --repo "${GITHUB_REPOSITORY}" \
+            --ref scentai-mvp \
+            -f "mode=${mode}" \
+            -f "capture_v2=${capture_v2}"
 
   read:
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1' && inputs.mode != 'render_services_v2'
@@ -274,8 +291,8 @@ jobs:
           --expected-run-attempt "${GITHUB_RUN_ATTEMPT}"
 
   read-v2:
-    # Separate, disabled-by-default scope. Automatic inputless dispatches still
-    # take the existing API-only read job; no v2 flag is set by this workflow.
+    # Inputless dispatches retain the API-only default. Automatic dispatches
+    # select v2 capture only when all three explicit repository gates equal "1".
     if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && inputs.mode == 'render_services_v2' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1' && vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 5
