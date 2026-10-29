@@ -1,5 +1,235 @@
 # DUFYND · Datenbetrieb statt PR pro Händlerpreis (DEV / nicht live)
 
+## 29.10.2026 – HOLD ohne künstliche Zeitänderung, Replay-Schutz erhalten
+
+Der bisherige SQL-Guard erlaubte positive Quellenzeiten bis fünf Minuten in
+der Zukunft, verlangte aber auch für eine Sperre einen strikt späteren
+Zeitstempel. Dadurch scheiterten ein HOLD mit gleicher Beobachtungszeit und
+ein tatsächliches HOLD jetzt nach einer zulässigen Quelle mit vier Minuten
+Uhrabweichung. Beide Fehler wurden auf isoliertem PostgreSQL 17.11 reproduziert.
+
+Die private Spalte `source_watermark_at` speichert jetzt den höchsten bisher
+akzeptierten Quellenzeitpunkt. Sie wird bei INSERT und UPDATE ausschließlich
+vom Trigger gesetzt; eingesandte Werte können sie weder senken noch erhöhen.
+Nur `verified` → `hold` darf mit gleicher oder früherer tatsächlicher
+Beobachtungszeit sperren. `verified_at` bleibt dabei unverändert der echte
+Belegzeitpunkt. Jede andere Änderung, insbesondere eine Wiederaktivierung,
+muss den gespeicherten Höchststand strikt überschreiten. Preis, Versand und
+Bestand bleiben bei HOLD zwingend NULL; Identität, 72-Stunden-Frist,
+Fünf-Minuten-Toleranz, Quellenhash und private Berechtigungen bleiben erhalten.
+
+Die betroffene PostgreSQL-Suite bestand anschließend **26/26 Fälle**
+(18 vorhandene, acht neue), einschließlich gleicher Zeit, Uhrabweichung,
+gesperrter positiver Replays, späterer echter Wiederaktivierung,
+Watermark-Manipulation, unveränderlicher Identität und Audit. Ruff-Lint,
+Formatprüfung und `git diff --check` bestanden. Dies ist lokale
+SQL-Regressionsprüfung, kein neuer GitHub-CI- oder Produktionsnachweis.
+
+Runtime-GET und Import-Readback wählen ihre Felder explizit. Die zusätzliche
+Spalte verändert weder kanonische Identität noch Prepared-Batch, Batchhash
+oder öffentliche API-Antworten. Die privaten Audit-JSON-Zeilen enthalten sie
+absichtlich zusätzlich neben dem unveränderten ursprünglichen Belegzeitpunkt.
+
+**Lokale Integration mit Produktion:** Der ursprüngliche Commerce-HEAD
+`43b2793c754f18b47c335fef0f7348b77f22029e` wurde einschließlich seiner Historie
+und des HOLD-Fix-Commits `d44ddba` mit dem Produktionsstand
+`063f4f2ca0a6403137c6f5e94a71f0ec593e6a98` konfliktfrei zusammengeführt.
+Auf diesem kombinierten Quellbaum bestanden **66/66 gezielte Integrationsfälle**:
+die 26 echten PostgreSQL-Fälle sowie 40 angrenzende Runtime-/API-/Batchfälle.
+Geprüft wurden unter anderem Katalog-/Health-Isolation, Produktsichtbarkeit,
+deaktivierter Runtime-Modus, Listing-/Clickout-Entscheidungen, HOLD,
+unveränderte Quellen- und Batchhashes, exakter Readback und die rein prüfende
+Enhanced-Feed-Grenze. TCP und DNS waren währenddessen gesperrt; es gab
+keinen entsprechenden Verbindungsversuch, Modellaufruf oder Remote-Write.
+
+Der ältere isolierte [CI-Lauf 40591804637](https://github.com/tncommerce/commerce-agents/actions/runs/40591804637)
+mit 163 Fällen bleibt historischer Nachweis: Sein QA-HEAD `705fdd1` unterscheidet
+sich vom damaligen Commerce-HEAD nur durch den isolierten Workflow. Er ist
+kein CI-Nachweis für den neuen kombinierten Stand. Eine neue GitHub-CI oder
+Produktivveröffentlichung wird hiermit nicht behauptet.
+
+**Schema-Gate:** Die beiden Runtime-Offer-Tabellen fehlten bei der lesenden
+Produktionsprüfung am 29.10. um 09:00 UTC. Diese noch nicht angewandte
+Migration ist weiterhin ausschließlich für die Erstinstallation vorgesehen.
+Unmittelbar vor einer späteren Anwendung muss das Fehlen erneut bestätigt
+werden. Eine schon installierte ältere Tabellenfassung benötigt einen separat
+geprüften Vorwärts-Upgrade; `CREATE TABLE IF NOT EXISTS` aktualisiert weder
+alte Nullbarkeiten noch CHECKs oder die neue Watermark-Spalte automatisch.
+Keine produktive Migration, Runtime-Aktivierung oder Angebotsverlängerung
+wurde durch diesen Fix durchgeführt. Eine bestätigte Enhanced-Quelle für
+Top Parfümerie fehlt weiterhin.
+
+## 27.10.2026 – Alternativer Awin Enhanced-/Google-Feed (nur Feldprüfung)
+
+Awin dokumentiert einen separaten Enhanced-/Google-Retail-Feed im JSONL-Format
+mit möglichen Feldern \`id\`, \`gtin\`, \`size\`, \`unit_pricing_measure\`,
+\`availability\`, \`price\` und \`shipping\`. **Ob der konkrete Advertiser
+Top Parfümerie 31081 im Konto 3099222 einen solchen Feed bereitstellt,
+ist bisher NICHT bestätigt.** Die offizielle Awin-Spezifikation ist nur
+ein Formatvertrag, kein gültiger produktbezogener Preis- oder Lizenzbeleg.
+
+Für eine möglicherweise bereitgestellte *lokale, autorisiert erworbene*
+JSONL-Datei gibt es nun die **isolierte Read-only-Quelltriage**:
+
+\`\`\`bash
+python scripts/review_dufynd_awin_enhanced_feed.py \
+  --feed /privat/authorisierte-original-feed-datei.jsonl \
+  --source-receipt /privat/geprüfter-source-receipt.json
+\`\`\`
+
+Das Source-Receipt enthält lediglich \`publisher_id=3099222\`,
+\`advertiser_id=31081\`, \`source_type=awin_enhanced_retail_jsonl\`,
+\`download_sha256\` und das echte \`downloaded_at\`; es ist **kein**
+Netzwerk-Token und darf keinen solchen enthalten. Der SHA-256 muss den
+unveränderten gesamten JSONL-Bytes entsprechen. Die Vorprüfung nutzt
+nur bestehende, freigegebene Top-Händler-SKUs (höchstens 50 pro Durchlauf),
+prüft bekannte EAN, genaue ml-Größe, in_stock, eindeutigen EUR-Artikelpreis
+ohne ungeklärte Rabatte und die explizit landesweite DE-Versandangabe.
+Falsche Größe, fremde GTIN, doppelte SKUs, unbestätigte Versandkosten,
+abgelaufene Downloadbelege oder fehlende Händlerfreigaben werden blockiert.
+
+\`FIELD_COMPLETE_REVIEW_ONLY\` bedeutet **niemals** aktivierbar!
+Auch bei vollständig gefüllten Feldern kann ein Awin-Download-Zeitstempel
+nicht die exakte SKU-Quellbeobachtungszeit ersetzen. Positives
+\`prepare_batch()\` und Live-Aktivierung verlangen einen weiteren
+belegten, aktuellen Händler-/Netzwerk-Quellvertrag. Die Ausgabe enthält
+keine angebotenen Preise, Merchants-URLs, künstlichen Affiliate-Links,
+und der neue Parser hat **0 Netzwerkzugriffe, 0 Datenbank-Schreibvorgänge
+und 0 öffentliche Angebotsaktivierungen**.
+
+Referenzen (reine Dokumentation):
+https://help.awin.com/apidocs/retail-publisher-productapidocumentation-1
+https://help.awin.com/developers/docs/enhanced-feeds-prod-spec
+
+
+
+## 27.10.2026 – Zusätzliche Quellenhärtung: archiviertes Git-Manifest und UVP
+
+Die lokale `--merchant-browser-evidence-dir`-Wiederverwendung ist ausschließlich
+für die **zwei bereits verifizierten** 26.10.-Browser-Quellpakete vorgesehen.
+Ein selbst erstelltes Verzeichnis oder eine neue `SHA256.json` wird nicht als
+vertrauenswürdiger Ursprung akzeptiert. Der ursprüngliche Git-Blob-Hash
+des Quellmanifests ist explizit gebunden, jede Browser-/Versanddatei muss
+ihren SHA-256-Eintrag erfüllen, und `batch-input.json` muss bytegeprüft
+dem übergebenen Original-Batchobjekt entsprechen. Neue Händlerfeeds können
+nach separater Quellfreigabe ihren eigenen Batch-Prozess erhalten.
+
+Außerdem darf ein durchgestrichener `UVP`-Preis niemals als
+aktueller ausgewählter Variantengesamtpreis gelten. Der Parser prüft
+genau eine tatsächliche Preiszeile im ausgewählten SKU-Abschnitt
+und ignoriert UVP und Literpreise.
+
+Diese Härtung verändert keine der ursprünglichen 10 Datenpunkte,
+keine Live-Angebote, keine ausgeführten Verkäufe oder Provisionen.
+Testfälle für fremde Quellen, geänderte Batch-Metadaten und UVP sind
+hinzugefügt, auf diesem exakten GitHub-Head **noch nicht ausgeführt**.
+
+
+## 27.10.2026 – vorhandene Original-Browser-Batches wiederverwendbar prüfen (DEV)
+
+Der neue optionale CLI-Modus
+`--merchant-browser-evidence-dir artifacts/dufynd-top-six-offers-20261026`
+(bzw. `dufynd-top-wave2-offers-20261026`) liest **nur** die drei
+lokalen SHA-256-archivierten Quelldateien. Das Manifest muss mit deren
+unveränderten Bytes übereinstimmen; pro Angebot müssen Quelle, geprüfter
+Händlerlink, Händler-SKU, ausgewählte ml-Variante, Preis, positiver
+Kaufbutton, Lageranzeige und die **ursprüngliche** `checked_at`-Zeit
+zum kanonischen Angebot passen. Der originale Deutschlandversand wird
+aus der archivierten Händlerbedingung gemeinsam für den Batch geprüft.
+Die Funktion ergänzt den Belegtyp/Zeitstempel **nur im Speicher**,
+überschreibt keine historische Quelldatei und verlängert keine Preise.
+
+Für beide Pakete (6 + 4) sind eigene reale Archiv-Fixture-Tests und
+SHA-/Zeitänderungs-Negativfälle vorbereitet; kein GitHub-Testlauf auf
+dem neuen HEAD ist hiermit behauptet. Browser-Beobachtungen enthalten
+keine Echtzeit-Verfügbarkeit für einen späteren Tag, deshalb sperrt der
+72h-Quellstempel den Batch nach Ablauf. Ursprüngliche Repo-Quellen
+werden nicht automatisch wiederveröffentlicht, und `--apply` bleibt
+an die exakte zusätzliche Owner-/Datenbankfreigabe gebunden.
+
+
+### Käufer-API prüft die gleichen Handelswerte (DEV)
+
+Die Runtime-Entscheidung `apply_runtime_snapshot` akzeptiert eine positive
+Supabase-Zeile nun nur mit **Preis + bekannten DE-Versandkosten + `in_stock=true`**.
+Ein Datenbank-/Transportfehler, ein HOLD, unbekannter Versand oder ein explizit
+nicht verfügbarer Artikel ergeben für Listing **und** Clickout
+`None`/kein Angebot. Damit kann kein unvollständiges Datenbankobjekt die
+strengeren Importer- und SQL-Check-Regeln umgehen. Das gilt nur, falls der
+Runtime-Modus nach einem späteren, eigenständig genehmigten Release
+überhaupt aktiviert wird. Noch keine Produktion umgestellt.
+
+
+## 27.10.2026 – Positivnachweise an Original-Beobachtungszeit binden (DEV)
+
+Auch ein formal gültiger Batch darf **keine alten Preisdaten neu datieren**.
+Ein `verified`-Satz erfordert daher ab diesem Entwicklungsschritt im
+bestehenden `evidence`-Objekt einen genauen
+`source_observed_at`-Zeitpunkt, der mit `verified_at` übereinstimmt,
+sowie einen quelltypspezifischen Originaldigest und Belegtyp:
+
+- `direct_merchant_review`: `source_evidence_kind=selected_variant_page`,
+  `browser_observation_sha256` (64 Hexzeichen);
+- `official_network_feed`:
+  `source_evidence_kind=exact_sku_stock_price_shipping_row`,
+  `source_row_sha256`;
+- `authorized_merchant_api`:
+  `source_evidence_kind=authorized_exact_sku_response`,
+  `api_observation_sha256`.
+
+Die strukturelle Prüfung bestätigt **nicht** selbst die Händler-Autorisierung
+oder Byte-Integrität: Der Operator muss vor dem separaten exakten Batch-GO
+Originalsource und Hash tatsächlich abgleichen. `Last Imported` einer
+Feedliste ist ausdrücklich **kein** solcher per-SKU-Preis-/Bestandsnachweis.
+Die zehn am 26.10. archivierten Quellpakete behalten ihre ursprünglichen
+Hash-/Zeitstempel und werden **nicht** nachträglich verändert oder verlängert.
+Ein bewusstes `hold` ohne Preis/Bestandsbehauptung bleibt auch ohne
+positiven Händler-Zeitstempel möglich.
+
+Regressionen für alte Zeitstempel, falsche Hash-/Belegfelder, reine
+Feed-Import-Zeit und fail-closed HOLD sind vorbereitet. **Kein Live-Rollout
+oder neue 72h-Frische durch diese Änderung.**
+
+
+## 27.10.2026 – Sammelprüfung und wahrheitsgemäße HOLD-Sperren (DEV / nicht live)
+
+**Ziel:** Eine Quelle für mehrere Händlerangebote prüfen, statt für jeden Duft
+einen eigenen Git-Release oder einen künstlich verlängerten Preissnapshot zu erzeugen.
+
+- \`scripts/prepare_dufynd_runtime_offer_batch.py --evidence <batch.json> --triage\`
+  erzeugt für **1–50 eindeutige Angebots-IDs** einen einzigen lokalen,
+  nicht schreibenden Bericht: \`COMPLETE_EVIDENCE_REVIEW_ONLY\`,
+  \`HOLD_REVIEW_ONLY\` oder \`BLOCKED_SOURCE_EVIDENCE\` mit festem
+  Fehlercode. Die Auswertung druckt weder Händler-/Affiliate-URLs noch
+  alte Preise, Quelltexte oder Geheimnisse. **Auch vollständig plausible
+  Kandidaten werden dadurch nicht aktiviert.**
+- Ein \`verified\`-Datensatz benötigt eine aktuell unabhängig belegte exakte
+  Variante, verifizierte offizielle Affiliate-Route, **positiven Bestand,
+  Preis und bestätigten DE-Versand**. Ein neuer Feed-Import-Zeitstempel oder
+  ein altes Preissignal allein erfüllt das nicht.
+- Ein \`hold\`-Datensatz trägt dagegen **keinen Preis, keinen Versandwert
+  und keinerlei Behauptung zum Lagerbestand**. Ein expliziter Sperrgrund
+  wie \`shipping_unverified\`, \`stock_unverified\` oder
+  \`variant_ambiguous\` ist erforderlich und verändert den
+  SHA-256-gebundenen Batch-Inhalt. Dies ist eine Quellenentscheidung,
+  keine neue positive Händlerfreigabe.
+- Die vorbereitete **noch nicht angewandte** Supabase-Migration erzwingt
+  die Unterscheidung zusätzlich durch einen SQL-CHECK. Bestehende
+  identitätsgebundene Affiliate-URLs, Produkt-IDs und die 72h-Gates
+  bleiben unberührt. Ohne \`DUFYND_RUNTIME_OFFER_SNAPSHOTS=enabled\`
+  ändert sich die Live-Kaufstrecke nicht.
+- Für den 26.10. existieren bereits zwei originale Top-Parfümerie-Batches
+  mit **6 + 4** Angebotssätzen. Deren Prüfuhrzeit darf am 27./29.10. nicht
+  durch dieses Tool hochgesetzt werden. Sobald ein gesamter Batch später
+  vollständig verifiziert ist, bleibt die separate exakte
+  \`batch_id:batch_sha256\`-Freigabe Voraussetzung für
+  \`--apply\`. Keine Teilaktivierung anhand des Triages.
+- Zusätzliche Pytest- und echte PostgreSQL-Fälle sind in den bestehenden
+  Testdateien vorbereitet. **Kein neuer CI-Erfolg und keine Live-SQL-
+  Migration in diesem DEV-Schritt behauptet.**
+
+
+
 Stand: 23.10.2026. Die ersten produktiven Preisquellen bleiben **unverändert**.
 Dieses Paket ist eine vorbereitete einmalige Umstellung; es ist **kein** bereits
 aktivierter Notino-Feed oder eine Freigabe zur Veröffentlichung.

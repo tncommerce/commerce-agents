@@ -15,7 +15,10 @@ from examples.retail.api.merchant_offers import (
     offer_clickout_target,
 )
 from examples.retail.api.runtime_offer_snapshots import approved_affiliate_route
-from scripts.prepare_dufynd_runtime_offer_batch import prepare_batch
+from scripts.prepare_dufynd_runtime_offer_batch import (
+    prepare_batch,
+    restore_direct_merchant_browser_evidence,
+)
 
 DATA = Path("examples/retail/data")
 PACKET = Path("artifacts/dufynd-top-wave2-offers-20261026")
@@ -138,7 +141,16 @@ def test_real_development_store_customer_payload_and_pure_target(product_id, mon
 
 def test_existing_batch_validator_accepts_canonical_data_and_rejects_variant_substitution() -> None:
     offers = read(DATA / "merchant_offers.json")["offers"]
-    evidence = read(PACKET / "batch-input.json")
+    original = read(PACKET / "batch-input.json")
+    with pytest.raises(ValueError, match="^source_per_variant_evidence_kind_required$"):
+        prepare_batch(offers, original, now=NOW)
+    evidence = restore_direct_merchant_browser_evidence(
+        offers, original, evidence_dir=PACKET, now=NOW
+    )
+    assert original == read(PACKET / "batch-input.json")
+    assert [row["verified_at"] for row in evidence["offers"]] == [
+        row["verified_at"] for row in original["offers"]
+    ]
     assert len(prepare_batch(offers, evidence, now=NOW)) == 4
     evidence["offers"][0]["volume_ml"] = 60
     with pytest.raises(ValueError, match="brand_concentration_or_volume_mismatch"):

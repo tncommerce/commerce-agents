@@ -4,12 +4,19 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from pathlib import Path
 from threading import Event, Lock, Thread
 
 import httpx
 import pytest
-from scripts.prepare_dufynd_runtime_offer_batch import batch_digest, prepare_batch
+from scripts.prepare_dufynd_runtime_offer_batch import (
+    batch_digest,
+    prepare_batch,
+    restore_direct_merchant_browser_evidence,
+    selected_merchant_price_matches,
+    triage_batch,
+)
 
 from retail.api import purchase_freshness, runtime_offer_snapshots
 from retail.api.merchant_offers import MerchantOfferStore, offer_clickout_target
@@ -46,6 +53,7 @@ def snapshot(row: dict, *, now: datetime | None = None) -> dict:
 
 
 def evidence(row: dict, *, now: datetime | None = None) -> dict:
+    observed_at = (now or datetime.now(UTC)).isoformat()
     return {
         "schema_version": 1,
         "batch_id": "notino-batch-20261023",
@@ -62,11 +70,16 @@ def evidence(row: dict, *, now: datetime | None = None) -> dict:
                 "price": 119.0,
                 "shipping_cost": 0.0,
                 "in_stock": True,
-                "verified_at": (now or datetime.now(UTC)).isoformat(),
+                "verified_at": observed_at,
                 "decision": "verified",
                 "source_type": "official_network_feed",
                 "source_ref": "network:cj-fixture-allowed",
-                "evidence": {"source_observation": "isolated-test-fixture-no-real-feed"},
+                "evidence": {
+                    "source_observation": "isolated-test-fixture-no-real-feed",
+                    "source_evidence_kind": "exact_sku_stock_price_shipping_row",
+                    "source_row_sha256": "a" * 64,
+                    "source_observed_at": observed_at,
+                },
             }
         ],
     }
@@ -144,6 +157,8 @@ def test_no_database_observation_never_republishes_stale_file(monkeypatch, datab
         {"price": -50},
         {"price": "NaN"},
         {"shipping_cost": -1},
+        {"shipping_cost": None},
+        {"in_stock": False},
         {"in_stock": "true"},
         {"currency": "USD"},
     ],
@@ -168,7 +183,7 @@ def test_hold_and_out_of_stock_are_never_eligible(monkeypatch) -> None:
     checked = snapshot(row)
     checked["in_stock"] = False
     out_of_stock = runtime_offer_snapshots.apply_runtime_snapshot(row, checked)
-    assert out_of_stock is not None and out_of_stock["in_stock"] is False
+    assert out_of_stock is None  # No buyable offer can carry stock=false.
     checked["decision"] = "hold"
     assert runtime_offer_snapshots.apply_runtime_snapshot(row, checked) is None
     monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
@@ -292,9 +307,336 @@ def test_hold_can_revoke_a_row_without_new_affiliate_or_ean_approval() -> None:
     row = canonical()
     packet = evidence(row)
     packet["offers"][0]["decision"] = "hold"
+    packet["offers"][0]["hold_reason"] = "source_unavailable"
     packet["offers"][0].pop("ean")
+    for field in ("price", "shipping_cost", "in_stock"):
+        packet["offers"][0].pop(field)
     result = prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
     assert result[0]["decision"] == "hold"
+    assert result[0]["price"] is None
+    assert result[0]["shipping_cost"] is None
+    assert result[0]["in_stock"] is None
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid"),
+    [
+        ("price", None),
+        ("shipping_cost", None),
+        ("in_stock", None),
+        ("in_stock", False),
+        ("in_stock", "true"),
+    ],
+)
+def test_bulk_verified_offer_requires_complete_total_and_confirmed_stock(
+    field,
+    invalid,
+) -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0][field] = invalid
+    with pytest.raises(ValueError, match="verified_"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+def _source_hold(row: dict, reason: str = "source_unavailable") -> dict:
+    packet = evidence(row)
+    item = packet["offers"][0]
+    item["decision"] = "hold"
+    item["hold_reason"] = reason
+    item.pop("ean")
+    for field in ("price", "shipping_cost", "in_stock"):
+        item.pop(field)
+    return packet
+
+
+@pytest.mark.parametrize(
+    ("field", "invalid"),
+    [
+        ("price", 99.0),
+        ("shipping_cost", 0),
+        ("in_stock", False),
+        ("in_stock", True),
+    ],
+)
+def test_bulk_hold_cannot_carry_cached_positive_or_negative_commerce_claim(
+    field,
+    invalid,
+) -> None:
+    row = canonical()
+    packet = _source_hold(row)
+    packet["offers"][0][field] = invalid
+    with pytest.raises(ValueError, match="hold_must_omit"):
+        prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
+
+
+def test_bulk_hold_requires_specific_reason_and_rebinds_proof_digest() -> None:
+    row = canonical()
+    first = _source_hold(row, "source_unavailable")
+    second = _source_hold(row, "price_conflict")
+    now = datetime.now(UTC)
+    a = prepare_batch([row], first, now=now, partners_payload={"partners": []})
+    b = prepare_batch([row], second, now=now, partners_payload={"partners": []})
+    assert a[0]["decision"] == "hold" and b[0]["decision"] == "hold"
+    assert a[0]["evidence_sha256"] != b[0]["evidence_sha256"]
+    assert batch_digest(a, batch_id=first["batch_id"]) != batch_digest(
+        b, batch_id=second["batch_id"]
+    )
+    first["offers"][0].pop("hold_reason")
+    with pytest.raises(ValueError, match="explicit_hold_reason_required"):
+        prepare_batch([row], first, now=now, partners_payload={"partners": []})
+
+
+def test_verified_batch_cannot_hide_unchecked_delivery_with_unknown_shipping() -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0].pop("shipping_cost")
+    with pytest.raises(ValueError, match="verified_total_shipping_missing"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+def test_fifty_offer_triage_envelope_and_exception_only_review() -> None:
+    row = canonical()
+    packet = evidence(row)
+    # Positive exact source plus a well-formed but unapproved offer identifier.
+    phantom = dict(packet["offers"][0])
+    phantom["offer_id"] = "review-only-unreleased-offer"
+    phantom["price"] = 1
+    packet["offers"].append(phantom)
+    report = triage_batch([row], packet, now=datetime.now(UTC))
+    assert report["status"] == "REVIEW_ONLY_NO_IMPORT_OR_ACTIVATION"
+    assert report["offer_count"] == 2
+    assert report["counts"] == {
+        "COMPLETE_EVIDENCE_REVIEW_ONLY": 1,
+        "HOLD_REVIEW_ONLY": 0,
+        "BLOCKED_SOURCE_EVIDENCE": 1,
+    }
+    assert report["items"][0]["offer_id"] == row["offer_id"]
+    assert report["items"][1]["reason"] == "unknown_or_unreleased_offer"
+    assert report["database_writes"] == 0
+    assert report["affiliate_clickouts"] == 0
+    assert report["public_offer_activation"] is False
+    # No URLs, tracked links, old prices or proof material in the concise review.
+    serialized = json.dumps(report)
+    assert "affiliate_url" not in serialized
+    assert "source_observation" not in serialized
+    assert "119.0" not in serialized
+
+    packet["offers"] = [dict(phantom, offer_id=f"review-unknown-{n}") for n in range(51)]
+    with pytest.raises(ValueError, match="batch_size_out_of_bounds"):
+        triage_batch([row], packet, now=datetime.now(UTC))
+    packet["offers"] = [packet["offers"][0]] * 2
+    with pytest.raises(ValueError, match="duplicate_offer_in_batch"):
+        triage_batch([row], packet, now=datetime.now(UTC))
+
+
+def test_triage_distinguishes_missing_shipping_from_source_hold_without_writes() -> None:
+    row = canonical()
+    packet = evidence(row)
+    item = packet["offers"][0]
+    item.pop("shipping_cost")
+    invalid = triage_batch([row], packet, now=datetime.now(UTC))
+    assert invalid["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 1
+    assert invalid["items"][0]["reason"] == "verified_total_shipping_missing"
+    for field in ("price", "in_stock"):
+        item.pop(field)
+    item["decision"] = "hold"
+    item["hold_reason"] = "shipping_unverified"
+    held = triage_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
+    assert held["counts"]["HOLD_REVIEW_ONLY"] == 1
+    assert held["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 0
+    assert held["all_source_evidence_approved"] is False
+
+
+def test_bulk_positive_offer_cannot_retimestamp_historical_observation() -> None:
+    row = canonical()
+    now = datetime.now(UTC)
+    packet = evidence(row, now=now - timedelta(hours=48))
+    packet["offers"][0]["verified_at"] = now.isoformat()
+    with pytest.raises(ValueError, match="source_observation_not_equal_to_verified_at"):
+        prepare_batch([row], packet, now=now)
+
+
+@pytest.mark.parametrize(
+    "mutated_source",
+    [
+        {"source_observed_at": None},
+        {"source_observed_at": "2026-08-01T00:00:00Z"},
+        {"source_observed_at": "not-a-timestamp"},
+        {"source_evidence_kind": "feed_import_timestamp_only"},
+        {"source_row_sha256": ""},
+        {"source_row_sha256": "g" * 64},
+    ],
+)
+def test_bulk_positive_offer_requires_original_per_sku_source_time_and_digest(
+    mutated_source: dict,
+) -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0]["evidence"].update(mutated_source)
+    with pytest.raises(ValueError, match="source_"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+def test_global_feed_import_time_never_refreshes_sku_price() -> None:
+    row = canonical()
+    packet = evidence(row)
+    packet["offers"][0]["evidence"] = {
+        "source_observation": "Awin import metadata 2026-10-26",
+        "feed_imported_at": datetime.now(UTC).isoformat(),
+        "source_evidence_kind": "feed_import_timestamp_only",
+    }
+    report = triage_batch([row], packet, now=datetime.now(UTC))
+    assert report["counts"]["COMPLETE_EVIDENCE_REVIEW_ONLY"] == 0
+    assert report["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 1
+    assert report["items"][0]["reason"] == "source_per_variant_evidence_kind_required"
+
+
+def test_bulk_hold_does_not_need_false_positive_price_observation() -> None:
+    row = canonical()
+    packet = _source_hold(row)
+    packet["offers"][0]["evidence"].pop("source_evidence_kind")
+    packet["offers"][0]["evidence"].pop("source_row_sha256")
+    packet["offers"][0]["evidence"].pop("source_observed_at")
+    rows = prepare_batch([row], packet, now=datetime.now(UTC), partners_payload={"partners": []})
+    assert rows[0]["decision"] == "hold"
+    assert rows[0]["price"] is None
+    assert rows[0]["shipping_cost"] is None
+
+
+@pytest.mark.parametrize(
+    ("bundle", "count"),
+    [
+        ("dufynd-top-six-offers-20261026", 6),
+        ("dufynd-top-wave2-offers-20261026", 4),
+    ],
+)
+def test_original_merchant_bundle_sha_and_observation_times_rehydrate_exactly(
+    bundle: str,
+    count: int,
+) -> None:
+    folder = Path("artifacts") / bundle
+    source = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    now = datetime(2026, 10, 27, 12, tzinfo=UTC)
+    recovered = restore_direct_merchant_browser_evidence(
+        canonical_rows,
+        source,
+        evidence_dir=folder,
+        now=now,
+    )
+    assert len(recovered["offers"]) == count
+    assert source["offers"] != recovered["offers"]
+    for original, checked in zip(source["offers"], recovered["offers"], strict=True):
+        assert checked["verified_at"] == original["verified_at"]
+        assert checked["price"] == original["price"]
+        assert checked["shipping_cost"] == original["shipping_cost"]
+        assert checked["evidence"]["source_observed_at"] == original["verified_at"]
+        assert checked["evidence"]["source_evidence_kind"] == "selected_variant_page"
+    prepared = prepare_batch(canonical_rows, recovered, now=now)
+    assert len(prepared) == count
+    assert all(row["decision"] == "verified" for row in prepared)
+
+
+def test_original_browser_witness_rejects_old_retimed_and_changed_source(
+    tmp_path: Path,
+) -> None:
+    folder = Path("artifacts/dufynd-top-six-offers-20261026")
+    source = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    now = datetime(2026, 10, 27, 12, tzinfo=UTC)
+    trusted_copy = tmp_path / folder.name
+    trusted_copy.mkdir()
+    for name in (
+        "SHA256.json",
+        "batch-input.json",
+        "merchant-browser-observations.json",
+        "shipping-browser-observation.json",
+    ):
+        (trusted_copy / name).write_bytes((folder / name).read_bytes())
+
+    source["offers"][0]["verified_at"] = now.isoformat()
+    with pytest.raises(ValueError, match="original_batch_input_does_not_match_archived_source"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows,
+            source,
+            evidence_dir=trusted_copy,
+            now=now,
+        )
+    source = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    original_bytes = (trusted_copy / "merchant-browser-observations.json").read_bytes()
+    (trusted_copy / "merchant-browser-observations.json").write_bytes(original_bytes + b" ")
+    with pytest.raises(ValueError, match="original_source_sha256_mismatch"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows,
+            source,
+            evidence_dir=trusted_copy,
+            now=now,
+        )
+    (trusted_copy / "merchant-browser-observations.json").write_bytes(original_bytes)
+    with pytest.raises(ValueError, match="expired_or_future_source"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows,
+            source,
+            evidence_dir=trusted_copy,
+            now=datetime(2026, 10, 31, 12, tzinfo=UTC),
+        )
+
+
+def test_reviewed_manifest_anchor_rejects_forged_checksums(tmp_path: Path) -> None:
+    folder = Path("artifacts/dufynd-top-six-offers-20261026")
+    packet = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    for name in (
+        "SHA256.json",
+        "batch-input.json",
+        "merchant-browser-observations.json",
+        "shipping-browser-observation.json",
+    ):
+        (tmp_path / name).write_bytes((folder / name).read_bytes())
+    # An unapproved custom folder must not impersonate an immutable bundle.
+    with pytest.raises(ValueError, match="original_source_bundle_not_approved"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows,
+            packet,
+            evidence_dir=tmp_path,
+            now=datetime(2026, 10, 27, 12, tzinfo=UTC),
+        )
+    from scripts.prepare_dufynd_runtime_offer_batch import (
+        ARCHIVED_SOURCE_MANIFEST_GIT_BLOBS,
+    )
+
+    assert len(ARCHIVED_SOURCE_MANIFEST_GIT_BLOBS) == 2
+
+
+def test_buyer_price_proof_cannot_confuse_crossed_uvp_with_actual_price() -> None:
+    browser = json.loads(
+        Path(
+            "artifacts/dufynd-top-six-offers-20261026/merchant-browser-observations.json"
+        ).read_text(encoding="utf-8")
+    )
+    rabanne = browser["rows"][1]["main"]
+    section = rabanne.split("Artikelnummer: 707368", 1)[1].split("In den Warenkorb", 1)[0]
+    assert selected_merchant_price_matches(section, Decimal("102.95"))
+    assert not selected_merchant_price_matches(section, Decimal("119"))
+    layton = browser["rows"][3]["main"]
+    layton_section = layton.split("Artikelnummer: 812773", 1)[1].split("In den Warenkorb", 1)[0]
+    assert selected_merchant_price_matches(layton_section, Decimal("290"))
+    assert not selected_merchant_price_matches(layton_section, Decimal("229"))
+
+
+def test_original_browser_bundle_refuses_changed_source_metadata() -> None:
+    folder = Path("artifacts/dufynd-top-six-offers-20261026")
+    packet = json.loads((folder / "batch-input.json").read_text(encoding="utf-8"))
+    canonical_rows = json.loads(OFFER_FILE.read_text(encoding="utf-8"))["offers"]
+    packet["offers"][0]["source_ref"] = "unsigned-marketing-claim"
+    with pytest.raises(ValueError, match="original_batch_input_does_not_match_archived_source"):
+        restore_direct_merchant_browser_evidence(
+            canonical_rows,
+            packet,
+            evidence_dir=folder,
+            now=datetime(2026, 10, 27, 12, tzinfo=UTC),
+        )
 
 
 def test_runtime_rollout_preserves_legacy_rabanne_certification(monkeypatch) -> None:
