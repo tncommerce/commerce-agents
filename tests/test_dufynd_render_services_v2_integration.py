@@ -19,6 +19,7 @@ from tests.test_dufynd_render_services_v2_postgres import (
     SOURCE,
     STORE,
     database,
+    isolated_database,
     observer,
     seed,
     state,
@@ -56,7 +57,7 @@ def test_runtime_read_artifact_rest_rpc_and_native_receipts(
         reply = client.get(request.url.path, headers=dict(request.headers))
         return httpx.Response(reply.status_code, content=reply.content, headers=reply.headers)
 
-    with database(DSN) as db, client:
+    with isolated_database(DSN) as local_dsn, database(local_dsn) as db, client:
         seed(db)
         before = state(db)
         started = db.execute("SELECT clock_timestamp()").fetchone()[0]

@@ -68,15 +68,38 @@ def install(db):
 
 
 @contextmanager
+def isolated_database(parent_dsn):
+    """Never inherit the broader CI suite's schema, grants or pending requests."""
+    import psycopg
+    from psycopg import sql
+    from psycopg.conninfo import conninfo_to_dict, make_conninfo
+
+    name = "dufynd_render_v2_" + uuid4().hex
+    params = conninfo_to_dict(parent_dsn)
+    with psycopg.connect(parent_dsn, autocommit=True) as admin:
+        admin.execute(sql.SQL("CREATE DATABASE {} TEMPLATE template0").format(sql.Identifier(name)))
+        try:
+            yield make_conninfo(**{**params, "dbname": name})
+        finally:
+            admin.execute(sql.SQL("DROP DATABASE {} WITH (FORCE)").format(sql.Identifier(name)))
+
+
+@contextmanager
 def database(dsn):
     with capture_database(dsn) as connection:
         install(connection)
         yield connection
 
 
+@pytest.fixture(scope="module")
+def isolated_dsn():
+    with isolated_database(DSN) as target:
+        yield target
+
+
 @pytest.fixture
-def db():
-    with database(DSN) as connection:
+def db(isolated_dsn):
+    with database(isolated_dsn) as connection:
         yield connection
 
 
@@ -142,6 +165,19 @@ def observer(db, service):
         "SELECT to_jsonb(o) FROM public.dufynd_external_observers o WHERE observer_id=%s",
         ("render:" + service,),
     ).fetchone()[0]
+
+
+def test_module_fixture_uses_its_own_database(db):
+    from psycopg.conninfo import conninfo_to_dict
+
+    assert db.execute("SELECT current_database()").fetchone()[0] != conninfo_to_dict(DSN)["dbname"]
+    assert db.execute("SELECT to_regclass('net._http_response')").fetchone()[0] is None
+    assert (
+        db.execute(
+            "SELECT count(*) FROM public.dufynd_external_observers WHERE request_id IS NOT NULL"
+        ).fetchone()[0]
+        == 0
+    )
 
 
 def test_install_is_disabled_private_and_preserves_existing_poller_attributes(db):
@@ -799,22 +835,11 @@ def test_successful_service_role_capture_cannot_enable_or_rewrite_scopes(db):
 
 @contextmanager
 def committed_database():
-    import psycopg
-    from psycopg import sql
-    from psycopg.conninfo import conninfo_to_dict, make_conninfo
-
-    name = "dufynd_multiservice_" + uuid4().hex
-    params = conninfo_to_dict(DSN)
-    with psycopg.connect(DSN, autocommit=True) as admin:
-        admin.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
-        try:
-            target = make_conninfo(**{**params, "dbname": name})
-            with database(target) as producer:
-                seed(producer)
-                producer.commit()
-            yield target
-        finally:
-            admin.execute(sql.SQL("DROP DATABASE {} WITH (FORCE)").format(sql.Identifier(name)))
+    with isolated_database(DSN) as target:
+        with database(target) as producer:
+            seed(producer)
+            producer.commit()
+        yield target
 
 
 def test_concurrent_same_attempt_commits_once_and_two_services_do_not_collide():
@@ -870,10 +895,10 @@ def test_scope_revocation_waits_for_inflight_capture_then_immediately_blocks_it(
             assert state(connection) == before
 
 
-def test_migration_rejects_poller_drift_without_partial_installation():
+def test_migration_rejects_poller_drift_without_partial_installation(isolated_dsn):
     import psycopg
 
-    with capture_database(DSN) as connection:
+    with capture_database(isolated_dsn) as connection:
         original = function_sql(POLL, "poll_dufynd_observers")
         connection.execute(
             original.replace(
