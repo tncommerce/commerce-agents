@@ -18,6 +18,8 @@ REPO = f"{REGION}-docker.pkg.dev/{PROJECT}/broker/runtime"
 SHA = "a" * 40
 OLD_DIGEST = "sha256:" + "1" * 64
 DIGEST = "sha256:" + "2" * 64
+OLD_RUNTIME_DIGEST = "sha256:" + "3" * 64
+RUNTIME_DIGEST = "sha256:" + "4" * 64
 OLD_REVISION = SERVICE + "-00004-old"
 REVISION = SERVICE + "-00005-new"
 ARGS = [
@@ -155,9 +157,22 @@ elif tool == "git":
         print(config.get("checkout_sha", "a" * 40))
     else:
         sys.exit(99)
+elif tool == "docker" and args == ["buildx", "version"]:
+    if config.get("fail") == "buildx":
+        fail()
 elif tool == "docker" and args[0] in {"build", "push"}:
     if config.get("fail") == args[0]:
         fail()
+elif tool == "docker" and args[:3] == ["buildx", "imagetools", "inspect"]:
+    if len(args) != 6 or args[4:] != ["--format", "{{json .Manifest}}"]:
+        sys.exit(98)
+    if not args[3].startswith(config["image_repository"] + "@"):
+        sys.exit(98)
+    image_digest = args[3].split("@", 1)[1]
+    if config.get("fail") == "manifest":
+        fail()
+    raw = config.get("raw", {}).get("manifest")
+    print(raw if raw is not None else json.dumps(config["manifests"][image_digest]))
 else:
     sys.exit(99)
 state_path.write_text(json.dumps(state))
@@ -192,6 +207,15 @@ def owner_cli(tmp_path):
             "image_summary": {"digest": DIGEST, "fully_qualified_digest": REPO + "@" + DIGEST}
         },
         "expected_image": REPO + "@" + DIGEST,
+        "image_repository": REPO,
+        "manifests": {
+            image_digest: {
+                "schemaVersion": 2,
+                "mediaType": "application/vnd.oci.image.manifest.v1+json",
+                "digest": image_digest,
+            }
+            for image_digest in (OLD_DIGEST, DIGEST)
+        },
     }
     baseline["revision_after"]["metadata"]["name_expected"] = REVISION
 
@@ -223,7 +247,12 @@ def is_update(call):
 
 
 def assert_no_build_or_remote_write(calls):
-    assert all(call[0] == "gcloud" and "describe" in call and not is_update(call) for call in calls)
+    assert all(
+        (call[0] == "gcloud" and "describe" in call and not is_update(call))
+        or call[:4] == ["docker", "buildx", "imagetools", "inspect"]
+        or call == ["docker", "buildx", "version"]
+        for call in calls
+    )
 
 
 def test_helper_has_valid_bash_syntax():
@@ -232,13 +261,16 @@ def test_helper_has_valid_bash_syntax():
 
 
 @pytest.mark.parametrize("bare_digest", [False, True])
+@pytest.mark.parametrize("descriptor_only", [False, True])
 def test_bound_existing_target_deploys_only_image_and_verifies_exact_ready_traffic(
-    owner_cli, bare_digest
+    owner_cli, bare_digest, descriptor_only
 ):
     config, execute = owner_cli
     if bare_digest:
         config["revision"]["status"]["imageDigest"] = OLD_DIGEST
         config["revision_after"]["status"]["imageDigest"] = DIGEST
+    if descriptor_only:
+        del config["manifests"][DIGEST]["schemaVersion"]
     result, calls = execute(config)
     assert result.returncode == 0, result.stderr
     assert f"verified_revision={REVISION}" in result.stdout
@@ -246,11 +278,13 @@ def test_bound_existing_target_deploys_only_image_and_verifies_exact_ready_traff
     assert "verified_traffic=100" in result.stdout
     first_clone = next(i for i, call in enumerate(calls) if call[:2] == ["git", "clone"])
     assert_no_build_or_remote_write(calls[:first_clone])
-    assert len(calls[:first_clone]) == 4
+    assert len(calls[:first_clone]) == 5
     assert len([call for call in calls if is_update(call)]) == 1
     assert [call[:2] for call in calls if call[0] == "docker"] == [
+        ["docker", "buildx"],
         ["docker", "build"],
         ["docker", "push"],
+        ["docker", "buildx"],
     ]
     for call in calls:
         if call[0] == "gcloud":
@@ -337,7 +371,7 @@ def test_read_only_preflight_rejects_wrong_or_unready_target_before_clone_build_
     assert_no_build_or_remote_write(calls)
 
 
-@pytest.mark.parametrize("failed", ["project", "repository", "service", "revision"])
+@pytest.mark.parametrize("failed", ["buildx", "project", "repository", "service", "revision"])
 def test_existing_access_failures_stop_without_auth_or_resource_setup(owner_cli, failed):
     config, execute = owner_cli
     config["fail"] = failed
@@ -366,7 +400,9 @@ def test_checkout_identity_failure_prevents_any_image_build(owner_cli):
     config["checkout_sha"] = "b" * 40
     result, calls = execute(config)
     assert result.returncode != 0
-    assert not any(call[0] == "docker" or is_update(call) for call in calls)
+    assert not any(
+        call[:2] in (["docker", "build"], ["docker", "push"]) or is_update(call) for call in calls
+    )
 
 
 @pytest.mark.parametrize("read_number,pushed", [(2, False), (3, True)])
@@ -439,3 +475,145 @@ def test_cli_stage_failure_has_no_followup_mutation_or_success_claim(owner_cli, 
     assert len([call for call in calls if is_update(call)]) == (1 if failed == "update" else 0)
     if failed == "build":
         assert not any(call[:2] == ["docker", "push"] for call in calls)
+
+
+def image_index(root_digest, child_digest, *, docker=False):
+    return {
+        "schemaVersion": 2,
+        "digest": root_digest,
+        "mediaType": (
+            "application/vnd.docker.distribution.manifest.list.v2+json"
+            if docker
+            else "application/vnd.oci.image.index.v1+json"
+        ),
+        "manifests": [
+            {
+                "mediaType": "application/vnd.oci.image.manifest.v1+json",
+                "digest": child_digest,
+                "platform": {"os": "linux", "architecture": "amd64"},
+            },
+            {
+                "mediaType": "application/vnd.oci.image.manifest.v1+json",
+                "digest": "sha256:" + "5" * 64,
+                "platform": {"os": "unknown", "architecture": "unknown"},
+                "annotations": {"vnd.docker.reference.type": "attestation-manifest"},
+            },
+        ],
+    }
+
+
+@pytest.mark.parametrize("docker", [False, True], ids=["oci_index", "docker_manifest_list"])
+def test_index_deploy_keeps_root_pin_and_verifies_selected_runtime_digest(owner_cli, docker):
+    config, execute = owner_cli
+    config["manifests"][OLD_DIGEST] = image_index(OLD_DIGEST, OLD_RUNTIME_DIGEST, docker=docker)
+    config["manifests"][DIGEST] = image_index(DIGEST, RUNTIME_DIGEST, docker=docker)
+    config["revision"]["status"]["imageDigest"] = REPO + "@" + OLD_RUNTIME_DIGEST
+    config["revision_after"]["status"]["imageDigest"] = REPO + "@" + RUNTIME_DIGEST
+    result, calls = execute(config)
+    assert result.returncode == 0, result.stderr
+    assert f"verified_image={REPO}@{DIGEST}" in result.stdout
+    assert f"verified_runtime_image={REPO}@{RUNTIME_DIGEST}" in result.stdout
+    assert len([call for call in calls if is_update(call)]) == 1
+    first_clone = next(i for i, call in enumerate(calls) if call[:2] == ["git", "clone"])
+    assert_no_build_or_remote_write(calls[:first_clone])
+    manifest_reads = [
+        call[4] for call in calls if call[:4] == ["docker", "buildx", "imagetools", "inspect"]
+    ]
+    assert manifest_reads == [REPO + "@" + OLD_DIGEST, REPO + "@" + DIGEST]
+
+
+@pytest.mark.parametrize("stage", ["before", "after_build"])
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "foreign_root",
+        "wrong_schema",
+        "wrong_type",
+        "missing_platform",
+        "wrong_architecture",
+        "duplicate_platform",
+        "duplicate_digest",
+        "foreign_child",
+        "invalid_child",
+        "nested_index",
+        "attestation_runtime",
+        "unsupported_variant",
+        "platform_requirements",
+        "missing_manifests",
+        "empty_manifests",
+        "wrong_runtime_child",
+        "unreadable",
+    ],
+)
+def test_unproven_index_binding_fails_before_next_mutation(owner_cli, stage, fault):
+    config, execute = owner_cli
+    root_digest = OLD_DIGEST if stage == "before" else DIGEST
+    child_digest = OLD_RUNTIME_DIGEST if stage == "before" else RUNTIME_DIGEST
+    manifest = image_index(root_digest, child_digest)
+    config["manifests"][root_digest] = manifest
+    if stage == "before":
+        config["revision"]["status"]["imageDigest"] = child_digest
+    else:
+        config["revision_after"]["status"]["imageDigest"] = child_digest
+    selected = manifest["manifests"][0]
+    if fault == "foreign_root":
+        manifest["digest"] = "foreign.example/runtime@" + root_digest
+    elif fault == "wrong_schema":
+        manifest["schemaVersion"] = True
+    elif fault == "wrong_type":
+        manifest["mediaType"] = "application/unknown"
+    elif fault == "missing_platform":
+        del selected["platform"]
+    elif fault == "wrong_architecture":
+        selected["platform"]["architecture"] = "arm64"
+    elif fault == "duplicate_platform":
+        manifest["manifests"][1]["platform"] = dict(selected["platform"])
+    elif fault == "duplicate_digest":
+        manifest["manifests"][1]["digest"] = child_digest
+    elif fault == "foreign_child":
+        selected["digest"] = "foreign.example/runtime@" + child_digest
+    elif fault == "invalid_child":
+        selected["digest"] = "sha256:invalid"
+    elif fault == "nested_index":
+        selected["mediaType"] = "application/vnd.oci.image.index.v1+json"
+    elif fault == "attestation_runtime":
+        selected["annotations"] = {"vnd.docker.reference.type": "attestation-manifest"}
+    elif fault == "unsupported_variant":
+        selected["platform"]["variant"] = "v4"
+    elif fault == "platform_requirements":
+        selected["platform"]["os.features"] = ["unsupported"]
+    elif fault == "missing_manifests":
+        del manifest["manifests"]
+    elif fault == "empty_manifests":
+        manifest["manifests"] = []
+    elif fault == "wrong_runtime_child":
+        selected["digest"] = "sha256:" + "6" * 64
+    elif fault == "unreadable":
+        config["fail"] = "manifest"
+    result, calls = execute(config)
+    assert result.returncode != 0
+    assert "verified_traffic=100" not in result.stdout
+    assert "private-provider-diagnostic-canary" not in result.stdout + result.stderr
+    if stage == "before":
+        assert_no_build_or_remote_write(calls)
+    elif fault == "wrong_runtime_child":
+        # A well-formed registry graph can only be compared with Cloud Run after
+        # the update. An unbound ready digest must never claim success.
+        assert len([call for call in calls if is_update(call)]) == 1
+    else:
+        assert not any(is_update(call) for call in calls)
+
+
+@pytest.mark.parametrize(
+    "raw",
+    ["[]", "not JSON", '{"digest":1,"digest":2}', " " * 262145],
+    ids=["wrong_type", "malformed_json", "duplicate_keys", "oversized"],
+)
+def test_malformed_index_evidence_is_bounded_and_never_ignored(owner_cli, raw):
+    config, execute = owner_cli
+    config["revision"]["status"]["imageDigest"] = OLD_RUNTIME_DIGEST
+    config["raw"] = {"manifest": raw}
+    result, calls = execute(config)
+    assert result.returncode != 0
+    assert "Traceback" not in result.stderr
+    assert_no_build_or_remote_write(calls)
