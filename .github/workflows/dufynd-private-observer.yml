@@ -27,10 +27,24 @@ jobs:
       - name: Dispatch accepted observer workflow on scentai-mvp
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >-
-          gh workflow run dufynd-private-observer.yml
-          --repo "${GITHUB_REPOSITORY}"
-          --ref scentai-mvp
+          DUFYND_PRIVATE_BROKER_ENABLED: ${{ vars.DUFYND_PRIVATE_BROKER_ENABLED }}
+          DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED: ${{ vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED }}
+          DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED: ${{ vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED }}
+        run: |
+          set -euo pipefail
+          mode=render
+          capture_v2=false
+          if [[ "${DUFYND_PRIVATE_BROKER_ENABLED}" == "1" &&
+                "${DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED}" == "1" &&
+                "${DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED}" == "1" ]]; then
+            mode=render_services_v2
+            capture_v2=true
+          fi
+          gh workflow run dufynd-private-observer.yml \
+            --repo "${GITHUB_REPOSITORY}" \
+            --ref scentai-mvp \
+            -f "mode=${mode}" \
+            -f "capture_v2=${capture_v2}"
 
   read:
     if: github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
