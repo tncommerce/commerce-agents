@@ -16,6 +16,9 @@ from typing import Any, Protocol
 import httpx
 
 RENDER_SERVICE = "srv-dakpfrnf3r2c73dr3f20"
+RENDER_STOREFRONT_SERVICE = "srv-dakpiajl550s73cp4lvg"
+RENDER_SERVICES_V2 = (RENDER_SERVICE, RENDER_STOREFRONT_SERVICE)
+RENDER_SCOPE_V2 = "render_services_v2"
 GMAIL_SCOPE = "https://www.googleapis.com/auth/gmail.metadata"
 KNOWN_THREADS = frozenset({"1a0f385ed98c6af8", "1a0f69c169fb928f", "1a0f6a90772a743d"})
 TOKEN_ENDPOINT = "https://oauth2.googleapis.com/token"
@@ -201,13 +204,37 @@ class PrivateVault(Protocol):
 class FixedTransport:
     """Bounded upstream transport; never accepts arbitrary URLs from a task."""
 
-    def __init__(self, client: httpx.Client):
+    def __init__(self, client: httpx.Client, *, render_services_v2: bool = False):
+        if type(render_services_v2) is not bool:
+            raise BrokerError("missing_configuration")
         self.client = client
+        self.render_services_v2 = render_services_v2
 
-    def request(self, method: str, url: str, **kwargs: Any) -> Mapping[str, Any] | list[Any]:
+    def request(
+        self, method: str, url: str, *, strict_render_json: bool = False, **kwargs: Any
+    ) -> Mapping[str, Any] | list[Any]:
+        if type(strict_render_json) is not bool or (
+            strict_render_json
+            and (
+                self.render_services_v2 is not True
+                or method != "GET"
+                or url
+                not in {
+                    f"https://api.render.com/v1/services/{service_id}/deploys"
+                    for service_id in RENDER_SERVICES_V2
+                }
+            )
+        ):
+            raise BrokerError("scope_mismatch")
         allowed = (
             method == "GET"
-            and url == f"https://api.render.com/v1/services/{RENDER_SERVICE}/deploys"
+            and url
+            in {
+                f"https://api.render.com/v1/services/{service_id}/deploys"
+                for service_id in (
+                    RENDER_SERVICES_V2 if self.render_services_v2 else (RENDER_SERVICE,)
+                )
+            }
             or method == "POST"
             and url in {TOKEN_ENDPOINT, REVOKE_ENDPOINT}
             or method == "GET"
@@ -224,6 +251,10 @@ class FixedTransport:
         )
         if not allowed:
             raise BrokerError("scope_mismatch")
+        if strict_render_json:
+            headers = httpx.Headers(kwargs.get("headers"))
+            headers["Accept-Encoding"] = "identity"
+            kwargs["headers"] = headers
         try:
             with self.client.stream(
                 method, url, follow_redirects=False, timeout=5, **kwargs
@@ -234,8 +265,16 @@ class FixedTransport:
                     raise BrokerError("provider_outage")
                 if 300 <= response.status_code < 400:
                     raise BrokerError("invalid_response")
+                if strict_render_json and response.headers.get(
+                    "Content-Encoding", "identity"
+                ).strip().lower() not in {"", "identity"}:
+                    # Prevent automatic decompression from allocating past the
+                    # v2 body limit before the chunk-size check can run.
+                    raise BrokerError("invalid_response")
                 raw = bytearray()
                 for chunk in response.iter_bytes():
+                    if strict_render_json and len(raw) + len(chunk) > 65536:
+                        raise BrokerError("invalid_response")
                     raw.extend(chunk)
                     if len(raw) > 65536:
                         raise BrokerError("invalid_response")
@@ -244,7 +283,22 @@ class FixedTransport:
                 import json
 
                 try:
-                    body = json.loads(raw)
+                    if strict_render_json:
+
+                        def pairs(values):
+                            result = {}
+                            for key, value in values:
+                                if key in result:
+                                    raise ValueError
+                                result[key] = value
+                            return result
+
+                        def constant(_):
+                            raise ValueError
+
+                        body = json.loads(raw, object_pairs_hook=pairs, parse_constant=constant)
+                    else:
+                        body = json.loads(raw)
                 except (ValueError, UnicodeError):
                     raise BrokerError("invalid_response") from None
                 if response.status_code != 200:
@@ -406,11 +460,15 @@ class RenderReadBroker:
     ) -> list[dict[str, Any]]:
         if (service_id, method, path) != (RENDER_SERVICE, "GET", "deploys"):
             raise BrokerError("scope_mismatch")
+        return self._read(service_id)
+
+    def _read(self, service_id: str, *, strict_json: bool = False) -> list[dict[str, Any]]:
         if not self.upstream.access_token:
             raise BrokerError("missing_configuration")
         response = self.transport.request(
             "GET",
-            f"https://api.render.com/v1/services/{RENDER_SERVICE}/deploys",
+            f"https://api.render.com/v1/services/{service_id}/deploys",
+            strict_render_json=strict_json,
             params={"limit": 20},
             headers={"Authorization": "Bearer " + self.upstream.access_token},
         )
@@ -427,7 +485,7 @@ class RenderReadBroker:
                 r"dep-[a-z0-9]+", str(deploy.get("id", ""))
             ):
                 raise BrokerError("invalid_response")
-            if deploy.get("serviceId", RENDER_SERVICE) != RENDER_SERVICE:
+            if deploy.get("serviceId", service_id) != service_id:
                 raise BrokerError("scope_mismatch")
             commit = deploy.get("commit", {})
             sha = commit.get("id") if isinstance(commit, dict) else None
@@ -464,12 +522,50 @@ class RenderReadBroker:
             result.append(
                 {
                     "deployment_id": deploy["id"],
-                    "service_id": RENDER_SERVICE,
+                    "service_id": service_id,
                     "commit_sha": sha,
                     "status": status,
                     "timestamps": times,
                 }
             )
+        return result
+
+
+class RenderServicesReadBroker(RenderReadBroker):
+    """Explicit v2 scope; the existing API-only broker remains unchanged."""
+
+    def read(
+        self, *, service_id: str, method: str = "GET", path: str = "deploys"
+    ) -> list[dict[str, Any]]:
+        if (
+            type(service_id) is not str
+            or service_id not in RENDER_SERVICES_V2
+            or method != "GET"
+            or path != "deploys"
+        ):
+            raise BrokerError("scope_mismatch")
+        if self.transport.render_services_v2 is not True:
+            raise BrokerError("broker_activation_required")
+        result = self._read(service_id, strict_json=True)
+        import re
+
+        # An empty or repeated deployment list is not a current service receipt.
+        if (
+            not result
+            or len({item["deployment_id"] for item in result}) != len(result)
+            or any(
+                not re.fullmatch(r"dep-[a-z0-9]{1,100}", item["deployment_id"]) for item in result
+            )
+        ):
+            raise BrokerError("invalid_response")
+
+        for deployment in result:
+            for value in deployment["timestamps"].values():
+                if value is not None and not re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?(?:Z|[+-]\d{2}:\d{2})",
+                    value,
+                ):
+                    raise BrokerError("invalid_response")
         return result
 
 

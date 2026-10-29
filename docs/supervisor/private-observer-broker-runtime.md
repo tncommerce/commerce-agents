@@ -2,15 +2,17 @@
 
 ## Status and architecture
 
-This supersedes the deployment gaps in observer-activation-readiness.md. The
-standalone `private_broker.runtime:production_app` ASGI factory and Dockerfile are
-ready for an **owner-created separate runtime**. Nothing is provisioned by this PR;
-Render/Gmail activation remains false. Production-secret tests use fakes only.
+The standalone `private_broker.runtime:production_app` ASGI factory and Dockerfile
+form the separate owner-controlled provider boundary. Repository source does not
+establish the live deployment or activation state; verify those in the existing
+runtime and masterstatus. Production-secret tests use fakes only. The explicitly
+gated two-service extension is described in [render-services-v2.md](render-services-v2.md).
 
 The image copies only `private_broker` and the provider filtering library. It does
 not include Jarvis, task executors, connector sessions or the Supabase worker. The observer harness is also excluded from the image.
-Deploy it in a NEW owner-controlled GCP project, with a dedicated service account,
-Firestore Native default database and four Secret Manager secrets. Jarvis/Actions
+Use the verified existing owner-controlled GCP project, dedicated service account,
+Firestore Native default database and four Secret Manager secrets. Do not create
+a replacement project or resources as a recovery shortcut. Jarvis/Actions
 must have **no IAM role, project access, image-deploy permission or Secret Manager
 access** in that project. Neither the runtime identity nor its project grants access
 to the existing DUFYND Supabase service-role or management credentials.
@@ -65,9 +67,14 @@ Allowed workload endpoints:
 | GET | /v1/gmail/threads/{registered-thread}/metadata | thread/history IDs, message IDs, dates, From, sanitized MIME type, delivery-failure flag |
 | POST | /v1/gmail/threads/{registered-thread}/ack/{observation-digest} | Advance private cursor only after durable ingestion; idempotent ack |
 
+V2 adds only the two fixed Render deployment-list paths under `/v2/render/`,
+disabled unless the explicit owner runtime gate is enabled. It has its own
+per-service evidence and capture scope; the v1 metadata and API-only endpoint
+remain unchanged. See the [versioned contract and rollout](render-services-v2.md).
+
 Registered threads: 1a0f385ed98c6af8, 1a0f69c169fb928f, 1a0f6a90772a743d.
 No query parameters or arbitrary provider URL/path are accepted on reads. All
-upstream URLs are fixed. Render accepts only GET of the one service's deploy list;
+upstream URLs are fixed. The v1 Render endpoint accepts only GET of the API service's deploy list;
 redirects, settings, env, logs, deploy/restart and mutations are unavailable.
 Gmail uses profile for account proof, history for local known-thread filtering,
 and known-thread metadata with From/Content-Type only. No search, body, attachments,
@@ -268,7 +275,12 @@ Primary references:
 - https://render.com/pricing
 - https://render.com/docs/disks
 
-## Tuan's exact setup order — STOP before owner provisioning
+## Historical initial-provisioning reference
+
+The following records the original setup procedure, not the recovery procedure
+for the existing broker. Use the verified existing owner runtime and the staged
+[v2 rollout](render-services-v2.md) for this extension. Do not repeat provisioning,
+accept billing or restart paused Gmail consent to resolve a Render read gap.
 
 1. **PRIVATE BROKER:** Owner creates/chooses an isolated GCP project/account and
    explicitly accepts billing; create Firestore Native default DB, Secret Manager,
