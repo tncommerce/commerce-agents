@@ -6,11 +6,18 @@ import { createRequire } from 'node:module';
 import ts from 'typescript';
 import { renderToStaticMarkup } from 'react-dom/server';
 const require = createRequire(import.meta.url);
-const compile = (path, dependencies) => {
+// Keep the historical formatting fixture fresh only inside this isolated VM.
+// Production expiry still uses the real clock; no source timestamp is renewed.
+const NOW = Date.parse('2026-10-12T20:00:00Z');
+const OFFER_MAX_AGE_MS = 72 * 60 * 60 * 1000;
+const compile = (path, dependencies, now = NOW) => {
   const module = {exports:{}};
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(new URL(path, import.meta.url),'utf8'), {
     compilerOptions:{module:ts.ModuleKind.CommonJS,jsx:ts.JsxEmit.ReactJSX,esModuleInterop:true},
-  }).outputText, {module,exports:module.exports,require:dependencies,Date,Intl});
+  }).outputText, {
+    module,exports:module.exports,require:dependencies,Intl,
+    Date: class FixtureDate extends Date { static now() { return now; } },
+  });
   return module.exports;
 };
 const money = compile('../../../web-shared/format.ts',require);
@@ -20,7 +27,7 @@ const fixture = {
   in_stock:true,variant_label:'100 ml · Eau de Toilette',
   clickout_path:'/api/clickout/qa-offer',affiliate_link:true,last_updated_at:'2026-10-12T19:58:00Z',
 };
-function render({offers=[fixture],focusedLanding=false,error=false,loading=false,responseProductId='SC-QA',responseReloadToken=0}={}) {
+function render({offers=[fixture],focusedLanding=false,error=false,loading=false,responseProductId='SC-QA',responseReloadToken=0,now=NOW}={}) {
   let stateIndex = 0;
   const payload={offers,product_id:'SC-QA',best_offer_id:'qa-offer',affiliate_disclosure:'QA'};
   // Seed the atomic request-bound state, not a pre-hardening bare payload.
@@ -42,7 +49,7 @@ function render({offers=[fixture],focusedLanding=false,error=false,loading=false
     if(id==='@/components/AcquisitionInternalLink' || id==='@/components/CatalogReturnLink')return {__esModule:true,default:({children,...props})=>require('react').createElement('a',props,children)};
     if(id.endsWith('.module.css'))return {__esModule:true,default:new Proxy({}, {get:(_,key)=>String(key)})};
     throw Error('Unexpected dependency '+id);
-  });
+  },now);
   return renderToStaticMarkup(require('react').createElement(source.default,{productId:'SC-QA',focusedLanding}));
 }
 let cases=0;
@@ -78,6 +85,22 @@ for(const state of [{loading:true},{error:true},{offers:[]}]) {
 }
 for(const state of [{responseProductId:'SC-OTHER'},{responseReloadToken:1}]) {
  const html=render(state);assert.match(html,/data-offer-state="loading"/);
+ assert.doesNotMatch(html,/href="\/api\/clickout|data-offer-breakdown|44,00/);cases++;
+}
+
+// The VM clock must exercise the real expiry guard, not bypass it to make
+// presentation fixtures pass. A visible price/CTA disappears at the deadline.
+const deadline = Date.parse(fixture.last_updated_at) + OFFER_MAX_AGE_MS;
+const beforeDeadline = render({now:deadline-1});
+assert.match(beforeDeadline,/data-offer-state="available"/);
+assert.match(beforeDeadline,/href="\/api\/clickout\/qa-offer/);cases++;
+for(const now of [deadline,deadline+1]) {
+ const html=render({now});assert.match(html,/data-offer-state="error"/);
+ assert.doesNotMatch(html,/href="\/api\/clickout|data-offer-breakdown|44,00/);cases++;
+}
+for(const last_updated_at of ['invalid',new Date(NOW+5*60*1000+1).toISOString()]) {
+ const html=render({offers:[{...fixture,last_updated_at}]});
+ assert.match(html,/data-offer-state="error"/);
  assert.doesNotMatch(html,/href="\/api\/clickout|data-offer-breakdown|44,00/);cases++;
 }
 
