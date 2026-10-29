@@ -141,3 +141,45 @@ Rollback first disables the row. Restore callers to their exact previous
 definitions before removing the new helpers. A pending request can finish after
 disabling; it cannot establish a new storefront success while disabled. The
 separately proven API cardinality correction can remain in place.
+
+## Production SSR receipt correction after #849
+
+The first natural request, ID `22710`, was queued at 11:14:00.417605 UTC on
+29 October and received at 11:14:00.471067 UTC. It returned HTTP 200,
+`text/html; charset=utf-8`, and 32,522 bytes, but the 11:16 consumer incorrectly
+reported `html_document_rejected`. The monitor was paused while preserving that
+failure. The existing 71 fixtures had not represented scripts in both the head
+and body of the complete production SSR document.
+
+The exact existing receipt body was read without another HTTP request. Its
+SHA-256 is `0e81f861657e23db18c9a32b6b43e18f71e367df124dc811d37c7a5f34e0209a`
+and MD5 is `63bcc0617813d32518cecefd27ce1332`. In real PostgreSQL, the released
+comment/script/style removal expression consumed everything from the first head
+script to the last body script. Only 1,287 bytes remained, with no opening body
+or complete head. PostgreSQL's [matching rules](https://www.postgresql.org/docs/17/functions-matching.html#POSIX-MATCHING-RULES)
+make a top-level alternation greedy even when its branches contain `.*?`.
+
+Forward migration `20261029111936_dufynd_storefront_ssr_block_boundaries.sql`
+wraps that expression in `(?:...){1,1}?`, forcing each removal to its nearest
+complete block. The exact same body then retains 19,910 bytes of document markup
+and passes the unchanged validator. The old migration is unmodified. An exact
+function-body comparison proves that this wrapper is the only executable
+poller change; source-time, cardinality, transport, size, canonical, homepage,
+pending, backoff and scope guards remain identical. Reader, API poller and cron
+hook are unchanged.
+
+The persistent regression fixture contains ten unchanged byte slices from that
+receipt, with source offsets, per-slice hashes and the full source hash. Its
+510-byte reduction preserves the actual head-script/document/body-script shape.
+The full original body and every selected slice were also verified locally.
+**28/28 focused PostgreSQL cases passed with zero network attempts:** seven new
+persistent regressions, the byte-exact full-body before/after reproduction, and
+20 relevant existing HTML/decoy/size cases. Scripts, styles and comments still
+cannot supply a missing canonical; error pages and incorrect routes stay rejected.
+Local receipt timestamps in these tests are fixture timestamps and do not renew
+the historical production observation.
+
+The correction neither activates the monitor nor rewrites its failed receipt or
+masterstatus. After CI and migration acceptance, reactivation must be followed by
+a **new natural request and response** through the existing cron. Receipt `22710`
+must not be replayed as a fresh production success.

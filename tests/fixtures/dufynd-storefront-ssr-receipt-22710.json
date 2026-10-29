@@ -1,0 +1,86 @@
+{
+  "source": {
+    "request_id": 22710,
+    "received_at": "2026-10-29T11:14:00.471067Z",
+    "status_code": 200,
+    "content_type": "text/html; charset=utf-8",
+    "body_bytes": 32522,
+    "body_md5": "63bcc0617813d32518cecefd27ce1332",
+    "body_sha256": "0e81f861657e23db18c9a32b6b43e18f71e367df124dc811d37c7a5f34e0209a"
+  },
+  "derivation": "Concatenated unchanged UTF-8 byte ranges from the existing public receipt; no new HTTP request. The surrounding page is omitted, and script markup is never executed.",
+  "reduced_bytes": 510,
+  "reduced_sha256": "486aa404d1011d47c8048ae6cc8bb043dc7948c0bc2e25cbbcccf1cf12463882",
+  "parts": [
+    {
+      "name": "document_open",
+      "source_byte_start": 0,
+      "source_byte_end": 77,
+      "sha256": "da985878b87bf2ac4a65988d19358047743899de7c5f30ac904bec8ff6f0ca20",
+      "content": "<!DOCTYPE html><html lang=\"de\" class=\"ZvWvXq_variable eaIhpW_variable\"><head>"
+    },
+    {
+      "name": "first_head_script",
+      "source_byte_start": 1273,
+      "source_byte_end": 1343,
+      "sha256": "926b137a10820afe2b51e03c41e69873fb156a857af09ff33f4753d063bf7619",
+      "content": "<script src=\"/_next/static/chunks/0x4u89p-_5rv7.js\" async=\"\"></script>"
+    },
+    {
+      "name": "title",
+      "source_byte_start": 1983,
+      "source_byte_end": 2043,
+      "sha256": "3be71422a3bec817e8c59f38ccbb7c9b62829683219c9640a37e888a5d2964e0",
+      "content": "<title>DUFYND – Duftberatung &amp; Parfumvergleich</title>"
+    },
+    {
+      "name": "canonical",
+      "source_byte_start": 2440,
+      "source_byte_end": 2488,
+      "sha256": "0a156fec9f7504a98a22fff49b5bf40c1e0236466975e7f570ca0bc9eda3ee22",
+      "content": "<link rel=\"canonical\" href=\"https://dufynd.de\"/>"
+    },
+    {
+      "name": "head_to_body",
+      "source_byte_start": 3344,
+      "source_byte_end": 3357,
+      "sha256": "eefd4d1bb186c4f0ec80427123dc3a1ed2cdaeb2d1eaa4f29dfff0b21bbed323",
+      "content": "</head><body>"
+    },
+    {
+      "name": "catalog_link",
+      "source_byte_start": 5967,
+      "source_byte_end": 6003,
+      "sha256": "53156af721f4c97f5293541eef60ab980a426b728a01f431b30b5026318bc8d6",
+      "content": "<a href=\"/duft\">Düfte entdecken</a>"
+    },
+    {
+      "name": "homepage_section_open",
+      "source_byte_start": 15771,
+      "source_byte_end": 15893,
+      "sha256": "a007c72b3f29191af95a602cae2df9e929bfc3b4999d664ef365f1a57a1d8f3c",
+      "content": "<section class=\"wow-audiences\" data-dufynd-home-audience-stage=\"true\" aria-labelledby=\"dufynd-audience-discovery-heading\">"
+    },
+    {
+      "name": "homepage_section_close",
+      "source_byte_start": 17340,
+      "source_byte_end": 17350,
+      "sha256": "195fde57a5eb9165a3ce219935c08000ba789afe699315fe9188cf6890cfbad2",
+      "content": "</section>"
+    },
+    {
+      "name": "body_hydration_script",
+      "source_byte_start": 21594,
+      "source_byte_end": 21654,
+      "sha256": "574705b6e5d6c876853847017f870e2fc0e145c6a8a285298480edec14ad65e1",
+      "content": "<script>(self.__next_f=self.__next_f||[]).push([0])</script>"
+    },
+    {
+      "name": "document_close",
+      "source_byte_start": 32508,
+      "source_byte_end": 32522,
+      "sha256": "534eea26e25b4b30614a9fc9251edab2bf9f7d43fb984ad7934a9cdf90e59d57",
+      "content": "</body></html>"
+    }
+  ]
+}

@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import json
 import os
+import re
+from hashlib import sha256
 from pathlib import Path
 
 import pytest
@@ -15,6 +17,10 @@ DSN = os.getenv("DUFYND_TEST_DATABASE_URL")
 pytestmark = pytest.mark.skipif(not DSN, reason="dedicated disposable PostgreSQL required")
 ROOT = Path(__file__).resolve().parents[1]
 MIGRATION = ROOT / "supabase/migrations/20261029104253_dufynd_public_storefront_health.sql"
+SSR_MIGRATION = (
+    ROOT / "supabase/migrations/20261029111936_dufynd_storefront_ssr_block_boundaries.sql"
+)
+SSR_FIXTURE = ROOT / "tests/fixtures/dufynd-storefront-ssr-receipt-22710.json"
 GITHUB_MIGRATION = (
     ROOT / "supabase/migrations/20261029090152_dufynd_github_observer_receipt_freshness.sql"
 )
@@ -63,6 +69,17 @@ def db(request):
     c.execute("revoke all on public.dufynd_master_status from public,anon,authenticated")
     c.execute("grant select,insert,update on public.dufynd_master_status to service_role")
     c.execute(MIGRATION.read_text())
+    previous = c.execute(
+        "select pg_get_functiondef('public.poll_dufynd_public_storefront_health_v1()'::regprocedure)"
+    ).fetchone()[0]
+    c.execute(
+        previous.replace(
+            "public.poll_dufynd_public_storefront_health_v1(",
+            "public.poll_dufynd_storefront_before_ssr_fix(",
+            1,
+        )
+    )
+    c.execute(SSR_MIGRATION.read_text())
     yield c
 
 
@@ -174,6 +191,88 @@ def healthy(db):
     result = poll(db)
     assert result["healthy"], result
     return stored(db)["last_success_at"]
+
+
+def actual_ssr_reduction():
+    fixture = json.loads(SSR_FIXTURE.read_text())
+    assert fixture["source"]["request_id"] == 22710
+    assert fixture["source"]["body_bytes"] == 32522
+    assert fixture["source"]["body_sha256"] == (
+        "0e81f861657e23db18c9a32b6b43e18f71e367df124dc811d37c7a5f34e0209a"
+    )
+    previous_end = 0
+    for part in fixture["parts"]:
+        encoded = part["content"].encode()
+        assert part["source_byte_start"] >= previous_end
+        assert part["source_byte_end"] - part["source_byte_start"] == len(encoded)
+        assert sha256(encoded).hexdigest() == part["sha256"]
+        previous_end = part["source_byte_end"]
+    body = "".join(part["content"] for part in fixture["parts"])
+    assert len(body.encode()) == fixture["reduced_bytes"] == 510
+    assert sha256(body.encode()).hexdigest() == fixture["reduced_sha256"]
+    return body
+
+
+def assert_actual_ssr_body_before_and_after(db, body):
+    """Run the released and corrected validators on one identical local receipt."""
+    enable(db)
+    poll(db)
+    rid = respond(db, body=body)
+    pending = stored(db)
+    rejected = db.execute("select public.poll_dufynd_storefront_before_ssr_fix()").fetchone()[0]
+    assert rejected["healthy"] is False
+    assert rejected["last_error"] == "html_document_rejected"
+    assert rejected["last_success_at"] is None
+    patch(db, pending)
+    result = poll(db)
+    assert result["healthy"] is True, result
+    assert result["last_response_bytes"] == len(body.encode())
+    assert db.execute(
+        "select (value->>'last_success_at')::timestamptz=r.created from "
+        "public.dufynd_master_status s cross join net._http_response r where s.key=%s and r.id=%s",
+        (KEY, rid),
+    ).fetchone()[0]
+    assert db.execute("select count(*) from net.http_request_queue").fetchone()[0] == 0
+
+
+def test_actual_production_ssr_byte_reduction_is_red_before_and_green_after_fix(db):
+    assert_actual_ssr_body_before_and_after(db, actual_ssr_reduction())
+
+
+@pytest.mark.parametrize("kind", ["style", "comment"])
+def test_ssr_multiple_non_document_blocks_preserve_intervening_document(db, kind):
+    replacement = "<style>/* ignored */</style>" if kind == "style" else "<!-- ignored -->"
+    body = re.sub(r"<script[^>]*>.*?</script>", replacement, actual_ssr_reduction())
+    assert_actual_ssr_body_before_and_after(db, body)
+
+
+@pytest.mark.parametrize("kind", ["script", "style", "comment"])
+def test_ssr_hidden_canonical_decoys_cannot_replace_real_canonical(db, kind):
+    canonical = '<link rel="canonical" href="https://dufynd.de"/>'
+    body = actual_ssr_reduction().replace(canonical, "")
+    decoy = f"<!-- {canonical} -->" if kind == "comment" else f"<{kind}>{canonical}</{kind}>"
+    body = body.replace("</head>", decoy + "</head>").replace("</body>", decoy + "</body>")
+    enable(db)
+    poll(db)
+    respond(db, body=body)
+    result = poll(db)
+    assert result["healthy"] is False and result["last_error"] == "canonical_homepage_rejected"
+    assert result["last_success_at"] is None
+
+
+def test_ssr_forward_fix_only_changes_overall_block_match_greediness(db):
+    before = db.execute(
+        "select prosrc from pg_proc where oid='public.poll_dufynd_storefront_before_ssr_fix()'::regprocedure"
+    ).fetchone()[0]
+    after = db.execute(
+        "select prosrc from pg_proc where oid='public.poll_dufynd_public_storefront_health_v1()'::regprocedure"
+    ).fetchone()[0]
+    pattern = (
+        r"<!--.*?-->|<script(?:[[:space:]][^>]*)?>.*?</script[[:space:]]*>"
+        r"|<style(?:[[:space:]][^>]*)?>.*?</style[[:space:]]*>"
+    )
+    assert before.count(pattern) == 1
+    assert after == before.replace(pattern, "(?:" + pattern + "){1,1}?")
 
 
 def test_storefront_install_is_disabled_without_a_source_observation(db):
