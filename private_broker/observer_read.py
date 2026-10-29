@@ -34,6 +34,8 @@ SAFE_REASONS = frozenset(
 RENDER_PATH = "/v1/render/services/srv-dakpfrnf3r2c73dr3f20/deployments"
 HEALTH_PATH = "/v1/health"
 RENDER_RECOVERY_FILE = "broker-render-observation.json"
+RENDER_SUCCESS_FILE = "broker-render-observations.json"
+MAX_ARTIFACT_BYTES = 262_144
 
 
 class ReadFailure(Exception):
@@ -106,8 +108,18 @@ def _preserve_failure(exc, source, results, client, origin, headers):
 
 def main():
     # A failed retry must never publish a previous invocation's success file.
-    for filename in ("broker-observations.json", "broker-failure.json", RENDER_RECOVERY_FILE):
+    for filename in (
+        "broker-observations.json",
+        "broker-failure.json",
+        RENDER_RECOVERY_FILE,
+        RENDER_SUCCESS_FILE,
+    ):
         Path(filename).unlink(missing_ok=True)
+    # Inputless scheduled dispatches must never retry a paused Gmail recovery.
+    # The established all-provider acceptance path requires an explicit choice.
+    mode = os.getenv("DUFYND_OBSERVER_MODE", "render")
+    if mode not in {"render", "all"}:
+        raise SystemExit("invalid observer mode")
     origin = os.environ["BROKER_ORIGIN"]
     url = urlsplit(origin)
     if (
@@ -134,6 +146,27 @@ def main():
                 raise ReadFailure("oidc_identity", "invalid_response")
 
             headers = {"Authorization": "Bearer " + token}
+            if mode == "render":
+                results = {"_meta": source}
+                try:
+                    results[RENDER_PATH] = _read(
+                        client, origin, RENDER_PATH, headers, "render", list
+                    )
+                    results[HEALTH_PATH] = _read(client, origin, HEALTH_PATH, headers, "health")
+                    validate_render_recovery_evidence(results[HEALTH_PATH], results[RENDER_PATH])
+                    encoded = json.dumps(results, sort_keys=True)
+                    if len(encoded.encode("utf-8")) > MAX_ARTIFACT_BYTES:
+                        raise ReadFailure("render", "invalid_response")
+                except ProvenanceError:
+                    exc = ReadFailure("render", "invalid_response")
+                    _preserve_failure(exc, source, results, client, origin, headers)
+                    raise exc from None
+                except ReadFailure as exc:
+                    _preserve_failure(exc, source, results, client, origin, headers)
+                    raise
+                Path(RENDER_SUCCESS_FILE).write_text(encoded, encoding="utf-8")
+                return
+
             reads = [
                 ("render", RENDER_PATH),
                 ("gmail_1", "/v1/gmail/threads/1a0f385ed98c6af8/metadata"),
