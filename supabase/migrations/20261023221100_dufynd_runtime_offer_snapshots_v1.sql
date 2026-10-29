@@ -15,6 +15,9 @@ create table if not exists public.dufynd_runtime_offer_snapshots_v1 (
   shipping_cost numeric(12,2) check (shipping_cost >= 0 and shipping_cost <= 100000),
   in_stock boolean,
   verified_at timestamptz not null,
+  -- Trigger-owned replay barrier, never a price-freshness timestamp. A HOLD
+  -- keeps its real observation time even after a source clock ran ahead.
+  source_watermark_at timestamptz not null check (source_watermark_at >= verified_at),
   decision text not null check (decision in ('verified','hold')),
   constraint dufynd_runtime_offer_decision_values_check check (
     (decision = 'verified' and price is not null
@@ -75,9 +78,19 @@ begin
   ) then
     raise exception 'canonical offer identity is immutable';
   end if;
-  if tg_op = 'UPDATE' and new.verified_at <= old.verified_at then
-    raise exception 'observation timestamps must advance strictly';
+  if tg_op = 'UPDATE' then
+    -- A fail-closed withdrawal cannot wait for a same-time or clock-skewed
+    -- positive observation. Every other update, including reactivation, must
+    -- advance beyond the highest source time ever accepted for this identity.
+    if not (old.decision = 'verified' and new.decision = 'hold')
+       and new.verified_at <= old.source_watermark_at then
+      raise exception 'observation timestamps must advance strictly';
+    end if;
+    new.source_watermark_at := greatest(old.source_watermark_at, new.verified_at);
+  else
+    new.source_watermark_at := new.verified_at;
   end if;
+  -- Ignore any caller-supplied watermark without rewriting the source time.
   new.updated_at := clock_timestamp();
   return new;
 end;

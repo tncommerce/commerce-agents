@@ -2,6 +2,7 @@ import { emptyOfferFixture } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { verifyCompactFragranceSearch } from "./compact-fragrance-search-qa.mjs";
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 
 // Route readiness is verified by the semantic headings and controls below.
 // Network-idle is not a valid readiness gate while analytics, image decoding or
@@ -25,11 +26,17 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.equal(new URL(page.url()).searchParams.get('src'),'instagram');
       assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion');
       if(outputDir) await page.screenshot({path:`${outputDir}/conversion-search-${width}-catalog.png`,fullPage:true});
-      // Catalog offer claims must be bound to the only published affiliate
-      // product; a non-offered fragrance must never show a buy-intent link.
-      assert.equal(await page.locator('a[data-dufynd-catalog-rc1-offer]').count(),0);
+      // Only the Rabanne RC1 card has a separate catalog offer shortcut.
+      // Other released offers are accessible through the respective product profile.
+      // The catalog may show other matched cards (including Rabanne).
+      // Assert the Libre card itself cannot inherit a Rabanne-only shortcut.
+      const libreCard = page.locator('article.dufynd-catalog-card').filter({
+        has: page.getByRole('heading', {name: 'Libre', exact: true}),
+      }).first();
+      await libreCard.waitFor({state: 'visible'});
+      assert.equal(await libreCard.locator('a[data-dufynd-catalog-rc1-offer]').count(),0);
       assert.equal(
-        (await page.locator('.dufynd-catalog-card-cta').first().innerText()).trim(),
+        (await libreCard.locator('.dufynd-catalog-card-cta').innerText()).trim(),
         'Duftprofil entdecken →',
       );
       await page.goto(`${baseUrl}/duft?q=Rabanne%201%20Million&qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'domcontentloaded'});
@@ -46,7 +53,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
         const rect=node=>{const b=node.getBoundingClientRect();return {x:b.x,y:b.y,w:b.width,h:b.height,right:b.right,centerY:b.y+b.height/2};};
         const card=link.closest('article');
         const actions=card?.querySelector('.dufynd-catalog-card-actions');
-        return {button:rect(link),label:rect(label),arrow:rect(arrow),actions:actions?rect(actions):null,caption:label.textContent?.trim()};
+        return {button:rect(link),label:rect(label),arrow:rect(arrow),actions:actions?rect(actions):null,card:card?rect(card):null,caption:label.textContent?.trim()};
       });
       assert.ok(rc1Layout,'Exact RC1 must have a meaningful label and separate arrow');
       assert.equal(rc1Layout.caption,'Händlerangebote prüfen');
@@ -55,10 +62,11 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
         `${width}: CTA arrow must share the text line (not wrap below it)`);
       assert.ok(rc1Layout.arrow.x>rc1Layout.label.x+rc1Layout.label.w,
         `${width}: arrow must be placed after the text`);
-      if(width>=1024) assert.ok(rc1Layout.actions &&
-        rc1Layout.actions.x>=rc1Layout.button.x-2 &&
-        rc1Layout.actions.right<=rc1Layout.button.right+2,
-        'Desktop archive action buttons must share the RC1 right-hand column');
+      if(width>=1024) assert.ok(rc1Layout.actions && rc1Layout.card &&
+        rc1Layout.actions.x>=rc1Layout.card.x-2 &&
+        rc1Layout.actions.right<=rc1Layout.card.right+2 &&
+        rc1Layout.actions.y>=rc1Layout.button.y+rc1Layout.button.h-2,
+        'Desktop save/compare actions must stay inside the card and below its offer CTA');
       assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,
         'RC1 catalog CTA must not add horizontal overflow');
       const rc1Card=page.locator('.dufynd-catalog-card').filter({has:verifiedRc1Entry});
@@ -119,12 +127,25 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.equal(new URL(page.url()).searchParams.get('src'),'instagram','Catalog RC1 offer link preserves campaign source');
       assert.equal(new URL(page.url()).searchParams.get('cmp'),'qa_conversion','Catalog RC1 offer link preserves campaign ID');
       await page.locator('#angebote').waitFor({state:'visible'});
-      // The independently rejected editorial creative is excluded. Product
-      // metadata stays truthful and uses a compact text-only social summary.
-      assert.equal(await page.locator('meta[property="og:image"]').count(),0);
-      assert.equal(await page.locator('meta[name="twitter:image"]').count(),0);
-      assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute('content'),'summary');
-      assert.match(await page.locator('meta[property="og:title"]').getAttribute('content'),/Rabanne 1 Million.*100 ml/);
+      // The rejected editorial creative must stay excluded. The 27 Oct
+      // released exact 100-ml original is now legal for the social preview.
+      // Ground its metadata in the immutable public rights/variant register.
+      const registeredRabanne = JSON.parse(readFileSync(
+        new URL("../lib/generated/original-photos.json", import.meta.url), "utf8",
+      )).filter(photo => photo.product_id === 'SC-RABANNE-1-MILLION-EDT-100');
+      assert.equal(registeredRabanne.length, 1, 'Exactly one reviewed RC1 image');
+      const approvedImage = registeredRabanne[0];
+      assert.equal(approvedImage.volume_ml, 100);
+      assert.equal(approvedImage.rights_basis_id, 'awin_top_parfuemerie_feed_materials_20260928');
+      assert.equal(approvedImage.url,
+        'https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png');
+      assert.equal(await page.locator('meta[property="og:image"]').count(), 1,
+        'Only a source-reviewed original may appear in the open-graph preview');
+      assert.equal(await page.locator('meta[property="og:image"]').getAttribute('content'), approvedImage.url);
+      assert.equal(await page.locator('meta[name="twitter:image"]').count(), 1);
+      assert.equal(await page.locator('meta[name="twitter:image"]').getAttribute('content'), approvedImage.url);
+      assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute('content'), 'summary_large_image');
+      assert.match(await page.locator('meta[property="og:title"]').getAttribute('content'), /Rabanne 1 Million.*100 ml/);
 
       await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'domcontentloaded'});
       await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();

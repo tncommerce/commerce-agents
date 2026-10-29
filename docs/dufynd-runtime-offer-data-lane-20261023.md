@@ -1,5 +1,64 @@
 # DUFYND · Datenbetrieb statt PR pro Händlerpreis (DEV / nicht live)
 
+## 29.10.2026 – HOLD ohne künstliche Zeitänderung, Replay-Schutz erhalten
+
+Der bisherige SQL-Guard erlaubte positive Quellenzeiten bis fünf Minuten in
+der Zukunft, verlangte aber auch für eine Sperre einen strikt späteren
+Zeitstempel. Dadurch scheiterten ein HOLD mit gleicher Beobachtungszeit und
+ein tatsächliches HOLD jetzt nach einer zulässigen Quelle mit vier Minuten
+Uhrabweichung. Beide Fehler wurden auf isoliertem PostgreSQL 17.11 reproduziert.
+
+Die private Spalte `source_watermark_at` speichert jetzt den höchsten bisher
+akzeptierten Quellenzeitpunkt. Sie wird bei INSERT und UPDATE ausschließlich
+vom Trigger gesetzt; eingesandte Werte können sie weder senken noch erhöhen.
+Nur `verified` → `hold` darf mit gleicher oder früherer tatsächlicher
+Beobachtungszeit sperren. `verified_at` bleibt dabei unverändert der echte
+Belegzeitpunkt. Jede andere Änderung, insbesondere eine Wiederaktivierung,
+muss den gespeicherten Höchststand strikt überschreiten. Preis, Versand und
+Bestand bleiben bei HOLD zwingend NULL; Identität, 72-Stunden-Frist,
+Fünf-Minuten-Toleranz, Quellenhash und private Berechtigungen bleiben erhalten.
+
+Die betroffene PostgreSQL-Suite bestand anschließend **26/26 Fälle**
+(18 vorhandene, acht neue), einschließlich gleicher Zeit, Uhrabweichung,
+gesperrter positiver Replays, späterer echter Wiederaktivierung,
+Watermark-Manipulation, unveränderlicher Identität und Audit. Ruff-Lint,
+Formatprüfung und `git diff --check` bestanden. Dies ist lokale
+SQL-Regressionsprüfung, kein neuer GitHub-CI- oder Produktionsnachweis.
+
+Runtime-GET und Import-Readback wählen ihre Felder explizit. Die zusätzliche
+Spalte verändert weder kanonische Identität noch Prepared-Batch, Batchhash
+oder öffentliche API-Antworten. Die privaten Audit-JSON-Zeilen enthalten sie
+absichtlich zusätzlich neben dem unveränderten ursprünglichen Belegzeitpunkt.
+
+**Lokale Integration mit Produktion:** Der ursprüngliche Commerce-HEAD
+`43b2793c754f18b47c335fef0f7348b77f22029e` wurde einschließlich seiner Historie
+und des HOLD-Fix-Commits `d44ddba` mit dem Produktionsstand
+`063f4f2ca0a6403137c6f5e94a71f0ec593e6a98` konfliktfrei zusammengeführt.
+Auf diesem kombinierten Quellbaum bestanden **66/66 gezielte Integrationsfälle**:
+die 26 echten PostgreSQL-Fälle sowie 40 angrenzende Runtime-/API-/Batchfälle.
+Geprüft wurden unter anderem Katalog-/Health-Isolation, Produktsichtbarkeit,
+deaktivierter Runtime-Modus, Listing-/Clickout-Entscheidungen, HOLD,
+unveränderte Quellen- und Batchhashes, exakter Readback und die rein prüfende
+Enhanced-Feed-Grenze. TCP und DNS waren währenddessen gesperrt; es gab
+keinen entsprechenden Verbindungsversuch, Modellaufruf oder Remote-Write.
+
+Der ältere isolierte [CI-Lauf 40591804637](https://github.com/tncommerce/commerce-agents/actions/runs/40591804637)
+mit 163 Fällen bleibt historischer Nachweis: Sein QA-HEAD `705fdd1` unterscheidet
+sich vom damaligen Commerce-HEAD nur durch den isolierten Workflow. Er ist
+kein CI-Nachweis für den neuen kombinierten Stand. Eine neue GitHub-CI oder
+Produktivveröffentlichung wird hiermit nicht behauptet.
+
+**Schema-Gate:** Die beiden Runtime-Offer-Tabellen fehlten bei der lesenden
+Produktionsprüfung am 29.10. um 09:00 UTC. Diese noch nicht angewandte
+Migration ist weiterhin ausschließlich für die Erstinstallation vorgesehen.
+Unmittelbar vor einer späteren Anwendung muss das Fehlen erneut bestätigt
+werden. Eine schon installierte ältere Tabellenfassung benötigt einen separat
+geprüften Vorwärts-Upgrade; `CREATE TABLE IF NOT EXISTS` aktualisiert weder
+alte Nullbarkeiten noch CHECKs oder die neue Watermark-Spalte automatisch.
+Keine produktive Migration, Runtime-Aktivierung oder Angebotsverlängerung
+wurde durch diesen Fix durchgeführt. Eine bestätigte Enhanced-Quelle für
+Top Parfümerie fehlt weiterhin.
+
 ## 27.10.2026 – Alternativer Awin Enhanced-/Google-Feed (nur Feldprüfung)
 
 Awin dokumentiert einen separaten Enhanced-/Google-Retail-Feed im JSONL-Format

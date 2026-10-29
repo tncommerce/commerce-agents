@@ -69,16 +69,18 @@ def observation(offer_id: str = "ci-demo-verified-100") -> dict:
 
 
 def insert(db, row: dict) -> None:
+    watermark_column = ",source_watermark_at" if "source_watermark_at" in row else ""
+    watermark_value = ",%(source_watermark_at)s" if "source_watermark_at" in row else ""
     db.execute(
         f"""insert into {TABLE}
         (offer_id,product_id,merchant_id,merchant_product_id,identity_sha256,
          currency,price,shipping_cost,in_stock,verified_at,decision,
-         source_type,source_ref,evidence_sha256)
+         source_type,source_ref,evidence_sha256{watermark_column})
         values
         (%(offer_id)s,%(product_id)s,%(merchant_id)s,%(merchant_product_id)s,
          %(identity_sha256)s,%(currency)s,%(price)s,%(shipping_cost)s,
          %(in_stock)s,%(verified_at)s,%(decision)s,%(source_type)s,
-         %(source_ref)s,%(evidence_sha256)s)""",
+         %(source_ref)s,%(evidence_sha256)s{watermark_value})""",
         row,
     )
 
@@ -262,3 +264,140 @@ def test_sql_hold_rejects_stale_price_or_asserted_stock(db, field, value):
     db.execute("set local role service_role")
     with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
         insert(db, row)
+
+
+@pytest.mark.parametrize("source_skew_minutes", [0, 4])
+def test_sql_hold_is_immediate_without_retiming_or_replaying_positive_evidence(
+    db, source_skew_minutes
+):
+    import psycopg
+
+    # Same-second observations and accepted source clock skew must not prevent
+    # an operator from withdrawing a purchase action at its actual observation time.
+    hold_at = datetime.now(UTC)
+    positive_at = hold_at + timedelta(minutes=source_skew_minutes)
+    row = observation(f"ci-immediate-hold-{source_skew_minutes}")
+    row["verified_at"] = positive_at
+    db.execute("set local role service_role")
+    insert(db, row)
+    db.execute(
+        f"""update {TABLE}
+        set decision='hold',price=null,shipping_cost=null,in_stock=null,
+            verified_at=%s,source_ref='ci-real-hold-observation',evidence_sha256=%s
+        where offer_id=%s""",
+        (hold_at, "c" * 64, row["offer_id"]),
+    )
+    assert db.execute(
+        f"""select decision,price,shipping_cost,in_stock,verified_at,source_watermark_at
+        from {TABLE} where offer_id=%s""",
+        (row["offer_id"],),
+    ).fetchone() == ("hold", None, None, None, hold_at, positive_at)
+    assert db.execute(
+        f"""select (prior_row->>'verified_at')::timestamptz,
+                   (next_row->>'verified_at')::timestamptz,
+                   (next_row->>'source_watermark_at')::timestamptz
+        from {AUDIT} where offer_id=%s order by audit_id desc limit 1""",
+        (row["offer_id"],),
+    ).fetchone() == (positive_at, hold_at, positive_at)
+
+    # A naive exception for HOLD must not lower the timestamp required for a
+    # later positive quote. In the skew case these replays are newer than HOLD.
+    for replay_at in (positive_at - timedelta(seconds=1), positive_at):
+        with (
+            pytest.raises(psycopg.errors.RaiseException, match="must advance strictly"),
+            db.transaction(),
+        ):
+            db.execute(
+                f"""update {TABLE}
+                set decision='verified',price=90,shipping_cost=0,in_stock=true,
+                    verified_at=%s,source_watermark_at=%s
+                where offer_id=%s""",
+                (replay_at, hold_at - timedelta(days=1), row["offer_id"]),
+            )
+    with (
+        pytest.raises(psycopg.errors.RaiseException, match="must advance strictly"),
+        db.transaction(),
+    ):
+        db.execute(
+            f"update {TABLE} set verified_at=%s where offer_id=%s",
+            (hold_at, row["offer_id"]),
+        )
+    assert db.execute(
+        f"select decision from {TABLE} where offer_id=%s", (row["offer_id"],)
+    ).fetchone() == ("hold",)
+
+    # Genuinely later positive evidence can restore the existing canonical offer.
+    newer = positive_at + timedelta(seconds=1)
+    db.execute(
+        f"""update {TABLE}
+        set decision='verified',price=95,shipping_cost=0,in_stock=true,
+            verified_at=%s,source_ref='ci-new-positive-observation',evidence_sha256=%s
+        where offer_id=%s""",
+        (newer, "d" * 64, row["offer_id"]),
+    )
+    assert db.execute(
+        f"select decision,verified_at,source_watermark_at from {TABLE} where offer_id=%s",
+        (row["offer_id"],),
+    ).fetchone() == ("verified", newer, newer)
+    assert db.execute(
+        f"select count(*) from {AUDIT} where offer_id=%s", (row["offer_id"],)
+    ).fetchone() == (3,)
+
+
+@pytest.mark.parametrize("forged_year", [2000, 2099])
+def test_sql_source_watermark_is_owned_by_trigger_on_insert_and_update(db, forged_year):
+    row = observation(f"ci-watermark-forgery-{forged_year}")
+    forged = datetime(forged_year, 1, 1, tzinfo=UTC)
+    row["source_watermark_at"] = forged
+    db.execute("set local role service_role")
+    insert(db, row)
+    assert db.execute(
+        f"select source_watermark_at from {TABLE} where offer_id=%s", (row["offer_id"],)
+    ).fetchone() == (row["verified_at"],)
+    newer = row["verified_at"] + timedelta(minutes=1)
+    db.execute(
+        f"update {TABLE} set verified_at=%s,source_watermark_at=%s where offer_id=%s",
+        (newer, forged, row["offer_id"]),
+    )
+    assert db.execute(
+        f"select source_watermark_at from {TABLE} where offer_id=%s", (row["offer_id"],)
+    ).fetchone() == (newer,)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [("price", "100.00"), ("shipping_cost", "0.00"), ("in_stock", False)],
+)
+def test_sql_immediate_hold_still_rejects_commerce_claims(db, field, value):
+    import psycopg
+
+    row = observation("ci-immediate-unsafe-hold-" + field)
+    omitted = ",".join(
+        f"{name}=null" for name in ("price", "shipping_cost", "in_stock") if name != field
+    )
+    db.execute("set local role service_role")
+    insert(db, row)
+    with pytest.raises(psycopg.errors.CheckViolation), db.transaction():
+        db.execute(
+            f"""update {TABLE}
+            set decision='hold',{omitted},{field}=%s where offer_id=%s""",
+            (value, row["offer_id"]),
+        )
+
+
+def test_sql_immediate_hold_still_cannot_change_canonical_identity(db):
+    import psycopg
+
+    row = observation("ci-immediate-hold-identity")
+    db.execute("set local role service_role")
+    insert(db, row)
+    with (
+        pytest.raises(psycopg.errors.RaiseException, match="canonical offer identity"),
+        db.transaction(),
+    ):
+        db.execute(
+            f"""update {TABLE}
+            set decision='hold',price=null,shipping_cost=null,in_stock=null,
+                merchant_product_id='WRONG-SIZE' where offer_id=%s""",
+            (row["offer_id"],),
+        )

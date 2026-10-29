@@ -1,7 +1,7 @@
 "use client";
 import CatalogReturnLink from "@/components/CatalogReturnLink";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatMoney } from "web-shared";
 
 import {
@@ -17,9 +17,22 @@ import type { MerchantOffersPayload } from "@/lib/types";
 import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
 import styles from "./FragranceOffers.module.css";
 
-// A backgrounded buyer tab may outlive the server's verified-offer window.
-// Recheck only when the tab returns, never with an extra polling interval.
+// Recheck returning tabs without polling. A single deadline timer below also
+// covers a buyer who keeps the page visible across the API's 72-hour window.
 const RETURN_RECHECK_INTERVAL_MS = 5 * 60 * 1000;
+const OFFER_MAX_AGE_MS = 72 * 60 * 60 * 1000;
+const OFFER_CLOCK_SKEW_MS = 5 * 60 * 1000;
+
+function earliestOfferExpiry(payload: MerchantOffersPayload): number | null {
+  let deadline = Number.POSITIVE_INFINITY;
+  const now = Date.now();
+  for (const offer of payload.offers) {
+    const verifiedAt = Date.parse(offer.last_updated_at);
+    if (!Number.isFinite(verifiedAt) || verifiedAt > now + OFFER_CLOCK_SKEW_MS) return null;
+    deadline = Math.min(deadline, verifiedAt + OFFER_MAX_AGE_MS);
+  }
+  return deadline;
+}
 
 function OfferRecoveryLinks({ alternativesHref }: { alternativesHref?: string }) {
   return (
@@ -109,6 +122,22 @@ export default function FragranceOffers({
   const offerSectionRef = useRef<HTMLElement | null>(null);
   const trackedOfferViewRef = useRef<string | null>(null);
   const lastOfferFetchStartedAtRef = useRef(0);
+  const currentRequestRef = useRef<{
+    expiresAt: number | null;
+    revalidationPending: boolean;
+  } | null>(null);
+  const expiresAt = payload && response?.productId === productId &&
+    response?.reloadToken === reloadToken ? earliestOfferExpiry(payload) : null;
+
+  useLayoutEffect(() => {
+    // Only a committed render can replace the visible offer's ownership.
+    // An interrupted candidate render must leave its timer and observer intact.
+    const request = { expiresAt, revalidationPending: false };
+    currentRequestRef.current = request;
+    return () => {
+      if (currentRequestRef.current === request) currentRequestRef.current = null;
+    };
+  }, [analyticsSurface, expiresAt, productId, reloadToken, trackProductOpen]);
 
   // Consent can change after this product mounted. Observe that choice without
   // re-fetching the functional offers or replaying pre-consent shopping actions.
@@ -156,7 +185,11 @@ export default function FragranceOffers({
       .then((value) => {
         if (!active) return;
         // Reject a response for a different fragrance; never reuse its purchase links.
-        if (value === null || value.product_id !== productId) {
+        const deadline = value === null ? null : earliestOfferExpiry(value);
+        if (value === null || value.product_id !== productId ||
+            deadline === null || deadline <= Date.now()) {
+          // A cached or late response cannot revive an expired purchase link.
+          // Settle as an error rather than automatically retrying it in a loop.
           setLoadError(true);
           setPayload(null);
           return;
@@ -175,11 +208,15 @@ export default function FragranceOffers({
   useEffect(() => {
     const recheckOnReturn = () => {
       if (document.visibilityState !== "visible") return;
-      if (Date.now() - lastOfferFetchStartedAtRef.current < RETURN_RECHECK_INTERVAL_MS) return;
+      const request = currentRequestRef.current;
+      if (!request || request.revalidationPending) return;
+      const expired = request.expiresAt !== null && request.expiresAt <= Date.now();
+      if (!expired && Date.now() - lastOfferFetchStartedAtRef.current < RETURN_RECHECK_INTERVAL_MS) return;
       // The same fail-closed API fetch runs again. No clickout or measurement
       // event is emitted by this functional freshness check.
       // Reserve the recheck immediately; pageshow and visibilitychange may both
       // fire before React commits the reload and starts the next request.
+      request.revalidationPending = true;
       lastOfferFetchStartedAtRef.current = Date.now();
       setReloadToken((current) => current + 1);
     };
@@ -192,8 +229,35 @@ export default function FragranceOffers({
   }, []);
 
   useEffect(() => {
+    if (expiresAt === null || !Number.isFinite(expiresAt)) return;
+    const request = currentRequestRef.current;
+    if (!request) return;
+    let active = true;
+    const timeoutId = setTimeout(() => {
+      // The captured identity also guards a queued timer during a product
+      // change, before passive-effect cleanup has had a chance to run.
+      if (!active || currentRequestRef.current !== request || request.revalidationPending) return;
+      // Hidden tabs defer this one functional read until their return handler.
+      if (document.visibilityState !== "visible") return;
+      request.revalidationPending = true;
+      lastOfferFetchStartedAtRef.current = Date.now();
+      setReloadToken((current) => current === reloadToken ? current + 1 : current);
+    }, Math.max(1, expiresAt - Date.now()));
+    return () => {
+      active = false;
+      clearTimeout(timeoutId);
+    };
+  }, [analyticsSurface, expiresAt, productId, reloadToken, trackProductOpen]);
+
+  useEffect(() => {
     const section = offerSectionRef.current;
-    if (!section || !payload || payload.offers.length === 0) return;
+    if (!section || !payload || payload.offers.length === 0 ||
+        response?.productId !== productId || response?.reloadToken !== reloadToken ||
+        expiresAt === null || expiresAt <= Date.now()) return;
+    const request = currentRequestRef.current;
+    if (!request) return;
+    const isCurrentOffer = () => currentRequestRef.current === request &&
+      !request.revalidationPending && expiresAt > Date.now();
     const impressionKey = `${productId}:${analyticsSurface}`;
     let observer: IntersectionObserver | null = null;
     let observation = 0;
@@ -207,9 +271,9 @@ export default function FragranceOffers({
         trackedOfferViewRef.current = null;
         return;
       }
-      if (trackedOfferViewRef.current === impressionKey) return;
+      if (!isCurrentOffer() || trackedOfferViewRef.current === impressionKey) return;
       const trackImpression = () => {
-        if (!active || currentObservation !== observation || !measurementAllowed() ||
+        if (!active || !isCurrentOffer() || currentObservation !== observation || !measurementAllowed() ||
             trackedOfferViewRef.current === impressionKey) return;
         trackedOfferViewRef.current = impressionKey;
         void trackAnalyticsEvent("offer_section_view", {
@@ -219,11 +283,12 @@ export default function FragranceOffers({
         });
       };
       if (typeof IntersectionObserver === "undefined") {
-        trackImpression();
+        // No viewport proof: do not report an offer impression merely because
+        // offers loaded. Shopping and navigation remain fully functional.
         return;
       }
       observer = new IntersectionObserver(([entry]) => {
-        if (!active || currentObservation !== observation ||
+        if (!active || !isCurrentOffer() || currentObservation !== observation ||
             !entry?.isIntersecting || entry.intersectionRatio < 0.35) return;
         trackImpression();
         observer?.disconnect();
@@ -238,7 +303,8 @@ export default function FragranceOffers({
       observer?.disconnect();
       unsubscribe();
     };
-  }, [analyticsSurface, payload, productId]);
+  }, [analyticsSurface, expiresAt, payload, productId, reloadToken,
+      response?.productId, response?.reloadToken, trackProductOpen]);
 
   // Product props can change before the passive fetch effect clears old data.
   // Never render the previous fragrance's offer or CTA in that intermediate render.
@@ -258,7 +324,8 @@ export default function FragranceOffers({
     );
   }
 
-  if (loadError) {
+  if (loadError || (payload !== null && payload.offers.length > 0 &&
+      (expiresAt === null || expiresAt <= Date.now()))) {
     return (
       <section data-offer-state="error" className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
         <h2 className="text-[17px] font-semibold text-(--ink)">

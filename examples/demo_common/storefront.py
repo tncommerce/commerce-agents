@@ -29,6 +29,7 @@ from typing import Any, cast
 from fastapi import Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
+from starlette.concurrency import run_in_threadpool
 
 from commerce_common.memory import MemoryStore, MemoryWriteRejected
 from shopping_agent import PageContext, ProductDetails, ShoppingSessionContext, ShoppingSessionState
@@ -170,11 +171,14 @@ def build_storefront_host(
     product_detail: Callable[[ProductDetails], dict[str, Any]] | None = None,
     cart_extras: Callable[[StorefrontRecord], dict[str, Any]] | None = None,
     before_turn: Callable[[], None] | None = None,
+    catalog_in_threadpool: bool = False,
 ) -> StorefrontHost:
     """Seed memory, then build the app with the shared routes. ``product_of`` and
     ``product_detail`` let a vertical stamp live state onto catalog reads or enrich the
     detail payload; ``cart_extras`` adds keys to every cart payload; ``before_turn`` runs
-    ahead of each chat turn (a vertical delivering server-side events as app events)."""
+    ahead of each chat turn (a vertical delivering server-side events as app events).
+    ``catalog_in_threadpool`` isolates synchronous catalog I/O for backends with
+    thread-safe read callbacks; stateful demo backends keep their event-loop behavior."""
     host = StorefrontHost(
         title=title,
         backend=backend,
@@ -205,20 +209,30 @@ def build_storefront_host(
     async def chat(request: ChatRequest, record: CurrentSession) -> StreamingResponse:
         return host.chat(request, record)
 
-    @app.get("/api/products")
-    async def list_products(category: str | None = None, limit: int = 24) -> dict:
+    def list_products_payload(category: str | None, limit: int) -> dict:
         products = [product for pid in backend.products if (product := read_product(pid))]
         if category:
             products = [product for product in products if product.category == category]
         page = products[: max(1, min(limit, 100))]
         return {"products": [product.model_dump(exclude=set(SUMMARY_EXCLUDES)) for product in page]}
 
-    @app.get("/api/products/{product_id:path}")  # an id may contain "/"
-    async def get_product(product_id: str) -> dict:
+    @app.get("/api/products")
+    async def list_products(category: str | None = None, limit: int = 24) -> dict:
+        if catalog_in_threadpool:
+            return await run_in_threadpool(list_products_payload, category, limit)
+        return list_products_payload(category, limit)
+
+    def get_product_payload(product_id: str) -> dict:
         product = read_product(product_id)
         if product is None:
             raise HTTPException(status_code=404, detail="Product not found")
         return detail_of(product)
+
+    @app.get("/api/products/{product_id:path}")  # an id may contain "/"
+    async def get_product(product_id: str) -> dict:
+        if catalog_in_threadpool:
+            return await run_in_threadpool(get_product_payload, product_id)
+        return get_product_payload(product_id)
 
     @app.get("/api/cart")
     async def get_cart(record: CurrentSession) -> dict:

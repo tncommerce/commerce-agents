@@ -29,6 +29,7 @@ def load_receipt(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_run_attempt: str,
 ) -> tuple[dict[str, Any], dict[str, int]]:
     try:
         if path.stat().st_size > MAX_RECEIPT_BYTES:
@@ -48,6 +49,7 @@ def load_receipt(
             payload["source"],
             expected_run_id=expected_run_id,
             expected_sha=expected_sha,
+            expected_run_attempt=expected_run_attempt,
         )
     except ProvenanceError as exc:
         raise FinalizeError(f"ack receipt provenance {exc}") from None
@@ -71,11 +73,13 @@ def finalize(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_run_attempt: str,
 ) -> dict[str, Any]:
     source, summary = load_receipt(
         receipt_path,
         expected_run_id=expected_run_id,
         expected_sha=expected_sha,
+        expected_run_attempt=expected_run_attempt,
     )
     result = bridge.finalize_broker_acceptance(source=source, ack_summary=summary)
     if (
@@ -105,8 +109,9 @@ def main() -> int:
     )
     parser.add_argument("--expected-run-id", default=os.getenv("GITHUB_RUN_ID"))
     parser.add_argument("--expected-sha", default=os.getenv("GITHUB_SHA"))
+    parser.add_argument("--expected-run-attempt", default=os.getenv("GITHUB_RUN_ATTEMPT"))
     args = parser.parse_args()
-    if not args.expected_run_id or not args.expected_sha:
+    if not args.expected_run_id or not args.expected_sha or not args.expected_run_attempt:
         raise SystemExit("private observer finalize failed: expected provenance is required")
 
     try:
@@ -115,6 +120,7 @@ def main() -> int:
             args.receipt,
             expected_run_id=args.expected_run_id,
             expected_sha=args.expected_sha,
+            expected_run_attempt=args.expected_run_attempt,
         )
     except FinalizeError as exc:
         raise SystemExit(f"private observer finalize failed: {exc}") from None
