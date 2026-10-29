@@ -52,7 +52,11 @@ def service(*, after=False):
         "spec": {
             "traffic": [{"latestRevision": True, "percent": 100}],
             "template": {
-                "spec": {"containers": [{"image": REPO + "@" + (DIGEST if after else OLD_DIGEST)}]}
+                "spec": {
+                    "containers": [
+                        {"image": REPO + "@" + (DIGEST if after else OLD_DIGEST)}
+                    ]
+                }
             },
         },
         "status": {
@@ -61,7 +65,9 @@ def service(*, after=False):
             "url": ORIGIN,
             "latestReadyRevisionName": revision,
             "latestCreatedRevisionName": revision,
-            "traffic": [{"revisionName": revision, "latestRevision": True, "percent": 100}],
+            "traffic": [
+                {"revisionName": revision, "latestRevision": True, "percent": 100}
+            ],
         },
     }
 
@@ -205,7 +211,10 @@ def owner_cli(tmp_path):
         "revision": revision(),
         "revision_after": revision(after=True),
         "artifact": {
-            "image_summary": {"digest": DIGEST, "fully_qualified_digest": REPO + "@" + DIGEST}
+            "image_summary": {
+                "digest": DIGEST,
+                "fully_qualified_digest": REPO + "@" + DIGEST,
+            }
         },
         "expected_image": REPO + "@" + DIGEST,
         "image_repository": REPO,
@@ -237,7 +246,11 @@ def owner_cli(tmp_path):
             timeout=15,
         )
         log = tmp_path / "calls.jsonl"
-        calls = [json.loads(line) for line in log.read_text().splitlines()] if log.exists() else []
+        calls = (
+            [json.loads(line) for line in log.read_text().splitlines()]
+            if log.exists()
+            else []
+        )
         return result, calls
 
     return baseline, execute
@@ -257,7 +270,9 @@ def assert_no_build_or_remote_write(calls):
 
 
 def test_helper_has_valid_bash_syntax():
-    result = run(["bash", "-n", str(SCRIPT)], check=False, capture_output=True, text=True)
+    result = run(
+        ["bash", "-n", str(SCRIPT)], check=False, capture_output=True, text=True
+    )
     assert result.returncode == 0, result.stderr
 
 
@@ -277,7 +292,9 @@ def test_bound_existing_target_deploys_only_image_and_verifies_exact_ready_traff
     assert f"verified_revision={REVISION}" in result.stdout
     assert f"verified_image={REPO}@{DIGEST}" in result.stdout
     assert "verified_traffic=100" in result.stdout
-    first_clone = next(i for i, call in enumerate(calls) if call[:2] == ["git", "clone"])
+    first_clone = next(
+        i for i, call in enumerate(calls) if call[:2] == ["git", "clone"]
+    )
     assert_no_build_or_remote_write(calls[:first_clone])
     assert len(calls[:first_clone]) == 5
     assert len([call for call in calls if is_update(call)]) == 1
@@ -322,16 +339,25 @@ def test_missing_or_conflicting_explicit_arguments_stop_before_any_cli(owner_cli
             ("repository", "name"),
             "projects/foreign-project/locations/europe-west3/repositories/broker",
         ),
-        (("repository", "name"), f"projects/{PROJECT}/locations/us-east1/repositories/broker"),
+        (
+            ("repository", "name"),
+            f"projects/{PROJECT}/locations/us-east1/repositories/broker",
+        ),
         (("repository", "format"), "MAVEN"),
         (("repository", "mode"), "REMOTE_REPOSITORY"),
         (("service", "metadata", "name"), "other-service"),
         (("service", "metadata", "namespace"), "123456789"),
         (("service", "metadata", "uid"), None),
         (("service", "metadata", "resourceVersion"), None),
-        (("service", "metadata", "labels", "cloud.googleapis.com/location"), "us-east1"),
+        (
+            ("service", "metadata", "labels", "cloud.googleapis.com/location"),
+            "us-east1",
+        ),
         (("service", "status", "url"), "https://another-broker.run.app"),
-        (("service", "status", "latestCreatedRevisionName"), SERVICE + "-00005-pending"),
+        (
+            ("service", "status", "latestCreatedRevisionName"),
+            SERVICE + "-00005-pending",
+        ),
         (("service", "status", "observedGeneration"), 3),
         (("service", "status", "conditions"), [{"type": "Ready", "status": "False"}]),
         (
@@ -339,17 +365,35 @@ def test_missing_or_conflicting_explicit_arguments_stop_before_any_cli(owner_cli
             [{"revisionName": SERVICE + "-00001-foreign", "percent": 100}],
         ),
         (("service", "status", "traffic"), [{"latestRevision": True, "percent": 100}]),
-        (("service", "status", "traffic"), [{"revisionName": OLD_REVISION, "percent": "100"}]),
-        (("service", "status", "traffic"), [{"revisionName": OLD_REVISION, "percent": 50}]),
-        (("service", "spec", "traffic"), [{"revisionName": OLD_REVISION, "percent": 100}]),
+        (
+            ("service", "status", "traffic"),
+            [{"revisionName": OLD_REVISION, "percent": "100"}],
+        ),
+        (
+            ("service", "status", "traffic"),
+            [{"revisionName": OLD_REVISION, "percent": 50}],
+        ),
+        (
+            ("service", "spec", "traffic"),
+            [{"revisionName": OLD_REVISION, "percent": 100}],
+        ),
         (
             ("service", "spec", "template", "spec", "containers"),
             [{"image": "us-docker.pkg.dev/foreign-project/broker/runtime:latest"}],
         ),
-        (("service", "spec", "template", "spec", "containers"), [{"image": REPO + "@sha256:bad"}]),
+        (
+            ("service", "spec", "template", "spec", "containers"),
+            [{"image": REPO + "@sha256:bad"}],
+        ),
         (("revision", "metadata", "name"), SERVICE + "-00001-foreign"),
-        (("revision", "metadata", "labels", "serving.knative.dev/service"), "foreign-service"),
-        (("revision", "status", "conditions"), [{"type": "Ready", "status": "Unknown"}]),
+        (
+            ("revision", "metadata", "labels", "serving.knative.dev/service"),
+            "foreign-service",
+        ),
+        (
+            ("revision", "status", "conditions"),
+            [{"type": "Ready", "status": "Unknown"}],
+        ),
         (("revision", "status", "imageDigest"), "sha256:bad"),
         (("revision", "status", "imageDigest"), DIGEST),
         (
@@ -372,8 +416,12 @@ def test_read_only_preflight_rejects_wrong_or_unready_target_before_clone_build_
     assert_no_build_or_remote_write(calls)
 
 
-@pytest.mark.parametrize("failed", ["buildx", "project", "repository", "service", "revision"])
-def test_existing_access_failures_stop_without_auth_or_resource_setup(owner_cli, failed):
+@pytest.mark.parametrize(
+    "failed", ["buildx", "project", "repository", "service", "revision"]
+)
+def test_existing_access_failures_stop_without_auth_or_resource_setup(
+    owner_cli, failed
+):
     config, execute = owner_cli
     config["fail"] = failed
     result, calls = execute(config)
@@ -384,10 +432,24 @@ def test_existing_access_failures_stop_without_auth_or_resource_setup(owner_cli,
 
 @pytest.mark.parametrize(
     "raw",
-    ["not JSON", "[]", '{"metadata":null}', '{"metadata":{},"metadata":{}}', " " * 262145],
-    ids=["malformed_json", "wrong_type", "null_metadata", "duplicate_keys", "oversized"],
+    [
+        "not JSON",
+        "[]",
+        '{"metadata":null}',
+        '{"metadata":{},"metadata":{}}',
+        " " * 262145,
+    ],
+    ids=[
+        "malformed_json",
+        "wrong_type",
+        "null_metadata",
+        "duplicate_keys",
+        "oversized",
+    ],
 )
-def test_invalid_or_oversized_preflight_metadata_is_rejected_without_traceback(owner_cli, raw):
+def test_invalid_or_oversized_preflight_metadata_is_rejected_without_traceback(
+    owner_cli, raw
+):
     config, execute = owner_cli
     config["raw"] = {"service": raw}
     result, calls = execute(config)
@@ -402,7 +464,8 @@ def test_checkout_identity_failure_prevents_any_image_build(owner_cli):
     result, calls = execute(config)
     assert result.returncode != 0
     assert not any(
-        call[:2] in (["docker", "build"], ["docker", "push"]) or is_update(call) for call in calls
+        call[:2] in (["docker", "build"], ["docker", "push"]) or is_update(call)
+        for call in calls
     )
 
 
@@ -431,7 +494,10 @@ def test_new_registry_digest_must_be_bound_before_any_cloud_run_update(
     owner_cli, digest, qualified
 ):
     config, execute = owner_cli
-    config["artifact"]["image_summary"] = {"digest": digest, "fully_qualified_digest": qualified}
+    config["artifact"]["image_summary"] = {
+        "digest": digest,
+        "fully_qualified_digest": qualified,
+    }
     result, calls = execute(config)
     assert result.returncode != 0
     assert any(call[:2] == ["docker", "push"] for call in calls)
@@ -441,8 +507,14 @@ def test_new_registry_digest_must_be_bound_before_any_cloud_run_update(
 @pytest.mark.parametrize(
     "path,value",
     [
-        (("service_after", "status", "traffic"), [{"revisionName": OLD_REVISION, "percent": 100}]),
-        (("service_after", "status", "traffic"), [{"latestRevision": True, "percent": 100}]),
+        (
+            ("service_after", "status", "traffic"),
+            [{"revisionName": OLD_REVISION, "percent": 100}],
+        ),
+        (
+            ("service_after", "status", "traffic"),
+            [{"latestRevision": True, "percent": 100}],
+        ),
         (("service_after", "status", "latestReadyRevisionName"), OLD_REVISION),
         (("service_after", "metadata", "uid"), "replacement-service-uid"),
         (("revision_after", "status", "imageDigest"), OLD_DIGEST),
@@ -473,7 +545,9 @@ def test_cli_stage_failure_has_no_followup_mutation_or_success_claim(owner_cli, 
     result, calls = execute(config)
     assert result.returncode != 0
     assert "verified_traffic=100" not in result.stdout
-    assert len([call for call in calls if is_update(call)]) == (1 if failed == "update" else 0)
+    assert len([call for call in calls if is_update(call)]) == (
+        1 if failed == "update" else 0
+    )
     if failed == "build":
         assert not any(call[:2] == ["docker", "push"] for call in calls)
 
@@ -503,10 +577,16 @@ def image_index(root_digest, child_digest, *, docker=False):
     }
 
 
-@pytest.mark.parametrize("docker", [False, True], ids=["oci_index", "docker_manifest_list"])
-def test_index_deploy_keeps_root_pin_and_verifies_selected_runtime_digest(owner_cli, docker):
+@pytest.mark.parametrize(
+    "docker", [False, True], ids=["oci_index", "docker_manifest_list"]
+)
+def test_index_deploy_keeps_root_pin_and_verifies_selected_runtime_digest(
+    owner_cli, docker
+):
     config, execute = owner_cli
-    config["manifests"][OLD_DIGEST] = image_index(OLD_DIGEST, OLD_RUNTIME_DIGEST, docker=docker)
+    config["manifests"][OLD_DIGEST] = image_index(
+        OLD_DIGEST, OLD_RUNTIME_DIGEST, docker=docker
+    )
     config["manifests"][DIGEST] = image_index(DIGEST, RUNTIME_DIGEST, docker=docker)
     config["revision"]["status"]["imageDigest"] = REPO + "@" + OLD_RUNTIME_DIGEST
     config["revision_after"]["status"]["imageDigest"] = REPO + "@" + RUNTIME_DIGEST
@@ -515,10 +595,14 @@ def test_index_deploy_keeps_root_pin_and_verifies_selected_runtime_digest(owner_
     assert f"verified_image={REPO}@{DIGEST}" in result.stdout
     assert f"verified_runtime_image={REPO}@{RUNTIME_DIGEST}" in result.stdout
     assert len([call for call in calls if is_update(call)]) == 1
-    first_clone = next(i for i, call in enumerate(calls) if call[:2] == ["git", "clone"])
+    first_clone = next(
+        i for i, call in enumerate(calls) if call[:2] == ["git", "clone"]
+    )
     assert_no_build_or_remote_write(calls[:first_clone])
     manifest_reads = [
-        call[4] for call in calls if call[:4] == ["docker", "buildx", "imagetools", "inspect"]
+        call[4]
+        for call in calls
+        if call[:4] == ["docker", "buildx", "imagetools", "inspect"]
     ]
     assert manifest_reads == [REPO + "@" + OLD_DIGEST, REPO + "@" + DIGEST]
 
@@ -633,12 +717,25 @@ def owner_build_record(*, runtime_digest=DIGEST):
 
 def resume_args(tmp_path, *, record=None, runtime_digest=DIGEST, raw=None):
     evidence = tmp_path / "private-owner-build-record.json"
-    evidence.write_text(raw if raw is not None else json.dumps(
-        owner_build_record(runtime_digest=runtime_digest) if record is None else record
-    ))
-    return [*ARGS[:-1], "--existing-image", REPO + "@" + DIGEST,
-            "--expected-runtime-digest", runtime_digest,
-            "--build-evidence", str(evidence), SHA]
+    evidence.write_text(
+        raw
+        if raw is not None
+        else json.dumps(
+            owner_build_record(runtime_digest=runtime_digest)
+            if record is None
+            else record
+        )
+    )
+    return [
+        *ARGS[:-1],
+        "--existing-image",
+        REPO + "@" + DIGEST,
+        "--expected-runtime-digest",
+        runtime_digest,
+        "--build-evidence",
+        str(evidence),
+        SHA,
+    ]
 
 
 @pytest.mark.parametrize("is_index", [False, True], ids=["direct_image", "oci_index"])
@@ -661,29 +758,47 @@ def test_resume_published_image_keeps_guards_and_never_clones_builds_or_pushes(
     assert "verified_traffic=100" in result.stdout
     assert len([call for call in calls if is_update(call)]) == 1
     assert_no_build_or_remote_write([call for call in calls if not is_update(call)])
-    artifact_reads = [call[5] for call in calls
-                      if call[:5] == ["gcloud", "artifacts", "docker", "images", "describe"]]
+    artifact_reads = [
+        call[5]
+        for call in calls
+        if call[:5] == ["gcloud", "artifacts", "docker", "images", "describe"]
+    ]
     assert artifact_reads == [REPO + "@" + DIGEST, REPO + ":" + SHA]
 
 
-@pytest.mark.parametrize("fault", ["missing_image", "missing_child", "missing_evidence",
-                                  "mutable_tag", "bare_digest", "foreign_repo", "invalid_child"])
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "missing_image",
+        "missing_child",
+        "missing_evidence",
+        "mutable_tag",
+        "bare_digest",
+        "foreign_repo",
+        "invalid_child",
+    ],
+)
 def test_resume_requires_complete_explicit_immutable_arguments_before_any_cli(
     owner_cli, tmp_path, fault
 ):
     _, execute = owner_cli
     args = resume_args(tmp_path)
     if fault.startswith("missing_"):
-        flag = {"missing_image": "--existing-image", "missing_child": "--expected-runtime-digest",
-                "missing_evidence": "--build-evidence"}[fault]
+        flag = {
+            "missing_image": "--existing-image",
+            "missing_child": "--expected-runtime-digest",
+            "missing_evidence": "--build-evidence",
+        }[fault]
         at = args.index(flag)
-        del args[at:at + 2]
+        del args[at : at + 2]
     elif fault == "mutable_tag":
         args[args.index("--existing-image") + 1] = REPO + ":" + SHA
     elif fault == "bare_digest":
         args[args.index("--existing-image") + 1] = DIGEST
     elif fault == "foreign_repo":
-        args[args.index("--existing-image") + 1] = "foreign.example/broker/runtime@" + DIGEST
+        args[args.index("--existing-image") + 1] = (
+            "foreign.example/broker/runtime@" + DIGEST
+        )
     elif fault == "invalid_child":
         args[args.index("--expected-runtime-digest") + 1] = "sha256:invalid"
     result, calls = execute(args=args)
@@ -714,18 +829,21 @@ def test_resume_missing_owner_record_stops_before_any_cli(owner_cli, tmp_path):
     assert calls == []
 
 
-@pytest.mark.parametrize("key,value", [
-    ("version", True),
-    ("source_repository", "https://github.com/foreign/repo.git"),
-    ("source_sha", "b" * 40),
-    ("image", REPO + "@" + OLD_DIGEST),
-    ("runtime_digest", OLD_RUNTIME_DIGEST),
-    ("evidence_ref", ""),
-    ("evidence_ref", "   "),
-    ("evidence_ref", "record\nforged-output"),
-    ("evidence_ref", "x" * 1025),
-    ("unexpected", "ignored-metadata"),
-])
+@pytest.mark.parametrize(
+    "key,value",
+    [
+        ("version", True),
+        ("source_repository", "https://github.com/foreign/repo.git"),
+        ("source_sha", "b" * 40),
+        ("image", REPO + "@" + OLD_DIGEST),
+        ("runtime_digest", OLD_RUNTIME_DIGEST),
+        ("evidence_ref", ""),
+        ("evidence_ref", "   "),
+        ("evidence_ref", "record\nforged-output"),
+        ("evidence_ref", "x" * 1025),
+        ("unexpected", "ignored-metadata"),
+    ],
+)
 def test_resume_owner_record_must_bind_exact_source_root_and_child_before_any_cli(
     owner_cli, tmp_path, key, value
 ):
@@ -740,7 +858,8 @@ def test_resume_owner_record_must_bind_exact_source_root_and_child_before_any_cl
 
 
 @pytest.mark.parametrize(
-    "raw", ["[]", "not JSON", '{"version":1,"version":1}', " " * 262145],
+    "raw",
+    ["[]", "not JSON", '{"version":1,"version":1}', " " * 262145],
     ids=["wrong_type", "malformed_json", "duplicate_keys", "oversized"],
 )
 def test_resume_rejects_ambiguous_or_unbounded_owner_record(owner_cli, tmp_path, raw):
@@ -751,33 +870,56 @@ def test_resume_rejects_ambiguous_or_unbounded_owner_record(owner_cli, tmp_path,
     assert calls == []
 
 
-@pytest.mark.parametrize("fault", ["wrong_published_root", "retargeted_sha_tag", "foreign_sha_tag",
-                                  "wrong_runtime_child", "tag_read_failure", "manifest_read_failure"])
-def test_resume_registry_binding_failures_stop_before_any_service_update(owner_cli, tmp_path, fault):
+@pytest.mark.parametrize(
+    "fault",
+    [
+        "wrong_published_root",
+        "retargeted_sha_tag",
+        "foreign_sha_tag",
+        "wrong_runtime_child",
+        "tag_read_failure",
+        "manifest_read_failure",
+    ],
+)
+def test_resume_registry_binding_failures_stop_before_any_service_update(
+    owner_cli, tmp_path, fault
+):
     config, execute = owner_cli
     config["artifact_tag"] = copy.deepcopy(config["artifact"])
     config["manifests"][DIGEST] = image_index(DIGEST, RUNTIME_DIGEST)
     config["revision_after"]["status"]["imageDigest"] = RUNTIME_DIGEST
     if fault == "wrong_published_root":
-        config["artifact"]["image_summary"] = {"digest": OLD_DIGEST, "fully_qualified_digest": REPO + "@" + OLD_DIGEST}
+        config["artifact"]["image_summary"] = {
+            "digest": OLD_DIGEST,
+            "fully_qualified_digest": REPO + "@" + OLD_DIGEST,
+        }
     elif fault == "retargeted_sha_tag":
-        config["artifact_tag"]["image_summary"] = {"digest": OLD_DIGEST, "fully_qualified_digest": REPO + "@" + OLD_DIGEST}
+        config["artifact_tag"]["image_summary"] = {
+            "digest": OLD_DIGEST,
+            "fully_qualified_digest": REPO + "@" + OLD_DIGEST,
+        }
     elif fault == "foreign_sha_tag":
-        config["artifact_tag"]["image_summary"]["fully_qualified_digest"] = "foreign.example/image@" + DIGEST
+        config["artifact_tag"]["image_summary"]["fully_qualified_digest"] = (
+            "foreign.example/image@" + DIGEST
+        )
     elif fault == "wrong_runtime_child":
         config["manifests"][DIGEST]["manifests"][0]["digest"] = OLD_RUNTIME_DIGEST
     elif fault == "tag_read_failure":
         config["fail"] = "artifact_tag"
     elif fault == "manifest_read_failure":
         config["fail"] = "manifest"
-    result, calls = execute(config, args=resume_args(tmp_path, runtime_digest=RUNTIME_DIGEST))
+    result, calls = execute(
+        config, args=resume_args(tmp_path, runtime_digest=RUNTIME_DIGEST)
+    )
     assert result.returncode != 0
     assert "verified_traffic=100" not in result.stdout
     assert "private-provider-diagnostic-canary" not in result.stdout + result.stderr
     assert_no_build_or_remote_write(calls)
 
 
-def test_resume_does_not_overwrite_service_change_during_registry_reads(owner_cli, tmp_path):
+def test_resume_does_not_overwrite_service_change_during_registry_reads(
+    owner_cli, tmp_path
+):
     config, execute = owner_cli
     config["drift_read"] = 2
     config["service_drift"] = copy.deepcopy(config["service"])
@@ -788,16 +930,23 @@ def test_resume_does_not_overwrite_service_change_during_registry_reads(owner_cl
     assert_no_build_or_remote_write(calls)
 
 
-def test_resume_reuses_target_preflight_and_never_updates_an_unready_broker(owner_cli, tmp_path):
+def test_resume_reuses_target_preflight_and_never_updates_an_unready_broker(
+    owner_cli, tmp_path
+):
     config, execute = owner_cli
     config["service"]["status"]["latestCreatedRevisionName"] = SERVICE + "-pending"
     result, calls = execute(config, args=resume_args(tmp_path))
     assert result.returncode != 0
     assert_no_build_or_remote_write(calls)
-    assert not any(call[:5] == ["gcloud", "artifacts", "docker", "images", "describe"] for call in calls)
+    assert not any(
+        call[:5] == ["gcloud", "artifacts", "docker", "images", "describe"]
+        for call in calls
+    )
 
 
-def test_resume_post_update_mismatch_never_claims_success_or_rolls_back(owner_cli, tmp_path):
+def test_resume_post_update_mismatch_never_claims_success_or_rolls_back(
+    owner_cli, tmp_path
+):
     config, execute = owner_cli
     config["revision_after"]["status"]["imageDigest"] = OLD_DIGEST
     result, calls = execute(config, args=resume_args(tmp_path))
