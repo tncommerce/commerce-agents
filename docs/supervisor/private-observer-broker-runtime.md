@@ -179,7 +179,7 @@ type and requires exactly one supported `linux/amd64` child. Missing, duplicate,
 foreign or ambiguous evidence fails closed; an attestation descriptor is not a
 runtime image. No digest comparison is skipped.
 
-It then checks out the exact immutable commit, builds and pushes the commit-tagged
+By default it checks out the exact immutable commit, builds and pushes the commit-tagged
 image and verifies both the registry's SHA-256 digest and its fully qualified image
 identity. The service UID/version/revision/image are checked again after build and
 immediately before update. The pushed digest's runtime child is resolved before
@@ -205,6 +205,64 @@ index relationship. The runtime source SHA remains the explicit helper argument;
 an operational-helper correction does not require rebuilding from a different
 application commit.
 
+### Resume an already published, verified image
+
+When an owner-controlled build and upload have already completed, use the optional
+resume arguments to avoid rebuilding or uploading the image again. This path still
+runs the same project/repository/service/revision preflight, current-service drift
+guard, image-only update and final traffic/runtime-digest verification. It requires
+Docker buildx for authenticated digest-bound manifest reads; it does not invoke Git,
+`docker build` or `docker push`.
+
+Supply all three additional arguments together:
+
+```bash
+bash scripts/deploy_dufynd_private_broker.sh \
+  --project "$VERIFIED_PROJECT_ID" \
+  --region "$VERIFIED_REGION" \
+  --service "$VERIFIED_SERVICE" \
+  --image-repository "$VERIFIED_IMAGE_REPOSITORY" \
+  --expected-origin "$VERIFIED_SERVICE_ORIGIN" \
+  --existing-image "$VERIFIED_PINNED_IMAGE" \
+  --expected-runtime-digest "$VERIFIED_RUNTIME_DIGEST" \
+  --build-evidence "$PRIVATE_OWNER_BUILD_RECORD" \
+  "$APPROVED_COMMIT_SHA"
+```
+
+`VERIFIED_PINNED_IMAGE` must be the full, exact bound repository followed by
+`@sha256:` and 64 lowercase hexadecimal characters. The runtime digest identifies
+the independently verified `linux/amd64` child (or the same digest for a direct
+image manifest). Mutable tags and foreign image repositories are rejected.
+
+The private owner build record is a bounded JSON object with exactly these fields;
+replace the example placeholders with the previously verified build evidence:
+
+```json
+{
+  "version": 1,
+  "source_repository": "https://github.com/tncommerce/commerce-agents.git",
+  "source_sha": "<approved 40-character source commit SHA>",
+  "image": "<verified repository>@sha256:<verified root digest>",
+  "runtime_digest": "sha256:<verified runtime digest>",
+  "evidence_ref": "<existing owner build log or masterstatus record reference>"
+}
+```
+
+This record is an owner-supplied binding to existing evidence, **not a cryptographic
+source attestation**. A SHA-shaped argument or image tag alone does not prove how
+an image was built. The helper checks the record's exact repository/source/root/
+runtime bindings and requires a concrete evidence reference; the owner must have
+verified that underlying build record independently. Missing, ambiguous or
+mismatched metadata stops before remote reads or writes.
+
+The registry must independently resolve both the explicit immutable image and the
+`IMAGE_REPOSITORY:APPROVED_COMMIT_SHA` tag to the expected root. The selected runtime
+child must equal the owner record before update. The tag is an additional consistency
+check; it is never used as the deployment target. A missing or retargeted tag stops
+the operation. On success the helper also reports a SHA-256 of the canonicalized
+validated owner record for the operational audit trail. All existing cost,
+authentication and owner-channel conditions below still apply.
+
 This flow follows the primary Google contracts for
 [Artifact Registry image digests](https://docs.cloud.google.com/build/docs/securing-builds/generate-validate-build-provenance),
 [Cloud Run service status and resolved traffic targets](https://docs.cloud.google.com/run/docs/reference/rest/v1/namespaces.services),
@@ -218,9 +276,9 @@ access, plus independently verified available capacity under the standing **zero
 additional cost** constraint. It does not verify billing headroom, infer a zero
 bill from a free-tier label or start login/configuration flows. No deployment is
 performed by the repository change or its subprocess tests. Jarvis/GitHub Actions
-must not receive these GCP deployment credentials. Execution remains unavailable
-in the current work session until an existing authenticated deployment channel and
-the actual target/cost conditions are evidenced; no new approval dialog is implied.
+must not receive these GCP deployment credentials. Execution requires an existing
+authenticated deployment channel and evidenced target/cost conditions; no new
+approval dialog is implied when the standing owner authorization already applies.
 
 ## Separated ingestion and acknowledgment preparation
 

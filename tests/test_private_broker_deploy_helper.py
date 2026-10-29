@@ -135,7 +135,8 @@ if tool == "gcloud":
             sys.exit(98)
         output("revision_after" if args[3] == config["revision_after"]["metadata"]["name_expected"] else "revision")
     elif args[:4] == ["artifacts", "docker", "images", "describe"]:
-        output("artifact")
+        source_tag = config["image_repository"] + ":" + "a" * 40
+        output("artifact_tag" if args[4] == source_tag and "artifact_tag" in config else "artifact")
     elif args[:3] == ["run", "services", "update"]:
         # No incidental auth, IAM, traffic, scaling, environment or secret flags.
         expected = ["run", "services", "update", "dufynd-private-observer",
@@ -617,3 +618,191 @@ def test_malformed_index_evidence_is_bounded_and_never_ignored(owner_cli, raw):
     assert result.returncode != 0
     assert "Traceback" not in result.stderr
     assert_no_build_or_remote_write(calls)
+
+
+def owner_build_record(*, runtime_digest=DIGEST):
+    return {
+        "version": 1,
+        "source_repository": "https://github.com/tncommerce/commerce-agents.git",
+        "source_sha": SHA,
+        "image": REPO + "@" + DIGEST,
+        "runtime_digest": runtime_digest,
+        "evidence_ref": "ops.dufynd_monitoring_release_20261029/verified_owner_build",
+    }
+
+
+def resume_args(tmp_path, *, record=None, runtime_digest=DIGEST, raw=None):
+    evidence = tmp_path / "private-owner-build-record.json"
+    evidence.write_text(raw if raw is not None else json.dumps(
+        owner_build_record(runtime_digest=runtime_digest) if record is None else record
+    ))
+    return [*ARGS[:-1], "--existing-image", REPO + "@" + DIGEST,
+            "--expected-runtime-digest", runtime_digest,
+            "--build-evidence", str(evidence), SHA]
+
+
+@pytest.mark.parametrize("is_index", [False, True], ids=["direct_image", "oci_index"])
+def test_resume_published_image_keeps_guards_and_never_clones_builds_or_pushes(
+    owner_cli, tmp_path, is_index
+):
+    config, execute = owner_cli
+    config["artifact_tag"] = copy.deepcopy(config["artifact"])
+    child = RUNTIME_DIGEST if is_index else DIGEST
+    if is_index:
+        config["manifests"][OLD_DIGEST] = image_index(OLD_DIGEST, OLD_RUNTIME_DIGEST)
+        config["manifests"][DIGEST] = image_index(DIGEST, child)
+        config["revision"]["status"]["imageDigest"] = OLD_RUNTIME_DIGEST
+        config["revision_after"]["status"]["imageDigest"] = child
+    result, calls = execute(config, args=resume_args(tmp_path, runtime_digest=child))
+    assert result.returncode == 0, result.stderr
+    assert f"verified_image={REPO}@{DIGEST}" in result.stdout
+    assert f"verified_runtime_image={REPO}@{child}" in result.stdout
+    assert "verified_owner_build_record_sha256=" in result.stdout
+    assert "verified_traffic=100" in result.stdout
+    assert len([call for call in calls if is_update(call)]) == 1
+    assert_no_build_or_remote_write([call for call in calls if not is_update(call)])
+    artifact_reads = [call[5] for call in calls
+                      if call[:5] == ["gcloud", "artifacts", "docker", "images", "describe"]]
+    assert artifact_reads == [REPO + "@" + DIGEST, REPO + ":" + SHA]
+
+
+@pytest.mark.parametrize("fault", ["missing_image", "missing_child", "missing_evidence",
+                                  "mutable_tag", "bare_digest", "foreign_repo", "invalid_child"])
+def test_resume_requires_complete_explicit_immutable_arguments_before_any_cli(
+    owner_cli, tmp_path, fault
+):
+    _, execute = owner_cli
+    args = resume_args(tmp_path)
+    if fault.startswith("missing_"):
+        flag = {"missing_image": "--existing-image", "missing_child": "--expected-runtime-digest",
+                "missing_evidence": "--build-evidence"}[fault]
+        at = args.index(flag)
+        del args[at:at + 2]
+    elif fault == "mutable_tag":
+        args[args.index("--existing-image") + 1] = REPO + ":" + SHA
+    elif fault == "bare_digest":
+        args[args.index("--existing-image") + 1] = DIGEST
+    elif fault == "foreign_repo":
+        args[args.index("--existing-image") + 1] = "foreign.example/broker/runtime@" + DIGEST
+    elif fault == "invalid_child":
+        args[args.index("--expected-runtime-digest") + 1] = "sha256:invalid"
+    result, calls = execute(args=args)
+    assert result.returncode != 0
+    assert calls == []
+
+
+def test_resume_resolves_an_explicit_relative_owner_record_from_the_callers_directory(
+    owner_cli, tmp_path
+):
+    _, execute = owner_cli
+    args = resume_args(tmp_path)
+    at = args.index("--build-evidence") + 1
+    args[at] = os.path.relpath(args[at], Path.cwd())
+    result, calls = execute(args=args)
+    assert result.returncode == 0, result.stderr
+    assert len([call for call in calls if is_update(call)]) == 1
+    assert_no_build_or_remote_write([call for call in calls if not is_update(call)])
+
+
+def test_resume_missing_owner_record_stops_before_any_cli(owner_cli, tmp_path):
+    _, execute = owner_cli
+    args = resume_args(tmp_path)
+    Path(args[args.index("--build-evidence") + 1]).unlink()
+    result, calls = execute(args=args)
+    assert result.returncode != 0
+    assert "Traceback" not in result.stderr
+    assert calls == []
+
+
+@pytest.mark.parametrize("key,value", [
+    ("version", True),
+    ("source_repository", "https://github.com/foreign/repo.git"),
+    ("source_sha", "b" * 40),
+    ("image", REPO + "@" + OLD_DIGEST),
+    ("runtime_digest", OLD_RUNTIME_DIGEST),
+    ("evidence_ref", ""),
+    ("evidence_ref", "   "),
+    ("evidence_ref", "record\nforged-output"),
+    ("evidence_ref", "x" * 1025),
+    ("unexpected", "ignored-metadata"),
+])
+def test_resume_owner_record_must_bind_exact_source_root_and_child_before_any_cli(
+    owner_cli, tmp_path, key, value
+):
+    _, execute = owner_cli
+    record = owner_build_record()
+    record[key] = value
+    result, calls = execute(args=resume_args(tmp_path, record=record))
+    assert result.returncode != 0
+    assert "refusing deploy:" in result.stderr
+    assert "Traceback" not in result.stderr
+    assert calls == []
+
+
+@pytest.mark.parametrize(
+    "raw", ["[]", "not JSON", '{"version":1,"version":1}', " " * 262145],
+    ids=["wrong_type", "malformed_json", "duplicate_keys", "oversized"],
+)
+def test_resume_rejects_ambiguous_or_unbounded_owner_record(owner_cli, tmp_path, raw):
+    _, execute = owner_cli
+    result, calls = execute(args=resume_args(tmp_path, raw=raw))
+    assert result.returncode != 0
+    assert "Traceback" not in result.stderr
+    assert calls == []
+
+
+@pytest.mark.parametrize("fault", ["wrong_published_root", "retargeted_sha_tag", "foreign_sha_tag",
+                                  "wrong_runtime_child", "tag_read_failure", "manifest_read_failure"])
+def test_resume_registry_binding_failures_stop_before_any_service_update(owner_cli, tmp_path, fault):
+    config, execute = owner_cli
+    config["artifact_tag"] = copy.deepcopy(config["artifact"])
+    config["manifests"][DIGEST] = image_index(DIGEST, RUNTIME_DIGEST)
+    config["revision_after"]["status"]["imageDigest"] = RUNTIME_DIGEST
+    if fault == "wrong_published_root":
+        config["artifact"]["image_summary"] = {"digest": OLD_DIGEST, "fully_qualified_digest": REPO + "@" + OLD_DIGEST}
+    elif fault == "retargeted_sha_tag":
+        config["artifact_tag"]["image_summary"] = {"digest": OLD_DIGEST, "fully_qualified_digest": REPO + "@" + OLD_DIGEST}
+    elif fault == "foreign_sha_tag":
+        config["artifact_tag"]["image_summary"]["fully_qualified_digest"] = "foreign.example/image@" + DIGEST
+    elif fault == "wrong_runtime_child":
+        config["manifests"][DIGEST]["manifests"][0]["digest"] = OLD_RUNTIME_DIGEST
+    elif fault == "tag_read_failure":
+        config["fail"] = "artifact_tag"
+    elif fault == "manifest_read_failure":
+        config["fail"] = "manifest"
+    result, calls = execute(config, args=resume_args(tmp_path, runtime_digest=RUNTIME_DIGEST))
+    assert result.returncode != 0
+    assert "verified_traffic=100" not in result.stdout
+    assert "private-provider-diagnostic-canary" not in result.stdout + result.stderr
+    assert_no_build_or_remote_write(calls)
+
+
+def test_resume_does_not_overwrite_service_change_during_registry_reads(owner_cli, tmp_path):
+    config, execute = owner_cli
+    config["drift_read"] = 2
+    config["service_drift"] = copy.deepcopy(config["service"])
+    config["service_drift"]["metadata"]["resourceVersion"] = "another-owner-rollout"
+    result, calls = execute(config, args=resume_args(tmp_path))
+    assert result.returncode != 0
+    assert "service changed since preflight" in result.stderr
+    assert_no_build_or_remote_write(calls)
+
+
+def test_resume_reuses_target_preflight_and_never_updates_an_unready_broker(owner_cli, tmp_path):
+    config, execute = owner_cli
+    config["service"]["status"]["latestCreatedRevisionName"] = SERVICE + "-pending"
+    result, calls = execute(config, args=resume_args(tmp_path))
+    assert result.returncode != 0
+    assert_no_build_or_remote_write(calls)
+    assert not any(call[:5] == ["gcloud", "artifacts", "docker", "images", "describe"] for call in calls)
+
+
+def test_resume_post_update_mismatch_never_claims_success_or_rolls_back(owner_cli, tmp_path):
+    config, execute = owner_cli
+    config["revision_after"]["status"]["imageDigest"] = OLD_DIGEST
+    result, calls = execute(config, args=resume_args(tmp_path))
+    assert result.returncode != 0
+    assert "verified_traffic=100" not in result.stdout
+    assert "verified_owner_build_record_sha256=" not in result.stdout
+    assert len([call for call in calls if is_update(call)]) == 1
+    assert_no_build_or_remote_write([call for call in calls if not is_update(call)])
