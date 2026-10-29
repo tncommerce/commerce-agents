@@ -39,6 +39,8 @@ for executable in gcloud docker git python3; do
 done
 WORKDIR="$(mktemp -d)"
 trap 'rm -rf "$WORKDIR"' EXIT
+docker buildx version > "$WORKDIR/cli-result" 2> "$WORKDIR/cli-error" \
+  || die "required local Docker buildx is unavailable"
 
 # Parse bounded, projected non-secret JSON. Both bare and qualified SHA-256
 # digests must resolve to the exact bound image repository; never trim a foreign
@@ -46,6 +48,7 @@ trap 'rm -rf "$WORKDIR"' EXIT
 cat > "$WORKDIR/verify.py" <<'PY'
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -80,6 +83,58 @@ def digest(value):
     if not re.fullmatch(r"sha256:[0-9a-f]{64}", value):
         fail("image digest or repository rejected")
     return value
+
+def runtime_digest(root_digest):
+    # Cloud Run executes the linux/amd64 child of an OCI index/manifest list.
+    # Resolve only a digest-bound image in the already verified repository;
+    # Docker uses the owner's existing registry credentials, never a new login.
+    try:
+        result = subprocess.run(
+            ["docker", "buildx", "imagetools", "inspect", image_repo + "@" + root_digest,
+             "--format", "{{json .Manifest}}"],
+            stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+            timeout=30, check=False,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        fail("bound registry manifest could not be read")
+    if result.returncode or not 1 <= len(result.stdout) <= 262144:
+        fail("bound registry manifest could not be read")
+    manifest = json.loads(result.stdout, object_pairs_hook=unique)
+    if not isinstance(manifest, dict) or manifest.get("digest") != root_digest:
+        fail("registry manifest is not bound to the requested digest")
+    image_types = {"application/vnd.oci.image.manifest.v1+json",
+                   "application/vnd.docker.distribution.manifest.v2+json"}
+    index_types = {"application/vnd.oci.image.index.v1+json",
+                   "application/vnd.docker.distribution.manifest.list.v2+json"}
+    if manifest.get("mediaType") in image_types and "manifests" not in manifest:
+        # Buildx emits a descriptor (mediaType/digest/size) for a direct image;
+        # schemaVersion belongs to the full index, not that descriptor.
+        if "schemaVersion" in manifest and (type(manifest["schemaVersion"]) is not int or manifest["schemaVersion"] != 2):
+            fail("registry image schema rejected")
+        return root_digest
+    descriptors = manifest.get("manifests")
+    if manifest.get("mediaType") not in index_types or type(manifest.get("schemaVersion")) is not int or manifest["schemaVersion"] != 2 or not isinstance(descriptors, list) or not 1 <= len(descriptors) <= 1000:
+        fail("registry manifest type or descriptors rejected")
+    candidates, seen = [], set()
+    for descriptor in descriptors:
+        if not isinstance(descriptor, dict):
+            fail("registry manifest descriptor rejected")
+        child = descriptor.get("digest")
+        if not isinstance(child, str) or not re.fullmatch(r"sha256:[0-9a-f]{64}", child) or child in seen:
+            fail("registry manifest child digest rejected")
+        seen.add(child)
+        platform = descriptor.get("platform")
+        if not isinstance(platform, dict):
+            fail("registry manifest platform missing")
+        if platform.get("os") == "linux" and platform.get("architecture") == "amd64":
+            if descriptor.get("mediaType") not in image_types or platform.keys() - {"os", "architecture", "variant"} or platform.get("variant") not in {None, ""}:
+                fail("registry runtime platform rejected")
+            if descriptor.get("annotations", {}).get("vnd.docker.reference.type") == "attestation-manifest":
+                fail("registry attestation is not a runtime image")
+            candidates.append(child)
+    if len(candidates) != 1:
+        fail("registry manifest must select exactly one linux/amd64 image")
+    return candidates[0]
 
 def ready(status, metadata):
     generation, observed = metadata.get("generation"), status.get("observedGeneration")
@@ -163,6 +218,7 @@ try:
         resolved = digest(summary.get("digest"))
         if summary.get("fully_qualified_digest") != image_repo + "@" + resolved:
             fail("registry digest is not bound to the requested image")
+        (root / "expected-runtime-digest").write_text(runtime_digest(resolved))
         print(resolved)
     elif stage in {"revision-before", "revision-after"}:
         state = load("preflight.json") if stage == "revision-before" else service_state("service-after.json")
@@ -175,14 +231,15 @@ try:
         ready(status, metadata)
         resolved = digest(status.get("imageDigest"))
         if stage == "revision-before":
-            if "@" in state["image"] and digest(state["image"]) != resolved:
+            if "@" in state["image"] and digest(state["image"]) != resolved and runtime_digest(digest(state["image"])) != resolved:
                 fail("current image and ready revision disagree")
         else:
             initial = load("preflight.json")
             expected = (root / "expected-digest").read_text().strip()
+            expected_runtime = (root / "expected-runtime-digest").read_text().strip()
             if state["uid"] != initial["uid"] or state["namespace"] != initial["namespace"]:
                 fail("service identity changed during deployment")
-            if resolved != expected or state["image"] != image_repo + "@" + expected:
+            if resolved != expected_runtime or state["image"] != image_repo + "@" + expected:
                 fail("ready revision digest mismatch")
             print(state["revision"])
     elif stage == "final-service":
@@ -259,4 +316,5 @@ describe_revision "$READY_REVISION"
 verify revision-after >/dev/null
 echo "verified_revision=$READY_REVISION"
 echo "verified_image=$PINNED_IMAGE"
+echo "verified_runtime_image=${IMAGE_REPO}@$(cat "$WORKDIR/expected-runtime-digest")"
 echo "verified_traffic=100"

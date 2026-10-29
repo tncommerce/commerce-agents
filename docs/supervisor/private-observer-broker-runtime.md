@@ -169,10 +169,21 @@ excluded from the emitted and temporarily saved metadata. The explicit
 omitting its other fields; this shape was verified offline with Google's official
 SDK Core build `20261026202537`, including an excluded environment-value canary.
 
+The owner environment also requires Docker buildx, checked before any build or
+push. A pinned service image can identify an OCI index or Docker manifest list
+while Cloud Run's ready revision identifies its `linux/amd64` image. For that
+case, the helper reads the exact digest from the already bound repository with
+`docker buildx imagetools inspect --format '{{json .Manifest}}'`, using existing
+registry authentication. It checks the returned root digest, schema and media
+type and requires exactly one supported `linux/amd64` child. Missing, duplicate,
+foreign or ambiguous evidence fails closed; an attestation descriptor is not a
+runtime image. No digest comparison is skipped.
+
 It then checks out the exact immutable commit, builds and pushes the commit-tagged
 image and verifies both the registry's SHA-256 digest and its fully qualified image
 identity. The service UID/version/revision/image are checked again after build and
-immediately before update. The sole Cloud Run mutation remains `services update
+immediately before update. The pushed digest's runtime child is resolved before
+the update as well. The sole Cloud Run mutation remains `services update
 --image=IMAGE@sha256:…`; no IAM, secrets, environment, ingress, scaling, traffic or
 resource-creation operations are added. The user's gcloud default project and
 Docker authentication configuration are never changed.
@@ -187,11 +198,20 @@ owner deployment channel must serialize updates to this service. A verification
 failure exits without a success claim or automatic rollback; an image update that
 already completed is not silently undone.
 
+The final proof reports both `verified_image` (the pinned registry image or index)
+and `verified_runtime_image` (the resolved image actually reported by the ready
+revision). These may legitimately differ only through the verified registry
+index relationship. The runtime source SHA remains the explicit helper argument;
+an operational-helper correction does not require rebuilding from a different
+application commit.
+
 This flow follows the primary Google contracts for
 [Artifact Registry image digests](https://docs.cloud.google.com/build/docs/securing-builds/generate-validate-build-provenance),
 [Cloud Run service status and resolved traffic targets](https://docs.cloud.google.com/run/docs/reference/rest/v1/namespaces.services),
 [revision imageDigest](https://docs.cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions),
 and [resource identity/version](https://docs.cloud.google.com/run/docs/reference/rest/v1/ObjectMeta).
+The index handling follows the [Cloud Run container contract](https://docs.cloud.google.com/run/docs/container-contract)
+and [Docker's manifest inspection contract](https://docs.docker.com/reference/cli/docker/buildx/imagetools/inspect/).
 
 The helper still requires existing owner-authenticated GCP and Docker registry
 access, plus independently verified available capacity under the standing **zero
