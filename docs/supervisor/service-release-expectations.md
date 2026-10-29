@@ -86,6 +86,34 @@ acceptance bound to the actual executed source revision, and public API health
 remain independent checks. Existing ready/active tasks and genuine owner gates
 retain precedence in the planner.
 
+## Independent public storefront availability
+
+The technical reader also includes `read_dufynd_public_storefront_health_v1()`
+under `public_storefront_health`. An enabled monitor with a pending, stale,
+unhealthy or unavailable receipt adds the corresponding
+`public_storefront_health_pending`, `public_storefront_health_stale`,
+`public_storefront_unhealthy` or `public_storefront_health_unavailable` issue.
+The existing free planner and integrity audit consume those current issues;
+they do not create synthetic work or relabel an empty queue as starvation.
+A deliberately disabled monitor is visible as disabled, without a false outage.
+The planner retains its existing API-first diagnostic priority, then selects
+`diagnose_public_storefront_health` for a current storefront problem before the
+private-observer fallback. Existing runnable work and owner gates still win.
+
+API availability and storefront availability remain independent of each other
+and of private provider evidence. A valid public HTML response proves only the
+bounded homepage availability contract. It cannot establish a Render deployment
+revision, final redirect origin, private broker acceptance, a functioning buying
+journey or a business action. `private_technical_work_remaining` continues to
+reflect only the independent private checks. A stopped poller cannot preserve
+public health beyond the reader's actual receipt expiry.
+
+`tests/test_dufynd_public_health_integration_postgres.py` installs the actual
+storefront reader together with the existing release classifier, free planner
+and integrity audit. Its local fixture supplies non-secret receipt metadata;
+it performs no HTTP requests. The separate storefront transport suite exercises
+receipt cardinality, HTML validation, backoff and the existing scheduled hook.
+
 ## Explained monitoring work and starvation
 
 The audit previously labelled an empty queue as planner starvation even when the

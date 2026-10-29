@@ -274,6 +274,26 @@ class DufyndJarvisBridge:
             raise ValueError("Broker observation capture must return a JSON object")
         return payload
 
+    def capture_render_observer_read(
+        self,
+        *,
+        source: dict[str, Any],
+        health: dict[str, Any],
+        evidence: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        """Atomically capture an activated API observer without Gmail acceptance."""
+        if not isinstance(source, dict) or not isinstance(health, dict):
+            raise ValueError("Render source and health must be JSON objects")
+        if not isinstance(evidence, list):
+            raise ValueError("Render evidence must be a JSON array")
+        payload = self._rpc(
+            "capture_dufynd_render_observer_read_v1",
+            {"p_source": source, "p_health": health, "p_evidence": evidence},
+        )
+        if not isinstance(payload, dict):
+            raise ValueError("Render observer capture must return a JSON object")
+        return payload
+
     def begin_broker_acceptance(self, source: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(source, dict):
             raise ValueError("Broker acceptance source must be a JSON object")

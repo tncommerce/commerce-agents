@@ -62,7 +62,11 @@ class FakeClient:
         return self.responses.pop(0)
 
 
-def configure(monkeypatch, client):
+def configure(monkeypatch, client, *, mode="all"):
+    if mode is None:
+        monkeypatch.delenv("DUFYND_OBSERVER_MODE", raising=False)
+    else:
+        monkeypatch.setenv("DUFYND_OBSERVER_MODE", mode)
     monkeypatch.setenv("BROKER_ORIGIN", "https://broker.example")
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_URL", "https://oidc.example/token")
     monkeypatch.setenv("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "request-token")

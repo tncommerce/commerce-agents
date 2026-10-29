@@ -63,6 +63,10 @@ class ControlPlane(Protocol):
         self, *, credential_id: str, observer_id: str, evidence: Any
     ) -> dict[str, Any]: ...
 
+    def capture_render_observer_read(
+        self, *, source: dict[str, Any], health: dict[str, Any], evidence: Any
+    ) -> dict[str, Any]: ...
+
     def capture_broker_acceptance_observation(
         self,
         *,
@@ -133,28 +137,59 @@ def ingest_render_recovery(
         expected_run_attempt
     ):
         raise ArtifactError("render recovery failure provenance mismatch")
+    return _capture_render_artifact(bridge, artifact)
+
+
+def ingest_render_artifact(
+    bridge: ControlPlane,
+    artifact_path: Path,
+    *,
+    expected_run_id: str,
+    expected_sha: str,
+    expected_run_attempt: str,
+) -> dict[str, Any]:
+    """A successful, standalone Render read; never an all-provider acceptance."""
+    artifact = load_artifact(
+        artifact_path,
+        expected_run_id=expected_run_id,
+        expected_sha=expected_sha,
+        expected_run_attempt=expected_run_attempt,
+        expected_paths=RENDER_RECOVERY_PATHS,
+    )
+    return _capture_render_artifact(bridge, artifact)
+
+
+def _capture_render_artifact(bridge: ControlPlane, artifact: dict[str, Any]) -> dict[str, Any]:
+    """One strict durable boundary shared by success and Gmail-failure recovery."""
     health, render = artifact[HEALTH_PATH], artifact[RENDER_PATH]
     try:
         validate_render_recovery_evidence(health, render)
     except ProvenanceError:
-        raise ArtifactError("render recovery evidence shape mismatch") from None
-    projection = bridge.project_broker_health(health)
-    if projection.get("projected") != 2 or projection.get("activation_changed") is not False:
-        raise ArtifactError("broker health projection mismatch")
-    _accepted(
-        bridge.capture_broker_observation(
-            credential_id="render_deploy_broker",
-            observer_id="render:srv-dakpfrnf3r2c73dr3f20",
-            evidence=render,
-        ),
-        "render",
+        raise ArtifactError("render evidence shape mismatch") from None
+    result = bridge.capture_render_observer_read(
+        source=artifact[META_KEY], health=health, evidence=render
     )
+    _accepted(result, "render")
+    if (
+        result.get("activation_changed") is not False
+        or result.get("full_chain_complete") is not False
+        or result.get("business_success") is not False
+        or type(result.get("reused")) is not bool
+        or result.get("gmail_captures") != 0
+        or result.get("acks") != 0
+        or result.get("render_captures") != (0 if result["reused"] else 1)
+        or not isinstance(result.get("observed_at"), str)
+    ):
+        raise ArtifactError("render capture receipt mismatch")
     return {
-        "render_captures": 1,
+        "render_captures": result["render_captures"],
         "gmail_captures": 0,
         "acks": 0,
         "activation_changed": False,
         "full_chain_complete": False,
+        "business_success": False,
+        "observed_at": result["observed_at"],
+        "reused": result["reused"],
     }
 
 
@@ -198,7 +233,15 @@ def _sanitize_gmail(path: str, raw: Any) -> tuple[str, dict[str, Any]]:
 def _accepted(result: Any, stage: str) -> None:
     if not isinstance(result, dict) or result.get("accepted") is not True:
         reason = result.get("reason") if isinstance(result, dict) else None
-        if reason not in {"blocked_configuration", "unknown_observer"}:
+        if reason not in {
+            "blocked_configuration",
+            "unknown_observer",
+            "render_receipt_conflict",
+            "render_receipt_invalid",
+            "stale_render_observation",
+            "superseded_render_observation",
+            "invalid_render_source",
+        }:
             reason = "rejected"
         raise ArtifactError(f"{stage} capture {reason}")
 

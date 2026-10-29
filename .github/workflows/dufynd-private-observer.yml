@@ -2,6 +2,13 @@ name: DUFYND Private Observer Read
 
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "Render monitoring, or the explicitly selected full provider acceptance"
+        type: choice
+        required: true
+        default: render
+        options: [render, all]
   # Activity fallback: every scentai-mvp push refreshes the trusted observer path.
   # This does not replace the default-branch scheduler; it bounds observer staleness
   # while DUFYND is actively changing, without provider credentials or spend.
@@ -44,6 +51,7 @@ jobs:
       - name: Fixed read only; no upstream or management credentials
         env:
           BROKER_ORIGIN: ${{ vars.DUFYND_PRIVATE_BROKER_ORIGIN }}
+          DUFYND_OBSERVER_MODE: ${{ inputs.mode || 'render' }}
         run: python -m private_broker.observer_read
       - name: Preserve sanitized failure evidence
         if: failure()
@@ -58,13 +66,23 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: inputs.mode == 'all'
         with:
           name: private-observer-filtered-${{ github.run_id }}-${{ github.run_attempt }}
           path: broker-observations.json
+          if-no-files-found: error
+          retention-days: 1
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: inputs.mode != 'all'
+        with:
+          name: private-render-filtered-${{ github.run_id }}-${{ github.run_attempt }}
+          path: broker-render-observations.json
+          if-no-files-found: error
           retention-days: 1
 
   ingest:
     needs: read
+    if: inputs.mode == 'all'
     runs-on: ubuntu-latest
     timeout-minutes: 8
     permissions:
@@ -214,3 +232,38 @@ jobs:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: python -m scripts.dufynd_private_observer_failure
+
+  render-ingest:
+    needs: read
+    if: inputs.mode != 'all'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - run: pip install httpx==0.28.1 pydantic==2.13.4
+      - name: Download exact successful Render read from this workflow attempt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh run download "${GITHUB_RUN_ID}"
+          --repo "${GITHUB_REPOSITORY}"
+          --name "private-render-filtered-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          --dir render-artifact
+      - name: Capture activated API observer without Gmail reads or acceptance
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.dufynd_private_render_observer_ingest
+          --artifact render-artifact/broker-render-observations.json
+          --expected-run-id "${GITHUB_RUN_ID}"
+          --expected-sha "${GITHUB_SHA}"
+          --expected-run-attempt "${GITHUB_RUN_ATTEMPT}"

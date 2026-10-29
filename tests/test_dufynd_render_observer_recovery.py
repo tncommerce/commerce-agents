@@ -43,13 +43,20 @@ class Bridge:
         self.calls = []
         self.active = active
 
-    def project_broker_health(self, health):
-        self.calls.append(("health", health))
-        return {"projected": 2, "activation_changed": False}
-
-    def capture_broker_observation(self, **kwargs):
+    def capture_render_observer_read(self, **kwargs):
         self.calls.append(("capture", kwargs))
-        return {"accepted": self.active, "reason": "blocked_configuration"}
+        return {
+            "accepted": self.active,
+            "reason": "blocked_configuration",
+            "render_captures": 1,
+            "gmail_captures": 0,
+            "acks": 0,
+            "activation_changed": False,
+            "full_chain_complete": False,
+            "business_success": False,
+            "reused": False,
+            "observed_at": kwargs["health"]["render"]["last_health_check"],
+        }
 
     def begin_broker_acceptance(self, *args, **kwargs):
         raise AssertionError("recovery must not activate a provider")
@@ -97,13 +104,13 @@ def test_render_is_captured_after_gmail_failure_without_ack_or_activation(tmp_pa
         "acks": 0,
         "activation_changed": False,
         "full_chain_complete": False,
+        "business_success": False,
+        "observed_at": bridge.calls[0][1]["health"]["render"]["last_health_check"],
+        "reused": False,
     }
-    assert [call[0] for call in bridge.calls] == ["health", "capture"]
-    assert bridge.calls[1][1] == {
-        "credential_id": "render_deploy_broker",
-        "observer_id": "render:srv-dakpfrnf3r2c73dr3f20",
-        "evidence": [DEPLOY],
-    }
+    assert [call[0] for call in bridge.calls] == ["capture"]
+    assert bridge.calls[0][1]["source"] == SOURCE
+    assert bridge.calls[0][1]["evidence"] == [DEPLOY]
 
 
 def test_initial_activation_cannot_be_bypassed_by_partial_recovery(tmp_path):
@@ -166,9 +173,9 @@ def test_unbounded_or_wrong_provider_evidence_is_rejected_before_writes(tmp_path
     assert bridge.calls == []
 
 
-def test_partial_health_projection_does_not_capture_render(tmp_path):
+def test_incomplete_atomic_receipt_is_not_reported_as_success(tmp_path):
     bridge = Bridge()
-    bridge.project_broker_health = lambda health: {"projected": 1, "activation_changed": False}
-    with pytest.raises(ArtifactError, match="projection mismatch"):
+    bridge.capture_render_observer_read = lambda **kwargs: {"accepted": True}
+    with pytest.raises(ArtifactError, match="receipt mismatch"):
         recover(bridge, artifact(tmp_path))
     assert bridge.calls == []
