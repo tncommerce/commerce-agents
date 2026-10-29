@@ -52,11 +52,7 @@ def service(*, after=False):
         "spec": {
             "traffic": [{"latestRevision": True, "percent": 100}],
             "template": {
-                "spec": {
-                    "containers": [
-                        {"image": REPO + "@" + (DIGEST if after else OLD_DIGEST)}
-                    ]
-                }
+                "spec": {"containers": [{"image": REPO + "@" + (DIGEST if after else OLD_DIGEST)}]}
             },
         },
         "status": {
@@ -65,9 +61,7 @@ def service(*, after=False):
             "url": ORIGIN,
             "latestReadyRevisionName": revision,
             "latestCreatedRevisionName": revision,
-            "traffic": [
-                {"revisionName": revision, "latestRevision": True, "percent": 100}
-            ],
+            "traffic": [{"revisionName": revision, "latestRevision": True, "percent": 100}],
         },
     }
 
@@ -246,11 +240,7 @@ def owner_cli(tmp_path):
             timeout=15,
         )
         log = tmp_path / "calls.jsonl"
-        calls = (
-            [json.loads(line) for line in log.read_text().splitlines()]
-            if log.exists()
-            else []
-        )
+        calls = [json.loads(line) for line in log.read_text().splitlines()] if log.exists() else []
         return result, calls
 
     return baseline, execute
@@ -270,9 +260,7 @@ def assert_no_build_or_remote_write(calls):
 
 
 def test_helper_has_valid_bash_syntax():
-    result = run(
-        ["bash", "-n", str(SCRIPT)], check=False, capture_output=True, text=True
-    )
+    result = run(["bash", "-n", str(SCRIPT)], check=False, capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
 
 
@@ -292,9 +280,7 @@ def test_bound_existing_target_deploys_only_image_and_verifies_exact_ready_traff
     assert f"verified_revision={REVISION}" in result.stdout
     assert f"verified_image={REPO}@{DIGEST}" in result.stdout
     assert "verified_traffic=100" in result.stdout
-    first_clone = next(
-        i for i, call in enumerate(calls) if call[:2] == ["git", "clone"]
-    )
+    first_clone = next(i for i, call in enumerate(calls) if call[:2] == ["git", "clone"])
     assert_no_build_or_remote_write(calls[:first_clone])
     assert len(calls[:first_clone]) == 5
     assert len([call for call in calls if is_update(call)]) == 1
@@ -416,12 +402,8 @@ def test_read_only_preflight_rejects_wrong_or_unready_target_before_clone_build_
     assert_no_build_or_remote_write(calls)
 
 
-@pytest.mark.parametrize(
-    "failed", ["buildx", "project", "repository", "service", "revision"]
-)
-def test_existing_access_failures_stop_without_auth_or_resource_setup(
-    owner_cli, failed
-):
+@pytest.mark.parametrize("failed", ["buildx", "project", "repository", "service", "revision"])
+def test_existing_access_failures_stop_without_auth_or_resource_setup(owner_cli, failed):
     config, execute = owner_cli
     config["fail"] = failed
     result, calls = execute(config)
@@ -447,9 +429,7 @@ def test_existing_access_failures_stop_without_auth_or_resource_setup(
         "oversized",
     ],
 )
-def test_invalid_or_oversized_preflight_metadata_is_rejected_without_traceback(
-    owner_cli, raw
-):
+def test_invalid_or_oversized_preflight_metadata_is_rejected_without_traceback(owner_cli, raw):
     config, execute = owner_cli
     config["raw"] = {"service": raw}
     result, calls = execute(config)
@@ -464,8 +444,7 @@ def test_checkout_identity_failure_prevents_any_image_build(owner_cli):
     result, calls = execute(config)
     assert result.returncode != 0
     assert not any(
-        call[:2] in (["docker", "build"], ["docker", "push"]) or is_update(call)
-        for call in calls
+        call[:2] in (["docker", "build"], ["docker", "push"]) or is_update(call) for call in calls
     )
 
 
@@ -545,9 +524,7 @@ def test_cli_stage_failure_has_no_followup_mutation_or_success_claim(owner_cli, 
     result, calls = execute(config)
     assert result.returncode != 0
     assert "verified_traffic=100" not in result.stdout
-    assert len([call for call in calls if is_update(call)]) == (
-        1 if failed == "update" else 0
-    )
+    assert len([call for call in calls if is_update(call)]) == (1 if failed == "update" else 0)
     if failed == "build":
         assert not any(call[:2] == ["docker", "push"] for call in calls)
 
@@ -577,16 +554,10 @@ def image_index(root_digest, child_digest, *, docker=False):
     }
 
 
-@pytest.mark.parametrize(
-    "docker", [False, True], ids=["oci_index", "docker_manifest_list"]
-)
-def test_index_deploy_keeps_root_pin_and_verifies_selected_runtime_digest(
-    owner_cli, docker
-):
+@pytest.mark.parametrize("docker", [False, True], ids=["oci_index", "docker_manifest_list"])
+def test_index_deploy_keeps_root_pin_and_verifies_selected_runtime_digest(owner_cli, docker):
     config, execute = owner_cli
-    config["manifests"][OLD_DIGEST] = image_index(
-        OLD_DIGEST, OLD_RUNTIME_DIGEST, docker=docker
-    )
+    config["manifests"][OLD_DIGEST] = image_index(OLD_DIGEST, OLD_RUNTIME_DIGEST, docker=docker)
     config["manifests"][DIGEST] = image_index(DIGEST, RUNTIME_DIGEST, docker=docker)
     config["revision"]["status"]["imageDigest"] = REPO + "@" + OLD_RUNTIME_DIGEST
     config["revision_after"]["status"]["imageDigest"] = REPO + "@" + RUNTIME_DIGEST
@@ -595,14 +566,10 @@ def test_index_deploy_keeps_root_pin_and_verifies_selected_runtime_digest(
     assert f"verified_image={REPO}@{DIGEST}" in result.stdout
     assert f"verified_runtime_image={REPO}@{RUNTIME_DIGEST}" in result.stdout
     assert len([call for call in calls if is_update(call)]) == 1
-    first_clone = next(
-        i for i, call in enumerate(calls) if call[:2] == ["git", "clone"]
-    )
+    first_clone = next(i for i, call in enumerate(calls) if call[:2] == ["git", "clone"])
     assert_no_build_or_remote_write(calls[:first_clone])
     manifest_reads = [
-        call[4]
-        for call in calls
-        if call[:4] == ["docker", "buildx", "imagetools", "inspect"]
+        call[4] for call in calls if call[:4] == ["docker", "buildx", "imagetools", "inspect"]
     ]
     assert manifest_reads == [REPO + "@" + OLD_DIGEST, REPO + "@" + DIGEST]
 
@@ -721,9 +688,7 @@ def resume_args(tmp_path, *, record=None, runtime_digest=DIGEST, raw=None):
         raw
         if raw is not None
         else json.dumps(
-            owner_build_record(runtime_digest=runtime_digest)
-            if record is None
-            else record
+            owner_build_record(runtime_digest=runtime_digest) if record is None else record
         )
     )
     return [
@@ -796,9 +761,7 @@ def test_resume_requires_complete_explicit_immutable_arguments_before_any_cli(
     elif fault == "bare_digest":
         args[args.index("--existing-image") + 1] = DIGEST
     elif fault == "foreign_repo":
-        args[args.index("--existing-image") + 1] = (
-            "foreign.example/broker/runtime@" + DIGEST
-        )
+        args[args.index("--existing-image") + 1] = "foreign.example/broker/runtime@" + DIGEST
     elif fault == "invalid_child":
         args[args.index("--expected-runtime-digest") + 1] = "sha256:invalid"
     result, calls = execute(args=args)
@@ -908,18 +871,14 @@ def test_resume_registry_binding_failures_stop_before_any_service_update(
         config["fail"] = "artifact_tag"
     elif fault == "manifest_read_failure":
         config["fail"] = "manifest"
-    result, calls = execute(
-        config, args=resume_args(tmp_path, runtime_digest=RUNTIME_DIGEST)
-    )
+    result, calls = execute(config, args=resume_args(tmp_path, runtime_digest=RUNTIME_DIGEST))
     assert result.returncode != 0
     assert "verified_traffic=100" not in result.stdout
     assert "private-provider-diagnostic-canary" not in result.stdout + result.stderr
     assert_no_build_or_remote_write(calls)
 
 
-def test_resume_does_not_overwrite_service_change_during_registry_reads(
-    owner_cli, tmp_path
-):
+def test_resume_does_not_overwrite_service_change_during_registry_reads(owner_cli, tmp_path):
     config, execute = owner_cli
     config["drift_read"] = 2
     config["service_drift"] = copy.deepcopy(config["service"])
@@ -930,23 +889,18 @@ def test_resume_does_not_overwrite_service_change_during_registry_reads(
     assert_no_build_or_remote_write(calls)
 
 
-def test_resume_reuses_target_preflight_and_never_updates_an_unready_broker(
-    owner_cli, tmp_path
-):
+def test_resume_reuses_target_preflight_and_never_updates_an_unready_broker(owner_cli, tmp_path):
     config, execute = owner_cli
     config["service"]["status"]["latestCreatedRevisionName"] = SERVICE + "-pending"
     result, calls = execute(config, args=resume_args(tmp_path))
     assert result.returncode != 0
     assert_no_build_or_remote_write(calls)
     assert not any(
-        call[:5] == ["gcloud", "artifacts", "docker", "images", "describe"]
-        for call in calls
+        call[:5] == ["gcloud", "artifacts", "docker", "images", "describe"] for call in calls
     )
 
 
-def test_resume_post_update_mismatch_never_claims_success_or_rolls_back(
-    owner_cli, tmp_path
-):
+def test_resume_post_update_mismatch_never_claims_success_or_rolls_back(owner_cli, tmp_path):
     config, execute = owner_cli
     config["revision_after"]["status"]["imageDigest"] = OLD_DIGEST
     result, calls = execute(config, args=resume_args(tmp_path))
