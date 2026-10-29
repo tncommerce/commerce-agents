@@ -129,19 +129,71 @@ by owner-controlled maintenance; no paid Firestore TTL feature is required.
 
 ## Owner deployment helper
 
-For owner-authorized Cloud Shell deployment, use
-`scripts/deploy_dufynd_private_broker.sh <40-char scentai-mvp SHA>`.
-The helper checks out exactly the requested immutable commit, builds and pushes a
-commit-tagged broker image, resolves its Artifact Registry SHA-256 digest and deploys
-that digest-pinned image while changing **only** the existing Cloud Run service image.
-It then fails closed unless the newest revision is Ready, reports the exact same image
-digest and receives 100% traffic. It does not create IAM bindings, alter secrets/environment
-variables, change ingress/scaling, enable public access or touch Supabase/Render.
+Use the existing owner-controlled deployment environment and supply the verified
+target explicitly. The helper has no project, region, service or registry default:
 
-The helper still requires an owner-authenticated Google Cloud Shell (or equivalent
-owner-controlled environment) with the already-approved deployment permissions.
-Jarvis/GitHub Actions must not receive those GCP deployment credentials. This is
-deliberately an owner operation, not an autonomous worker capability.
+```bash
+bash scripts/deploy_dufynd_private_broker.sh \
+  --project "$VERIFIED_PROJECT_ID" \
+  --region "$VERIFIED_REGION" \
+  --service "$VERIFIED_SERVICE" \
+  --image-repository "$VERIFIED_IMAGE_REPOSITORY" \
+  --expected-origin "$VERIFIED_SERVICE_ORIGIN" \
+  "$APPROVED_COMMIT_SHA"
+```
+
+`VERIFIED_IMAGE_REPOSITORY` has the form
+`LOCATION-docker.pkg.dev/PROJECT/REPOSITORY/IMAGE`, without a tag or digest. Its
+project must equal the explicitly supplied project. The origin is the existing
+Cloud Run `status.url`, not an inferred project name or arbitrary callback URL.
+In particular, the former hardcoded `dufynd-private-broker-01` is no longer used.
+
+Before clone, build or push, the helper reads narrowly projected metadata for the
+existing active project, standard Docker registry repository, service and ready
+revision. It verifies project/namespace, region, origin, resource UID/version,
+completed reconciliation, the existing image repository and resolved digest. It
+requires the broker's single-container configuration and an existing 100%-to-latest
+traffic policy, so the later image-only update needs no routing change. A wrong,
+unreadable, missing or unready target stops before those operations. No IAM or
+Secret Manager read operations are added. `--format` is a client-side output
+projection, not a server-side field mask: environment and secret fields are
+excluded from the emitted and temporarily saved metadata. The explicit
+`spec.template.spec.containers[].image` slice preserves the container array while
+omitting its other fields; this shape was verified offline with Google's official
+SDK Core build `20261026202537`, including an excluded environment-value canary.
+
+It then checks out the exact immutable commit, builds and pushes the commit-tagged
+image and verifies both the registry's SHA-256 digest and its fully qualified image
+identity. The service UID/version/revision/image are checked again after build and
+immediately before update. The sole Cloud Run mutation remains `services update
+--image=IMAGE@sha256:…`; no IAM, secrets, environment, ingress, scaling, traffic or
+resource-creation operations are added. The user's gcloud default project and
+Docker authentication configuration are never changed.
+
+Final verification binds **all** positive traffic to the specific ready revision,
+checks that it is also the latest created revision and verifies its exact resolved
+image digest. Reading only `traffic[0].percent` is insufficient. Bare SHA-256 values
+and fully qualified digest references are normalized only for the explicitly bound
+image repository; a foreign image with the same hash is rejected. Metadata-readback
+checks are not an atomic lock against another owner deployment, so the existing
+owner deployment channel must serialize updates to this service. A verification
+failure exits without a success claim or automatic rollback; an image update that
+already completed is not silently undone.
+
+This flow follows the primary Google contracts for
+[Artifact Registry image digests](https://docs.cloud.google.com/build/docs/securing-builds/generate-validate-build-provenance),
+[Cloud Run service status and resolved traffic targets](https://docs.cloud.google.com/run/docs/reference/rest/v1/namespaces.services),
+[revision imageDigest](https://docs.cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions),
+and [resource identity/version](https://docs.cloud.google.com/run/docs/reference/rest/v1/ObjectMeta).
+
+The helper still requires existing owner-authenticated GCP and Docker registry
+access, plus independently verified available capacity under the standing **zero
+additional cost** constraint. It does not verify billing headroom, infer a zero
+bill from a free-tier label or start login/configuration flows. No deployment is
+performed by the repository change or its subprocess tests. Jarvis/GitHub Actions
+must not receive these GCP deployment credentials. Execution remains unavailable
+in the current work session until an existing authenticated deployment channel and
+the actual target/cost conditions are evidenced; no new approval dialog is implied.
 
 ## Separated ingestion and acknowledgment preparation
 
