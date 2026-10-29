@@ -13,7 +13,10 @@ from examples.retail.api.merchant_offers import (
     offer_clickout_target,
 )
 from examples.retail.api.merchant_partners import MerchantPartnerStore
-from scripts.prepare_dufynd_runtime_offer_batch import prepare_batch
+from scripts.prepare_dufynd_runtime_offer_batch import (
+    prepare_batch,
+    restore_direct_merchant_browser_evidence,
+)
 
 DATA = Path("examples/retail/data")
 PACKET = Path("artifacts/dufynd-top-six-offers-20261026")
@@ -102,7 +105,19 @@ def test_existing_importer_accepts_real_development_files_and_missing_runtime_ev
     monkeypatch,
 ) -> None:
     offers = read(DATA / "merchant_offers.json")["offers"]
-    prepared = prepare_batch(offers, read(PACKET / "batch-input.json"), now=NOW)
+    original = read(PACKET / "batch-input.json")
+    # Archived packets predate the stronger source contract. They must pass
+    # the existing immutable-bundle adapter before the importer can accept them.
+    with pytest.raises(ValueError, match="^source_per_variant_evidence_kind_required$"):
+        prepare_batch(offers, original, now=NOW)
+    evidence = restore_direct_merchant_browser_evidence(
+        offers, original, evidence_dir=PACKET, now=NOW
+    )
+    assert original == read(PACKET / "batch-input.json")
+    assert [row["verified_at"] for row in evidence["offers"]] == [
+        row["verified_at"] for row in original["offers"]
+    ]
+    prepared = prepare_batch(offers, evidence, now=NOW)
     assert len(prepared) == 6
     monkeypatch.setenv("DUFYND_RUNTIME_OFFER_SNAPSHOTS", "enabled")
     monkeypatch.setenv("DUFYND_RUNTIME_OFFER_MERCHANTS", "top-parfuemerie")

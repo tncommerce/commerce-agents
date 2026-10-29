@@ -10,7 +10,10 @@ from pathlib import Path
 import pytest
 from examples.retail.api.merchant_offers import MerchantOffer, customer_offer_payload, rank_offers
 from examples.retail.api.runtime_offer_snapshots import approved_affiliate_route
-from scripts.prepare_dufynd_runtime_offer_batch import prepare_batch
+from scripts.prepare_dufynd_runtime_offer_batch import (
+    prepare_batch,
+    restore_direct_merchant_browser_evidence,
+)
 
 PACKET = Path("artifacts/dufynd-top-six-offers-20261026")
 DATA = Path("examples/retail/data")
@@ -22,9 +25,18 @@ def read(name: str) -> dict:
 
 
 def prepare(now: datetime = NOW) -> list[dict]:
+    offers = read("proposed-offers.json")["offers"]
+    original = read("batch-input.json")
+    evidence = restore_direct_merchant_browser_evidence(
+        offers, original, evidence_dir=PACKET, now=now
+    )
+    assert original == read("batch-input.json")
+    assert [row["verified_at"] for row in evidence["offers"]] == [
+        row["verified_at"] for row in original["offers"]
+    ]
     return prepare_batch(
-        read("proposed-offers.json")["offers"],
-        read("batch-input.json"),
+        offers,
+        evidence,
         now=now,
         partners_payload={"partners": [read("proposed-partner.json")]},
         mappings_payload=read("proposed-mappings.json"),
