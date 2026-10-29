@@ -73,6 +73,8 @@ jobs:
           tests/test_dufynd_planner_technical_blockers_postgres.py
           tests/test_dufynd_public_api_health_postgres.py
           tests/test_dufynd_github_observer_receipt_postgres.py
+          tests/test_dufynd_service_release_expectations_postgres.py
+          tests/test_dufynd_gmail_pause_projection_postgres.py
 
   no-pypi-fallback:
     runs-on: ubuntu-latest
