@@ -136,17 +136,44 @@ for freshness and degraded-state reconciliation; no extra cron is introduced.
 8. Select the same explicit mode with `capture_v2=true`. Verify each durable
    receipt, service SHA/status, original observed time and the subsequent normal
    health cycle. An attempt with a failed peer remains partial.
-9. Any later change to automatic dispatch defaults requires its own exact
-   source/transport verification. This extension leaves the existing schedules,
-   default `render` mode and paused Gmail recovery unchanged.
+9. After real v2 capture and the normal health cycle are verified, verify the
+   gated dispatch source on both `main` and `scentai-mvp`. Only then enable
+   `DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED=1` for the existing automatic
+   triggers. Leave this separate flag absent or off during runtime/read-only
+   acceptance. A source merge does not enable it.
 
 If the existing project, authentication, API access or cost headroom cannot be
 verified, preserve the disabled state and record the concrete capability gap.
 A permission failure is not evidence that a replacement project is needed.
 
+## Automatic dispatch gate
+
+The two existing dispatchers on `main` (reader and watchdog) and the existing
+`scentai-mvp` push fallback send exactly one dispatch to the trusted observer
+workflow. They select `mode=render_services_v2` with `capture_v2=true` only when
+all three repository variables are exactly `1`:
+
+- `DUFYND_PRIVATE_BROKER_ENABLED`
+- `DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED`
+- `DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED`
+
+Otherwise an executing dispatcher explicitly selects `mode=render` and
+`capture_v2=false`. Inputless manual dispatches retain the `render` default.
+The new AUTO flag separates automatic capture from the preceding manual probes;
+it does not replace runtime, SQL grant or per-service observer verification.
+No flag is written by the workflow. Transport failures remain failed steps,
+without a second dispatch or an automatic retry. Gmail recovery remains paused.
+
+The trigger schedules, permissions and concurrency are unchanged. Source and
+offline transport tests prove routing, not timely GitHub schedule delivery or a
+successful downstream observation. Continue checking the original observation
+and durable capture times; do not widen freshness thresholds to hide late runs.
+
 ## Safe rollback
 
-Disable the explicit v2 SQL service grants and stop selecting v2 in dispatches.
+Disable `DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED` first to stop automatic
+v2 selection. Disable the explicit v2 SQL service grants and stop selecting v2
+in manual dispatches.
 Preserve their receipts for audit; a rollback must not erase the evidence or
 invent fresh v1 observations. Disable the broker's v2 gate through the verified
 owner channel when required. The unchanged v1 API workflow remains available.
