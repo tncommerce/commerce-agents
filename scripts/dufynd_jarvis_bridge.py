@@ -294,6 +294,23 @@ class DufyndJarvisBridge:
             raise ValueError("Render observer capture must return a JSON object")
         return payload
 
+    def capture_render_service_read(
+        self,
+        *,
+        source: dict[str, Any],
+        observation: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Capture an explicitly granted v2 service; never project global health."""
+        if not isinstance(source, dict) or not isinstance(observation, dict):
+            raise ValueError("Render service source and observation must be JSON objects")
+        payload = self._rpc(
+            "capture_dufynd_render_service_read_v2",
+            {"p_source": source, "p_observation": observation},
+        )
+        if not isinstance(payload, dict):
+            raise ValueError("Render service capture must return a JSON object")
+        return payload
+
     def begin_broker_acceptance(self, source: dict[str, Any]) -> dict[str, Any]:
         if not isinstance(source, dict):
             raise ValueError("Broker acceptance source must be a JSON object")

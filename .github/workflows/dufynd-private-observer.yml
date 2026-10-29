@@ -8,7 +8,12 @@ on:
         type: choice
         required: true
         default: render
-        options: [render, all]
+        options: [render, all, render_services_v2]
+      capture_v2:
+        description: "Capture v2 observations only after verified runtime and explicit service grants; false performs a read-only probe"
+        type: boolean
+        required: false
+        default: false
   # Activity fallback: every scentai-mvp push refreshes the trusted observer path.
   # This does not replace the default-branch scheduler; it bounds observer staleness
   # while DUFYND is actively changing, without provider credentials or spend.
@@ -34,7 +39,7 @@ jobs:
         run: gh workflow run dufynd-private-observer.yml --repo "$GITHUB_REPOSITORY" --ref scentai-mvp
 
   read:
-    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1'
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1' && inputs.mode != 'render_services_v2'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -235,7 +240,7 @@ jobs:
 
   render-ingest:
     needs: read
-    if: inputs.mode != 'all'
+    if: inputs.mode != 'all' && inputs.mode != 'render_services_v2'
     runs-on: ubuntu-latest
     timeout-minutes: 3
     permissions:
@@ -264,6 +269,74 @@ jobs:
         run: >-
           python -m scripts.dufynd_private_render_observer_ingest
           --artifact render-artifact/broker-render-observations.json
+          --expected-run-id "${GITHUB_RUN_ID}"
+          --expected-sha "${GITHUB_SHA}"
+          --expected-run-attempt "${GITHUB_RUN_ATTEMPT}"
+
+  read-v2:
+    # Separate, disabled-by-default scope. Automatic inputless dispatches still
+    # take the existing API-only read job; no v2 flag is set by this workflow.
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && inputs.mode == 'render_services_v2' && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1' && vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - run: pip install httpx==0.28.1
+      - name: Independently read the two explicitly granted Render services
+        env:
+          BROKER_ORIGIN: ${{ vars.DUFYND_PRIVATE_BROKER_ORIGIN }}
+          DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED: ${{ vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED }}
+        run: python -m private_broker.render_service_read
+      - name: Preserve sanitized service evidence even when a peer read fails
+        if: always() && !cancelled()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: private-render-services-v2-${{ github.run_id }}-${{ github.run_attempt }}
+          path: broker-render-services-v2.json
+          if-no-files-found: warn
+          retention-days: 1
+
+  ingest-v2:
+    needs: read-v2
+    # A valid independent peer remains capturable after a partial read failure.
+    # Read-only probes never receive Supabase credentials or invoke this job.
+    if: always() && !cancelled() && github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && inputs.mode == 'render_services_v2' && inputs.capture_v2 == true && vars.DUFYND_PRIVATE_BROKER_ENABLED == '1' && vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED == '1' && (needs['read-v2'].result == 'success' || needs['read-v2'].result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - run: pip install httpx==0.28.1 pydantic==2.13.4
+      - name: Download the exact v2 read artifact from this run and attempt
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh run download "${GITHUB_RUN_ID}"
+          --repo "${GITHUB_REPOSITORY}"
+          --name "private-render-services-v2-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          --dir render-services-v2-artifact
+      - name: Capture each independently authorized service without acceptance or Gmail
+        env:
+          SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: >-
+          python -m scripts.dufynd_private_render_services_ingest
+          --artifact render-services-v2-artifact/broker-render-services-v2.json
           --expected-run-id "${GITHUB_RUN_ID}"
           --expected-sha "${GITHUB_SHA}"
           --expected-run-attempt "${GITHUB_RUN_ATTEMPT}"

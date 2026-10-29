@@ -80,6 +80,8 @@ jobs:
           tests/test_dufynd_render_only_capture_postgres.py
           tests/test_dufynd_github_scheduler_delivery_postgres.py
           tests/test_dufynd_github_scheduler_integration_postgres.py
+          tests/test_dufynd_render_services_v2_postgres.py
+          tests/test_dufynd_render_services_v2_integration.py
 
   no-pypi-fallback:
     runs-on: ubuntu-latest

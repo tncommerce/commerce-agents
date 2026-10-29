@@ -212,7 +212,9 @@ def test_inputless_workflow_success_and_all_provider_path_are_disjoint():
     reader = next(step for step in jobs["read"]["steps"] if "observer_read" in step.get("run", ""))
     assert reader["env"]["DUFYND_OBSERVER_MODE"] == "${{ inputs.mode || 'render' }}"
     assert jobs["ingest"]["if"] == "inputs.mode == 'all'"
-    assert jobs["render-ingest"]["if"] == "inputs.mode != 'all'"
+    assert (
+        jobs["render-ingest"]["if"] == "inputs.mode != 'all' && inputs.mode != 'render_services_v2'"
+    )
     assert jobs["render-ingest"]["needs"] == "read"
     assert jobs["ack"]["needs"] == "ingest" and jobs["finalize"]["needs"] == "ack"
     rendered = json.dumps(jobs["render-ingest"])

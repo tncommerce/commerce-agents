@@ -22,6 +22,8 @@ from fastapi.responses import JSONResponse
 from scripts.dufynd_observer_credentials import (
     GMAIL_SCOPE,
     KNOWN_THREADS,
+    RENDER_SCOPE_V2,
+    RENDER_SERVICES_V2,
     TOKEN_ENDPOINT,
     BrokerError,
     FixedTransport,
@@ -29,6 +31,7 @@ from scripts.dufynd_observer_credentials import (
     GmailRefreshBroker,
     PrivateCredential,
     RenderReadBroker,
+    RenderServicesReadBroker,
     metadata,
 )
 
@@ -49,8 +52,11 @@ class Config:
     render_key: str = ""
     repository_id: str = ""
     callback_logging_ready: bool = False
+    render_services_v2: bool = False
 
     def validate(self):
+        if type(self.render_services_v2) is not bool:
+            raise BrokerError("missing_configuration")
         url = urlsplit(self.origin)
         if (
             url.scheme != "https"
@@ -315,6 +321,25 @@ def create_app(config: Config, vault: EncryptedVault, transport: FixedTransport,
                 raise BrokerError("refresh_race")
             return result
 
+    @app.get("/v2/render/services/{service_id}/deployments")
+    def render_service_v2(service_id: str, request: Request):
+        if request.query_params or service_id not in RENDER_SERVICES_V2:
+            raise BrokerError("scope_mismatch")
+        if config.render_services_v2 is not True:
+            raise BrokerError("broker_activation_required")
+        result = RenderServicesReadBroker(transport, PrivateCredential(config.render_key)).read(
+            service_id=service_id
+        )
+        # This timestamp belongs only to the completed read above. The v1
+        # credential/global health document and Gmail are deliberately untouched.
+        return {
+            "version": 2,
+            "scope_id": RENDER_SCOPE_V2,
+            "service_id": service_id,
+            "observed_at": datetime.now(UTC).isoformat(),
+            "deployments": result,
+        }
+
     @app.get("/v1/health")
     def health():
         now = datetime.now(UTC)
@@ -455,6 +480,12 @@ def production_app():
         with open("/run/secrets/" + name + "-dir/value", encoding="utf-8") as source:
             return source.read().strip()
 
+    # A code/image update alone never widens the running owner's read scope.
+    # Only this exact explicit opt-in enables both fixed service reads.
+    render_scope = os.environ.get("BROKER_RENDER_SERVICES_V2", "")
+    if render_scope not in {"", "api-storefront-v2"}:
+        raise BrokerError("missing_configuration")
+
     config = Config(
         os.environ["BROKER_ORIGIN"],
         os.environ["BROKER_MAILBOX"],
@@ -464,6 +495,7 @@ def production_app():
         secret("render-key"),
         os.environ["BROKER_REPOSITORY_ID"],
         os.environ.get("BROKER_CALLBACK_LOGGING_READY") == "1",
+        render_scope == "api-storefront-v2",
     )
     client = httpx.Client(trust_env=False)
     vault = EncryptedVault(
@@ -471,4 +503,9 @@ def production_app():
         base64.b64decode(secret("encryption-key"), validate=True),
     )
     keys = jwt.PyJWKClient(ISSUER + "/.well-known/jwks", cache_keys=False, lifespan=300, timeout=5)
-    return create_app(config, vault, FixedTransport(client), WorkloadAuth(config, keys))
+    return create_app(
+        config,
+        vault,
+        FixedTransport(client, render_services_v2=config.render_services_v2),
+        WorkloadAuth(config, keys),
+    )
