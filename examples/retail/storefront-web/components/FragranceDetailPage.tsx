@@ -777,6 +777,12 @@ export default async function FragrancePage({
               Duftprofil
             </h2>
 
+            {fragrance.short_description?.trim() ? (
+              <p className="mt-3 text-[13px] leading-6 text-(--ink-soft)" data-dufynd-profile-description>
+                {fragrance.short_description}
+              </p>
+            ) : null}
+
             <div className="mt-3 flex flex-wrap gap-2">
               {fragrance.accords.map((accord) => (
                 <AcquisitionInternalLink

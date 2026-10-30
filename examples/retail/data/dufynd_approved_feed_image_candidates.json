@@ -45,7 +45,13 @@
       "rights_status": "verified_for_publisher_service",
       "rights_checked_at": "2026-09-28",
       "visual_approval_basis": "explicit_user_visual_approval_2026-10-01",
-      "reviewed_at": "2026-10-01T09:49:00+00:00"
+      "reviewed_at": "2026-10-01T09:49:00+00:00",
+      "image_sha256": "ae756bf1af5675524ba7f0c455f1c63337acc868dea9cdafafcc7ecb287a5b57",
+      "width": 252,
+      "height": 519,
+      "source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-delina-edp-nat-spray",
+      "source_merchant_id": "top-parfuemerie",
+      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
     },
     {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
@@ -74,7 +80,13 @@
       "rights_status": "verified_for_publisher_service",
       "rights_checked_at": "2026-09-28",
       "visual_approval_basis": "explicit_user_visual_approval_2026-10-01",
-      "reviewed_at": "2026-10-01T09:49:00+00:00"
+      "reviewed_at": "2026-10-01T09:49:00+00:00",
+      "image_sha256": "25e72f57fd46750e6c06fac6f2bd316380316a98933a551adcaaf9fc620031cf",
+      "width": 412,
+      "height": 600,
+      "source_page_url": "https://www.topparfuemerie.de/yves-saint-laurent-black-opium-edp-nat-spray",
+      "source_merchant_id": "top-parfuemerie",
+      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
     },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
@@ -103,7 +115,13 @@
       "rights_status": "verified_for_publisher_service",
       "rights_checked_at": "2026-09-28",
       "visual_approval_basis": "explicit_user_visual_approval_2026-10-01",
-      "reviewed_at": "2026-10-01T09:49:00+00:00"
+      "reviewed_at": "2026-10-01T09:49:00+00:00",
+      "image_sha256": "693e7bba7086b777d07579ed5931971e0d90a7ae3b7f36dd40dc2a8d726e30a4",
+      "width": 258,
+      "height": 600,
+      "source_page_url": "https://www.topparfuemerie.de/yves-saint-laurent-libre-edp-vapo",
+      "source_merchant_id": "top-parfuemerie",
+      "attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
     },
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",

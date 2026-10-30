@@ -60,5 +60,33 @@ for (const choice of ['unknown', 'denied', 'granted']) {
   assert.equal(redirect.searchParams.get('sort'), 'price');assert.equal(redirect.hash, '#offers');
   assert.equal(f.touched.network, 0);cases++;
 }
+// Hydration must see the same functional href as SSR. Deleting an absent URL
+// parameter would still normalize %20 to + and turn a relative URL absolute.
+for (const choice of ['unknown', 'denied', 'granted']) {
+  const f = fixture(choice);
+  const functional = [
+    '/duft?q=Rosa%20Pfeffer#duftkatalog',
+    '/duft?q=Thail%C3%A4ndisches%20Basilikum&marke=Essential%20Parfums',
+    '/duft?q=Amber+wood&sort=brand',
+  ];
+  const anchors = functional.map(href => anchor(f, href));
+  f.document.querySelectorAll = () => anchors;
+  f.initializeMeasurementPrivacy();
+  if (choice === 'granted') f.consent.setMeasurementChoice('denied');
+  assert.deepEqual(anchors.map(item => item.getAttribute('href')), functional,
+    'Privacy cleanup must not rewrite an untouched functional SSR link');
+  assert.equal(f.touched.network, 0);cases++;
+}
+for (const field of ['sid', 'src', 'cmp', 'content', 'measurement', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']) {
+  const f = fixture('denied');
+  const decorated = anchor(f, `/duft?q=Rosa%20Pfeffer&${field}=old&${field}=#duftkatalog`);
+  f.document.querySelectorAll = () => [decorated];
+  f.initializeMeasurementPrivacy();
+  const cleaned = new URL(decorated.href);
+  assert.equal(cleaned.searchParams.has(field), false, `Remove all ${field} values, including empty duplicates`);
+  assert.equal(cleaned.searchParams.get('q'), 'Rosa Pfeffer');
+  assert.equal(cleaned.hash, '#duftkatalog');
+  assert.equal(f.touched.network, 0);cases++;
+}
 console.log(JSON.stringify({status:'PASS',cases,networkRequests:0,
   scope:'Actual consent/acquisition/analytics modules in VM; no full-browser claim'}, null, 2));
