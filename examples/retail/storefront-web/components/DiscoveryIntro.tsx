@@ -7,7 +7,6 @@ import FragranceVisual from "./FragranceVisual";
 import ImageAttribution from "./ImageAttribution";
 import {
   LIVE_FRAGRANCES,
-  isVerifiedProductTruthVisual,
   originalPhotoFor,
 } from "@/lib/fragranceCatalog";
 import styles from "./DiscoveryIntro.module.css";
@@ -36,10 +35,9 @@ export default function DiscoveryIntro({
     : null;
   const originals = ORIGINAL_IDS.flatMap((id) => {
     const fragrance = LIVE_FRAGRANCES.find((entry) => entry.product_id === id);
-    const visual =
-      fragrance?.presentation_visual || fragrance?.preferred_visual;
-    return fragrance && isVerifiedProductTruthVisual(visual)
-      ? [{ fragrance, visual: visual! }]
+    const visual = fragrance ? originalPhotoFor(fragrance) : null;
+    return fragrance && visual
+      ? [{ fragrance, visual }]
       : [];
   });
   return (
@@ -182,7 +180,7 @@ export default function DiscoveryIntro({
                 <FragranceVisual
                   imageUrl={visual.url}
                   cutoutUrl={visual.url}
-                  alt={`${fragrance.brand} ${fragrance.name}`}
+                  alt={`${fragrance.brand} ${fragrance.name} · ${fragrance.concentration} ${fragrance.volume_ml} ml`}
                   variant="card"
                   mode="cutout"
                   className="h-full w-full"
@@ -192,7 +190,7 @@ export default function DiscoveryIntro({
               <span className={styles.brand}>{fragrance.brand}</span>
               <strong>{fragrance.name}</strong>
               <span className={styles.size}>
-                {fragrance.volume_ml} ml · Eau de Parfum
+                {fragrance.volume_ml} ml · {fragrance.concentration}
               </span>
             </AcquisitionInternalLink>
           ))}

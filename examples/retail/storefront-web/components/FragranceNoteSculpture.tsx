@@ -191,15 +191,17 @@ export default function FragranceNoteSculpture({ notes }: { notes: Notes }) {
                   {group.notes.slice(0, 12).map((note, index, list) => (
                     <circle
                       key={`${note}-${index}`}
-                      cx={
+                      // Different JS engines can differ in the final trig
+                      // digit. Stable SVG coordinates keep SSR hydration exact.
+                      cx={(
                         180 +
                         Math.cos((index / list.length) * Math.PI * 2) * 103
-                      }
-                      cy={
+                      ).toFixed(3)}
+                      cy={(
                         65 +
                         layer * 70 +
                         Math.sin((index / list.length) * Math.PI * 2) * 25
-                      }
+                      ).toFixed(3)}
                       r="15"
                       fill={["#8aa478", "#bf8c80", "#ac9067"][layer]}
                     />

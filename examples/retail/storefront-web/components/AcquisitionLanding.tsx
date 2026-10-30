@@ -5,8 +5,8 @@ import LegalFooter from "@/components/LegalFooter";
 import FragranceVisual from "@/components/FragranceVisual";
 import type { AdvisorStartKey } from "@/lib/advisorStarts";
 import {
-  isVerifiedProductTruthVisual,
   LIVE_FRAGRANCES,
+  originalPhotoFor,
   visualWorldFor,
 } from "@/lib/fragranceCatalog";
 
@@ -40,19 +40,17 @@ export default function AcquisitionLanding({
   trustNote: string;
 }) {
   const fragranceCount = LIVE_FRAGRANCES.length;
-  const acquisitionSpotlights = [...LIVE_FRAGRANCES]
-    .filter((fragrance) =>
-      Boolean(
-        fragrance.presentation_visual?.url ||
-          fragrance.preferred_visual?.url,
-      ),
-    )
-    .sort(
-      (a, b) =>
-        b.community.rating_count - a.community.rating_count ||
-        a.brand.localeCompare(b.brand, "de"),
-    )
-    .slice(0, 3);
+  // Reuse the same approved originals as the catalog entry. Editorial bottle
+  // scenes and legacy fidelity flags do not establish an original-photo grant.
+  const acquisitionSpotlights = [
+    "SC-YSL-LIBRE-EDP-90",
+    "SC-PDM-DELINA-EDP-75",
+    "SC-YSL-BLACK-OPIUM-EDP-90",
+  ].flatMap((productId) => {
+    const fragrance = LIVE_FRAGRANCES.find((item) => item.product_id === productId);
+    const visual = fragrance ? originalPhotoFor(fragrance) : null;
+    return fragrance && visual ? [{ fragrance, visual }] : [];
+  });
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f5f0e8] text-(--ink)">
@@ -159,37 +157,22 @@ export default function AcquisitionLanding({
                   aria-hidden
                   className="dufynd-acquisition-stage-glow"
                 />
-                {acquisitionSpotlights.map((fragrance, index) => {
-                  const visual =
-                    fragrance.presentation_visual ||
-                    fragrance.preferred_visual;
-                  const isProductTruth =
-                    isVerifiedProductTruthVisual(visual);
-
+                {acquisitionSpotlights.map(({ fragrance, visual }, index) => {
                   return (
                     <AcquisitionInternalLink
                       key={fragrance.product_id}
                       href={`/duft/${fragrance.slug}`}
                       className="dufynd-acquisition-bottle"
                       data-dufynd-acquisition-slot={index + 1}
-                      aria-label={`${fragrance.brand} ${fragrance.name} im Katalog öffnen`}
+                      aria-label={`${fragrance.brand} ${fragrance.name} ${fragrance.concentration} ${fragrance.volume_ml} ml im Katalog öffnen`}
                     >
                       <div className="dufynd-acquisition-bottle-visual">
                         <FragranceVisual
-                          imageUrl={visual?.url}
-                          cutoutUrl={
-                            isProductTruth ? visual?.url : undefined
-                          }
-                          backdropUrl={
-                            isProductTruth
-                              ? fragrance.backdrop_visual?.url
-                              : undefined
-                          }
-                          alt={`${fragrance.brand} ${fragrance.name}`}
+                          imageUrl={visual.url}
+                          cutoutUrl={visual.url}
+                          alt={`${fragrance.brand} ${fragrance.name} · ${fragrance.concentration} ${fragrance.volume_ml} ml`}
                           variant="card"
-                          mode={
-                            isProductTruth ? "cutout" : "editorial"
-                          }
+                          mode="cutout"
                           world={visualWorldFor(fragrance)}
                           className="h-full w-full"
                           priority={index === 0}
