@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   revalidate-top-parfuemerie:
-    if: ${{ github.ref != 'refs/heads/work/dufynd-image-sources-followup-20261030' }}
+    if: ${{ github.ref == 'refs/heads/scentai-mvp' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
