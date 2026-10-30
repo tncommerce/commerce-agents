@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   revalidate-top-parfuemerie:
+    if: ${{ github.ref != 'refs/heads/work/dufynd-image-sources-followup-20261030' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -152,3 +153,18 @@ jobs:
         run: |
           echo "::error::Current Awin feed remains structurally blocked for Release 01 activation. Review artifact was generated for human image review only."
           exit 20
+
+  # One manual read of the current official inventory, without a feed download.
+  # This source-discovery branch must not rerun the unrelated Top pipeline.
+  probe-perfumetrader-inventory:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/work/dufynd-image-sources-followup-20261030' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Read Perfumetrader feed inventory only
+        env:
+          AWIN_DATA_FEED_API_KEY: ${{ secrets.AWIN_DATA_FEED_API_KEY }}
+        run: python3 scripts/probe_dufynd_perfumetrader_feed_inventory.py
