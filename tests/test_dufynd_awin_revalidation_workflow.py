@@ -22,7 +22,7 @@ def test_awin_revalidation_workflow_stays_manual_read_only_and_secret_safe() -> 
     assert "release01-feed-image-review.html" in text
     assert "Upload sanitized review packet" in text
 
-    artifact_block = text.split("Upload sanitized review packet", 1)[1]
+    artifact_block = text.split("Upload sanitized review packet", 1)[1].split("Preserve blocked Release 01 result after review artifact", 1)[0]
     assert "top-parfuemerie.csv" not in artifact_block
     assert "merchant-feed-image-candidates.json" not in artifact_block
     assert "AWIN_DATA_FEED_API_KEY" not in artifact_block
