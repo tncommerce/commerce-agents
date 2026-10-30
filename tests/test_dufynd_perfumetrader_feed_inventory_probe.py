@@ -122,7 +122,7 @@ class InventoryProbeTests(unittest.TestCase):
             / ".github/workflows/dufynd-awin-feed-revalidation.yml"
         ).read_text()
         branch = "refs/heads/work/dufynd-image-sources-followup-20261030"
-        self.assertIn("if: ${{ github.ref != '" + branch + "' }}", workflow)
+        self.assertIn("if: ${{ github.ref == 'refs/heads/scentai-mvp' }}", workflow)
         job = workflow.split("  probe-perfumetrader-inventory:\n", 1)[1]
         self.assertIn(
             "github.event_name == 'workflow_dispatch' && github.ref == '" + branch + "'", job
