@@ -1,10 +1,7 @@
 "use client";
 
-import staticCatalog from "../../lib/generated/public-catalog.json";
-import { Composer, useCatalogIndex, useStoreFrame } from "web-shared";
-import { fetchProducts } from "@/lib/api";
-import { catalogAudienceFor, getLiveFragranceByProductId } from "@/lib/fragranceCatalog";
-import type { Product } from "@/lib/types";
+import { Composer, useStoreFrame } from "web-shared";
+import { catalogAudienceFor, LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
 import AcquisitionInternalLink from "../AcquisitionInternalLink";
 import AtelierHero from "../AtelierHero";
 import AtelierSelection from "../AtelierSelection";
@@ -13,51 +10,17 @@ import LegalFooter from "../LegalFooter";
 import MerchantDiscovery from "../MerchantDiscovery";
 import PersonalLibrarySummary from "../PersonalLibrarySummary";
 
-const STATIC_CATALOG: Record<string, Product> = Object.fromEntries((staticCatalog.products as unknown as Product[]).map(product => [product.product_id, product]));
 const AUDIENCES = [{ key: "women", label: "Damen", world: "silk" }, { key: "men", label: "Herren", world: "mineral" }, { key: "unisex", label: "Unisex", world: "amber" }] as const;
 
 export default function HomeView({ shopperName: _shopperName, sessionSettled }: { shopperName: string; sessionSettled: boolean }) {
   const { chat, ask } = useStoreFrame();
-  const liveCatalog = useCatalogIndex(fetchProducts);
-  const loadedCatalog = Object.keys(liveCatalog).length
-    ? liveCatalog
-    : STATIC_CATALOG;
-  const catalog = Object.fromEntries(
-    Object.entries(loadedCatalog).filter(([id]) => getLiveFragranceByProductId(id)).map(([id, product]) => [id, {
-      ...product, review_count: 0, rating: undefined,
-      attributes: Object.fromEntries(Object.entries(product.attributes || {}).filter(([key]) => !/community|rating|rank|longevity|projection/i.test(key))),
-    }]),
-  );
-  const scentCount = Object.values(catalog).filter(
-    (product) =>
-      String(product.product_id).startsWith("SC-") &&
-      product.in_stock !== false &&
-      Boolean(
-        getLiveFragranceByProductId(
-          String(product.product_id),
-        ),
-      ),
-  ).length;
-  const audienceCounts = Object.values(catalog).reduce(
-    (counts, product) => {
-      if (
-        !String(product.product_id).startsWith("SC-") ||
-        product.in_stock === false
-      ) {
-        return counts;
-      }
-
-      const fragrance = getLiveFragranceByProductId(
-        String(product.product_id),
-      );
-
-      const audience = fragrance
-        ? catalogAudienceFor(fragrance.target_groups)
-        : null;
-      if (audience) {
-        counts[audience] += 1;
-      }
-
+  // Include the source-verified editorial release pages in public counts,
+  // even when the merchant API has no price/offer for those fragrances.
+  const scentCount = LIVE_FRAGRANCES.length;
+  const audienceCounts = LIVE_FRAGRANCES.reduce(
+    (counts, fragrance) => {
+      const audience = catalogAudienceFor(fragrance.target_groups);
+      if (audience) counts[audience] += 1;
       return counts;
     },
     { women: 0, men: 0, unisex: 0 },

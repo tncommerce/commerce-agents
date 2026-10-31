@@ -1,3 +1,653 @@
 {
-  "profiles": []
+  "profiles": [
+    {
+      "product_id": "SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80",
+      "slug": "carolina-herrera-good-girl-edp-80",
+      "brand": "Carolina Herrera",
+      "name": "Good Girl",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 80,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "jasmine",
+          "tuberose",
+          "almond",
+          "tonka bean",
+          "coffee",
+          "cocoa"
+        ]
+      },
+      "summary_de": "Jasmin und Tuberose verbinden sich mit Tonkabohne und Kakao. Mandel und Kaffee ergänzen das Profil.",
+      "seo": {
+        "title": "Carolina Herrera Good Girl – Eau de Parfum 80 ml",
+        "description": "Jasmin und Tuberose verbinden sich mit Tonkabohne und Kakao. Mandel und Kaffee ergänzen das Profil.",
+        "public_path": "/duft/carolina-herrera-good-girl-edp-80"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Jasmin und Tuberose verbinden sich mit Tonkabohne und Kakao. Mandel und Kaffee ergänzen das Profil. Dokumentierte Duftnoten: jasmine, tuberose, almond, tonka bean, coffee, cocoa. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-CHANEL-COCO-MADEMOISELLE-EDP-100",
+      "slug": "chanel-coco-mademoiselle-edp-100",
+      "brand": "CHANEL",
+      "name": "COCO MADEMOISELLE",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [
+          "orange"
+        ],
+        "heart": [
+          "jasmine",
+          "rose"
+        ],
+        "base": [
+          "patchouli",
+          "vetiver"
+        ],
+        "key": []
+      },
+      "summary_de": "Orange eröffnet die Komposition; Jasmin und Rose führen zu Patschuli und Vetiver.",
+      "seo": {
+        "title": "CHANEL COCO MADEMOISELLE – Eau de Parfum 100 ml",
+        "description": "Orange eröffnet die Komposition; Jasmin und Rose führen zu Patschuli und Vetiver.",
+        "public_path": "/duft/chanel-coco-mademoiselle-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Orange eröffnet die Komposition; Jasmin und Rose führen zu Patschuli und Vetiver. Kopfnoten: orange; Herznoten: jasmine, rose; Basisnoten: patchouli, vetiver.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "slug": "prada-paradoxe-edp-90",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "notes": {
+        "top": [
+          "Calabrian bergamot",
+          "mandarin",
+          "pear accord"
+        ],
+        "heart": [
+          "neroli",
+          "orange blossom",
+          "jasmine sambac"
+        ],
+        "base": [
+          "amber accord",
+          "benzoin",
+          "Bourbon vanilla",
+          "white musk accord"
+        ],
+        "key": []
+      },
+      "summary_de": "Bergamotte, Mandarine und Birne treffen auf Neroli und weiße Blüten. Amber, Benzoe, Vanille und Moschus bilden die Basis.",
+      "seo": {
+        "title": "Prada Paradoxe – Eau de Parfum 90 ml",
+        "description": "Bergamotte, Mandarine und Birne treffen auf Neroli und weiße Blüten. Amber, Benzoe, Vanille und Moschus bilden die Basis.",
+        "public_path": "/duft/prada-paradoxe-edp-90"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Bergamotte, Mandarine und Birne treffen auf Neroli und weiße Blüten. Amber, Benzoe, Vanille und Moschus bilden die Basis. Kopfnoten: Calabrian bergamot, mandarin, pear accord; Herznoten: neroli, orange blossom, jasmine sambac; Basisnoten: amber accord, benzoin, Bourbon vanilla, white musk accord.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "slug": "burberry-goddess-edp-100",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "vanilla trio",
+          "lavender"
+        ]
+      },
+      "summary_de": "Drei Vanille-Komponenten werden von aromatischem Lavendel ergänzt.",
+      "seo": {
+        "title": "Burberry Goddess – Eau de Parfum 100 ml",
+        "description": "Drei Vanille-Komponenten werden von aromatischem Lavendel ergänzt.",
+        "public_path": "/duft/burberry-goddess-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Drei Vanille-Komponenten werden von aromatischem Lavendel ergänzt. Dokumentierte Duftnoten: vanilla trio, lavender. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-GUCCI-FLORA-GORGEOUS-GARDENIA-EDP-100",
+      "slug": "gucci-flora-gorgeous-gardenia-edp-100",
+      "brand": "Gucci",
+      "name": "Flora Gorgeous Gardenia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [
+          "floral accord",
+          "Italian mandarin",
+          "red berries"
+        ],
+        "heart": [
+          "white gardenia",
+          "jasmine absolute",
+          "frangipani"
+        ],
+        "base": [
+          "patchouli",
+          "brown sugar"
+        ],
+        "key": []
+      },
+      "summary_de": "Gardenie, Jasmin und Frangipani bilden das florale Herz; Patschuli und brauner Zucker ergänzen die Basis.",
+      "seo": {
+        "title": "Gucci Flora Gorgeous Gardenia – Eau de Parfum 100 ml",
+        "description": "Gardenie, Jasmin und Frangipani bilden das florale Herz; Patschuli und brauner Zucker ergänzen die Basis.",
+        "public_path": "/duft/gucci-flora-gorgeous-gardenia-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Gardenie, Jasmin und Frangipani bilden das florale Herz; Patschuli und brauner Zucker ergänzen die Basis. Kopfnoten: floral accord, Italian mandarin, red berries; Herznoten: white gardenia, jasmine absolute, frangipani; Basisnoten: patchouli, brown sugar.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-VALENTINO-DONNA-BORN-IN-ROMA-EDP-100",
+      "slug": "valentino-donna-born-in-roma-edp-100",
+      "brand": "Valentino",
+      "name": "Born In Roma Donna",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [
+          "Italian bergamot"
+        ],
+        "heart": [
+          "jasmine grandiflorum",
+          "jasmine sambac",
+          "jasmine tea"
+        ],
+        "base": [
+          "bourbon vanilla"
+        ],
+        "key": []
+      },
+      "summary_de": "Bergamotte führt zu einer Jasmin-Trilogie; Bourbon-Vanille prägt die Basis.",
+      "seo": {
+        "title": "Valentino Born In Roma Donna – Eau de Parfum 100 ml",
+        "description": "Bergamotte führt zu einer Jasmin-Trilogie; Bourbon-Vanille prägt die Basis.",
+        "public_path": "/duft/valentino-donna-born-in-roma-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Bergamotte führt zu einer Jasmin-Trilogie; Bourbon-Vanille prägt die Basis. Kopfnoten: Italian bergamot; Herznoten: jasmine grandiflorum, jasmine sambac, jasmine tea; Basisnoten: bourbon vanilla.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "slug": "chloe-chloe-edp-100",
+      "brand": "Chloé",
+      "name": "Chloé",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [
+          "peony"
+        ],
+        "heart": [
+          "rose petals",
+          "magnolia"
+        ],
+        "base": [
+          "cedar",
+          "ambergris"
+        ],
+        "key": []
+      },
+      "summary_de": "Pfingstrose eröffnet das florale Profil. Rosenblätter und Magnolie treffen auf Zeder und Ambra.",
+      "seo": {
+        "title": "Chloé Chloé – Eau de Parfum 100 ml",
+        "description": "Pfingstrose eröffnet das florale Profil. Rosenblätter und Magnolie treffen auf Zeder und Ambra.",
+        "public_path": "/duft/chloe-chloe-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Pfingstrose eröffnet das florale Profil. Rosenblätter und Magnolie treffen auf Zeder und Ambra. Kopfnoten: peony; Herznoten: rose petals, magnolia; Basisnoten: cedar, ambergris.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-CHLOE-NOMADE-EDP-75",
+      "slug": "chloe-nomade-edp-75",
+      "brand": "Chloé",
+      "name": "Nomade",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "notes": {
+        "top": [
+          "mirabelle"
+        ],
+        "heart": [
+          "freesia"
+        ],
+        "base": [
+          "oakmoss"
+        ],
+        "key": []
+      },
+      "summary_de": "Mirabelle eröffnet den Duft, gefolgt von Freesie und Eichenmoos.",
+      "seo": {
+        "title": "Chloé Nomade – Eau de Parfum 75 ml",
+        "description": "Mirabelle eröffnet den Duft, gefolgt von Freesie und Eichenmoos.",
+        "public_path": "/duft/chloe-nomade-edp-75"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Mirabelle eröffnet den Duft, gefolgt von Freesie und Eichenmoos. Kopfnoten: mirabelle; Herznoten: freesia; Basisnoten: oakmoss.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-ARMANI-SI-EDP-100",
+      "slug": "giorgio-armani-si-edp-100",
+      "brand": "Giorgio Armani",
+      "name": "Sì",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [
+          "blackcurrant nectar"
+        ],
+        "heart": [
+          "modern chypre accord"
+        ],
+        "base": [
+          "musk-white wood accord"
+        ],
+        "key": []
+      },
+      "summary_de": "Schwarzer Johannisbeernektar führt zu einem modernen Chypre-Akkord. Ein Moschus-Weißholz-Akkord bildet die Basis.",
+      "seo": {
+        "title": "Giorgio Armani Sì – Eau de Parfum 100 ml",
+        "description": "Schwarzer Johannisbeernektar führt zu einem modernen Chypre-Akkord. Ein Moschus-Weißholz-Akkord bildet die Basis.",
+        "public_path": "/duft/giorgio-armani-si-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Schwarzer Johannisbeernektar führt zu einem modernen Chypre-Akkord. Ein Moschus-Weißholz-Akkord bildet die Basis. Kopfnoten: blackcurrant nectar; Herznoten: modern chypre accord; Basisnoten: musk-white wood accord.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-GUERLAIN-MON-GUERLAIN-EDP-100",
+      "slug": "guerlain-mon-guerlain-edp-100",
+      "brand": "Guerlain",
+      "name": "Mon Guerlain",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "lavender",
+          "jasmine sambac",
+          "sandalwood",
+          "Tahitian vanilla"
+        ]
+      },
+      "summary_de": "Lavendel und Jasmin verbinden sich mit Sandelholz und Tahiti-Vanille.",
+      "seo": {
+        "title": "Guerlain Mon Guerlain – Eau de Parfum 100 ml",
+        "description": "Lavendel und Jasmin verbinden sich mit Sandelholz und Tahiti-Vanille.",
+        "public_path": "/duft/guerlain-mon-guerlain-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Lavendel und Jasmin verbinden sich mit Sandelholz und Tahiti-Vanille. Dokumentierte Duftnoten: lavender, jasmine sambac, sandalwood, Tahitian vanilla. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-MUGLER-ALIEN-EDP-90",
+      "slug": "mugler-alien-edp-90",
+      "brand": "Mugler",
+      "name": "Alien",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "jasmine sambac",
+          "cashmeran",
+          "white amber"
+        ]
+      },
+      "summary_de": "Jasmin, Cashmeran und weißer Amber prägen das Duftprofil.",
+      "seo": {
+        "title": "Mugler Alien – Eau de Parfum 90 ml",
+        "description": "Jasmin, Cashmeran und weißer Amber prägen das Duftprofil.",
+        "public_path": "/duft/mugler-alien-edp-90"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Jasmin, Cashmeran und weißer Amber prägen das Duftprofil. Dokumentierte Duftnoten: jasmine sambac, cashmeran, white amber. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-DIOR-JADORE-EDP-100",
+      "slug": "dior-jadore-edp-100",
+      "brand": "Dior",
+      "name": "J’adore",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "ylang-ylang",
+          "damask rose",
+          "jasmine grandiflorum",
+          "sambac jasmine"
+        ]
+      },
+      "summary_de": "Ylang-Ylang und Damaszener-Rose verbinden sich mit großblütigem und arabischem Jasmin zu einem floralen Profil.",
+      "seo": {
+        "title": "Dior J’adore – Eau de Parfum 100 ml",
+        "description": "Ylang-Ylang und Damaszener-Rose verbinden sich mit großblütigem und arabischem Jasmin zu einem floralen Profil.",
+        "public_path": "/duft/dior-jadore-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Ylang-Ylang und Damaszener-Rose verbinden sich mit großblütigem und arabischem Jasmin zu einem floralen Profil. Dokumentierte Duftnoten: ylang-ylang, damask rose, jasmine grandiflorum, sambac jasmine. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "slug": "dior-hypnotic-poison-edt-100",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "bitter almond",
+          "jasmine sambac",
+          "vanilla"
+        ]
+      },
+      "summary_de": "Bittermandel, arabischer Jasmin und Vanille prägen das Duftprofil.",
+      "seo": {
+        "title": "Dior Hypnotic Poison – Eau de Toilette 100 ml",
+        "description": "Bittermandel, arabischer Jasmin und Vanille prägen das Duftprofil.",
+        "public_path": "/duft/dior-hypnotic-poison-edt-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Bittermandel, arabischer Jasmin und Vanille prägen das Duftprofil. Dokumentierte Duftnoten: bitter almond, jasmine sambac, vanilla. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "slug": "narciso-rodriguez-pure-musc-edp-100",
+      "brand": "Narciso Rodriguez",
+      "name": "for her PURE MUSC",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "orange blossom",
+          "jasmine",
+          "musk",
+          "cashmere wood"
+        ]
+      },
+      "summary_de": "Orangenblüte und Jasmin umgeben einen Moschusakkord mit Kaschmirholz.",
+      "seo": {
+        "title": "Narciso Rodriguez for her PURE MUSC – Eau de Parfum 100 ml",
+        "description": "Orangenblüte und Jasmin umgeben einen Moschusakkord mit Kaschmirholz.",
+        "public_path": "/duft/narciso-rodriguez-pure-musc-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Orangenblüte und Jasmin umgeben einen Moschusakkord mit Kaschmirholz. Dokumentierte Duftnoten: orange blossom, jasmine, musk, cashmere wood. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-CALVIN-KLEIN-EUPHORIA-EDP-100",
+      "slug": "calvin-klein-euphoria-edp-100",
+      "brand": "Calvin Klein",
+      "name": "Euphoria",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [
+          "pomegranate"
+        ],
+        "heart": [
+          "lotus",
+          "orchid"
+        ],
+        "base": [
+          "violet",
+          "amber",
+          "mahogany",
+          "musk"
+        ],
+        "key": []
+      },
+      "summary_de": "Granatapfel im Auftakt, Lotos und Orchidee im Herzen; die Basis umfasst Veilchen, Amber, Mahagoni und Moschus.",
+      "seo": {
+        "title": "Calvin Klein Euphoria – Eau de Parfum 100 ml",
+        "description": "Granatapfel im Auftakt, Lotos und Orchidee im Herzen; die Basis umfasst Veilchen, Amber, Mahagoni und Moschus.",
+        "public_path": "/duft/calvin-klein-euphoria-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Granatapfel im Auftakt, Lotos und Orchidee im Herzen; die Basis umfasst Veilchen, Amber, Mahagoni und Moschus. Kopfnoten: pomegranate; Herznoten: lotus, orchid; Basisnoten: violet, amber, mahogany, musk.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "slug": "lattafa-eclaire-edp-100",
+      "brand": "Lattafa",
+      "name": "Eclaire",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [
+          "caramel",
+          "milk",
+          "sugar"
+        ],
+        "heart": [
+          "white flowers",
+          "honey"
+        ],
+        "base": [
+          "vanilla",
+          "praline",
+          "musk"
+        ],
+        "key": []
+      },
+      "summary_de": "Karamell, Milch und Zucker führen zu weißen Blüten und Honig. Vanille, Praline und Moschus bilden die Basis.",
+      "seo": {
+        "title": "Lattafa Eclaire – Eau de Parfum 100 ml",
+        "description": "Karamell, Milch und Zucker führen zu weißen Blüten und Honig. Vanille, Praline und Moschus bilden die Basis.",
+        "public_path": "/duft/lattafa-eclaire-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Karamell, Milch und Zucker führen zu weißen Blüten und Honig. Vanille, Praline und Moschus bilden die Basis. Kopfnoten: caramel, milk, sugar; Herznoten: white flowers, honey; Basisnoten: vanilla, praline, musk.",
+      "target_groups": [
+        "women",
+        "unisex"
+      ]
+    },
+    {
+      "product_id": "SC-AFNAN-9-PM-POUR-FEMME-EDP-100",
+      "slug": "afnan-9-pm-pour-femme-edp-100",
+      "brand": "Afnan Perfumes",
+      "name": "9 PM Pour Femme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [
+          "raspberry",
+          "apple",
+          "violet",
+          "orange"
+        ],
+        "heart": [
+          "rose",
+          "peony",
+          "iris",
+          "jasmine"
+        ],
+        "base": [
+          "cedar",
+          "cypress",
+          "pine",
+          "amber"
+        ],
+        "key": []
+      },
+      "summary_de": "Fruchtige Noten von Himbeere, Apfel und Orange treffen auf Veilchen und ein florales Herz. Zeder, Zypresse, Kiefer und Ambra bilden die Basis.",
+      "seo": {
+        "title": "Afnan Perfumes 9 PM Pour Femme – Eau de Parfum 100 ml",
+        "description": "Fruchtige Noten von Himbeere, Apfel und Orange treffen auf Veilchen und ein florales Herz. Zeder, Zypresse, Kiefer und Ambra bilden die Basis.",
+        "public_path": "/duft/afnan-9-pm-pour-femme-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Fruchtige Noten von Himbeere, Apfel und Orange treffen auf Veilchen und ein florales Herz. Zeder, Zypresse, Kiefer und Ambra bilden die Basis. Kopfnoten: raspberry, apple, violet, orange; Herznoten: rose, peony, iris, jasmine; Basisnoten: cedar, cypress, pine, amber.",
+      "target_groups": [
+        "women"
+      ]
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "slug": "ysl-y-edp-100",
+      "brand": "Yves Saint Laurent",
+      "name": "Y",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "sage essence",
+          "geranium absolute",
+          "woody accord",
+          "tonka bean"
+        ]
+      },
+      "summary_de": "Salbei und Geranium treffen auf einen Holzakkord und Tonkabohne.",
+      "seo": {
+        "title": "Yves Saint Laurent Y – Eau de Parfum 100 ml",
+        "description": "Salbei und Geranium treffen auf einen Holzakkord und Tonkabohne.",
+        "public_path": "/duft/ysl-y-edp-100"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Salbei und Geranium treffen auf einen Holzakkord und Tonkabohne. Dokumentierte Duftnoten: sage essence, geranium absolute, woody accord, tonka bean. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "men"
+      ]
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "slug": "jean-paul-gaultier-le-male-le-parfum-edpi-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Le Parfum",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 125,
+      "notes": {
+        "top": [
+          "cardamom"
+        ],
+        "heart": [
+          "lavender",
+          "iris"
+        ],
+        "base": [
+          "vanilla"
+        ],
+        "key": []
+      },
+      "summary_de": "Kardamom eröffnet den Duft. Lavendel und Iris bilden das Herz, Vanille die Basis.",
+      "seo": {
+        "title": "Jean Paul Gaultier Le Male Le Parfum – Eau de Parfum Intense 125 ml",
+        "description": "Kardamom eröffnet den Duft. Lavendel und Iris bilden das Herz, Vanille die Basis.",
+        "public_path": "/duft/jean-paul-gaultier-le-male-le-parfum-edpi-125"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Kardamom eröffnet den Duft. Lavendel und Iris bilden das Herz, Vanille die Basis. Kopfnoten: cardamom; Herznoten: lavender, iris; Basisnoten: vanilla.",
+      "target_groups": [
+        "men"
+      ]
+    },
+    {
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "slug": "viktor-rolf-spicebomb-extreme-edp-90",
+      "brand": "Viktor & Rolf",
+      "name": "Spicebomb Extreme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "lavender",
+          "cinnamon",
+          "saffron",
+          "tobacco",
+          "vanilla",
+          "bourbon"
+        ]
+      },
+      "summary_de": "Lavendel und Gewürznoten treffen auf Tabak, Bourbon und Vanille.",
+      "seo": {
+        "title": "Viktor & Rolf Spicebomb Extreme – Eau de Parfum 90 ml",
+        "description": "Lavendel und Gewürznoten treffen auf Tabak, Bourbon und Vanille.",
+        "public_path": "/duft/viktor-rolf-spicebomb-extreme-edp-90"
+      },
+      "indexing_approved": true,
+      "editorial_description_de": "Lavendel und Gewürznoten treffen auf Tabak, Bourbon und Vanille. Dokumentierte Duftnoten: lavender, cinnamon, saffron, tobacco, vanilla, bourbon. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "target_groups": [
+        "men"
+      ]
+    }
+  ]
 }
