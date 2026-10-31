@@ -241,7 +241,42 @@ export default async function FragrancePage({
 }: PageProps & { merchantPhotoReview?: boolean }) {
   const { slug } = await params;
   const released=RELEASED_PROFILES.find(p=>p.slug===slug);
-  if(released){const profiles=RELEASE_PILOTS.filter(p=>RELEASED_PROFILES.some(r=>r.product_id===p.product_id));const pilot=profiles.find(p=>p.slug===slug);if(!pilot)notFound();return <QualifiedProductPage pilot={pilot} profiles={profiles} publicMode editorialDescription={released.editorial_description_de}/>;}
+  if (released) {
+    const profiles = RELEASE_PILOTS.filter((p) =>
+      RELEASED_PROFILES.some((row) => row.product_id === p.product_id),
+    );
+    const pilot = profiles.find((p) => p.slug === slug);
+    if (!pilot) notFound();
+    const breadcrumbJson = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "DUFYND", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Düfte", item: `${SITE_URL}/duft` },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: `${released.brand} ${released.name}`,
+          item: `${SITE_URL}${released.seo.public_path}`,
+        },
+      ],
+    }).replaceAll("<", "\\u003c");
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
+        />
+        <AcquisitionAnalytics source="fragrance_detail" />
+        <QualifiedProductPage
+          pilot={pilot}
+          profiles={profiles}
+          publicMode
+          editorialDescription={released.editorial_description_de}
+        />
+      </>
+    );
+  }
   const fragrance = getLiveFragranceBySlug(slug);
 
   if (!fragrance) notFound();
