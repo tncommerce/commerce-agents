@@ -125,7 +125,11 @@ def test_stale_idle_dispatches_once_with_fixed_scope_and_exact_receipt():
         (
             "POST",
             f"{recovery.PREFIX}/workflows/{recovery.READER}/dispatches",
-            {"ref": "scentai-mvp", "inputs": {"mode": "render_services_v2", "capture_v2": True}},
+            {
+                "ref": "scentai-mvp",
+                "inputs": {"mode": "render_services_v2", "capture_v2": True},
+                "return_run_details": True,
+            },
         )
     ]
     assert receipt["child_run_id"] == CHILD and receipt["status"] == "dispatched"
@@ -267,11 +271,28 @@ def test_rate_limit_headers_fail_closed_without_retry(headers):
 
 def test_transport_refuses_second_post_and_other_write_paths():
     client = recovery.GitHub("private-test-token")
-    body = {"ref": "scentai-mvp", "inputs": {"mode": "render_services_v2", "capture_v2": True}}
+    body = {
+        "ref": "scentai-mvp",
+        "inputs": {"mode": "render_services_v2", "capture_v2": True},
+        "return_run_details": True,
+    }
     with patch.object(client.opener, "open", return_value=Response()):
         client.call("POST", f"{recovery.PREFIX}/workflows/{recovery.READER}/dispatches", body)
     with pytest.raises(recovery.Refused, match="dispatch_contract_rejected"):
         client.call("POST", f"{recovery.PREFIX}/workflows/{recovery.READER}/dispatches", body)
+
+
+def test_transport_rejects_default_204_dispatch_without_run_details():
+    client = recovery.GitHub("private-test-token")
+    # GitHub returns 204 and no run ID unless return_run_details=true.
+    missing_opt_in = {
+        "ref": "scentai-mvp",
+        "inputs": {"mode": "render_services_v2", "capture_v2": True},
+    }
+    with pytest.raises(recovery.Refused, match="dispatch_contract_rejected"):
+        client.call("POST", f"{recovery.PREFIX}/workflows/{recovery.READER}/dispatches", missing_opt_in)
+    assert not client.post_attempted
+    assert client.requests == 0
 
 
 def test_workflow_has_no_clock_secret_or_oidc_permission():
