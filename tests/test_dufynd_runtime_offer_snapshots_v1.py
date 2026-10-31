@@ -504,6 +504,60 @@ def test_bulk_hold_does_not_need_false_positive_price_observation() -> None:
     assert rows[0]["shipping_cost"] is None
 
 
+def direct_merchant_evidence(row: dict) -> dict:
+    packet = evidence(row)
+    item = packet["offers"][0]
+    item["source_type"] = "direct_merchant_review"
+    proof = item["evidence"]
+    proof["source_evidence_kind"] = "selected_variant_page"
+    proof["browser_observation_sha256"] = proof.pop("source_row_sha256")
+    proof["purchase_button_visible"] = True
+    proof["purchase_button_enabled"] = True
+    return packet
+
+
+@pytest.mark.parametrize("field", ["purchase_button_visible", "purchase_button_enabled"])
+@pytest.mark.parametrize("value", [None, False, "true", 1, {}, []])
+def test_direct_merchant_positive_requires_explicit_buyability(field, value) -> None:
+    row = canonical()
+    packet = direct_merchant_evidence(row)
+    packet["offers"][0]["evidence"][field] = value
+    with pytest.raises(ValueError, match="merchant_purchase_control_not_confirmed"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
+
+
+def test_direct_merchant_text_only_button_is_not_enabled_evidence() -> None:
+    row = canonical()
+    packet = direct_merchant_evidence(row)
+    proof = packet["offers"][0]["evidence"]
+    proof.pop("purchase_button_visible")
+    proof.pop("purchase_button_enabled")
+    proof["source_observation"] = "In den Warenkorb; Verfügbar; explicit enabled not captured"
+    with pytest.raises(ValueError, match="merchant_purchase_control_not_confirmed"):
+        prepare_batch([row], packet, now=datetime.now(UTC))
+    report = triage_batch([row], packet, now=datetime.now(UTC))
+    assert report["items"][0]["reason"] == "merchant_purchase_control_not_confirmed"
+    assert report["counts"]["BLOCKED_SOURCE_EVIDENCE"] == 1
+
+
+def test_direct_merchant_explicit_buyability_keeps_original_source_time() -> None:
+    row = canonical()
+    packet = direct_merchant_evidence(row)
+    original_stamp = packet["offers"][0]["verified_at"]
+    prepared = prepare_batch([row], packet, now=datetime.now(UTC))
+    assert prepared[0]["verified_at"] == original_stamp
+    assert prepared[0]["decision"] == "verified"
+
+
+def test_direct_merchant_hold_needs_no_positive_purchase_control() -> None:
+    row = canonical()
+    packet = _source_hold(row)
+    packet["offers"][0]["source_type"] = "direct_merchant_review"
+    prepared = prepare_batch([row], packet, now=datetime.now(UTC))
+    assert prepared[0]["decision"] == "hold"
+    assert prepared[0]["price"] is None
+
+
 @pytest.mark.parametrize(
     ("bundle", "count"),
     [
@@ -533,6 +587,8 @@ def test_original_merchant_bundle_sha_and_observation_times_rehydrate_exactly(
         assert checked["shipping_cost"] == original["shipping_cost"]
         assert checked["evidence"]["source_observed_at"] == original["verified_at"]
         assert checked["evidence"]["source_evidence_kind"] == "selected_variant_page"
+        assert checked["evidence"]["purchase_button_visible"] is True
+        assert checked["evidence"]["purchase_button_enabled"] is True
     prepared = prepare_batch(canonical_rows, recovered, now=now)
     assert len(prepared) == count
     assert all(row["decision"] == "verified" for row in prepared)

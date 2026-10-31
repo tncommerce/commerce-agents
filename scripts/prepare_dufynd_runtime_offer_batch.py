@@ -108,6 +108,14 @@ def _require_positive_source_provenance(
         raise ValueError("source_observation_time_invalid_or_stale") from exc
     if actual != verified_stamp:
         raise ValueError("source_observation_not_equal_to_verified_at")
+    if source_type == "direct_merchant_review" and (
+        supporting.get("purchase_button_visible") is not True
+        or supporting.get("purchase_button_enabled") is not True
+    ):
+        # Button text or a stock claim cannot prove that the selected variant
+        # is orderable. Require explicit booleans from that original browser
+        # observation; a later capture must keep its own source timestamp.
+        raise ValueError("merchant_purchase_control_not_confirmed")
 
 
 def prepare_batch(
@@ -402,6 +410,12 @@ def restore_direct_merchant_browser_evidence(
                 raise ValueError("merchant_structured_option_does_not_match")
         updated["evidence"]["source_observed_at"] = row["checked_at"]
         updated["evidence"]["source_evidence_kind"] = "selected_variant_page"
+        updated["evidence"]["purchase_button_visible"] = (
+            row["buyVisible"] if "main" in row else row["purchase_button_visible"]
+        )
+        updated["evidence"]["purchase_button_enabled"] = (
+            row["buyEnabled"] if "main" in row else row["purchase_button_enabled"]
+        )
     return packet
 
 
