@@ -13,11 +13,13 @@ const profiles = [
 ];
 
 async function imageGeometry(stage) {
-  const img = stage.locator("img.dufynd-product-image");
+  // Registered source dimensions select the unchanged-original renderer;
+  // originals without dimensions still use the legacy product-image renderer.
+  const img = stage.locator("[data-dufynd-original-photo] img, img.dufynd-product-image");
   await img.scrollIntoViewIfNeeded();
   await img.evaluate(image => image.decode());
   return img.evaluate(image => {
-    const frame = image.closest(".dufynd-product-stage").getBoundingClientRect();
+    const frame = image.closest("[data-dufynd-original-photo], .dufynd-product-stage").getBoundingClientRect();
     const box = image.getBoundingClientRect();
     const css = getComputedStyle(image);
     return { src: image.currentSrc, naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight,

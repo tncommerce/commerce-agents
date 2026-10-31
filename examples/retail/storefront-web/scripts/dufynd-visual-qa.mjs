@@ -14,7 +14,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
-import { verifyWowExperience } from "./wow-experience-qa.mjs";
+import { assertCatalogSearchFirstFold, verifyWowExperience } from "./wow-experience-qa.mjs";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
@@ -991,11 +991,7 @@ try {
               "catalog is missing the immersive discovery hero",
             );
           }
-          const heroBounds = await discoveryHero.boundingBox();
-          const searchBounds = await page.getByRole("searchbox").boundingBox();
-          if (!heroBounds || heroBounds.height > 350 || !searchBounds || searchBounds.y > 800) {
-            throw new Error("catalog search must remain accessible without an oversized photo hero");
-          }
+          await assertCatalogSearchFirstFold(page);
           if ((await page.locator(".dufynd-brand-directory summary").count()) !== 1) {
             throw new Error("catalog is missing its accessible brand directory");
           }
@@ -1627,7 +1623,7 @@ try {
     if (
       !(await fallback.innerText()).includes("Produktbild derzeit nicht verfügbar") ||
       !(await fallback.innerText()).includes("Delina") ||
-      (await hero.locator("img.dufynd-product-image").count()) !== 0
+      (await hero.locator("[data-dufynd-original-photo] img, img.dufynd-product-image").count()) !== 0
     ) {
       throw new Error("failed licensed original did not preserve identity in a neutral fallback");
     }
@@ -1636,10 +1632,10 @@ try {
     }
     failPrimaryImage = false;
     await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
-    const recoveredImage = hero.locator("img.dufynd-product-image");
+    const recoveredImage = hero.locator("[data-dufynd-original-photo] img, img.dufynd-product-image");
     await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
     await imageFailurePage.waitForFunction(() => {
-      const image = document.querySelector(".dufynd-fragrance-hero img.dufynd-product-image");
+      const image = document.querySelector(".dufynd-fragrance-hero [data-dufynd-original-photo] img, .dufynd-fragrance-hero img.dufynd-product-image");
       return image?.complete && image.naturalWidth > 0;
     }, undefined, { timeout: 10_000 });
     if ((await fallback.count()) !== 0) {
