@@ -31,9 +31,7 @@ def compare_histories(local_directory: Path, remote_export: Any) -> dict[str, An
         if match is None:
             raise ValueError("local_migration_filename_invalid")
         local.append(match.groupdict())
-    if not isinstance(remote_export, dict) or not isinstance(
-        remote_export.get("migrations"), list
-    ):
+    if not isinstance(remote_export, dict) or not isinstance(remote_export.get("migrations"), list):
         raise ValueError("remote_export_shape_invalid")
     remote: list[dict[str, str]] = []
     for item in remote_export["migrations"]:
