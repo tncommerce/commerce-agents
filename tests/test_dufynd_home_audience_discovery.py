@@ -42,5 +42,5 @@ def test_homepage_catalog_count_excludes_source_blocked_fragrances() -> None:
         encoding="utf-8"
     )
     assert 'product.product_id.startsWith("SC-")' in catalog
-    assert 'product.in_stock !== false' in catalog
+    assert "product.in_stock !== false" in catalog
     assert "!hasSourceValidationBlockers(product.product_id)" in catalog
