@@ -1,0 +1,40 @@
+name: DUFYND Private Observer Recovery
+
+# No independent clock is activated here. A separately verified zero-cost caller
+# may invoke this entry at most once per 15 minutes after explicit activation.
+on:
+  workflow_dispatch:
+    inputs:
+      execute:
+        description: "Dispatch only if the existing V2 observer is idle and stale"
+        type: boolean
+        default: false
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dufynd-private-observer-recovery-main
+  cancel-in-progress: false
+
+jobs:
+  recover:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    permissions:
+      contents: read
+      actions: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Bounded recovery through the existing trusted observer workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RECOVERY_EXECUTE: ${{ inputs.execute }}
+          DUFYND_PRIVATE_BROKER_ENABLED: ${{ vars.DUFYND_PRIVATE_BROKER_ENABLED }}
+          DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED: ${{ vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_ENABLED }}
+          DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED: ${{ vars.DUFYND_PRIVATE_RENDER_SERVICES_V2_AUTO_ENABLED }}
+        run: python3 scripts/dufynd_observer_recovery.py
