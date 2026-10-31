@@ -6,7 +6,6 @@ import json
 from pathlib import Path
 
 import pytest
-
 from scripts.check_dufynd_migration_history import compare_histories, main
 
 
