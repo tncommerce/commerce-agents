@@ -8,8 +8,8 @@ DETAIL = Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx
 
 def test_home_page_links_to_existing_first_money_offer_section() -> None:
     source = HERO.read_text(encoding="utf-8")
-    assert 'SC-RABANNE-1-MILLION-EDT-100' in source
-    assert 'href={`/duft/${buyerFragrance.slug}#angebote`}' in source
+    assert "SC-RABANNE-1-MILLION-EDT-100" in source
+    assert "href={`/duft/${buyerFragrance.slug}#angebote`}" in source
     assert "data-dufynd-home-buyer-entry" in source
     assert "homepage_buyer_entry" in source
     assert "Rabanne 1 Million EDT 100 ml · Kaufoptionen prüfen" in source
@@ -27,5 +27,5 @@ def test_buyer_shortcut_records_only_existing_consent_bound_product_open() -> No
     source = HERO.read_text(encoding="utf-8")
     assert 'trackAnalyticsEvent("product_open", {' in source
     assert 'source: "homepage_buyer_entry"' in source
-    assert 'import { appendAcquisitionAttribution, trackAnalyticsEvent }' in source
-    assert 'AcquisitionInternalLink' in source
+    assert "import { appendAcquisitionAttribution, trackAnalyticsEvent }" in source
+    assert "AcquisitionInternalLink" in source
