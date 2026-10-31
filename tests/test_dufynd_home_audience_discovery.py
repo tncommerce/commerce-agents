@@ -22,7 +22,7 @@ def test_homepage_links_directly_to_audience_filtered_catalog() -> None:
 def test_homepage_audience_counts_use_exclusive_catalog_taxonomy() -> None:
     text = source()
 
-    assert "const audienceCounts = Object.values(catalog).reduce(" in text
+    assert "const audienceCounts = LIVE_FRAGRANCES.reduce(" in text
     assert "catalogAudienceFor(fragrance.target_groups)" in text
     assert "counts[audience] += 1" in text
     assert "{ women: 0, men: 0, unisex: 0 }" in text
@@ -37,8 +37,10 @@ def test_homepage_audience_counts_use_exclusive_catalog_taxonomy() -> None:
 def test_homepage_catalog_count_excludes_source_blocked_fragrances() -> None:
     text = source()
 
-    assert "const scentCount = Object.values(catalog).filter(" in text
-    assert "getLiveFragranceByProductId(" in text
-    assert "Boolean(" in text
-    assert 'String(product.product_id).startsWith("SC-")' in text
-    assert "product.in_stock !== false" in text
+    assert "const scentCount = LIVE_FRAGRANCES.length;" in text
+    catalog = Path("examples/retail/storefront-web/lib/fragranceCatalog.ts").read_text(
+        encoding="utf-8"
+    )
+    assert 'product.product_id.startsWith("SC-")' in catalog
+    assert 'product.in_stock !== false' in catalog
+    assert "!hasSourceValidationBlockers(product.product_id)" in catalog
