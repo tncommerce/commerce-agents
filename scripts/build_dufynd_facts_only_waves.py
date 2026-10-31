@@ -67,7 +67,10 @@ def editorial_description(fact: dict) -> tuple[str, str]:
         raise ValueError("description_missing")
     notes = fact.get("notes") or {}
     groups = {key: notes.get(key) or [] for key in NOTE_KEYS}
-    if not all(isinstance(values, list) and all(isinstance(v, str) and v.strip() for v in values) for values in groups.values()):
+    if not all(
+        isinstance(values, list) and all(isinstance(v, str) and v.strip() for v in values)
+        for values in groups.values()
+    ):
         raise ValueError("notes_invalid")
     if all(groups[key] for key in ("top", "heart", "base")):
         detail = (
@@ -162,8 +165,7 @@ def build_review_waves(directory: Path = DATA) -> list[dict]:
     canonical_ids = {
         row["product_id"]
         for row in catalog_rows
-        if str(row.get("product_id") or "").startswith("SC-")
-        and row.get("category") == "fragrance"
+        if str(row.get("product_id") or "").startswith("SC-") and row.get("category") == "fragrance"
     }
     if canonical_ids & set(facts):
         raise ValueError("candidate_already_in_canonical_catalog")
@@ -173,19 +175,21 @@ def build_review_waves(directory: Path = DATA) -> list[dict]:
     waves = []
     for number, ids in enumerate((WAVE_1_IDS, remaining), start=1):
         profiles = [review_record(facts[product_id], pilots[product_id]) for product_id in ids]
-        waves.append({
-            "schema_version": 1,
-            "batch_id": f"DUFYND-FACTS-ONLY-WAVE-{number:02d}",
-            "status": "REVIEW_ONLY_NOT_PUBLISHED",
-            "source": "existing_qualified_facts_and_curated_review_pilots",
-            "new_public_profiles": 0,
-            "public_release_authorized": False,
-            "merchant_offer_activation": False,
-            "new_images_published": False,
-            "prices_or_tracking_links_added": False,
-            "profile_count": len(profiles),
-            "profiles": profiles,
-        })
+        waves.append(
+            {
+                "schema_version": 1,
+                "batch_id": f"DUFYND-FACTS-ONLY-WAVE-{number:02d}",
+                "status": "REVIEW_ONLY_NOT_PUBLISHED",
+                "source": "existing_qualified_facts_and_curated_review_pilots",
+                "new_public_profiles": 0,
+                "public_release_authorized": False,
+                "merchant_offer_activation": False,
+                "new_images_published": False,
+                "prices_or_tracking_links_added": False,
+                "profile_count": len(profiles),
+                "profiles": profiles,
+            }
+        )
     return waves
 
 
@@ -198,13 +202,18 @@ def main() -> int:
         for filename, expected in zip(WAVE_NAMES, waves, strict=True):
             if _load(DATA, filename) != expected:
                 raise ValueError(f"review_packet_mismatch:{filename}")
-    print(json.dumps({
-        "status": "REVIEW_READY_OWNER_RELEASE_HELD",
-        "counts": [wave["profile_count"] for wave in waves],
-        "public_profile_count_changed": 0,
-        "merchant_offer_count_changed": 0,
-        "source_or_rights_claims_added": False,
-    }, ensure_ascii=False))
+    print(
+        json.dumps(
+            {
+                "status": "REVIEW_READY_OWNER_RELEASE_HELD",
+                "counts": [wave["profile_count"] for wave in waves],
+                "public_profile_count_changed": 0,
+                "merchant_offer_count_changed": 0,
+                "source_or_rights_claims_added": False,
+            },
+            ensure_ascii=False,
+        )
+    )
     return 0
 
 
