@@ -384,3 +384,16 @@ jobs:
           path: rc1-evidence
           retention-days: 7
           if-no-files-found: error
+
+  live-public-wave01-read:
+    # Independent production proof on a source-only PR, not a deploy or an offer check.
+    # Standard GitHub hosted runner in this public repository; no artifacts/secrets.
+    if: github.event_name == 'pull_request' && startsWith(github.head_ref, 'ops/live-wave01-read-')
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - name: Verify 57 live perfume pages and the approved indexable wave
+        run: python3 scripts/dufynd_live_wave01_read.py
