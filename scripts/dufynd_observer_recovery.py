@@ -159,6 +159,7 @@ class GitHub:
                 == {
                     "ref": "scentai-mvp",
                     "inputs": {"mode": "render_services_v2", "capture_v2": True},
+                    "return_run_details": True,
                 }
                 and not self.post_attempted,
                 "dispatch_contract_rejected",
@@ -308,7 +309,11 @@ def recover(client, env, now, clock=None):
     reply = client.call(
         "POST",
         f"{PREFIX}/workflows/{READER}/dispatches",
-        {"ref": "scentai-mvp", "inputs": {"mode": "render_services_v2", "capture_v2": True}},
+        {
+            "ref": "scentai-mvp",
+            "inputs": {"mode": "render_services_v2", "capture_v2": True},
+            "return_run_details": True,
+        },
     )
     child_id = reply.get("workflow_run_id") if isinstance(reply, dict) else None
     require(
