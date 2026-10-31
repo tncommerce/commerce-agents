@@ -32,3 +32,17 @@ Ein manueller Job im bestehenden Awin-Workflow ist ausschließlich auf `work/duf
 ## Abgrenzung
 
 Keine Änderungen an öffentlichen Katalog-/Bildregistern, Angeboten, API, Scheduler, Broker, Supabase, Migrationen oder Produktionsflags. Kein Merge, Deployment, künstlicher Klick oder Kauf. Die neue Quellenmatrix ist von der bestehenden privaten 14er-Händlerübergabe getrennt. Der aktuelle Render-Kostennachweis liegt privat vor; Finanzdaten gehören nicht in diesen öffentlichen Branch.
+
+## Betriebsergänzung 31.10.2026: manueller Inventurmodus auf Produktion
+
+Der nachfolgende eigenständige Quellcode-PR macht die unveränderte, ausschließlich
+lesende Perfumetrader-Inventur im vorhandenen Awin-Workflow auf dem
+Produktionsbranch `scentai-mvp` per `workflow_dispatch` auswählbar. Der neue
+Pflicht-Auswahlwert `inventory_task` lautet entweder
+`top_parfuemerie_review` (unveränderte Voreinstellung) oder
+`perfumetrader_inventory`. Die beiden Jobs schließen sich aus;
+automatische Push-Triggers für die bestehende Empfängerrotation bleiben
+unverändert. Die Prüfung erzeugt keinen Produktfeeddownload, keine neuen
+Credentials, keine Preis-/Bestands- oder Bildfreigabe, keine Artefakte und
+keine weiteren Zeitplan-Trigger. **Ein tatsächlicher GitHub-Inventarlauf
+oder ein aktuell verfügbarer Feed wird hiermit nicht behauptet.**
