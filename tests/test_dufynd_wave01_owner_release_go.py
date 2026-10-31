@@ -51,9 +51,7 @@ def test_new_20_are_only_editorial_and_remaining_21_stay_held() -> None:
     second = load(DATA / "dufynd_facts_wave_02_review.json")["profiles"]
     assert len(published) == 20
     assert len(second) == 21
-    assert {p["product_id"] for p in published}.isdisjoint(
-        {p["product_id"] for p in second}
-    )
+    assert {p["product_id"] for p in published}.isdisjoint({p["product_id"] for p in second})
     for p in published:
         assert p["indexing_approved"] is True
         assert not {"price", "affiliate_url", "merchant_id", "image_url"} & set(p)
