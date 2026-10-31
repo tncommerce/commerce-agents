@@ -2,6 +2,15 @@ name: DUFYND Awin Feed Revalidation
 
 on:
   workflow_dispatch:
+    inputs:
+      inventory_task:
+        description: "Bounded Awin check (review-only; no activation)"
+        required: true
+        type: choice
+        default: top_parfuemerie_review
+        options:
+          - top_parfuemerie_review
+          - perfumetrader_inventory
   # A reviewed recipient rotation runs this same workflow once on the development
   # branch. No default-branch bootstrap or credential changes are needed.
   push:
@@ -13,7 +22,7 @@ permissions:
 
 jobs:
   revalidate-top-parfuemerie:
-    if: ${{ github.ref == 'refs/heads/scentai-mvp' }}
+    if: ${{ github.ref == 'refs/heads/scentai-mvp' && (github.event_name != 'workflow_dispatch' || inputs.inventory_task == 'top_parfuemerie_review') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -155,9 +164,9 @@ jobs:
           exit 20
 
   # One manual read of the current official inventory, without a feed download.
-  # This source-discovery branch must not rerun the unrelated Top pipeline.
+  # Manual production opt-in; never concurrently with the larger Top feed job.
   probe-perfumetrader-inventory:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/work/dufynd-image-sources-followup-20261030' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && inputs.inventory_task == 'perfumetrader_inventory' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
