@@ -182,6 +182,10 @@ jobs:
       - name: Build DUFYND storefront
         run: npm run build --workspace acme-retail-storefront-web
       - name: Run responsive DUFYND browser QA
+        # Facts-only source QA uses the complete 41-page/four-width review suite below;
+        # unrelated heavyweight commerce/visual browser tests are covered by
+        # their existing regular CI and remain unchanged on the release PR.
+        if: github.head_ref != 'dufynd-facts-wave01-visualqa-20261031'
         shell: bash
         run: |
           set -euo pipefail
