@@ -3,7 +3,7 @@
 import AcquisitionInternalLink from "./AcquisitionInternalLink";
 import FragranceVisual from "./FragranceVisual";
 import ImageAttribution from "./ImageAttribution";
-import { appendAcquisitionAttribution } from "@/lib/analytics";
+import { appendAcquisitionAttribution, trackAnalyticsEvent } from "@/lib/analytics";
 import { LIVE_FRAGRANCES, originalPhotoFor } from "@/lib/fragranceCatalog";
 
 // Featured only when the exact source-verified original is available.
@@ -12,6 +12,11 @@ const featured = LIVE_FRAGRANCES.find(
   (item) => item.product_id === "SC-YSL-BLACK-OPIUM-EDP-90",
 );
 const featuredVisual = featured ? originalPhotoFor(featured) : null;
+// Link to an existing product page, never directly to an affiliate URL.
+// Offers on the destination still pass the normal freshness/stock gates.
+const buyerFragrance = LIVE_FRAGRANCES.find(
+  (item) => item.product_id === "SC-RABANNE-1-MILLION-EDT-100",
+);
 
 export default function AtelierHero() {
   return (
@@ -112,6 +117,18 @@ export default function AtelierHero() {
               Deinen Duft finden <span aria-hidden="true">↗</span>
             </AcquisitionInternalLink>
             <AcquisitionInternalLink href="/duft">Alle Duftprofile ansehen <span aria-hidden="true">→</span></AcquisitionInternalLink>
+            {buyerFragrance ? (
+              <AcquisitionInternalLink
+                data-dufynd-home-buyer-entry
+                href={`/duft/${buyerFragrance.slug}#angebote`}
+                onClick={() => void trackAnalyticsEvent("product_open", {
+                  product_id: buyerFragrance.product_id,
+                  source: "homepage_buyer_entry",
+                })}
+              >
+                Rabanne 1 Million EDT 100 ml · Kaufoptionen prüfen <span aria-hidden="true">↗</span>
+              </AcquisitionInternalLink>
+            ) : null}
           </div>
           <span className="vr-hero-aside">DUFYND ist ein unabhängiger Duftguide. Gekauft wird beim jeweiligen Händler.</span>
         </div>
