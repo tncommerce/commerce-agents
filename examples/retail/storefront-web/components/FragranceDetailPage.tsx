@@ -241,7 +241,7 @@ export default async function FragrancePage({
 }: PageProps & { merchantPhotoReview?: boolean }) {
   const { slug } = await params;
   const released=RELEASED_PROFILES.find(p=>p.slug===slug);
-  if(released){const profiles=RELEASE_PILOTS.filter(p=>RELEASED_PROFILES.some(r=>r.product_id===p.product_id));const pilot=profiles.find(p=>p.slug===slug);if(!pilot)notFound();return <QualifiedProductPage pilot={pilot} profiles={profiles} publicMode/>;}
+  if(released){const profiles=RELEASE_PILOTS.filter(p=>RELEASED_PROFILES.some(r=>r.product_id===p.product_id));const pilot=profiles.find(p=>p.slug===slug);if(!pilot)notFound();return <QualifiedProductPage pilot={pilot} profiles={profiles} publicMode editorialDescription={released.editorial_description_de}/>;}
   const fragrance = getLiveFragranceBySlug(slug);
 
   if (!fragrance) notFound();
