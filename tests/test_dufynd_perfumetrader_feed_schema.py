@@ -113,6 +113,51 @@ def test_diagnostics_never_export_arbitrary_header_or_body_values(tmp_path):
     assert "private customer record" not in json.dumps(schema)
 
 
+@pytest.mark.parametrize("value", ["ERROR", "NaN", "Inf", "-Infinity", "EUR 10.00"])
+def test_product_shaped_errors_and_non_numeric_prices_cannot_count_as_verified_rows(
+    tmp_path, value
+):
+    row = {"product_name": "Access denied", "merchant_product_id": "ERROR", "search_price": value}
+    rows, schema = inspect(tmp_path, csv_bytes([row]))
+    assert rows == []
+    assert schema["valid_identity_row_count"] == 0
+    assert schema["status"] == "BLOCKED_UNVERIFIED_SCHEMA"
+
+
+def test_awin_id_fallback_requires_numeric_id(tmp_path):
+    rows, schema = inspect(
+        tmp_path,
+        csv_bytes(
+            [
+                {
+                    "product_name": "Unverified response",
+                    "aw_product_id": "ERROR",
+                    "search_price": "3.95",
+                }
+            ]
+        ),
+    )
+    assert rows == []
+    assert schema["status"] == "BLOCKED_UNVERIFIED_SCHEMA"
+
+
+def test_zero_price_is_structural_evidence_but_cannot_pass_commerce_completeness(tmp_path):
+    rows, schema = inspect(tmp_path, csv_bytes([source_row(search_price="0")]))
+    assert schema["status"] == "VERIFIED_PRODUCT_CSV"
+    report = review.review_rows([PRODUCT], MAPPING, rows, META, SECRET, NOW, feed_validation=schema)
+    assert report["profiles"][0]["status"] == "EXACT_BUT_INCOMPLETE"
+
+
+def test_schema_proof_does_not_infer_eur_for_missing_or_other_currency(tmp_path):
+    for currency in ("", "USD"):
+        rows, schema = inspect(tmp_path, csv_bytes([source_row(currency=currency)]))
+        assert schema["status"] == "VERIFIED_PRODUCT_CSV"
+        report = review.review_rows(
+            [PRODUCT], MAPPING, rows, META, SECRET, NOW, feed_validation=schema
+        )
+        assert report["profiles"][0]["status"] == "EXACT_BUT_INCOMPLETE"
+
+
 @pytest.mark.parametrize(
     "content_type,expected",
     [

@@ -302,8 +302,13 @@ def verified_product_rows(path: Path, http: dict) -> tuple[list[dict], dict]:
         else:
             diagnostic["valid_identity_row_count"] = sum(
                 bool(row.get("product_name", "").strip())
-                and bool((row.get("merchant_product_id") or row.get("aw_product_id") or "").strip())
-                and bool((row.get("search_price") or row.get("price") or "").strip())
+                and bool(
+                    row.get("merchant_product_id", "").strip()
+                    or re.fullmatch(r"[0-9]{1,20}", row.get("aw_product_id", "").strip())
+                )
+                and valid_amount(
+                    (row.get("search_price") or row.get("price") or "").strip(), allow_zero=True
+                )
                 for row in rows
             )
         if not diagnostic["valid_identity_row_count"]:

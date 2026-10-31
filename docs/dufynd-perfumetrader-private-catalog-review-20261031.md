@@ -51,7 +51,10 @@ classified as an error document merely from its small size.
 
 The corrected mode opts into HTTP status and a fixed MIME-type enum, validates
 CSV body format, delimiter, unique headers, row shape, product identity/price
-headers and a positive count of real product rows before matching. HTML, XML,
+headers and a positive count of structurally valid product rows before matching.
+Such rows require a finite nonnegative numeric price, a nonempty product name,
+and a merchant SKU or numeric Awin ID. Structural proof never infers EUR or
+turns zero-price/missing-currency rows into complete commerce evidence. HTML, XML,
 JSON, ZIP, error CSVs, empty feeds, missing protocol proof and malformed rows
 produce 37 blocked profiles. No match may become `NOT_FOUND` without verified
 schema evidence. Missing per-product availability/shipping fields still remain
