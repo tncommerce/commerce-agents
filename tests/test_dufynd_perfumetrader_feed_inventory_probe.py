@@ -116,17 +116,26 @@ class InventoryProbeTests(unittest.TestCase):
         self.assertFalse(report["feeds"][0]["joined"])
         self.assertFalse(report["image_publication_allowed"])
 
-    def test_workflow_probe_is_manual_branch_scoped_and_dependency_free(self):
+    def test_workflow_probe_requires_manual_production_mode_and_no_dependencies(self):
         workflow = (
             Path(__file__).resolve().parents[1]
             / ".github/workflows/dufynd-awin-feed-revalidation.yml"
         ).read_text()
-        branch = "refs/heads/work/dufynd-image-sources-followup-20261030"
-        self.assertIn("if: ${{ github.ref == 'refs/heads/scentai-mvp' }}", workflow)
+        self.assertIn("inventory_task:", workflow)
+        self.assertIn("type: choice", workflow)
+        self.assertIn("default: top_parfuemerie_review", workflow)
+        self.assertIn("          - perfumetrader_inventory", workflow)
+        top = workflow.split("  revalidate-top-parfuemerie:\n", 1)[1].split(
+            "  probe-perfumetrader-inventory:\n", 1
+        )[0]
+        self.assertIn("github.ref == 'refs/heads/scentai-mvp'", top)
+        self.assertIn("github.event_name != 'workflow_dispatch'", top)
+        self.assertIn("inputs.inventory_task == 'top_parfuemerie_review'", top)
         job = workflow.split("  probe-perfumetrader-inventory:\n", 1)[1]
-        self.assertIn(
-            "github.event_name == 'workflow_dispatch' && github.ref == '" + branch + "'", job
-        )
+        self.assertIn("github.event_name == 'workflow_dispatch'", job)
+        self.assertIn("github.ref == 'refs/heads/scentai-mvp'", job)
+        self.assertIn("inputs.inventory_task == 'perfumetrader_inventory'", job)
+        self.assertNotIn("refs/heads/work/dufynd-image-sources-followup", job)
         self.assertIn("timeout-minutes: 5", job)
         self.assertIn("persist-credentials: false", job)
         self.assertIn("python3 scripts/probe_dufynd_perfumetrader_feed_inventory.py", job)
