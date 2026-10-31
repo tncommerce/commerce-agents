@@ -87,9 +87,12 @@ class Head(HTMLParser):
         a = dict(attrs)
         if tag == "title":
             self.inside_title = True
-        if tag == "link" and "canonical" in (a.get("rel") or "").split():
-            if a.get("href"):
-                self.canonical.append(a["href"])
+        if (
+            tag == "link"
+            and "canonical" in (a.get("rel") or "").split()
+            and a.get("href")
+        ):
+            self.canonical.append(a["href"])
         if tag == "meta" and (a.get("name") or "").lower() == "robots":
             self.robots.append(a.get("content") or "")
 
