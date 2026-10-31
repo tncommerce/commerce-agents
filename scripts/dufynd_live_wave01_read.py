@@ -87,11 +87,7 @@ class Head(HTMLParser):
         a = dict(attrs)
         if tag == "title":
             self.inside_title = True
-        if (
-            tag == "link"
-            and "canonical" in (a.get("rel") or "").split()
-            and a.get("href")
-        ):
+        if tag == "link" and "canonical" in (a.get("rel") or "").split() and a.get("href"):
             self.canonical.append(a["href"])
         if tag == "meta" and (a.get("name") or "").lower() == "robots":
             self.robots.append(a.get("content") or "")
@@ -177,11 +173,7 @@ def check_page(path: str, approved_paths: set[str]) -> str | None:
             or canonical.fragment
         ):
             return f"{path}: wrong canonical"
-        robots = {
-            token.strip().lower()
-            for entry in head.robots
-            for token in entry.split(",")
-        }
+        robots = {token.strip().lower() for entry in head.robots for token in entry.split(",")}
         if "noindex" in robots or "none" in robots:
             return f"{path}: live noindex conflicts with published sitemap"
         if path in approved_paths and "index" not in robots:
@@ -205,7 +197,8 @@ def main() -> int:
             )
         with ThreadPoolExecutor(max_workers=4) as pool:
             failures = sorted(
-                error for error in pool.map(lambda path: check_page(path, approved), sorted(paths))
+                error
+                for error in pool.map(lambda path: check_page(path, approved), sorted(paths))
                 if error is not None
             )
         receipt = {
