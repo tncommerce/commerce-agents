@@ -17,8 +17,7 @@ def test_wave1_release_candidate_exactly_matches_source_bound_review() -> None:
     packet = _json(DATA / "dufynd_facts_wave_01_review.json")["profiles"]
     generated = _json(FRONT / "lib/generated/released-profiles.json")["profiles"]
     staged = {
-        row["product_id"]: row
-        for row in _json(DATA / "scentai_catalog_staging.json")["products"]
+        row["product_id"]: row for row in _json(DATA / "scentai_catalog_staging.json")["products"]
     }
     assert len(generated) == len(packet) == 20
     assert [row["product_id"] for row in generated] == [row["product_id"] for row in packet]
@@ -68,7 +67,9 @@ def test_public_pages_use_documented_descriptions_and_consistent_home_counts() -
     catalog = (FRONT / "lib/releasedProfileCatalog.ts").read_text(encoding="utf-8")
     home = (FRONT / "components/views/HomeView.tsx").read_text(encoding="utf-8")
     assert "editorialDescription={released.editorial_description_de}" in detail
-    assert "publicMode && editorialDescription ? editorialDescription : fact.summary_de" in qualified
+    assert (
+        "publicMode && editorialDescription ? editorialDescription : fact.summary_de" in qualified
+    )
     assert "f.editorial_description_de||f.summary_de" in catalog
     assert "target_groups:f.target_groups||[]" in catalog
     assert "const scentCount = LIVE_FRAGRANCES.length;" in home
@@ -83,6 +84,4 @@ def test_only_review_waves_41_and_first_twenty_is_runtime_candidate() -> None:
     assert not set(row["product_id"] for row in first).intersection(
         row["product_id"] for row in second
     )
-    assert set(row["product_id"] for row in active) == {
-        row["product_id"] for row in first
-    }
+    assert set(row["product_id"] for row in active) == {row["product_id"] for row in first}
