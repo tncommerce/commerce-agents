@@ -290,7 +290,9 @@ def test_transport_rejects_default_204_dispatch_without_run_details():
         "inputs": {"mode": "render_services_v2", "capture_v2": True},
     }
     with pytest.raises(recovery.Refused, match="dispatch_contract_rejected"):
-        client.call("POST", f"{recovery.PREFIX}/workflows/{recovery.READER}/dispatches", missing_opt_in)
+        client.call(
+            "POST", f"{recovery.PREFIX}/workflows/{recovery.READER}/dispatches", missing_opt_in
+        )
     assert not client.post_attempted
     assert client.requests == 0
 
