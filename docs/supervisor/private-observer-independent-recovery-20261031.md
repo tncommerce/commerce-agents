@@ -23,8 +23,13 @@ ID and attempt, the original UTC times, and complete bounded recovery history.
 All three existing V2 gates must be exactly `1`. The sole possible write is:
 
 ```json
-{"ref":"scentai-mvp","inputs":{"mode":"render_services_v2","capture_v2":true}}
+{"ref":"scentai-mvp","inputs":{"mode":"render_services_v2","capture_v2":true},"return_run_details":true}
 ```
+
+The opt-in `return_run_details=true` is required by the GitHub REST API to
+receive HTTP 200 with the exact run ID and URLs instead of the unreceipted
+HTTP 204 default. The guard rejects the 204-default request before any write.
+API contract: https://docs.github.com/en/rest/actions/workflows#create-a-workflow-dispatch-event
 
 It targets only the existing `dufynd-private-observer.yml` workflow. Neither
 provider credentials nor a Google identity leave their current boundaries. The
