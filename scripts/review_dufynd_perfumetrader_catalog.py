@@ -9,7 +9,9 @@ from __future__ import annotations
 
 import argparse
 import base64
+import csv
 import hashlib
+import io
 import json
 import os
 import re
@@ -218,6 +220,103 @@ def row_timestamp(row: dict) -> tuple[str | None, datetime | None]:
         return original, None
 
 
+def verified_product_rows(path: Path, http: dict) -> tuple[list[dict], dict]:
+    """Distinguish a real product CSV from an error document before absence claims.
+
+    Diagnostics contain only protocol enums, recognized field names and counts.
+    Raw headers, response bodies and URLs never leave runner temporary storage.
+    """
+    diagnostic = {
+        "status": "BLOCKED_UNVERIFIED_SCHEMA",
+        "reasons": [],
+        "payload_format": "unknown",
+        "delimiter": None,
+        "header_count": 0,
+        "recognized_headers": [],
+        "unknown_header_count": 0,
+        "row_count": None,
+        "valid_identity_row_count": 0,
+    }
+    reasons = diagnostic["reasons"]
+    if http.get("http_status") != 200:
+        reasons.append("product_http_status_not_200")
+    if http.get("content_type") not in {
+        "text/csv",
+        "application/csv",
+        "text/plain",
+        "application/octet-stream",
+        "application/gzip",
+        "application/x-gzip",
+    }:
+        reasons.append("product_http_content_type_not_csv_compatible")
+    payload = path.read_bytes()
+    if len(payload) > 64 * 1024 * 1024:
+        reasons.append("product_payload_exceeds_bound")
+        return [], diagnostic
+    start = payload.lstrip()[:256].lower()
+    for marker, kind in (
+        (b"<!doctype html", "html"),
+        (b"<html", "html"),
+        (b"<head", "html"),
+        (b"<?xml", "xml"),
+        (b"<", "xml_or_html"),
+        (b"{", "json"),
+        (b"[", "json"),
+        (b"pk\x03\x04", "zip"),
+    ):
+        if start.startswith(marker):
+            diagnostic["payload_format"] = kind
+            reasons.append("product_payload_is_not_csv")
+            return [], diagnostic
+    if not payload.strip():
+        reasons.append("product_payload_empty")
+        return [], diagnostic
+    try:
+        try:
+            text = payload.decode("utf-8-sig")
+        except UnicodeDecodeError:
+            text = payload.decode("cp1252")
+        dialect = csv.Sniffer().sniff(text[:65536], delimiters=",;\t")
+        header = next(csv.reader(io.StringIO(text), dialect=dialect))
+        diagnostic["payload_format"] = "csv"
+        diagnostic["delimiter"] = {",": "comma", ";": "semicolon", "\t": "tab"}[dialect.delimiter]
+        diagnostic["header_count"] = len(header)
+        diagnostic["recognized_headers"] = sorted(set(header) & set(ALLOWED_FIELDS))
+        diagnostic["unknown_header_count"] = len(set(header) - set(ALLOWED_FIELDS))
+        if not header or any(not h.strip() for h in header) or len(set(header)) != len(header):
+            reasons.append("product_header_empty_or_duplicate")
+            return [], diagnostic
+        if not (
+            "product_name" in header
+            and {"merchant_product_id", "aw_product_id"} & set(header)
+            and {"search_price", "price"} & set(header)
+        ):
+            reasons.append("product_identity_and_price_headers_missing")
+        rows = read_merchant_feed_rows(path, max_bytes=64 * 1024 * 1024)
+        diagnostic["row_count"] = len(rows)
+        if any(
+            set(row) != set(header) or any(not isinstance(v, str) for v in row.values())
+            for row in rows
+        ):
+            reasons.append("product_rows_do_not_match_header")
+        else:
+            diagnostic["valid_identity_row_count"] = sum(
+                bool(row.get("product_name", "").strip())
+                and bool((row.get("merchant_product_id") or row.get("aw_product_id") or "").strip())
+                and bool((row.get("search_price") or row.get("price") or "").strip())
+                for row in rows
+            )
+        if not diagnostic["valid_identity_row_count"]:
+            reasons.append("no_verified_product_rows")
+        if reasons:
+            return [], diagnostic
+        diagnostic["status"] = "VERIFIED_PRODUCT_CSV"
+        return rows, diagnostic
+    except (ValueError, UnicodeError, csv.Error, StopIteration, TypeError, AttributeError):
+        reasons.append("product_csv_parse_failed")
+        return [], diagnostic
+
+
 def review_rows(
     profiles: list[dict],
     mappings: dict,
@@ -225,6 +324,8 @@ def review_rows(
     metadata: dict,
     secret: str,
     now: datetime,
+    *,
+    feed_validation: dict | None = None,
 ) -> dict:
     if (
         metadata.get("advertiser_id") != ADVERTISER
@@ -235,6 +336,11 @@ def review_rows(
     ):
         raise ValueError("feed_identity_or_membership_not_verified")
     results = []
+    verified_schema = bool(
+        feed_validation and feed_validation.get("status") == "VERIFIED_PRODUCT_CSV"
+    )
+    if not verified_schema:
+        rows = []
     for product in profiles:
         pid = product["product_id"]
         expected = {
@@ -404,7 +510,10 @@ def review_rows(
         results.append(
             {
                 **product,
-                "status": status,
+                "status": status if verified_schema else "BLOCKED",
+                "source_schema_status": "VERIFIED_PRODUCT_CSV"
+                if verified_schema
+                else "BLOCKED_UNVERIFIED_SCHEMA",
                 "candidate_count": len(candidates),
                 "candidates": candidates[:3],
                 "candidate_truncation": len(candidates) > 3,
@@ -421,6 +530,8 @@ def review_rows(
         "publisher_id": PUBLISHER,
         "observed_at_utc": now.isoformat(),
         "source_metadata": metadata,
+        "feed_validation": feed_validation
+        or {"status": "BLOCKED_UNVERIFIED_SCHEMA", "reasons": ["schema_evidence_missing"]},
         "profiles": results,
         "source_timestamp_policy": "feed-list last_imported is preserved verbatim, never product freshness; naive row timestamps remain timezone-unknown",
         "raw_feed_exported": False,
@@ -479,14 +590,17 @@ def main() -> int:
                 output_path=feed_path,
                 report_path=None,
                 feed_max_bytes=64 * 1024 * 1024,
+                capture_product_response_metadata=True,
             )
+            rows, validation = verified_product_rows(feed_path, metadata.get("product_http", {}))
             report = review_rows(
                 profiles,
                 mappings,
-                read_merchant_feed_rows(feed_path, max_bytes=64 * 1024 * 1024),
+                rows,
                 metadata,
                 secret,
                 datetime.now(UTC),
+                feed_validation=validation,
             )
         if contains_secret(json.dumps(report, ensure_ascii=False), secret):
             raise ValueError("secret_scan_rejected")

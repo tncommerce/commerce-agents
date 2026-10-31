@@ -220,6 +220,7 @@ def _read_url(
     max_bytes: int,
     expected_feed_id: str | None = None,
     expected_list_api_key: str | None = None,
+    response_metadata: dict | None = None,
 ) -> bytes:
     request = Request(
         url,
@@ -235,6 +236,31 @@ def _read_url(
                 expected_list_api_key=expected_list_api_key,
             )
         ).open(request, timeout=60) as response:
+            if response_metadata is not None:
+                # Only bounded protocol enums, never raw headers or final URLs.
+                media_type = (
+                    response.headers.get_content_type().casefold()
+                    if response.headers.get("Content-Type")
+                    else "missing"
+                )
+                known_types = {
+                    "text/csv",
+                    "application/csv",
+                    "text/plain",
+                    "application/octet-stream",
+                    "application/gzip",
+                    "application/x-gzip",
+                    "application/zip",
+                    "text/html",
+                    "application/xhtml+xml",
+                    "application/xml",
+                    "text/xml",
+                    "application/json",
+                }
+                response_metadata.update(
+                    http_status=int(response.status),
+                    content_type=media_type if media_type in known_types else "unrecognized",
+                )
             chunks: list[bytes] = []
             total = 0
             while True:
@@ -259,6 +285,7 @@ def download_feed_from_list(
     report_path: Path | None,
     list_max_bytes: int = DEFAULT_LIST_MAX_BYTES,
     feed_max_bytes: int = DEFAULT_FEED_MAX_BYTES,
+    capture_product_response_metadata: bool = False,
 ) -> dict:
     api_key = api_key.strip()
     if not api_key:
@@ -294,8 +321,14 @@ def download_feed_from_list(
     }
 
     if output_path is not None:
+        response_metadata: dict = {}
+        read_options = (
+            {"response_metadata": response_metadata} if capture_product_response_metadata else {}
+        )
         feed_payload = _maybe_decompress(
-            _read_url(download_url, max_bytes=feed_max_bytes, expected_feed_id=feed_id),
+            _read_url(
+                download_url, max_bytes=feed_max_bytes, expected_feed_id=feed_id, **read_options
+            ),
             max_bytes=feed_max_bytes,
         )
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -305,6 +338,8 @@ def download_feed_from_list(
         # Bind the Awin list metadata to exactly the file handed to offline
         # reviewers; the hash is not a source/rights/price endorsement.
         report["download_sha256"] = hashlib.sha256(feed_payload).hexdigest()
+        if capture_product_response_metadata:
+            report["product_http"] = response_metadata
 
     if report_path is not None:
         report_path.parent.mkdir(parents=True, exist_ok=True)

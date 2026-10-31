@@ -52,7 +52,15 @@ def source_row(**changes):
 
 
 def result(*rows):
-    return review.review_rows([PRODUCT], MAPPING, list(rows), META, SECRET, NOW)["profiles"][0]
+    return review.review_rows(
+        [PRODUCT],
+        MAPPING,
+        list(rows),
+        META,
+        SECRET,
+        NOW,
+        feed_validation={"status": "VERIFIED_PRODUCT_CSV"},
+    )["profiles"][0]
 
 
 def test_exact_fresh_source_still_never_activates_or_approves_assets():
