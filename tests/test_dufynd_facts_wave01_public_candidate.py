@@ -38,7 +38,7 @@ def test_wave1_release_candidate_exactly_matches_source_bound_review() -> None:
         ):
             assert row[field] == original[field]
         assert row["target_groups"] == staged[row["product_id"]]["classification"]["target_groups"]
-        assert row["indexing_approved"] is False
+        assert row["indexing_approved"] is True
 
 
 def test_wave1_public_candidate_has_no_offer_price_image_or_tracking() -> None:
@@ -56,7 +56,7 @@ def test_wave1_public_candidate_has_no_offer_price_image_or_tracking() -> None:
     }
     for row in generated:
         assert not forbidden.intersection(row.keys())
-        assert row["indexing_approved"] is False
+        assert row["indexing_approved"] is True
         assert row["seo"]["public_path"] == "/duft/" + row["slug"]
         assert row["notes"]
 
