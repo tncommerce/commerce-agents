@@ -307,53 +307,17 @@ export default async function FragrancePage({
   const breadcrumbJson = JSON.stringify(
     breadcrumbStructuredData,
   ).replaceAll("<", "\\u003c");
-  const verifiedProductImage =
-    productTruthIsVerified && productTruthVisual?.url
-      ? productTruthVisual.url.startsWith("http")
-        ? productTruthVisual.url
-        : `${SITE_URL}${productTruthVisual.url}`
-      : null;
-  const productStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: `${fragrance.brand} ${fragrance.name} ${fragrance.concentration} ${fragrance.volume_ml} ml`,
-    sku: fragrance.product_id,
-    category: "Parfum",
-    url: canonicalUrl,
-    description: descriptionFor(fragrance),
-    brand: {
-      "@type": "Brand",
-      name: fragrance.brand,
-    },
-    ...(verifiedProductImage
-      ? { image: [verifiedProductImage] }
-      : {}),
-    additionalProperty: [
-      {
-        "@type": "PropertyValue",
-        name: "Konzentration",
-        value: fragrance.concentration,
-      },
-      {
-        "@type": "PropertyValue",
-        name: "Füllmenge",
-        value: `${fragrance.volume_ml} ml`,
-      },
-    ],
-  };
-  const productJson = JSON.stringify(
-    productStructuredData,
-  ).replaceAll("<", "\\u003c");
+  // Product snippets require a qualifying offer or review. This static profile
+  // has neither: live merchant offers are loaded separately and must not be
+  // copied into build-time JSON-LD or replaced with editorial/community scores.
+  // Keep BreadcrumbList and the layout's WebSite markup until qualified data
+  // can be emitted with the same freshness and provenance gates as the page.
 
   return (
     <main data-dufynd-visual-reset={!review ? "editorial" : undefined} data-dufynd-product-editorial={!review && !offerOnlyPricing || undefined} className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: productJson }}
       />
       {review ? <aside data-photo-review-boundary className="border-b border-(--line) bg-[#ede9df] px-5 py-3 text-center text-[12px] text-(--ink)">
         <strong>Designprüfung · top Parfümerie</strong> · nicht veröffentlicht · deaktivierte Kaufbuttons

@@ -1,3 +1,5 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
 import assert from "node:assert/strict";
 import path from "node:path";
 import { writeFile } from "node:fs/promises";
@@ -20,7 +22,7 @@ const offer = {
   merchant_name: "Perfumetrader", price: 90, currency: "EUR", shipping_cost: 5,
   shipping_label: "5,00 € Versand (QA)", total_price: 95, in_stock: true,
   variant_label: "100 ml · Eau de Toilette", affiliate_link: true,
-  clickout_path: `/api/clickout/${offerId}`, last_updated_at: "2026-10-12T00:00:00Z",
+  clickout_path: `/api/clickout/${offerId}`, last_updated_at: new Date().toISOString(),
 };
 
 export async function verifySocialProductEntry(browser, baseUrl, outputDir) {

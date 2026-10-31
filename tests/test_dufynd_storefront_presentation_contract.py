@@ -52,14 +52,11 @@ def test_detail_hero_uses_presentation_but_truth_features_stay_verified() -> Non
     assert "fragrance.presentation_visual || productTruthVisual" not in detail_page
     assert "const productTruthVisual = originalPhotoFor(fragrance);" in detail_page
     assert "productTruthIsVerified && productTruthVisual?.url" in detail_page
-    assert "? productTruthVisual.url.startsWith" in detail_page
-    assert "${SITE_URL}${productTruthVisual.url}" in detail_page
     assert "cutoutUrl={heroVisual?.url}" in detail_page
     notes = _read("components/FragranceExplodedNotes.tsx")
     assert "FragranceVisual" not in notes
     assert "data-dufynd-exploded-note" in notes
     assert "<FragranceNotesOverview notes={fragrance.notes} />" in detail_page
-    assert "verifiedProductImage" in detail_page
 
 
 def test_product_tile_missing_visual_uses_neutral_fragrance_stage() -> None:

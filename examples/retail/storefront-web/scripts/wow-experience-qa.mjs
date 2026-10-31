@@ -1,7 +1,24 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
+
+// The approved editorial layout has a responsive two-row introduction. Guard
+// the user's actual first-fold search, not the previous 350px hero-height proxy.
+// Call before any focus or scrolling so an off-screen search cannot pass.
+export async function assertCatalogSearchFirstFold(page) {
+  assert.equal(await page.evaluate(() => window.scrollY), 0,
+    'catalog first-fold geometry must be measured before scrolling');
+  const bounds = await page.getByRole('searchbox').boundingBox();
+  const viewport = page.viewportSize();
+  assert.ok(bounds && viewport && bounds.width > 0 && bounds.height > 0 &&
+    bounds.x >= -1 && bounds.x + bounds.width <= viewport.width + 1 &&
+    bounds.y >= 0 && bounds.y + bounds.height <= Math.min(800, viewport.height),
+    `catalog search must fit completely in the first viewport: ${JSON.stringify({bounds, viewport})}`);
+  return bounds;
+}
 
 // The editorial atlas is deliberately stationary in both motion preferences.
 // Test the actual note display, including descendants, instead of requiring a
@@ -71,9 +88,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           if(await credits.count()) {
             assert.match(await credits.last().innerText(),/Bild:/);
           }
-          const hero=page.locator('.dufynd-catalog-discovery-hero');
-          const bounds=await hero.boundingBox();
-          assert.ok(bounds && bounds.height<=350,'the photographic catalog introduction must not displace firstfold search');
+          await assertCatalogSearchFirstFold(page);
           const imageBounds=await sourceImage.boundingBox();
           assert.ok(imageBounds && imageBounds.x>=-1 && imageBounds.x+imageBounds.width<=width+1,
             'actual original product photo stays inside the viewport');
@@ -224,7 +239,7 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           const ctaBounds = await page.locator('#dufynd-hero-offer-cta').boundingBox();
           assert.ok(ctaBounds && ctaBounds.height >= 44,
             'Buyer access must remain keyboard/touch accessible after image release');
-          const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:'2026-10-14T00:00:00Z'};
+          const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:new Date().toISOString()};
           let available=true;
           await page.route('**/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100',r=>r.fulfill({json:{product_id:offer.product_id,best_offer_id:available?offer.offer_id:null,offers:available?[offer]:[],affiliate_disclosure:'Isolated QA fixture'}}));
           await page.reload({waitUntil:'load'});

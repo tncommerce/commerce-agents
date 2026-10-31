@@ -1,3 +1,5 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
 import { verifyProductPresentation } from "./product-presentation-qa.mjs";
 import { verifyMobileDiscovery } from "./mobile-discovery-qa.mjs";
 import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
@@ -12,7 +14,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
-import { verifyWowExperience } from "./wow-experience-qa.mjs";
+import { assertCatalogSearchFirstFold, verifyWowExperience } from "./wow-experience-qa.mjs";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
@@ -746,61 +748,33 @@ try {
         }
 
         if (target.route.startsWith("/duft/")) {
-          const productSchema = await page.evaluate(() => {
-            const schemas = Array.from(
-              document.querySelectorAll('script[type="application/ld+json"]'),
-            )
-              .map((script) => {
-                try {
-                  return JSON.parse(script.textContent || "{}");
-                } catch {
-                  return null;
-                }
-              })
-              .filter(Boolean);
-
-            return schemas.find((schema) => schema?.["@type"] === "Product") || null;
-          });
-
-          if (!productSchema) {
-            throw new Error("fragrance detail page is missing Product JSON-LD");
+          const schemas = await page.evaluate(() => Array.from(
+            document.querySelectorAll('script[type="application/ld+json"]'),
+          ).map((script) => JSON.parse(script.textContent || "{}")));
+          const breadcrumb = schemas.find((schema) => schema?.["@type"] === "BreadcrumbList");
+          if (!breadcrumb?.itemListElement?.length) {
+            throw new Error("fragrance detail page is missing BreadcrumbList JSON-LD");
           }
-
-          if (!String(productSchema.name || "").trim()) {
-            throw new Error("Product JSON-LD has no usable product name");
+          const productSchema = schemas.find((schema) => schema?.["@type"] === "Product");
+          if (productSchema && !(productSchema.offers || productSchema.review || productSchema.aggregateRating)) {
+            throw new Error("Product JSON-LD requires qualifying offers, review or aggregateRating");
           }
-          const sourceProduct = sourceCatalog.products.find((product) => product.product_id === productSchema.sku);
-          if (!sourceProduct) throw new Error("Product JSON-LD has an unknown SKU");
+          const productId = await page.locator('.dufynd-fragrance-hero[data-product-id]').getAttribute('data-product-id');
+          const sourceProduct = sourceCatalog.products.find((product) => product.product_id === productId);
+          if (!sourceProduct) throw new Error("Fragrance hero has an unknown SKU");
           const exactVariant = `${sourceProduct.concentration} ${sourceProduct.volume_ml} ml`;
           const description = await page.locator('meta[name="description"]').getAttribute("content");
-          if (![await page.title(), description, productSchema.name].every((value) => String(value).includes(exactVariant))) {
+          if (![await page.title(), description].every((value) => String(value).includes(exactVariant))) {
             throw new Error(`Search metadata must identify the exact variant: ${exactVariant}`);
           }
-          if (productSchema.offers || productSchema.aggregateRating || productSchema.review) {
-            throw new Error("Static product metadata must not claim live prices, stock or ratings");
-          }
-
-          const schemaImages = Array.isArray(productSchema.image)
-            ? productSchema.image
-            : productSchema.image
-              ? [productSchema.image]
-              : [];
-
+          const shareImages = await page.locator('meta[property="og:image"]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('content')));
           const expectedTruthVisual = verifiedTruthByRoute.get(target.route);
           if (expectedTruthVisual) {
-            if (
-              !schemaImages.some((image) =>
-                String(image).endsWith(String(expectedTruthVisual.url)),
-              )
-            ) {
-              throw new Error(
-                `verified Product JSON-LD does not use the expected product-truth visual: ${expectedTruthVisual.url}`,
-              );
+            if (!shareImages.some((image) => String(image).endsWith(String(expectedTruthVisual.url)))) {
+              throw new Error(`Social metadata does not use the expected product-truth visual: ${expectedTruthVisual.url}`);
             }
-          } else if (schemaImages.length > 0) {
-            throw new Error(
-              "unverified fragrance exposed an image as Product JSON-LD truth",
-            );
+          } else if (shareImages.length > 0) {
+            throw new Error("unverified fragrance exposed an image in social metadata");
           }
         }
 
@@ -1017,11 +991,7 @@ try {
               "catalog is missing the immersive discovery hero",
             );
           }
-          const heroBounds = await discoveryHero.boundingBox();
-          const searchBounds = await page.getByRole("searchbox").boundingBox();
-          if (!heroBounds || heroBounds.height > 350 || !searchBounds || searchBounds.y > 800) {
-            throw new Error("catalog search must remain accessible without an oversized photo hero");
-          }
+          await assertCatalogSearchFirstFold(page);
           if ((await page.locator(".dufynd-brand-directory summary").count()) !== 1) {
             throw new Error("catalog is missing its accessible brand directory");
           }
@@ -1653,7 +1623,7 @@ try {
     if (
       !(await fallback.innerText()).includes("Produktbild derzeit nicht verfügbar") ||
       !(await fallback.innerText()).includes("Delina") ||
-      (await hero.locator("img.dufynd-product-image").count()) !== 0
+      (await hero.locator("[data-dufynd-original-photo] img, img.dufynd-product-image").count()) !== 0
     ) {
       throw new Error("failed licensed original did not preserve identity in a neutral fallback");
     }
@@ -1662,10 +1632,10 @@ try {
     }
     failPrimaryImage = false;
     await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
-    const recoveredImage = hero.locator("img.dufynd-product-image");
+    const recoveredImage = hero.locator("[data-dufynd-original-photo] img, img.dufynd-product-image");
     await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
     await imageFailurePage.waitForFunction(() => {
-      const image = document.querySelector(".dufynd-fragrance-hero img.dufynd-product-image");
+      const image = document.querySelector(".dufynd-fragrance-hero [data-dufynd-original-photo] img, .dufynd-fragrance-hero img.dufynd-product-image");
       return image?.complete && image.naturalWidth > 0;
     }, undefined, { timeout: 10_000 });
     if ((await fallback.count()) !== 0) {
@@ -1804,7 +1774,7 @@ try {
                 variant_label: "QA Recovery",
                 clickout_path: "/api/clickout/qa-timeout-recovery-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA recovery fixture",
@@ -1944,7 +1914,7 @@ try {
             currency: "EUR",
             clickout_path: "/api/clickout/qa-session-timeout-offer",
             affiliate_link: false,
-            last_updated_at: "2026-09-30T12:00:00Z",
+            last_updated_at: new Date().toISOString(),
           }],
         }),
       }),
@@ -2051,7 +2021,7 @@ try {
                 variant_label: "QA",
                 clickout_path: "/api/clickout/qa-attribution-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2215,7 +2185,7 @@ try {
                 variant_label: "QA Impression",
                 clickout_path: "/api/clickout/qa-offer-impression-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2328,7 +2298,7 @@ try {
                 variant_label: "QA Navigation",
                 clickout_path: "/api/clickout/qa-attribution-nav-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2479,7 +2449,7 @@ try {
                 variant_label: "QA Session",
                 clickout_path: "/api/clickout/qa-session-correlation-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -3827,37 +3797,16 @@ try {
           );
         }
 
-        const productSchema = await sweepPage.evaluate(() => {
-          const schemas = Array.from(
-            document.querySelectorAll(
-              'script[type="application/ld+json"]',
-            ),
-          )
-            .map((script) => {
-              try {
-                return JSON.parse(script.textContent || "{}");
-              } catch {
-                return null;
-              }
-            })
-            .filter(Boolean);
-
-          return (
-            schemas.find(
-              (schema) => schema?.["@type"] === "Product",
-            ) || null
-          );
-        });
-
-        if (!productSchema) {
-          throw new Error(
-            "fragrance detail page is missing Product JSON-LD",
-          );
+        const schemas = await sweepPage.evaluate(() => Array.from(
+          document.querySelectorAll('script[type="application/ld+json"]'),
+        ).map((script) => JSON.parse(script.textContent || "{}")));
+        const breadcrumb = schemas.find((schema) => schema?.["@type"] === "BreadcrumbList");
+        if (!breadcrumb?.itemListElement?.length) {
+          throw new Error("fragrance detail page is missing BreadcrumbList JSON-LD");
         }
-        if (!String(productSchema.name || "").trim()) {
-          throw new Error(
-            "Product JSON-LD has no usable product name",
-          );
+        const productSchema = schemas.find((schema) => schema?.["@type"] === "Product");
+        if (productSchema && !(productSchema.offers || productSchema.review || productSchema.aggregateRating)) {
+          throw new Error("Product JSON-LD requires qualifying offers, review or aggregateRating");
         }
 
         report.checks.push({

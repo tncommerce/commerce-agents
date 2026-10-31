@@ -1,3 +1,5 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
@@ -21,7 +23,7 @@ export async function verifyOfferRecovery(browser, baseUrl) {
               offer_id: "qa-offer", product_id: mode === "wrong-product" ? "SC-YSL-LIBRE-EDP-90" : "SC-XERJOFF-NAXOS-100",
               merchant_id: "qa-merchant", merchant_name: "QA Merchant", price: 99, total_price: 99,
               currency: "EUR", in_stock: true, affiliate_link: false,
-              clickout_path: "/api/clickout/qa-offer", last_updated_at: "2026-10-08T10:00:00Z",
+              clickout_path: "/api/clickout/qa-offer", last_updated_at: new Date().toISOString(),
             }] : [],
           } }));
         await page.goto(`${baseUrl}/duft/xerjoff-naxos?src=instagram&cmp=qa_recovery&content=qa_final`);

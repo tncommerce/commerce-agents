@@ -1,3 +1,5 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -23,7 +25,7 @@ export async function verifySite13Funnel(browser, baseUrl) {
           const page = await context.newPage();
           const events = [], forbidden = [];
           let sessionRequests = 0, state = "available";
-          const offer = { offer_id: "qa-site13-offer", product_id: productId, merchant_name: "Perfumetrader", merchant_id: "perfumetrader", price: 90, currency: "EUR", shipping_cost: 5, total_price: 95, in_stock: true, variant_label: "100 ml · Eau de Toilette", affiliate_link: true, clickout_path: "/api/clickout/qa-site13-offer", last_updated_at: "2026-10-14T00:00:00Z" };
+          const offer = { offer_id: "qa-site13-offer", product_id: productId, merchant_name: "Perfumetrader", merchant_id: "perfumetrader", price: 90, currency: "EUR", shipping_cost: 5, total_price: 95, in_stock: true, variant_label: "100 ml · Eau de Toilette", affiliate_link: true, clickout_path: "/api/clickout/qa-site13-offer", last_updated_at: new Date().toISOString() };
           await context.route("**/*", async (route) => {
             const url = new URL(route.request().url());
             if (url.pathname === "/api/session") {

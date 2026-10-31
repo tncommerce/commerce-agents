@@ -5,22 +5,18 @@ from pathlib import Path
 DETAIL_PAGE = Path("examples/retail/storefront-web/components/FragranceDetailPage.tsx")
 
 
-def test_product_schema_is_conservative_and_product_truth_gated() -> None:
+def test_static_profile_keeps_breadcrumb_without_unqualified_product_snippet() -> None:
     source = DETAIL_PAGE.read_text(encoding="utf-8")
 
-    assert '"@type": "Product"' in source
-    assert '"@type": "Brand"' in source
-    assert "sku: fragrance.product_id" in source
-    assert 'name: "Konzentration"' in source
-    assert 'name: "Füllmenge"' in source
+    assert '"@type": "BreadcrumbList"' in source
+    assert "__html: breadcrumbJson" in source
+    assert "item: canonicalUrl" in source
+    assert '"@type": "Product"' not in source
+    assert "productStructuredData" not in source
+    assert "productJson" not in source
 
-    assert "productTruthIsVerified && productTruthVisual?.url" in source
-    assert "const productTruthVisual = originalPhotoFor(fragrance);" in source
-    assert "verifiedProductImage" in source
-    assert "{ image: [verifiedProductImage] }" in source
-
-    # DUFYND does not claim merchant inventory or third-party community scores
-    # as Product rich-result truth on the static fragrance page.
+    # Do not manufacture prices or use editorial/third-party community scores
+    # to satisfy Google's Product rich-result requirements.
     assert '"aggregateRating"' not in source
     assert '"offers"' not in source
 
