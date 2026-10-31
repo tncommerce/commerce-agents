@@ -2,7 +2,7 @@
 // Existing public routes must render their own canonical, search snippet,
 // OpenGraph and Twitter metadata. No network traffic or analytics.
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
@@ -123,10 +123,29 @@ const home = headFor("/");
 assert.equal(meta(home, "property", "og:url", "/"), origin,
   "Root homepage OpenGraph URL must stay unchanged");
 checks++;
+// Validate actual exported public fragrance markup: valid JSON alone does not
+// make an incomplete Product node eligible for Google's product snippets.
+const fragranceFiles = readdirSync(path.join(root, "duft"))
+  .filter((name) => name.endsWith(".html"));
+assert.ok(fragranceFiles.length > 0, "No public fragrance export found");
+for (const file of fragranceFiles) {
+  const html = readFileSync(path.join(root, "duft", file), "utf8");
+  const schemas = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
+    .map((match) => JSON.parse(match[1]));
+  const breadcrumb = schemas.find((schema) => schema["@type"] === "BreadcrumbList");
+  assert.ok(breadcrumb?.itemListElement?.length, `${file}: missing BreadcrumbList`);
+  for (const product of schemas.filter((schema) => schema["@type"] === "Product")) {
+    assert.ok(String(product.name || "").trim(), `${file}: Product has no name`);
+    assert.ok(product.offers || product.review || product.aggregateRating,
+      `${file}: Product requires qualifying offers, review or aggregateRating`);
+  }
+  checks++;
+}
 console.log(JSON.stringify({
   status: "PASS",
   checks,
   pages: cases.length + 1,
+  fragranceStructuredDataPages: fragranceFiles.length,
   source: "initial static export HTML head",
   networkRequests: 0,
   analyticsEvents: 0,

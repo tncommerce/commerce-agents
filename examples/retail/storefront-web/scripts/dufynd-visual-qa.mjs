@@ -746,61 +746,33 @@ try {
         }
 
         if (target.route.startsWith("/duft/")) {
-          const productSchema = await page.evaluate(() => {
-            const schemas = Array.from(
-              document.querySelectorAll('script[type="application/ld+json"]'),
-            )
-              .map((script) => {
-                try {
-                  return JSON.parse(script.textContent || "{}");
-                } catch {
-                  return null;
-                }
-              })
-              .filter(Boolean);
-
-            return schemas.find((schema) => schema?.["@type"] === "Product") || null;
-          });
-
-          if (!productSchema) {
-            throw new Error("fragrance detail page is missing Product JSON-LD");
+          const schemas = await page.evaluate(() => Array.from(
+            document.querySelectorAll('script[type="application/ld+json"]'),
+          ).map((script) => JSON.parse(script.textContent || "{}")));
+          const breadcrumb = schemas.find((schema) => schema?.["@type"] === "BreadcrumbList");
+          if (!breadcrumb?.itemListElement?.length) {
+            throw new Error("fragrance detail page is missing BreadcrumbList JSON-LD");
           }
-
-          if (!String(productSchema.name || "").trim()) {
-            throw new Error("Product JSON-LD has no usable product name");
+          const productSchema = schemas.find((schema) => schema?.["@type"] === "Product");
+          if (productSchema && !(productSchema.offers || productSchema.review || productSchema.aggregateRating)) {
+            throw new Error("Product JSON-LD requires qualifying offers, review or aggregateRating");
           }
-          const sourceProduct = sourceCatalog.products.find((product) => product.product_id === productSchema.sku);
-          if (!sourceProduct) throw new Error("Product JSON-LD has an unknown SKU");
+          const productId = await page.locator('.dufynd-fragrance-hero[data-product-id]').getAttribute('data-product-id');
+          const sourceProduct = sourceCatalog.products.find((product) => product.product_id === productId);
+          if (!sourceProduct) throw new Error("Fragrance hero has an unknown SKU");
           const exactVariant = `${sourceProduct.concentration} ${sourceProduct.volume_ml} ml`;
           const description = await page.locator('meta[name="description"]').getAttribute("content");
-          if (![await page.title(), description, productSchema.name].every((value) => String(value).includes(exactVariant))) {
+          if (![await page.title(), description].every((value) => String(value).includes(exactVariant))) {
             throw new Error(`Search metadata must identify the exact variant: ${exactVariant}`);
           }
-          if (productSchema.offers || productSchema.aggregateRating || productSchema.review) {
-            throw new Error("Static product metadata must not claim live prices, stock or ratings");
-          }
-
-          const schemaImages = Array.isArray(productSchema.image)
-            ? productSchema.image
-            : productSchema.image
-              ? [productSchema.image]
-              : [];
-
+          const shareImages = await page.locator('meta[property="og:image"]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('content')));
           const expectedTruthVisual = verifiedTruthByRoute.get(target.route);
           if (expectedTruthVisual) {
-            if (
-              !schemaImages.some((image) =>
-                String(image).endsWith(String(expectedTruthVisual.url)),
-              )
-            ) {
-              throw new Error(
-                `verified Product JSON-LD does not use the expected product-truth visual: ${expectedTruthVisual.url}`,
-              );
+            if (!shareImages.some((image) => String(image).endsWith(String(expectedTruthVisual.url)))) {
+              throw new Error(`Social metadata does not use the expected product-truth visual: ${expectedTruthVisual.url}`);
             }
-          } else if (schemaImages.length > 0) {
-            throw new Error(
-              "unverified fragrance exposed an image as Product JSON-LD truth",
-            );
+          } else if (shareImages.length > 0) {
+            throw new Error("unverified fragrance exposed an image in social metadata");
           }
         }
 
@@ -3827,37 +3799,16 @@ try {
           );
         }
 
-        const productSchema = await sweepPage.evaluate(() => {
-          const schemas = Array.from(
-            document.querySelectorAll(
-              'script[type="application/ld+json"]',
-            ),
-          )
-            .map((script) => {
-              try {
-                return JSON.parse(script.textContent || "{}");
-              } catch {
-                return null;
-              }
-            })
-            .filter(Boolean);
-
-          return (
-            schemas.find(
-              (schema) => schema?.["@type"] === "Product",
-            ) || null
-          );
-        });
-
-        if (!productSchema) {
-          throw new Error(
-            "fragrance detail page is missing Product JSON-LD",
-          );
+        const schemas = await sweepPage.evaluate(() => Array.from(
+          document.querySelectorAll('script[type="application/ld+json"]'),
+        ).map((script) => JSON.parse(script.textContent || "{}")));
+        const breadcrumb = schemas.find((schema) => schema?.["@type"] === "BreadcrumbList");
+        if (!breadcrumb?.itemListElement?.length) {
+          throw new Error("fragrance detail page is missing BreadcrumbList JSON-LD");
         }
-        if (!String(productSchema.name || "").trim()) {
-          throw new Error(
-            "Product JSON-LD has no usable product name",
-          );
+        const productSchema = schemas.find((schema) => schema?.["@type"] === "Product");
+        if (productSchema && !(productSchema.offers || productSchema.review || productSchema.aggregateRating)) {
+          throw new Error("Product JSON-LD requires qualifying offers, review or aggregateRating");
         }
 
         report.checks.push({
