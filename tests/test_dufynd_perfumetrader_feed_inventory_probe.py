@@ -131,7 +131,9 @@ class InventoryProbeTests(unittest.TestCase):
         self.assertIn("github.ref == 'refs/heads/scentai-mvp'", top)
         self.assertIn("github.event_name != 'workflow_dispatch'", top)
         self.assertIn("inputs.inventory_task == 'top_parfuemerie_review'", top)
-        job = workflow.split("  probe-perfumetrader-inventory:\n", 1)[1]
+        job = workflow.split("  probe-perfumetrader-inventory:\n", 1)[1].split(
+            "  review-perfumetrader-private-catalog:\n", 1
+        )[0]
         self.assertIn("github.event_name == 'workflow_dispatch'", job)
         self.assertIn("github.ref == 'refs/heads/scentai-mvp'", job)
         self.assertIn("inputs.inventory_task == 'perfumetrader_inventory'", job)
