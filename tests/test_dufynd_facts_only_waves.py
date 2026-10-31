@@ -61,9 +61,7 @@ def test_no_offer_photo_approval_indexing_or_publication_slips_into_review() -> 
 
 
 def _first_existing_source_pair() -> tuple[dict, dict]:
-    facts = json.loads((DATA / "dufynd_discovery_qualification.json").read_text())[
-        "products"
-    ]
+    facts = json.loads((DATA / "dufynd_discovery_qualification.json").read_text())["products"]
     pilots = json.loads((DATA / "dufynd_release_pilots.json").read_text())["pilots"]
     return facts[0], next(row for row in pilots if row["product_id"] == facts[0]["product_id"])
 
