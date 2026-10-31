@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import importlib.util
 import io
 import json
 from datetime import UTC, datetime, timedelta
@@ -11,7 +12,13 @@ from unittest.mock import patch
 
 import pytest
 import yaml
-from scripts import dufynd_observer_recovery as recovery
+
+SPEC = importlib.util.spec_from_file_location(
+    "dufynd_observer_recovery",
+    Path(__file__).parents[1] / "scripts/dufynd_observer_recovery.py",
+)
+recovery = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(recovery)
 
 NOW = datetime(2026, 10, 31, 12, 0, tzinfo=UTC)
 CURRENT = 900

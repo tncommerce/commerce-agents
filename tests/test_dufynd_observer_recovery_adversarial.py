@@ -3,11 +3,19 @@
 from __future__ import annotations
 
 import copy
+import importlib.util
 from datetime import UTC, datetime, timedelta
+from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
 import pytest
-from scripts import dufynd_observer_recovery as recovery
+
+SPEC = importlib.util.spec_from_file_location(
+    "dufynd_observer_recovery",
+    Path(__file__).parents[1] / "scripts/dufynd_observer_recovery.py",
+)
+recovery = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(recovery)
 
 NOW = datetime(2026, 10, 31, 12, tzinfo=UTC)
 CURRENT_ID = 9001
