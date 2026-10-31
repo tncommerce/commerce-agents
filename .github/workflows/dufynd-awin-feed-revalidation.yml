@@ -1,0 +1,28 @@
+name: DUFYND Awin Feed Revalidation
+
+# GitHub requires a workflow_dispatch entry on the default branch before the
+# Actions UI can offer "Run workflow" for the reviewed scentai-mvp version.
+# This file only registers that entry. All inventory reads remain on scentai-mvp.
+on:
+  workflow_dispatch:
+    inputs:
+      inventory_task:
+        description: "Select branch scentai-mvp for this review-only inventory"
+        required: true
+        type: choice
+        default: perfumetrader_inventory
+        options:
+          - perfumetrader_inventory
+
+permissions: {}
+
+jobs:
+  require-reviewed-branch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Refuse inventory execution from this registration-only branch
+        shell: bash
+        run: |
+          echo "::error::Select branch scentai-mvp and inventory_task=perfumetrader_inventory in Run workflow."
+          exit 2
