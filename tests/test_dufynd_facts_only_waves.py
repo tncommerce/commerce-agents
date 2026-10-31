@@ -6,7 +6,6 @@ import json
 from copy import deepcopy
 
 import pytest
-
 from scripts.build_dufynd_facts_only_waves import (
     DATA,
     WAVE_NAMES,
