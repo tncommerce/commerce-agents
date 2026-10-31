@@ -13,7 +13,15 @@ if (waveById.size !== 20) throw new Error('Duplicate wave 1 product identities')
 const staged = readData('scentai_catalog_staging.json').products;
 const stagedById = new Map(staged.map(p => [p.product_id, p]));
 
-const profiles = releaseState().filter(r => r.state.eligible).map(({ p, f, state }) => {
+const states = releaseState();
+const eligibleWave1 = states.filter(r => waveById.has(r.p.product_id) && r.state.eligible);
+if (eligibleWave1.length !== 0 && (
+    eligibleWave1.length !== 20 ||
+    eligibleWave1.some(r => r.state.indexing_approved !== true)
+)) {
+  throw new Error('Facts-only wave 1 partial or non-indexable release is forbidden');
+}
+const profiles = states.filter(r => r.state.eligible).map(({ p, f, state }) => {
   const result = {
     product_id: p.product_id, slug: p.slug, brand: f.brand, name: f.name,
     concentration: f.concentration, volume_ml: f.volume_ml,
