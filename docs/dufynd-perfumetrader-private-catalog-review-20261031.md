@@ -29,8 +29,10 @@ confirmed before dispatch.
 Statuses distinguish exact fresh, exact incomplete, stale, mismatching,
 missing and ambiguous evidence. Exact fresh does not authorize publication:
 offer activation, tracking click verification, asset rights and owner visual
-approval remain separate and false. Rows lacking explicit stock or German
-shipping cost/destination remain on HOLD. No current product result is claimed
+approval remain separate and false. Rows lacking explicit stock, explicit positive `is_for_sale`, or German
+shipping cost/destination remain on HOLD. Stock availability and source purchase
+eligibility are separate fields; contradictory stock, shipping and source-time
+aliases never pass completeness. Unitless explicit size fields remain unverified. No current product result is claimed
 until the encrypted artifact has been retrieved and independently reviewed.
 
 Local targeted verification covers variant and GTIN conflicts, duplicate

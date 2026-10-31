@@ -205,8 +205,15 @@ def row_timestamp(row: dict) -> tuple[str | None, datetime | None]:
     if not original:
         return None, None
     try:
-        dt = datetime.fromisoformat(original.replace("Z", "+00:00"))
-        return original, dt.astimezone(UTC) if dt.tzinfo is not None else None
+        stamps = [
+            datetime.fromisoformat(row[f].replace("Z", "+00:00"))
+            for f in ("last_updated", "last_update")
+            if row.get(f)
+        ]
+        if any(dt.tzinfo is None for dt in stamps):
+            return original, None
+        normalized = {dt.astimezone(UTC) for dt in stamps}
+        return original, next(iter(normalized)) if len(normalized) == 1 else None
     except (ValueError, TypeError):
         return original, None
 
@@ -259,6 +266,10 @@ def review_rows(
                 for v in VOLUME.findall(row.get(field) or "")
             ]
             size_conflict = any(v != product["volume_ml"] for v in explicit_sizes)
+            size_incomplete = any(
+                row.get(f) and not VOLUME.fullmatch(row[f].strip())
+                for f in ("size", "product_size")
+            )
             fields, withheld = safe_fields(row, secret)
             original, dt = row_timestamp(fields)
             reasons = []
@@ -270,6 +281,8 @@ def review_rows(
                 reasons.append("gtin_mismatch")
             if size_conflict:
                 reasons.append("explicit_size_conflict")
+            if size_incomplete:
+                reasons.append("explicit_size_field_unverified")
             stock_values = [
                 fields.get(f, "").strip().casefold()
                 for f in ("in_stock", "stock_status", "availability")
@@ -289,18 +302,49 @@ def review_rows(
                 v in positives | negatives for v in stock_values
             )
             stock_conflict = bool(set(stock_values) & positives and set(stock_values) & negatives)
-            if fields.get("stock_quantity") == "0" and set(stock_values) & positives:
-                stock_conflict = True
+            quantity = fields.get("stock_quantity", "").strip()
+            if quantity:
+                if not valid_amount(quantity, allow_zero=True):
+                    stock_conflict = True
+                else:
+                    zero = Decimal(quantity.replace(",", ".")) == 0
+                    stock_conflict = stock_conflict or bool(
+                        (zero and set(stock_values) & positives)
+                        or (not zero and set(stock_values) & negatives)
+                    )
             if not stock_known or stock_conflict:
                 reasons.append("explicit_unambiguous_stock_missing")
-            shipping_cost = fields.get("delivery_cost") or fields.get("shipping_cost") or ""
-            shipping_country = (
-                fields.get("delivery_country") or fields.get("shipping_country") or ""
+            stock_available = bool(
+                stock_known and not stock_conflict and set(stock_values) <= positives
             )
-            if not valid_amount(
-                shipping_cost.strip(), allow_zero=True
-            ) or shipping_country.strip().casefold() not in {"de", "germany", "deutschland"}:
-                reasons.append("explicit_de_shipping_cost_or_destination_missing")
+            sale_value = fields.get("is_for_sale", "").strip().casefold()
+            purchase_allowed = sale_value in {"1", "true", "yes"}
+            if not purchase_allowed:
+                reasons.append("explicit_purchase_permission_missing_or_false")
+            if not stock_available:
+                reasons.append("source_not_confirmed_orderable")
+            shipping_costs = [
+                fields[f].strip()
+                for f in ("delivery_cost", "shipping_cost")
+                if fields.get(f, "").strip()
+            ]
+            countries = [
+                fields[f].strip().casefold()
+                for f in ("delivery_country", "shipping_country")
+                if fields.get(f, "").strip()
+            ]
+            cost_valid = bool(shipping_costs) and all(
+                valid_amount(c, allow_zero=True) for c in shipping_costs
+            )
+            costs_agree = (
+                cost_valid and len({Decimal(c.replace(",", ".")) for c in shipping_costs}) == 1
+            )
+            if (
+                not costs_agree
+                or not countries
+                or any(c not in {"de", "germany", "deutschland"} for c in countries)
+            ):
+                reasons.append("explicit_unambiguous_de_shipping_cost_or_destination_missing")
             if (
                 not valid_amount(
                     fields.get("search_price") or fields.get("price") or "", allow_zero=False
@@ -335,9 +379,8 @@ def review_rows(
                     ).hexdigest(),
                     "original_product_timestamp": original,
                     "original_product_timestamp_utc": dt.isoformat() if dt else None,
-                    "stock_orderable": bool(
-                        stock_known and not stock_conflict and set(stock_values) <= positives
-                    ),
+                    "stock_available": stock_available,
+                    "source_purchase_eligible": stock_available and purchase_allowed,
                     "tracking_status": "OFFICIAL_FEED_LINK_PRESENT_UNCLICKED"
                     if fields.get("aw_deep_link")
                     else "HOLD",

@@ -42,6 +42,7 @@ def source_row(**changes):
         "search_price": "59.99",
         "currency": "EUR",
         "in_stock": "1",
+        "is_for_sale": "1",
         "delivery_cost": "4.95",
         "delivery_country": "DE",
         "last_updated": "2026-10-31T10:00:00Z",
@@ -71,6 +72,16 @@ def test_exact_fresh_source_still_never_activates_or_approves_assets():
         {"search_price": "NaN"},
         {"delivery_cost": "-1"},
         {"stock_quantity": "0"},
+        {"stock_quantity": "0.0"},
+        {"stock_quantity": "00"},
+        {"stock_quantity": "-1"},
+        {"is_for_sale": "0"},
+        {"is_for_sale": ""},
+        {"shipping_cost": "9.95"},
+        {"shipping_country": "AT"},
+        {"size": "200"},
+        {"product_size": "200"},
+        {"last_update": "2026-10-25T10:00:00Z"},
         {"aw_deep_link": "https://www.awin1.com/pclick.php?p=12345&a=999&m=11672"},
     ],
 )
@@ -198,3 +209,23 @@ def test_new_workflow_mode_cannot_run_top_or_inventory_and_uploads_ciphertext_on
     assert ".github/dufynd-awin-evidence-recipient.pub" not in block
     assert "inputs.inventory_task == 'top_parfuemerie_review'" in text
     assert "inputs.inventory_task == 'perfumetrader_inventory'" in text
+
+
+def test_stock_availability_never_substitutes_for_explicit_purchase_permission():
+    for value in ("", "0", "false", "unknown"):
+        profile = result(source_row(is_for_sale=value))
+        assert profile["status"] == "EXACT_BUT_INCOMPLETE"
+        row = profile["candidates"][0]
+        assert row["stock_available"] is True
+        assert row["source_purchase_eligible"] is False
+        assert "explicit_purchase_permission_missing_or_false" in row["reasons"]
+    available = result(source_row())["candidates"][0]
+    assert available["source_purchase_eligible"] is True
+    assert result(source_row(in_stock="0"))["candidates"][0]["source_purchase_eligible"] is False
+
+
+def test_equivalent_shipping_aliases_do_not_create_false_conflicts():
+    assert (
+        result(source_row(shipping_cost="4.950", shipping_country="Germany"))["status"]
+        == "EXACT_AND_FRESH"
+    )
