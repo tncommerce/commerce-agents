@@ -1,3 +1,5 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
 import { verifyProductPresentation } from "./product-presentation-qa.mjs";
 import { verifyMobileDiscovery } from "./mobile-discovery-qa.mjs";
 import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
@@ -1776,7 +1778,7 @@ try {
                 variant_label: "QA Recovery",
                 clickout_path: "/api/clickout/qa-timeout-recovery-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA recovery fixture",
@@ -1916,7 +1918,7 @@ try {
             currency: "EUR",
             clickout_path: "/api/clickout/qa-session-timeout-offer",
             affiliate_link: false,
-            last_updated_at: "2026-09-30T12:00:00Z",
+            last_updated_at: new Date().toISOString(),
           }],
         }),
       }),
@@ -2023,7 +2025,7 @@ try {
                 variant_label: "QA",
                 clickout_path: "/api/clickout/qa-attribution-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2187,7 +2189,7 @@ try {
                 variant_label: "QA Impression",
                 clickout_path: "/api/clickout/qa-offer-impression-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2300,7 +2302,7 @@ try {
                 variant_label: "QA Navigation",
                 clickout_path: "/api/clickout/qa-attribution-nav-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2451,7 +2453,7 @@ try {
                 variant_label: "QA Session",
                 clickout_path: "/api/clickout/qa-session-correlation-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
