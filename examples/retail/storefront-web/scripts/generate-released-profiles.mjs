@@ -43,6 +43,7 @@ const profiles = releaseState().filter(r => r.state.eligible).map(({ p, f, state
   }
   return {
     ...result,
+    notes: groups,
     editorial_description_de: review.editorial_description_de,
     target_groups: groupsFromStage,
   };
