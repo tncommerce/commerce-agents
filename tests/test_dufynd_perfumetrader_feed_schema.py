@@ -209,7 +209,7 @@ def test_bad_schema_exports_only_encrypted_blocker_and_cleans_temp(tmp_path, mon
     monkeypatch.setattr(review, "encrypt_report", encryption)
     monkeypatch.setattr("sys.argv", ["review", "--recipient", str(public), "--output", str(output)])
     assert review.main() == 0
-    assert len(captured["profiles"]) == 37
+    assert len(captured["profiles"]) == 57
     assert {p["status"] for p in captured["profiles"]} == {"BLOCKED"}
     assert captured["feed_validation"]["status"] == "BLOCKED_UNVERIFIED_SCHEMA"
     assert output.read_bytes() == b"opaque-synthetic-ciphertext"
