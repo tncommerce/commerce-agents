@@ -121,6 +121,7 @@ jobs:
       - name: Review exact mapped public photo gaps (no approval)
         run: |
           python scripts/prepare_dufynd_catalog_photo_wave.py \
+            --gaps "${RUNNER_TEMP}/current-public-photo-gap.json" \
             --extracted-candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
             --output "${RUNNER_TEMP}/public-photo-exact-sku-review.json"
@@ -142,6 +143,7 @@ jobs:
       - name: Gate mapped public packshots against current feed
         run: |
           python scripts/prepare_dufynd_catalog_photo_wave.py \
+            --gaps "${RUNNER_TEMP}/current-public-photo-gap.json" \
             --extracted-candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
             --output "${RUNNER_TEMP}/public-photo-strict-variant-review.json"
