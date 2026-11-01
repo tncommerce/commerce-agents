@@ -133,7 +133,43 @@ export async function verifyCompactFragranceSearch(browser, baseUrl, outputDir) 
         await social.waitFor();
       }
       if(width===390) {
-        const negatives=[...products.flatMap(p=>[p.query.replace(/\d+ ml/,'50 ml'),p.query.replace('EDP','EDT'),`${p.query} Intense`,`${p.query} Elixir`,`${p.query} Le Parfum`,`${p.query} Refill`,p.query.replace(' EDP','Intense EDP'),p.query.replaceAll(' ','')]),'BlackOpiumEDP50ml','UnknownFragranceXYZ','BurberryGoddess','PradaParadoxe','GoodGirl','CocoMademoiselle','MonGuerlain','Widian London'];
+        // The 2026-10-31 owner-authorized wave makes five old negative
+        // searches real public products. Do not hide these just to keep an old
+        // fixture green. Approved exact-variant pages are never merchant offers.
+        const released=JSON.parse(await readFile(
+          new URL('../lib/generated/released-profiles.json',import.meta.url),'utf8',
+        )).profiles;
+        const approvals=JSON.parse(await readFile(
+          new URL('../../data/dufynd_release_authorizations.json',import.meta.url),'utf8',
+        )).approvals;
+        const approved=new Set(approvals.filter(row=>
+          row.publication_approved===true&&row.indexing_approved===true
+        ).map(row=>row.product_id));
+        const nowReleased=[
+          {id:'SC-CAROLINA-HERRERA-GOOD-GIRL-EDP-80',query:'GoodGirl',name:'Good Girl',route:'/duft/carolina-herrera-good-girl-edp-80'},
+          {id:'SC-CHANEL-COCO-MADEMOISELLE-EDP-100',query:'CocoMademoiselle',name:'COCO MADEMOISELLE',route:'/duft/chanel-coco-mademoiselle-edp-100'},
+          {id:'SC-GUERLAIN-MON-GUERLAIN-EDP-100',query:'MonGuerlain',name:'Mon Guerlain',route:'/duft/guerlain-mon-guerlain-edp-100'},
+          {id:'SC-PRADA-PARADOXE-EDP-90',query:'Prada Paradoxe',name:'Paradoxe',route:'/duft/prada-paradoxe-edp-90'},
+          {id:'SC-BURBERRY-GODDESS-EDP-100',query:'Burberry Goddess',name:'Goddess',route:'/duft/burberry-goddess-edp-100'},
+        ];
+        for(const item of nowReleased){
+          const record=released.find(row=>row.product_id===item.id);
+          assert.ok(record&&record.indexing_approved===true&&approved.has(item.id),
+            `missing signed release for ${item.id}`);
+          assert.equal(record.seo.public_path,item.route);
+          await page.goto(`${baseUrl}/duft?q=${encodeURIComponent(item.query)}`);
+          await page.waitForFunction(q=>document.querySelector('input[type="search"]')?.value===q,item.query);
+          const card=cards.filter({has:page.getByRole('heading',{name:item.name,exact:true})});
+          await card.waitFor({state:'visible',timeout:15_000});
+          assert.equal(await card.count(),1,`exact result ${item.query}`);
+          assert.equal(new URL(await card.locator('a.group').getAttribute('href'),baseUrl).pathname,item.route);
+          assert.equal(await card.getAttribute('data-original-photo'),null,
+            'unapproved source photos stay absent');
+          assert.equal(await page.locator('a[href*="/api/clickout/"]').count(),0);
+          observations.push({width,route:'/duft',query:item.query,product_id:item.id,
+            positive_release:true,merchant_clickouts:0});
+        }
+        const negatives=[...products.flatMap(p=>[p.query.replace(/\d+ ml/,'50 ml'),p.query.replace('EDP','EDT'),`${p.query} Intense`,`${p.query} Elixir`,`${p.query} Le Parfum`,`${p.query} Refill`,p.query.replace(' EDP','Intense EDP'),p.query.replaceAll(' ','')]),'BlackOpiumEDP50ml','UnknownFragranceXYZ','Widian London'];
         for(const query of negatives) {
           await page.goto(`${baseUrl}/duft?q=${encodeURIComponent(query)}`);
           await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
