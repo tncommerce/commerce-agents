@@ -1,5 +1,7 @@
 """57er-Katalogpfade dürfen die bisherigen mobilen und SEO-Varianten-Gates nicht aufweichen."""
 
+import shutil
+import subprocess
 from pathlib import Path
 
 ROOT = Path("examples/retail/storefront-web/scripts")
@@ -36,3 +38,21 @@ def test_home_catalog_api_outage_keeps_all_authorized_57_visible() -> None:
     assert "57-product homepage must not depend" in content
     assert "status: 503" in content
     assert "api/clickout/**" in content
+
+
+def test_all_three_browser_qa_scripts_parse_with_node() -> None:
+    node = shutil.which("node")
+    assert node is not None, "Node is required on the standard GitHub CI runner"
+    for filename in (
+        "mobile-discovery-qa.mjs",
+        "conversion-search-qa.mjs",
+        "home-catalog-hydration-qa.mjs",
+    ):
+        result = subprocess.run(
+            [node, "--check", str(ROOT / filename)],
+            capture_output=True,
+            text=True,
+            timeout=15,
+            check=False,
+        )
+        assert result.returncode == 0, filename + ": " + result.stdout + result.stderr
