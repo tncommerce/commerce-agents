@@ -43,7 +43,7 @@ def test_no_merchant_offer_or_photo_rights_activate_from_feed_inventory() -> Non
     assert data["safety"]["no_image_approval_from_config_alone"] is True
     assert data["safety"]["direct_merchant_data_validation_required"] is True
     assert data["source_availability"]["product_absence_proven"] is False
-    assert "Angebote" in data["note"]
+    assert "händlerangebote" in data["note"].lower()
     assert data["field_map"]["affiliate_url"] == "aw_deep_link"
     assert not any(
         key in data["source_availability"]
