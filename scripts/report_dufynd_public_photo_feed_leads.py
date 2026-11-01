@@ -294,7 +294,7 @@ def main() -> int:
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--feed", type=Path, required=True)
     p.add_argument("--feed-metadata", type=Path, required=True)
-    p.add_argument("--gap", type=Path, default=Path("docs/dufynd-catalog-photo-gap-20261011.json"))
+    p.add_argument("--gap", type=Path, required=True)
     p.add_argument(
         "--mappings", type=Path, default=Path("examples/retail/data/merchant_product_mappings.json")
     )
