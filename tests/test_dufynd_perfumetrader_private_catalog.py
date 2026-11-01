@@ -154,9 +154,18 @@ def test_secret_bearing_or_external_urls_and_nonallowlisted_columns_never_export
 def test_feed_and_public_catalog_are_scope_bound():
     with pytest.raises(ValueError, match="feed_identity"):
         review.review_rows([PRODUCT], MAPPING, [], META | {"feed_id": "94153"}, SECRET, NOW)
-    assert len(review.public_profiles(json.loads(review.CATALOG.read_text()))) == 37
+    sources = (
+        json.loads(review.CATALOG.read_text()),
+        json.loads(review.RELEASED.read_text()),
+        json.loads(review.AUTHORIZATIONS.read_text()),
+        json.loads(review.PRIVATE_WAVE2.read_text()),
+    )
+    profiles = review.public_profiles(*sources)
+    assert len(profiles) == 57
+    assert len({p["product_id"] for p in profiles}) == 57
+    assert profiles[-1]["product_id"] == sources[1]["profiles"][-1]["product_id"]
     with pytest.raises(ValueError, match="public_catalog_scope_changed"):
-        review.public_profiles({"products": []})
+        review.public_profiles({"products": []}, *sources[1:])
 
 
 def test_only_recipient_can_decrypt_evidence_and_cipher_is_authenticated():

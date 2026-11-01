@@ -2,7 +2,7 @@
 
 Only the existing publisher secret and official Awin feed-list URL are used.
 Raw feed bytes live in a temporary directory. The only persisted output is a
-recipient-encrypted, allowlisted report for the 37 public fragrance profiles.
+recipient-encrypted, allowlisted report for all 57 authorized public fragrance profiles.
 """
 
 from __future__ import annotations
@@ -41,6 +41,9 @@ from retail.api.merchant_feed_reader import read_merchant_feed_rows  # noqa: E40
 ADVERTISER, FEED, PUBLISHER = "11672", "29975", "3099222"
 AAD = b"DUFYND/awin/11672/29975/public-catalog-private-review/v1"
 CATALOG = ROOT / "examples/retail/storefront-web/lib/generated/public-fragrances.json"
+RELEASED = ROOT / "examples/retail/storefront-web/lib/generated/released-profiles.json"
+AUTHORIZATIONS = ROOT / "examples/retail/data/dufynd_release_authorizations.json"
+PRIVATE_WAVE2 = ROOT / "examples/retail/data/dufynd_facts_wave_02_review.json"
 MAPPINGS = ROOT / "examples/retail/data/merchant_product_mappings.json"
 ALLOWED_FIELDS = (
     "aw_product_id",
@@ -154,18 +157,104 @@ def canonical_gtin(value: object) -> str | None:
     return text.zfill(14) if (10 - total % 10) % 10 == int(text[-1]) else None
 
 
-def public_profiles(catalog: dict) -> list[dict]:
-    products = [
+def public_profiles(
+    catalog: dict,
+    released: dict,
+    authorizations: dict,
+    private_wave2: dict,
+) -> list[dict]:
+    """Exactly 37 source-valid originals + 20 owner-released facts, never wave 2.
+
+    This is a private encrypted merchant review, not an offer or photo approval.
+    No historical 37-only scope may silently omit already-public products.
+    """
+    collections = (
+        catalog.get("products"),
+        released.get("profiles"),
+        authorizations.get("approvals"),
+        private_wave2.get("profiles"),
+    )
+    if not all(isinstance(rows, list) for rows in collections):
+        raise ValueError("public_catalog_scope_malformed")
+    catalog_rows, released_rows, approval_rows, held_rows = collections
+    original = [
         p
-        for p in catalog["products"]
-        if p.get("validation", {}).get("catalog_ready")
+        for p in catalog_rows
+        if p.get("validation", {}).get("catalog_ready") is True
         and not any(str(x).strip() for x in p.get("validation", {}).get("blockers", []))
     ]
-    if len(products) != 37 or len({p["product_id"] for p in products}) != 37:
+    if (
+        len(original) != 37
+        or len(released_rows) != 20
+        or len(approval_rows) != 20
+        or len(held_rows) != 21
+        or private_wave2.get("status") != "REVIEW_ONLY_NOT_PUBLISHED"
+        or private_wave2.get("public_release_authorized") is not False
+    ):
         raise ValueError("public_catalog_scope_changed")
+
+    def indexed(rows: list[dict], label: str) -> dict[str, dict]:
+        if any(not isinstance(p, dict) for p in rows):
+            raise ValueError(f"invalid_{label}_scope")
+        keys = [p.get("product_id") for p in rows]
+        if any(
+            not isinstance(pid, str) or not re.fullmatch(r"SC-[A-Z0-9-]+", pid) for pid in keys
+        ) or len(keys) != len(set(keys)):
+            raise ValueError(f"invalid_{label}_scope")
+        return dict(zip(keys, rows, strict=True))
+
+    originals = indexed(original, "original")
+    published = indexed(released_rows, "released")
+    approvals = indexed(approval_rows, "approval")
+    held = indexed(held_rows, "private")
+    if (
+        set(published) != set(approvals)
+        or set(originals) & set(published)
+        or (set(originals) | set(published)) & set(held)
+    ):
+        raise ValueError("public_catalog_scope_overlap_or_approval_mismatch")
+    for product_id, row in published.items():
+        approval = approvals[product_id]
+        slug = row.get("slug")
+        if (
+            not isinstance(slug, str)
+            or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug)
+            or row.get("indexing_approved") is not True
+            or (row.get("seo") or {}).get("public_path") != f"/duft/{slug}"
+            or any(
+                approval.get(flag) is not True
+                for flag in (
+                    "variant_approved",
+                    "illustration_approved",
+                    "publication_approved",
+                    "indexing_approved",
+                )
+            )
+            or not str(approval.get("approved_by") or "").strip()
+            or not str(approval.get("approval_reference") or "").strip()
+        ):
+            raise ValueError(f"public_release_unverified:{product_id}")
+    if any(
+        row.get("publication_authorized") is not False or row.get("indexing_approved") is not False
+        for row in held.values()
+    ):
+        raise ValueError("private_wave_two_release_gate_changed")
+    public = [*original, *released_rows]
+    if len(public) != 57 or len(set(originals) | set(published)) != 57:
+        raise ValueError("public_catalog_scope_changed")
+    for row in public:
+        if (
+            not all(
+                isinstance(row.get(field), str) and row[field].strip()
+                for field in ("product_id", "brand", "name", "concentration")
+            )
+            or type(row.get("volume_ml")) is not int
+            or row["volume_ml"] <= 0
+        ):
+            raise ValueError("public_catalog_identity_invalid")
     return [
-        {k: p[k] for k in ("product_id", "brand", "name", "concentration", "volume_ml")}
-        for p in products
+        {key: item[key] for key in ("product_id", "brand", "name", "concentration", "volume_ml")}
+        for item in public
     ]
 
 
@@ -582,7 +671,12 @@ def main() -> int:
         if not secret:
             raise ValueError("awin_secret_not_configured")
         recipient = bytes.fromhex(args.recipient.read_text().strip())
-        profiles = public_profiles(json.loads(CATALOG.read_text()))
+        profiles = public_profiles(
+            json.loads(CATALOG.read_text()),
+            json.loads(RELEASED.read_text()),
+            json.loads(AUTHORIZATIONS.read_text()),
+            json.loads(PRIVATE_WAVE2.read_text()),
+        )
         mappings = json.loads(MAPPINGS.read_text())
         with tempfile.TemporaryDirectory(
             prefix="dufynd-pt-", dir=os.environ.get("RUNNER_TEMP")
