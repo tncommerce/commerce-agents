@@ -12,6 +12,10 @@
    palette is separate from both. Cards are framed as ticket stubs. */
 
 :root {
+  /* Deterministic local/system fallbacks; no Google Fonts build-time network. */
+  --font-display: "Big Shoulders", "Arial Narrow", "Liberation Sans Narrow", Impact, sans-serif;
+  --font-body: "Archivo", Arial, Helvetica, sans-serif;
+  --font-mono: "IBM Plex Mono", "Liberation Mono", "Courier New", monospace;
   --ground: #0f0e15; /* the house: page */
   --surface: #0f0e15; /* text on ink */
   --card: #1a1826; /* component cards, panel */
