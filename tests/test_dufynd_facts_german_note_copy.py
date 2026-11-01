@@ -53,8 +53,7 @@ def test_released_20_only_and_no_second_wave_activation() -> None:
         assert row["seo"] == review["seo"]
         assert row["indexing_approved"] is True
         assert not any(
-            key in row
-            for key in ("price", "image_url", "affiliate_url", "merchant_id", "in_stock")
+            key in row for key in ("price", "image_url", "affiliate_url", "merchant_id", "in_stock")
         )
 
 
