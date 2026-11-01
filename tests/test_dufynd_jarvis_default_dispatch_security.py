@@ -9,8 +9,6 @@ import sys
 import textwrap
 from pathlib import Path
 
-import pytest
-
 WORKFLOW = Path(".github/workflows/dufynd-jarvis-dispatch.yml")
 
 
