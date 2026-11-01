@@ -25,17 +25,15 @@ def test_growth_qa_preserves_public_authorization_and_wave_two_hold() -> None:
     assert "assert.equal(result.counts.existing_public,37)" not in content
     assert "[13,38,63,64]" not in content
 
-    approvals = json.loads((DATA / "dufynd_release_authorizations.json").read_text(
-        encoding="utf-8"
-    ))["approvals"]
+    approvals = json.loads(
+        (DATA / "dufynd_release_authorizations.json").read_text(encoding="utf-8")
+    )["approvals"]
     released = [
         x["product_id"]
         for x in approvals
         if x["publication_approved"] is True and x["indexing_approved"] is True
     ]
-    held = json.loads(
-        (DATA / "dufynd_facts_wave_02_review.json").read_text(encoding="utf-8")
-    )
+    held = json.loads((DATA / "dufynd_facts_wave_02_review.json").read_text(encoding="utf-8"))
     assert len(released) == 20
     assert held["public_release_authorized"] is False
     assert not set(released).intersection(p["product_id"] for p in held["profiles"])
