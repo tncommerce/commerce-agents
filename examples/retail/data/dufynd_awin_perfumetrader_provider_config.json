@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "status": "awin_product_feed_unavailable_direct_merchant_data_required",
+  "version": 3,
+  "status": "feed_list_verified_product_csv_schema_unverified_hold",
   "provider_name": "awin-perfumetrader-de",
   "merchant_scope": {
     "merchant": "perfumetrader",
@@ -43,6 +43,18 @@
       "url": "https://help.awin.com/developers/docs/hosting-feeds",
       "checked_at": "2026-09-22",
       "finding": "Awin documents generic CSV fields and semantics including EAN/GTIN, in_stock and last_updated."
+    },
+    {
+      "source": "Original Awin Product Feed List via existing GitHub Action",
+      "url": "https://github.com/tncommerce/commerce-agents/actions/runs/41186222986",
+      "checked_at": "2026-10-31",
+      "finding": "Inventory found 3 joined/active feed entries for Advertiser 11672. Germany feed 29975; no product CSV downloaded, no image or merchant offer activated."
+    },
+    {
+      "source": "First encrypted Perfumetrader catalog attempt and corrected parser",
+      "url": "https://github.com/tncommerce/commerce-agents/actions/runs/41189749680",
+      "checked_at": "2026-10-31",
+      "finding": "First 37x NOT_FOUND lacked verified HTTP 200, CSV schema and at least one valid product record; PR #868 rejects such cases as BLOCKED_UNVERIFIED_SCHEMA. No successful rerun or genuine absence proof claimed."
     }
   ],
   "safety": {
@@ -54,15 +66,52 @@
     "no_awin_create_a_feed_retry_without_status_change": true,
     "direct_merchant_data_validation_required": true
   },
-  "note": "Awin currently shows Perfumetrader DE with Produktdaten = Nein, so Create-a-Feed is not an available source for this advertiser. The documented Awin schema mapping is retained only as a dormant compatibility template. DUFYND must use direct Perfumetrader data/API if provided, or exact product-page evidence plus separately generated Awin deeplinks. No product offer or image may be promoted without the existing exact-variant, tracking, stock and rights gates.",
+  "note": "31.10.2026: Offizielle Awin-Feedliste bestätigt Perfumetrader DE (Advertiser 11672) als aktiv und listet Deutschland-Feed 29975. Das beweist Feed-Listung, nicht den Inhalt. Erster 37er Produktversuch 41189749680 ohne HTTP/CSV-Schemanachweis: vermeintliches NOT_FOUND UNGÜLTIG. Der mit #868 korrigierte Reader darf erst nach separatem erfolgreichem Abruf exakte Produktangebote verifizieren. Bis dahin keine Händlerangebote, Trackinglinks, Bilder, GTIN-/Bestands-/Preisbehauptungen oder Publisher-Fotorechte aus dem bloßen Feedlistenstatus ableiten. September-Hinweis 'Produktdaten=Nein' war ein datierter, durch jüngere Feedlisten-Evidenz überholter Screenshot.",
   "source_availability": {
     "awin_product_data_available": false,
     "create_a_feed_expected": false,
-    "observed_at": "2026-09-22",
-    "evidence": "Awin joined-advertiser view shows Perfumetrader DE with Produktdaten = Nein.",
+    "observed_at": "2026-10-31T09:42:14Z",
+    "evidence": "2026-10-31 Awin feed-list confirms three joined, active Perfumetrader feeds; the first Germany product fetch produced 37 misleading NOT_FOUND decisions without validated HTTP/CSV/row evidence. Treat every such absence as BLOCKED_UNVERIFIED_SCHEMA. The stricter #868 parser is integrated but no subsequently verified product export is recorded.",
     "next_source_paths": [
-      "direct_perfumetrader_feed_or_api",
+      "independent_fresh_germany_csv_schema_validation",
       "exact_product_page_evidence_plus_awin_deeplink"
-    ]
+    ],
+    "feed_list_verified": true,
+    "feed_inventory_source": "GitHub Actions 41186222986 (2026-10-31T08:50:34Z), official Awin Product Feed List",
+    "feeds": [
+      {
+        "feed_id": "29975",
+        "name": "Deutschland",
+        "language": "German",
+        "last_imported": "2026-10-27 16:02:27",
+        "joined": true,
+        "membership_status": "active",
+        "use_for_DE_review": true
+      },
+      {
+        "feed_id": "94153",
+        "name": "Österreich",
+        "language": "German",
+        "last_imported": "2026-10-27 18:03:20",
+        "joined": true,
+        "membership_status": "active",
+        "use_for_DE_review": false
+      },
+      {
+        "feed_id": "94768",
+        "name": "Perfumetrader DE - English",
+        "language": "English",
+        "last_imported": "2026-10-16 01:01:24",
+        "joined": true,
+        "membership_status": "active",
+        "use_for_DE_review": false
+      }
+    ],
+    "verified_product_rows": 0,
+    "verified_product_schema": false,
+    "product_absence_proven": false,
+    "first_attempt_run_id": 41189749680,
+    "first_attempt_state": "BLOCKED_UNVERIFIED_SCHEMA",
+    "corrected_reader_merged_PR": 868
   }
 }
