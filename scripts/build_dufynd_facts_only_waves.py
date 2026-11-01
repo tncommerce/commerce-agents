@@ -12,6 +12,7 @@ import json
 from pathlib import Path
 from urllib.parse import urlsplit
 
+from scripts.dufynd_localize_note_descriptions import labels, localized_description
 from scripts.report_dufynd_discovery_release import evaluate, evidence_digest
 
 DATA = Path("examples/retail/data")
@@ -73,22 +74,13 @@ def editorial_description(fact: dict) -> tuple[str, str]:
     ):
         raise ValueError("notes_invalid")
     if all(groups[key] for key in ("top", "heart", "base")):
-        detail = (
-            f"Kopfnoten: {', '.join(groups['top'])}; "
-            f"Herznoten: {', '.join(groups['heart'])}; "
-            f"Basisnoten: {', '.join(groups['base'])}."
-        )
         kind = "documented_pyramid"
     else:
         observed = [value for key in NOTE_KEYS for value in groups[key]]
         if not observed:
             raise ValueError("notes_missing")
-        detail = (
-            f"Dokumentierte Duftnoten: {', '.join(observed)}. "
-            "Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben."
-        )
         kind = "documented_notes_only"
-    return f"{summary} {detail}", kind
+    return localized_description(fact, labels()), kind
 
 
 def review_record(fact: dict, pilot: dict) -> dict:
