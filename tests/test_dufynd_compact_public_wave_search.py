@@ -42,12 +42,17 @@ def test_exact_release_variants_replace_the_stale_negative_search_list() -> None
     neg = source.split("const negatives=[", 1)[1].split("for(const query of negatives)", 1)[0]
     assert "'Widian London'" in neg
     assert "'UnknownFragranceXYZ'" in neg
-    for query in ("GoodGirl", "CocoMademoiselle", "MonGuerlain", "PradaParadoxe",
-                  "BurberryGoddess"):
+    for query in (
+        "GoodGirl",
+        "CocoMademoiselle",
+        "MonGuerlain",
+        "PradaParadoxe",
+        "BurberryGoddess",
+    ):
         assert f"'{query}'" not in neg
     assert "unapproved source photos stay absent" in source
     assert "merchant_clickouts:0" in source
-    assert "a[href*=\"/api/clickout/\"]" in source
+    assert 'a[href*="/api/clickout/"]' in source
 
 
 def test_compact_search_script_parses_before_a_long_browser_run() -> None:
