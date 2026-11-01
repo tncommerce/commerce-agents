@@ -84,18 +84,38 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       assert.ok((await page.locator("#catalog-results").boundingBox()).height >= 24, "keyboard results focus has a visible heading");
       assert.equal(await page.locator("#catalog-filter-panel").isVisible(), false, "Enter focuses matching results and closes advanced filters");
       const cards = page.locator(".dufynd-catalog-card");
-      assert.equal(await cards.count(), 2);
-      await cards.nth(0).getByRole("button", { name: /für Vergleich auswählen/ }).click();
-      assert.equal(await cards.nth(0).getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "first comparison click survives results-heading blur");
-      await cards.nth(1).getByRole("button", { name: /für Vergleich auswählen/ }).click();
-      assert.equal(await cards.nth(1).getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "second comparison click is retained");
-      await cards.nth(1).evaluate(el => el.scrollIntoView({ block: "start" }));
+      // After the explicitly approved 20-profile wave, YSL Y EDP 100 ml is
+      // a genuine third result. Preserve the Libre/Black Opium comparison
+      // without accidentally selecting a different product by list order.
+      assert.equal(await cards.count(), 3, "two original YSL profiles and approved Y EDP 100 ml");
+      const libreCard = cards.filter({
+        has: page.getByRole("heading", { name: "Libre", exact: true }),
+      });
+      const blackOpiumCard = cards.filter({
+        has: page.getByRole("heading", { name: "Black Opium", exact: true }),
+      });
+      const yCard = cards.filter({
+        has: page.getByRole("heading", { name: "Y", exact: true }),
+      });
+      for (const target of [libreCard, blackOpiumCard, yCard]) {
+        assert.equal(await target.count(), 1, "exactly one card per documented YSL variant");
+      }
+      assert.equal(
+        new URL(await yCard.locator("a.group").getAttribute("href"), baseUrl).pathname,
+        "/duft/ysl-y-edp-100",
+        "third result links only to the approved 100 ml Y profile",
+      );
+      await libreCard.getByRole("button", { name: /für Vergleich auswählen/ }).click();
+      assert.equal(await libreCard.getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "Libre selection survives results-heading blur");
+      await blackOpiumCard.getByRole("button", { name: /für Vergleich auswählen/ }).click();
+      assert.equal(await blackOpiumCard.getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "Black Opium selection is retained");
+      await blackOpiumCard.evaluate(el => el.scrollIntoView({ block: "start" });
       const tray = page.getByRole("complementary", { name: "Duftvergleich vorbereiten" });
       const rect = await tray.boundingBox();
       assert.ok(rect.y >= 0 && rect.y + rect.height <= 900, `comparison controls stay in viewport at ${width}`);
       assert.match(await tray.textContent(), /Eau de Parfum · 90\sml/);
       await page.screenshot({ path: path.join(outputDir, `mobile-discovery-selection-${width}.png`) });
-      const productLink = cards.nth(1).locator("a.group");
+      const productLink = blackOpiumCard.locator("a.group");
       const detailUrl = new URL(await productLink.getAttribute("href"), baseUrl).href;
       const nested = new URLSearchParams(new URL(detailUrl).searchParams.get("catalog"));
       assert.equal(nested.get("q"), "Yves Saint Laurent");
@@ -155,7 +175,7 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       await page.route("**/media/catalog/product/**", route => route.abort());
       await page.goto(`${baseUrl}/duft?q=Yves%20Saint%20Laurent`);
       await page.locator('[data-dufynd-visual-state="unavailable"]').first().waitFor();
-      assert.equal(await page.locator(".dufynd-catalog-card").count(), 2, "failed images retain usable exact product cards");
+      assert.equal(await page.locator(".dufynd-catalog-card").count(), 3, "failed images retain both original variants and the approved new Y profile");
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
       assert.deepEqual(measurementRequests, [], "denied measurement creates no analytics/session requests");
       if (width === 390) {
