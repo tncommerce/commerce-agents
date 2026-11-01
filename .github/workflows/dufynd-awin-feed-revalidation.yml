@@ -34,6 +34,11 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements-dev.txt
 
+      - name: Build current public photo gap from exact release and approved originals
+        run: |
+          python scripts/build_dufynd_current_public_photo_gap.py \
+            --output "${RUNNER_TEMP}/current-public-photo-gap.json"
+
       - name: Require Awin data-feed secret
         shell: bash
         env:
@@ -120,12 +125,12 @@ jobs:
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
             --output "${RUNNER_TEMP}/public-photo-exact-sku-review.json"
       # Source-bounded lead discovery; never mutates approvals or offers.
-      - name: Prepare 33 public missing-photo review leads
+      - name: Prepare current public missing-photo review leads
         run: |
           python scripts/report_dufynd_public_photo_feed_leads.py \
             --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
-            --gap docs/dufynd-catalog-photo-gap-20261011.json \
+            --gap "${RUNNER_TEMP}/current-public-photo-gap.json" \
             --output "${RUNNER_TEMP}/public-photo-gap-review.json"
       - name: Render prioritized public-photo contact sheet (review-only)
         run: |
@@ -151,6 +156,7 @@ jobs:
             ${{ runner.temp }}/release01-feed-image-review-candidates.json
             ${{ runner.temp }}/release01-feed-image-review.html
             ${{ runner.temp }}/public-photo-exact-sku-review.json
+            ${{ runner.temp }}/current-public-photo-gap.json
             ${{ runner.temp }}/public-photo-gap-review.json
             ${{ runner.temp }}/public-photo-gap-review.html
             ${{ runner.temp }}/public-photo-strict-variant-review.json
