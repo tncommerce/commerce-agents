@@ -79,15 +79,14 @@ def test_any_release_or_identity_drift_fails_closed(
         held["status"] = "PUBLISHED"
     elif change == "missing_original":
         catalog["products"] = [
-            p for p in catalog["products"]
-            if p["product_id"] != "SC-RABANNE-1-MILLION-EDT-100"
+            p for p in catalog["products"] if p["product_id"] != "SC-RABANNE-1-MILLION-EDT-100"
         ]
     with pytest.raises(ValueError):
         review.public_profiles(catalog, released, authorizations, held)
 
 
 def test_encrypted_feed_review_safely_holds_all_products_without_schema(
-    sources: tuple[dict, dict, dict, dict]
+    sources: tuple[dict, dict, dict, dict],
 ) -> None:
     profiles = review.public_profiles(*sources)
     metadata = {
