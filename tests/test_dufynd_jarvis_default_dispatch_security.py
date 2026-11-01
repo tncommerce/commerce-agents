@@ -96,11 +96,24 @@ def test_nightshift_supervisor_numeric_inputs_are_bounded_and_shell_safe(tmp_pat
     assert passed.returncode == 0, passed.stderr
     assert calls == [
         [
-            "-m", "scripts.dufynd_jarvis_supervisor",
-            "--max-minutes", "300", "--max-cycles", "20",
-            "--idle-seconds", "300", "--max-idle-cycles", "60",
-            "--max-tasks", "8", "--max-events", "5",
-            "--worker-timeout-seconds", "600", "--max-retries", "1",
+            "-m",
+            "scripts.dufynd_jarvis_supervisor",
+            "--max-minutes",
+            "300",
+            "--max-cycles",
+            "20",
+            "--idle-seconds",
+            "300",
+            "--max-idle-cycles",
+            "60",
+            "--max-tasks",
+            "8",
+            "--max-events",
+            "5",
+            "--worker-timeout-seconds",
+            "600",
+            "--max-retries",
+            "1",
         ]
     ]
     marker = tmp_path / "untrusted-numeric-must-not-execute"
