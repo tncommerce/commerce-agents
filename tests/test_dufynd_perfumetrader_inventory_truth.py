@@ -28,7 +28,10 @@ def test_perfumetrader_live_feed_list_and_unverified_product_schema_are_separate
     assert ids == ["29975", "94153", "94768"]
     de = [entry for entry in availability["feeds"] if entry["use_for_DE_review"]]
     assert len(de) == 1 and de[0]["feed_id"] == "29975"
-    assert all(entry["joined"] and entry["membership_status"] == "active" for entry in availability["feeds"])
+    assert all(
+        entry["joined"] and entry["membership_status"] == "active"
+        for entry in availability["feeds"]
+    )
 
 
 def test_no_merchant_offer_or_photo_rights_activate_from_feed_inventory() -> None:
