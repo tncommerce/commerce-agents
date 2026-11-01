@@ -13,6 +13,8 @@ on:
         default: perfumetrader_inventory
         options:
           - perfumetrader_inventory
+          - top_parfuemerie_review
+          - perfumetrader_private_catalog
 
 permissions: {}
 
@@ -24,5 +26,5 @@ jobs:
       - name: Refuse inventory execution from this registration-only branch
         shell: bash
         run: |
-          echo "::error::Select branch scentai-mvp and inventory_task=perfumetrader_inventory in Run workflow."
+          echo "::error::Select branch scentai-mvp and an explicitly chosen inventory_task; this default-branch workflow is registration-only."
           exit 2
