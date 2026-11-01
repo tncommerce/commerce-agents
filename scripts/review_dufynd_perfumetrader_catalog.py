@@ -197,10 +197,9 @@ def public_profiles(
         if any(not isinstance(p, dict) for p in rows):
             raise ValueError(f"invalid_{label}_scope")
         keys = [p.get("product_id") for p in rows]
-        if (
-            any(not isinstance(pid, str) or not re.fullmatch(r"SC-[A-Z0-9-]+", pid) for pid in keys)
-            or len(keys) != len(set(keys))
-        ):
+        if any(
+            not isinstance(pid, str) or not re.fullmatch(r"SC-[A-Z0-9-]+", pid) for pid in keys
+        ) or len(keys) != len(set(keys)):
             raise ValueError(f"invalid_{label}_scope")
         return dict(zip(keys, rows, strict=True))
 
@@ -236,8 +235,7 @@ def public_profiles(
         ):
             raise ValueError(f"public_release_unverified:{product_id}")
     if any(
-        row.get("publication_authorized") is not False
-        or row.get("indexing_approved") is not False
+        row.get("publication_authorized") is not False or row.get("indexing_approved") is not False
         for row in held.values()
     ):
         raise ValueError("private_wave_two_release_gate_changed")
