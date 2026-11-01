@@ -7,6 +7,31 @@ import { readFileSync } from 'node:fs';
 // Route readiness is verified by the semantic headings and controls below.
 // Network-idle is not a valid readiness gate while analytics, image decoding or
 // async search are active; it can deadlock on an otherwise functional page.
+// A negative variant query must be applied by hydrated React before the empty
+// state is judged. Keep exact-size exclusion strict and report which query
+// failed rather than letting a generic locator timeout conceal a real match.
+async function requireNoVariantResults(page, query) {
+  const input = page.getByRole("searchbox", { name: "Duft, Marke oder Profil", exact: true });
+  await input.waitFor({ state: "visible" });
+  await page.waitForFunction((requested) => {
+    const element = document.querySelector('input[type="search"]');
+    return element?.value === requested &&
+      Object.keys(element).some((key) => key.startsWith("__reactProps$"));
+  }, query, { timeout: 20_000 });
+  try {
+    await page.getByRole("heading", {
+      name: "Keine passenden Düfte gefunden", exact: true,
+    }).waitFor({ state: "visible", timeout: 15_000 });
+  } catch (error) {
+    const observed = await page.locator("article.dufynd-catalog-card h2").allTextContents();
+    throw new Error(
+      `Expected no results for exact unsupported variant "${query}", observed: ${JSON.stringify(observed)}; ${String(error)}`,
+    );
+  }
+  assert.equal(await page.locator("article.dufynd-catalog-card").count(), 0,
+    `unsupported variant ${query} must not produce an offer or alternative size`);
+}
+
 export async function verifyConversionSearch(browser, baseUrl, outputDir) {
   const cases=[];
   for (const width of [320,390,1440]) {
@@ -148,7 +173,7 @@ export async function verifyConversionSearch(browser, baseUrl, outputDir) {
       assert.match(await page.locator('meta[property="og:title"]').getAttribute('content'), /Rabanne 1 Million.*100 ml/);
 
       await page.goto(`${baseUrl}/duft?q=YSL%20Libre%2050ml&qa=1`,{waitUntil:'domcontentloaded'});
-      await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
+      await requireNoVariantResults(page, "YSL Libre 50ml");
       await page.goto(`${baseUrl}/start?qa=1&src=instagram&cmp=qa_conversion&content=qa_search`,{waitUntil:'load'});
       const input=page.getByLabel('Duft oder Marke suchen',{exact:true});
       await input.waitFor({state:'visible'});
@@ -330,7 +355,7 @@ export async function verifyProductNameAliases(browser, baseUrl, outputDir) {
       }
       if(width===390) for(const query of ['One Million EDT 50ml','One Million EDP 100ml','One Million Lucky','One Million Elixir']) {
         await page.goto(`${baseUrl}/duft?q=${encodeURIComponent(query)}`,{waitUntil:'load'});
-        await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
+        await requireNoVariantResults(page, query);
         assert.equal(await page.locator('a[data-dufynd-catalog-rc1-offer]').count(),0);
       }
       if(consent==='denied') assert.deepEqual(events,[],'alias discovery works without optional analytics');
