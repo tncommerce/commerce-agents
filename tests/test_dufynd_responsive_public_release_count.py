@@ -46,11 +46,12 @@ def test_exact_public_57_snapshot_and_held_second_wave() -> None:
     approvals = json.loads(
         (data / "dufynd_release_authorizations.json").read_text(encoding="utf-8")
     )["approvals"]
-    private_wave = json.loads((data / "dufynd_facts_wave_02_review.json").read_text(
-        encoding="utf-8"
-    ))["profiles"]
+    private_wave = json.loads(
+        (data / "dufynd_facts_wave_02_review.json").read_text(encoding="utf-8")
+    )["profiles"]
     qualified = [
-        row for row in src["products"]
+        row
+        for row in src["products"]
         if str(row.get("product_id", "")).startswith("SC-")
         and not any(str(x).strip() for x in row.get("validation", {}).get("blockers", []))
     ]
@@ -58,7 +59,8 @@ def test_exact_public_57_snapshot_and_held_second_wave() -> None:
     assert len(released) == len(approvals) == 20
     assert len(qualified) + len(released) == 57
     authorized = {
-        p["product_id"] for p in approvals
+        p["product_id"]
+        for p in approvals
         if p["publication_approved"] is True and p["indexing_approved"] is True
     }
     assert authorized == {p["product_id"] for p in released}
