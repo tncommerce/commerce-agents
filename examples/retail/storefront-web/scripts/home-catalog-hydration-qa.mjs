@@ -1,64 +1,109 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-// Exercise the successful API path, including the backend's category-before-limit
-// contract. Empty/offline mocks leave the complete static catalog on screen.
+// Homepage catalog counts are derived from the public static facts (37 + 20),
+// not the legacy capped /api/products response. An unavailable API must never
+// hide a previously owner-approved fragrance or invent another product.
 export async function verifyHomeCatalogHydration(browser, baseUrl) {
-  const catalog = JSON.parse(await readFile(new URL("../../data/catalog.json", import.meta.url), "utf8"));
-  const source = JSON.parse(await readFile(new URL("../../data/scentai_products.json", import.meta.url), "utf8"));
-  const blocked = new Set(source.products.filter((row) =>
-    row.validation?.blockers?.some((blocker) => String(blocker || "").trim())
+  const read = async (name) => JSON.parse(
+    await readFile(new URL(name, import.meta.url), "utf8"),
+  );
+  const catalog = await read("../../data/catalog.json");
+  const sources = await read("../../data/scentai_products.json");
+  const release = await read("../lib/generated/released-profiles.json");
+  const approvals = await read("../../data/dufynd_release_authorizations.json");
+  const sourceById = new Map(sources.products.map((row) => [row.product_id, row]));
+  const baseFragrances = catalog.products.filter((row) =>
+    String(row.product_id || "").startsWith("SC-") &&
+    row.category === "fragrance" &&
+    row.in_stock !== false &&
+    !sourceById.get(row.product_id)?.validation?.blockers?.some((x) => String(x || "").trim())
+  );
+  const released = release.profiles;
+  const eligible = new Set(approvals.approvals.filter((row) =>
+    row.publication_approved === true && row.indexing_approved === true
   ).map((row) => row.product_id));
-  const visible = catalog.products.filter((row) => !blocked.has(row.product_id));
-  const fragrances = visible.filter((row) => row.category === "fragrance");
-  assert.ok(visible.length > 100, "fixture must exercise the unfiltered API cap");
-  assert.ok(visible.slice(100).some((row) => row.category === "fragrance"), "fragrances must occur beyond the unfiltered cap");
+  assert.equal(baseFragrances.length, 37, "existing verified public cohort");
+  assert.equal(released.length, 20, "exact owner-authorized fact-only wave");
+  assert.equal(eligible.size, released.length, "release approvals are exact");
+  assert.deepEqual(new Set(released.map((row) => row.product_id)), eligible);
+  assert.equal(new Set([
+    ...baseFragrances.map((row) => row.product_id), ...eligible,
+  ]).size, 57, "no duplicate public product or unapproved second wave");
+
+  function audienceOf(values) {
+    const groups = new Set(values.map((x) => String(x).toLowerCase().trim()).filter(Boolean));
+    if (groups.has("unisex") || (groups.has("men") && groups.has("women"))) return "unisex";
+    if (groups.has("women")) return "women";
+    if (groups.has("men")) return "men";
+    return null;
+  }
+  const expected = { women: 0, men: 0, unisex: 0 };
+  for (const row of baseFragrances) {
+    const original = sourceById.get(row.product_id);
+    const groups = original?.classification?.scentai_target_groups?.length
+      ? original.classification.scentai_target_groups
+      : String(row.attributes?.target_group || "").split(",").filter(Boolean);
+    const audience = audienceOf(groups);
+    assert.ok(audience, `missing source audience for ${row.product_id}`);
+    expected[audience] += 1;
+  }
+  for (const row of released) {
+    assert.equal(row.indexing_approved, true);
+    const audience = audienceOf(row.target_groups || []);
+    assert.ok(audience, `missing released audience for ${row.product_id}`);
+    expected[audience] += 1;
+  }
+  assert.equal(Object.values(expected).reduce((a, b) => a + b, 0), 57);
+
   let cases = 0;
   for (const width of [390, 1440]) {
-    const context = await browser.newContext({ viewport: { width, height: 900 }, reducedMotion: "reduce" });
+    const context = await browser.newContext({
+      viewport: { width, height: 900 }, reducedMotion: "reduce",
+    });
     const page = await context.newPage();
-    const queries = [];
+    const requests = [];
     try {
-      // Selection is under test; external image-host availability is covered elsewhere.
-      for (const row of fragrances) {
-        if (String(row.image_url || "").startsWith("https://")) {
-          await page.route(row.image_url, (route) => route.fulfill({ contentType: "image/png", body: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jv1sAAAAASUVORK5CYII=", "base64") }));
-        }
-      }
-      await page.route("**/api/session", (route) => route.fulfill({ json: { session_id: "qa-catalog-hydration", name: "QA Guest" } }));
-      await page.route("**/api/merchant-partners", (route) => route.fulfill({ json: { partners: [] } }));
-      await page.route("**/api/analytics/events", (route) => route.fulfill({ json: { ok: true } }));
+      // Only synthetic API responses; never load merchant links or analytics.
+      // /api/products intentionally fails because the homepage no longer uses it.
       await page.route("**/api/products?**", (route) => {
-        const query = new URL(route.request().url()).searchParams;
-        queries.push(Object.fromEntries(query));
-        const selected = query.get("category")
-          ? visible.filter((row) => row.category === query.get("category")) : visible;
-        return route.fulfill({ json: { products: selected.slice(0, Math.max(1, Math.min(Number(query.get("limit") || 24), 100))) } });
+        requests.push(route.request().url());
+        return route.fulfill({ status: 503, json: { error: "Synthetic API outage" } });
       });
-      const response = page.waitForResponse((response) => new URL(response.url()).pathname === "/api/products");
-      await page.goto(baseUrl + "/");
-      await (await response).finished();
-      assert.ok(queries.length > 0, "successful live catalog must be requested");
-      assert.ok(queries.every((query) => query.category === "fragrance" && query.limit === "100"), "live catalog must filter fragrances before applying the API cap");
-      // Wait for session settlement and the client-rendered homepage, then check
-      // every audience against the same visible catalog as the production API.
-      await page.getByRole("link", { name: `Alle ${fragrances.length} Düfte im Katalog entdecken →`, exact: true }).waitFor();
+      await page.route("**/api/session", (route) =>
+        route.fulfill({ json: { session_id: "qa-home-57", name: "QA Guest" } }));
+      await page.route("**/api/merchant-partners", (route) =>
+        route.fulfill({ json: { partners: [] } }));
+      await page.route("**/api/analytics/events", (route) =>
+        route.fulfill({ json: { ok: true } }));
+      await page.route("**/api/clickout/**", () => {
+        throw new Error("Homepage QA must never click an affiliate merchant");
+      });
+      await page.goto(baseUrl + "/", { waitUntil: "domcontentloaded" });
+      const all = page.getByRole("link", {
+        name: "Alle 57 Düfte im Katalog entdecken →", exact: true,
+      });
+      await all.waitFor({ state: "visible", timeout: 30_000 });
+      assert.equal(new URL(await all.getAttribute("href"), baseUrl).pathname,
+        "/duft", "homepage catalog entry must remain internal");
       for (const audience of ["women", "men", "unisex"]) {
-        const count = fragrances.filter((row) => {
-          const groups = String(row.attributes?.target_group || "").split(",").map((group) => group.trim());
-          const exclusive = groups.includes("unisex") || (groups.includes("men") && groups.includes("women"))
-            ? "unisex" : groups.includes("women") ? "women" : groups.includes("men") ? "men" : null;
-          return exclusive === audience;
-        }).length;
-        const card = page.locator(`a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`);
-        const text = count === 1 ? "1 Duft im aktuellen Katalog" : `${count} Düfte im aktuellen Katalog`;
-        await page.waitForFunction(({ audience, text }) => {
-          const card = document.querySelector(`a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`);
-          return card?.innerText.includes(text);
-        }, { audience, text });
-        // Audience entries are navigation, not unlicensed product-image substitutes.
-        await card.locator("h3").waitFor({ state: "visible" });
+        const card = page.locator(
+          `a[data-dufynd-home-audience-card][href*="zielgruppe=${audience}"]`,
+        );
+        await card.waitFor({ state: "visible" });
+        const count = expected[audience];
+        const label = count === 1
+          ? "1 Duft im aktuellen Katalog"
+          : `${count} Düfte im aktuellen Katalog`;
+        assert.ok((await card.innerText()).includes(label),
+          `homepage audience ${audience}: expected ${label}`);
+        assert.equal(
+          new URL(await card.getAttribute("href"), baseUrl).searchParams.get("zielgruppe"),
+          audience,
+        );
       }
+      assert.deepEqual(requests, [],
+        "57-product homepage must not depend on legacy capped products API");
       cases++;
     } finally {
       await context.close();
