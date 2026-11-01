@@ -119,10 +119,12 @@ jobs:
 
       - name: Validate explicit active-run approval
         if: inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr'
+        env:
+          DUFYND_APPROVAL_TOKEN: ${{ inputs.approval_token }}
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${{ inputs.approval_token }}" != "GO-JARVIS-ACTIVE" ]; then
+          if [ "${DUFYND_APPROVAL_TOKEN:-}" != "GO-JARVIS-ACTIVE" ]; then
             echo "Active Jarvis run refused: explicit GO-JARVIS-ACTIVE token is required."
             exit 20
           fi
@@ -141,10 +143,12 @@ jobs:
 
       - name: Validate explicit Nightshift pilot approval
         if: inputs.mode == 'nightshift-pilot'
+        env:
+          DUFYND_APPROVAL_TOKEN: ${{ inputs.approval_token }}
         shell: bash
         run: |
           set -euo pipefail
-          if [ "${{ inputs.approval_token }}" != "GO-JARVIS-NIGHTSHIFT" ]; then
+          if [ "${DUFYND_APPROVAL_TOKEN:-}" != "GO-JARVIS-NIGHTSHIFT" ]; then
             echo "Nightshift pilot refused: explicit GO-JARVIS-NIGHTSHIFT token is required."
             exit 27
           fi
@@ -173,10 +177,16 @@ jobs:
           DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"
           DUFYND_JARVIS_BUDGET_ID: "jarvis_activation_pilot_001"
           DUFYND_JARVIS_ACTIVE: "1"
-        run: >-
-          python -m scripts.dufynd_jarvis_runtime
-          --process-loop
-          --max-events "${{ inputs.max_events }}"
+          DUFYND_MAX_EVENTS: ${{ inputs.max_events }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "${DUFYND_MAX_EVENTS:-}" =~ ^([1-9]|[12][0-9]|3[0-2])$ ]]; then
+            echo "::error::max_events must be an integer from 1 to 32."
+            exit 22
+          fi
+          python -m scripts.dufynd_jarvis_runtime \
+            --process-loop --max-events "${DUFYND_MAX_EVENTS}"
 
       - name: Run budget-gated Jarvis autonomous cycle
         if: inputs.mode == 'autonomous-cycle'
@@ -269,12 +279,17 @@ jobs:
           DUFYND_JARVIS_ACTIVE: "1"
           DUFYND_JARVIS_AUTONOMOUS: "1"
           DUFYND_JARVIS_TASK_METADATA_PATH: "jarvis-worker-task.json"
-        run: >-
-          python -m scripts.dufynd_jarvis_nightshift run
-          --max-tasks "${{ inputs.nightshift_max_tasks }}"
-          --max-events "2"
-          --worker-timeout-seconds "600"
-          --max-retries "1"
+          DUFYND_NIGHTSHIFT_MAX_TASKS: ${{ inputs.nightshift_max_tasks }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! "${DUFYND_NIGHTSHIFT_MAX_TASKS:-}" =~ ^[1-8]$ ]]; then
+            echo "::error::nightshift_max_tasks must be an integer from 1 to 8."
+            exit 22
+          fi
+          python -m scripts.dufynd_jarvis_nightshift run \
+            --max-tasks "${DUFYND_NIGHTSHIFT_MAX_TASKS}" \
+            --max-events "2" --worker-timeout-seconds "600" --max-retries "1"
 
       - name: Validate isolated Jarvis patch
         if: inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr' || inputs.mode == 'autonomous-cycle' || inputs.mode == 'nightshift-pilot'
