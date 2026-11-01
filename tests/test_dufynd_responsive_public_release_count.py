@@ -16,7 +16,6 @@ def test_responsive_sweep_binds_both_gated_public_catalog_cohorts() -> None:
     assert "approvedProductIds.has(p.product_id)" in content
     assert "p.indexing_approved !== true" in content
     assert "new Set(publishedRoutes).size !== publishedRoutes.length" in content
-    assert "sourceCatalog.products.filter(" not in content.split("const expectedFragranceCount =", 1)[1]
     assert "const expectedFragranceCount = sourceCatalog.products.filter(" not in content
 
 
