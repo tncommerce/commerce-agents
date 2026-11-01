@@ -6,7 +6,6 @@ import copy
 import json
 
 import pytest
-
 from scripts import review_dufynd_perfumetrader_catalog as review
 
 
@@ -42,22 +41,22 @@ def test_57_review_scope_is_exact_37_plus_20_without_wave_two(
 
 
 @pytest.mark.parametrize(
-    ("part", "change"),
+    "change",
     [
-        ("published", "approval_disabled"),
-        ("published", "wrong_size"),
-        ("published", "path_mismatch"),
-        ("published", "duplicate_id"),
-        ("published", "missing_approval"),
-        ("held", "released_id_overlap"),
-        ("held", "unexpected_publication"),
-        ("held", "unexpected_indexing"),
-        ("held", "scope_status_changed"),
-        ("base", "missing_original"),
+        "approval_disabled",
+        "wrong_size",
+        "path_mismatch",
+        "duplicate_id",
+        "missing_approval",
+        "released_id_overlap",
+        "unexpected_publication",
+        "unexpected_indexing",
+        "scope_status_changed",
+        "missing_original",
     ],
 )
 def test_any_release_or_identity_drift_fails_closed(
-    sources: tuple[dict, dict, dict, dict], part: str, change: str
+    sources: tuple[dict, dict, dict, dict], change: str
 ) -> None:
     catalog, released, authorizations, held = copy.deepcopy(sources)
     if change == "approval_disabled":
