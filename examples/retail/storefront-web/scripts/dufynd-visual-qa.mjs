@@ -80,16 +80,67 @@ function slugifyFragrance(value) {
     .replace(/^-+|-+$/g, "");
 }
 
-const expectedFragranceCount = sourceCatalog.products.filter(
+const sourceQualifiedProducts = sourceCatalog.products.filter(
   (product) =>
     String(product?.product_id || "").startsWith("SC-") &&
     !hasValidationBlockers(product),
-).length;
+);
+// The public catalog has two independently gated cohorts: original source
+// products and the owner-released, fact-only profiles. Review wave 2 never
+// appears here; a review-only source packet is not a published catalog row.
+const releasedProfiles = JSON.parse(
+  await readFile(
+    new URL("../lib/generated/released-profiles.json", import.meta.url),
+    "utf-8",
+  ),
+).profiles;
+const releaseApprovals = JSON.parse(
+  await readFile(
+    new URL("../../data/dufynd_release_authorizations.json", import.meta.url),
+    "utf-8",
+  ),
+).approvals;
+if (!Array.isArray(releasedProfiles) || !Array.isArray(releaseApprovals)) {
+  throw new Error("Catalog release/authorization register is malformed");
+}
+const releasedProductIds = new Set(releasedProfiles.map((p) => p.product_id));
+const approvedProductIds = new Set(
+  releaseApprovals
+    .filter((row) => row.publication_approved === true && row.indexing_approved === true)
+    .map((row) => row.product_id),
+);
+if (
+  approvedProductIds.size !== releasedProfiles.length ||
+  releasedProductIds.size !== releasedProfiles.length ||
+  releasedProfiles.some((p) =>
+    !approvedProductIds.has(p.product_id) ||
+    p.indexing_approved !== true ||
+    p.seo?.public_path !== `/duft/${p.slug}` ||
+    !Array.isArray(p.target_groups)
+  )
+) {
+  throw new Error("Owner-release scope drift in visual QA");
+}
+const sourceQualifiedRoutes = sourceQualifiedProducts.map((product) =>
+  "/duft/" +
+  slugifyFragrance(
+    String(product?.brand || "").trim() + " " +
+    String(product?.name || "").trim(),
+  ),
+);
+const publishedRoutes = [
+  ...sourceQualifiedRoutes,
+  ...releasedProfiles.map((row) => row.seo.public_path),
+];
+if (new Set(publishedRoutes).size !== publishedRoutes.length) {
+  throw new Error("Duplicate public fragrance route in visual QA source");
+}
+const expectedFragranceCount = publishedRoutes.length;
 const audienceKeys = ["men", "women", "unisex"];
 
-function exclusiveAudience(product) {
+function audienceForGroups(values) {
   const groups = new Set(
-    (product?.classification?.scentai_target_groups || [])
+    (values || [])
       .map((group) => String(group || "").trim().toLowerCase())
       .filter(Boolean),
   );
@@ -101,26 +152,32 @@ function exclusiveAudience(product) {
   return null;
 }
 
+function exclusiveAudience(product) {
+  return audienceForGroups(product?.classification?.scentai_target_groups);
+}
+
+if (releasedProfiles.some((row) => !audienceForGroups(row.target_groups))) {
+  throw new Error("Missing released-profile audience classification");
+}
+
 const expectedAudienceRoutes = Object.fromEntries(
   audienceKeys.map((audience) => [
     audience,
-    sourceCatalog.products
-      .filter(
-        (product) =>
-          String(product?.product_id || "").startsWith("SC-") &&
-          !hasValidationBlockers(product) &&
-          exclusiveAudience(product) === audience,
-      )
-      .map(
-        (product) =>
+    [
+      ...sourceQualifiedProducts
+        .filter((product) => exclusiveAudience(product) === audience)
+        .map((product) =>
           "/duft/" +
           slugifyFragrance(
             String(product?.brand || "").trim() +
               " " +
               String(product?.name || "").trim(),
           ),
-      )
-      .sort(),
+        ),
+      ...releasedProfiles
+        .filter((row) => audienceForGroups(row.target_groups) === audience)
+        .map((row) => row.seo.public_path),
+    ].sort(),
   ]),
 );
 
