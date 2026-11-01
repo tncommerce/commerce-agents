@@ -46,3 +46,27 @@ def test_no_merchant_offer_or_photo_rights_activate_from_feed_inventory() -> Non
         key in data["source_availability"]
         for key in ("approved_price", "approved_stock", "approved_image", "approved_affiliate_url")
     )
+
+
+def test_inventory_receipts_are_exact_and_contain_no_credentials() -> None:
+    data = config()
+    availability = data["source_availability"]
+    assert "41186222986" in availability["feed_inventory_source"]
+    assert availability["first_attempt_run_id"] == 41189749680
+    assert availability["observed_at"].startswith("2026-10-31")
+    for entry in availability["feeds"]:
+        assert set(entry).issubset(
+            {
+                "feed_id",
+                "name",
+                "language",
+                "last_imported",
+                "joined",
+                "membership_status",
+                "use_for_DE_review",
+            }
+        )
+    serialized = json.dumps(availability, ensure_ascii=False).lower()
+    assert "api_key" not in serialized
+    assert "access_token" not in serialized
+    assert "secret=" not in serialized
