@@ -109,7 +109,7 @@ export async function verifyMobileDiscovery(browser, baseUrl, outputDir) {
       assert.equal(await libreCard.getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "Libre selection survives results-heading blur");
       await blackOpiumCard.getByRole("button", { name: /für Vergleich auswählen/ }).click();
       assert.equal(await blackOpiumCard.getByRole("button", { name: /Vergleich/ }).getAttribute("aria-pressed"), "true", "Black Opium selection is retained");
-      await blackOpiumCard.evaluate(el => el.scrollIntoView({ block: "start" });
+      await blackOpiumCard.evaluate(el => el.scrollIntoView({ block: "start" }));
       const tray = page.getByRole("complementary", { name: "Duftvergleich vorbereiten" });
       const rect = await tray.boundingBox();
       assert.ok(rect.y >= 0 && rect.y + rect.height <= 900, `comparison controls stay in viewport at ${width}`);
