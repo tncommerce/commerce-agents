@@ -229,9 +229,7 @@ def main() -> int:
     gap["generated_at_utc"] = datetime.now(UTC).isoformat(timespec="seconds")
     gap["source_commit"] = os.environ.get("GITHUB_SHA", "")
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(
-        json.dumps(gap, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    args.output.write_text(json.dumps(gap, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(
         f"DUFYND public photo source: {gap['public_fragrances']} pages; "
         f"{gap['approved_original_photo_variants']} verified original variants; "
