@@ -136,6 +136,12 @@ jobs:
           key: ${{ runner.os }}-next-web-${{ hashFiles('examples/package-lock.json') }}-${{ hashFiles('examples/**/*.{js,jsx,ts,tsx,mjs,cjs,css}') }}
           restore-keys: |
             ${{ runner.os }}-next-web-${{ hashFiles('examples/package-lock.json') }}-
+      - name: Parse all DUFYND browser QA scripts before the expensive build
+        run: |
+          set -euo pipefail
+          for file in retail/storefront-web/scripts/*.mjs; do
+            node --check "$file"
+          done
       - name: Install
         run: npm ci
       - name: Build every app
