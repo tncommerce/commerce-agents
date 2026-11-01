@@ -169,7 +169,7 @@ export async function verifyCompactFragranceSearch(browser, baseUrl, outputDir) 
           observations.push({width,route:'/duft',query:item.query,product_id:item.id,
             positive_release:true,merchant_clickouts:0});
         }
-        const negatives=[...products.flatMap(p=>[p.query.replace(/\\d+ ml/,'50 ml'),p.query.replace('EDP','EDT'),`${p.query} Intense`,`${p.query} Elixir`,`${p.query} Le Parfum`,`${p.query} Refill`,p.query.replace(' EDP','Intense EDP'),p.query.replaceAll(' ','')]),'BlackOpiumEDP50ml','UnknownFragranceXYZ','Widian London'];
+        const negatives=[...products.flatMap(p=>[p.query.replace(/\d+ ml/,'50 ml'),p.query.replace('EDP','EDT'),`${p.query} Intense`,`${p.query} Elixir`,`${p.query} Le Parfum`,`${p.query} Refill`,p.query.replace(' EDP','Intense EDP'),p.query.replaceAll(' ','')]),'BlackOpiumEDP50ml','UnknownFragranceXYZ','Widian London'];
         for(const query of negatives) {
           await page.goto(`${baseUrl}/duft?q=${encodeURIComponent(query)}`);
           await page.getByRole('heading',{name:'Keine passenden Düfte gefunden',exact:true}).waitFor();
