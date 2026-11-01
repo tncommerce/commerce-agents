@@ -170,3 +170,17 @@ def test_cli_writes_review_only_evidence_from_current_registry(tmp_path: Path) -
     assert result["approved_original_photo_variants"] == 10
     assert result["source_commit"] in ("",) or len(result["source_commit"]) == 40
     assert result["generated_at_utc"]
+
+
+def test_each_image_reviewer_consumes_exact_same_current_gap() -> None:
+    text = (ROOT / ".github/workflows/dufynd-awin-feed-revalidation.yml").read_text(
+        encoding="utf-8"
+    )
+    path = "${RUNNER_TEMP}/current-public-photo-gap.json"
+    assert text.count("python scripts/prepare_dufynd_catalog_photo_wave.py") == 2
+    assert text.count(f'--gaps "{path}"') == 2
+    assert text.count(f'--gap "{path}"') == 1
+    assert "dufynd-catalog-photo-gap-20261011.json" not in text
+    assert text.index("Build current public photo gap") < text.index(
+        "Download current top Parfümerie feed"
+    )
