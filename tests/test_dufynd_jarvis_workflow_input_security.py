@@ -55,9 +55,15 @@ def test_workflow_dispatch_values_never_interpolate_into_shell_source() -> None:
     for job in workflow["jobs"].values():
         for step in job.get("steps", []):
             assert "${{ inputs." not in step.get("run", ""), step.get("name")
-    for name in ("Validate explicit active-run approval", "Validate explicit Nightshift pilot approval"):
+    for name in (
+        "Validate explicit active-run approval",
+        "Validate explicit Nightshift pilot approval",
+    ):
         assert _step(name)["env"]["DUFYND_APPROVAL_TOKEN"] == "${{ inputs.approval_token }}"
-    assert _step("Run bounded Jarvis supervisor")["env"]["DUFYND_MAX_EVENTS"] == "${{ inputs.max_events }}"
+    assert (
+        _step("Run bounded Jarvis supervisor")["env"]["DUFYND_MAX_EVENTS"]
+        == "${{ inputs.max_events }}"
+    )
     assert _step("Run Jarvis Nightshift pilot")["env"]["DUFYND_NIGHTSHIFT_MAX_TASKS"] == (
         "${{ inputs.nightshift_max_tasks }}"
     )
@@ -70,7 +76,9 @@ def test_workflow_dispatch_values_never_interpolate_into_shell_source() -> None:
         ("Validate explicit Nightshift pilot approval", "GO-JARVIS-NIGHTSHIFT", 27),
     ],
 )
-def test_approval_token_is_data_not_executable_shell(tmp_path: Path, name: str, approval: str, refusal: int) -> None:
+def test_approval_token_is_data_not_executable_shell(
+    tmp_path: Path, name: str, approval: str, refusal: int
+) -> None:
     good, calls = _invoke(tmp_path, name, DUFYND_APPROVAL_TOKEN=approval)
     assert good.returncode == 0, good.stderr
     assert calls == []
