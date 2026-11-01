@@ -12,8 +12,8 @@ import json
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from scripts.report_dufynd_discovery_release import evaluate, evidence_digest
 from scripts.dufynd_localize_note_descriptions import labels, localized_description
+from scripts.report_dufynd_discovery_release import evaluate, evidence_digest
 
 DATA = Path("examples/retail/data")
 WAVE_1_IDS = (
