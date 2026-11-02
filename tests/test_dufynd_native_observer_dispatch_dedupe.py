@@ -255,7 +255,7 @@ def test_refusal_never_emits_positive_output(monkeypatch, tmp_path) -> None:
     assert not output.exists()
 
 
-def test_both_scheduled_workflows_use_shared_serial_guard() -> None:
+def test_both_native_workflows_dedupe_without_weakening_watchdog_independence() -> None:
     targets = [
         (".github/workflows/dufynd-private-observer.yml", "scheduled-dispatch"),
         (".github/workflows/dufynd-private-observer-watchdog.yml", "dispatch"),
@@ -282,9 +282,9 @@ def test_both_scheduled_workflows_use_shared_serial_guard() -> None:
     assert reader["concurrency"]["group"] == (
         "dufynd-private-observer-" + chr(36) + "{{ github.ref_name }}"
     )
-    assert watchdog["concurrency"]["group"] == "dufynd-private-observer-main"
+    assert watchdog["concurrency"]["group"] == "dufynd-private-observer-watchdog-main"
     assert reader["concurrency"]["cancel-in-progress"] is False
-    assert watchdog["concurrency"]["cancel-in-progress"] is False
+    assert watchdog["concurrency"]["cancel-in-progress"] is True
 
 
 def guarded_token(step: dict) -> bool:
