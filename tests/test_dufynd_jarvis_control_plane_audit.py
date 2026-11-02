@@ -229,3 +229,103 @@ def test_audit_surfaces_failed_inbox_events() -> None:
     issue = next(item for item in report["issues"] if item["code"] == "failed_jarvis_inbox_events")
     assert issue["severity"] == "warning"
     assert "2 failed event(s)" in issue["message"]
+
+
+def test_overdue_external_waits_are_visible_but_not_unblocked() -> None:
+    rows = [
+        {
+            "task_id": "perfumetrader_product_coverage",
+            "domain": "affiliate",
+            "status": "waiting_external",
+            "updated_at": "2026-10-01T09:00:00+00:00",
+            "requires_human_approval": False,
+            "instruction": "Do not leak private source details.",
+        },
+        {
+            "task_id": "image-rights-pending",
+            "domain": "commerce",
+            "status": "waiting_external",
+            "updated_at": "2026-10-03T09:00:00+00:00",
+            "requires_human_approval": True,
+            "evidence": "Private source address not for public output",
+        },
+        {
+            "task_id": "recent-external",
+            "domain": "commerce",
+            "status": "waiting_external",
+            "updated_at": "2026-10-30T09:00:00+00:00",
+        },
+    ]
+    original = [dict(row) for row in rows]
+    bridge = FakeBridge(
+        queue={
+            "safe_to_execute": [],
+            "in_progress": [],
+            "waiting_human_input": [],
+            "waiting_external": rows,
+            "approval_required": [],
+            "blocked": [{"task_id": "unverified-transport"}],
+        }
+    )
+    report = audit_control_plane(bridge, now=datetime(2026, 11, 2, tzinfo=UTC))
+    waiting = report["waiting_external_review"]
+    assert report["status"] == "attention"
+    assert waiting["review_overdue"] == 2
+    assert waiting["waiting_total"] == 3
+    assert waiting["mutations_performed"] == 0
+    assert waiting["automatically_unblocked"] == 0
+    assert {row["task_id"] for row in waiting["overdue_tasks"]} == {
+        "perfumetrader_product_coverage",
+        "image-rights-pending",
+    }
+    assert waiting["overdue_tasks"][0]["age_days"] >= 30
+    assert waiting["overdue_tasks"][1]["requires_human_approval"] is True
+    assert bridge.queue["waiting_external"] == original
+    assert report["autonomy_boundary"]["blocked"] == 1
+    assert report["autonomy_boundary"]["state"] == "waiting_external"
+    assert any(
+        issue["code"] == "external_waiting_tasks_require_freshness_review"
+        for issue in report["issues"]
+    )
+    assert "Private source address" not in str(waiting)
+
+
+def test_only_blocked_tasks_are_not_reported_as_idle() -> None:
+    bridge = FakeBridge(
+        queue={
+            "safe_to_execute": [],
+            "in_progress": [],
+            "waiting_human_input": [],
+            "waiting_external": [],
+            "approval_required": [],
+            "blocked": [{"task_id": "unsafe-transport"}],
+        }
+    )
+    report = audit_control_plane(bridge, now=NOW)
+    assert report["autonomy_boundary"]["state"] == "blocked"
+    assert report["autonomy_boundary"]["blocked"] == 1
+    assert report["waiting_external_review"]["review_overdue"] == 0
+    assert report["issues"] == []
+
+
+def test_undated_or_future_waits_cannot_be_dated_by_inference() -> None:
+    rows = [
+        {"task_id": "missing-date", "updated_at": None},
+        {"task_id": "future-date", "updated_at": "2099-01-01T00:00:00+00:00"},
+        {"task_id": "invalid-date", "updated_at": "not-a-date"},
+    ]
+    bridge = FakeBridge(
+        queue={
+            "safe_to_execute": [],
+            "in_progress": [],
+            "waiting_human_input": [],
+            "waiting_external": rows,
+            "approval_required": [],
+        }
+    )
+    report = audit_control_plane(bridge, now=NOW)
+    review = report["waiting_external_review"]
+    assert review["review_overdue"] == 0
+    assert review["unverifiable_timestamp"] == 3
+    assert review["overdue_tasks"] == []
+    assert report["status"] == "ok"
