@@ -76,6 +76,42 @@ jobs:
           DUFYND_JARVIS_ACTIVE: "0"
         run: python -m scripts.dufynd_jarvis_runtime --readiness
 
+      - name: Validate explicit active-run approval
+        if: inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr'
+        env:
+          DUFYND_APPROVAL_TOKEN: ${{ inputs.approval_token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${DUFYND_APPROVAL_TOKEN:-}" != "GO-JARVIS-ACTIVE" ]; then
+            echo "Active Jarvis run refused: explicit GO-JARVIS-ACTIVE token is required."
+            exit 20
+          fi
+
+      - name: Validate autonomous session switch
+        if: inputs.mode == 'autonomous-cycle'
+        env:
+          DUFYND_JARVIS_AUTONOMOUS: ${{ vars.DUFYND_JARVIS_AUTONOMOUS }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${DUFYND_JARVIS_AUTONOMOUS:-0}" != "1" ]; then
+            echo "Autonomous Jarvis cycle refused: DUFYND_JARVIS_AUTONOMOUS must be 1."
+            exit 23
+          fi
+
+      - name: Validate explicit Nightshift pilot approval
+        if: inputs.mode == 'nightshift-pilot'
+        env:
+          DUFYND_APPROVAL_TOKEN: ${{ inputs.approval_token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${DUFYND_APPROVAL_TOKEN:-}" != "GO-JARVIS-NIGHTSHIFT" ]; then
+            echo "Nightshift pilot refused: explicit GO-JARVIS-NIGHTSHIFT token is required."
+            exit 27
+          fi
+
       - name: Refresh repository Jarvis state
         if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'autonomous-cycle' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr' || inputs.mode == 'nightshift-pilot'
         run: >-
@@ -122,42 +158,6 @@ jobs:
             echo "Tracked checkout is still dirty after control-plane reset."
             git status --short
             exit 28
-          fi
-
-      - name: Validate explicit active-run approval
-        if: inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr'
-        env:
-          DUFYND_APPROVAL_TOKEN: ${{ inputs.approval_token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${DUFYND_APPROVAL_TOKEN:-}" != "GO-JARVIS-ACTIVE" ]; then
-            echo "Active Jarvis run refused: explicit GO-JARVIS-ACTIVE token is required."
-            exit 20
-          fi
-
-      - name: Validate autonomous session switch
-        if: inputs.mode == 'autonomous-cycle'
-        env:
-          DUFYND_JARVIS_AUTONOMOUS: ${{ vars.DUFYND_JARVIS_AUTONOMOUS }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${DUFYND_JARVIS_AUTONOMOUS:-0}" != "1" ]; then
-            echo "Autonomous Jarvis cycle refused: DUFYND_JARVIS_AUTONOMOUS must be 1."
-            exit 23
-          fi
-
-      - name: Validate explicit Nightshift pilot approval
-        if: inputs.mode == 'nightshift-pilot'
-        env:
-          DUFYND_APPROVAL_TOKEN: ${{ inputs.approval_token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${DUFYND_APPROVAL_TOKEN:-}" != "GO-JARVIS-NIGHTSHIFT" ]; then
-            echo "Nightshift pilot refused: explicit GO-JARVIS-NIGHTSHIFT token is required."
-            exit 27
           fi
 
       - name: Process one Jarvis event

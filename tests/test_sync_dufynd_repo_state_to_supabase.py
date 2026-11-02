@@ -231,3 +231,64 @@ def test_snapshot_only_mode_is_only_bound_to_manual_sync_state() -> None:
     assert "--write" in script
     assert "--machine-readable" in script
     assert "${{ inputs." not in script
+
+
+def test_all_manual_active_approval_gates_run_before_any_state_writes() -> None:
+    # A refused process-next, Nightshift pilot or autonomous-cycle must not
+    # write even a snapshot or requeue source-drifted model-budget tasks.
+    from pathlib import Path
+
+    import yaml
+
+    wf = yaml.safe_load(
+        Path(".github/workflows/dufynd-jarvis-manual.yml").read_text(encoding="utf-8")
+    )
+    steps = wf["jobs"]["jarvis"]["steps"]
+    names = [step.get("name", "") for step in steps]
+
+    for gate in (
+        "Validate explicit active-run approval",
+        "Validate autonomous session switch",
+        "Validate explicit Nightshift pilot approval",
+    ):
+        assert names.index(gate) < names.index("Refresh repository Jarvis state")
+        assert names.index(gate) < names.index("Sync Jarvis control plane")
+    assert names.index("Sync Jarvis control plane") < names.index(
+        "Verify Jarvis control-plane freshness"
+    )
+    assert names.index("Restore clean worker checkout after control-plane sync") < names.index(
+        "Process one Jarvis event"
+    )
+    # All dispatch inputs continue to travel through env variables, never
+    # injected as untrusted shell source text.
+    for gate in (
+        "Validate explicit active-run approval",
+        "Validate autonomous session switch",
+        "Validate explicit Nightshift pilot approval",
+    ):
+        step = steps[names.index(gate)]
+        assert "${{ inputs." not in step["run"]
+        assert step["shell"] == "bash"
+    assert "GO-JARVIS-ACTIVE" in steps[names.index("Validate explicit active-run approval")]["run"]
+    assert (
+        "GO-JARVIS-NIGHTSHIFT"
+        in steps[names.index("Validate explicit Nightshift pilot approval")]["run"]
+    )
+
+
+def test_sync_state_retains_snapshot_only_after_early_approval_gates() -> None:
+    from pathlib import Path
+
+    import yaml
+
+    wf = yaml.safe_load(
+        Path(".github/workflows/dufynd-jarvis-manual.yml").read_text(encoding="utf-8")
+    )
+    steps = wf["jobs"]["jarvis"]["steps"]
+    sync_step = next(x for x in steps if x.get("name") == "Sync Jarvis control plane")
+    assert sync_step["env"]["DUFYND_SYNC_STATE_ONLY"] == (
+        "${{ inputs.mode == 'sync-state' && '1' || '0' }}"
+    )
+    assert "--snapshot-only" in sync_step["run"]
+    assert "--write --machine-readable" in sync_step["run"]
+    assert 'if [[ "${DUFYND_SYNC_STATE_ONLY:-}" == "1" ]]' in sync_step["run"]
