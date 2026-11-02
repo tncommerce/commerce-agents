@@ -53,3 +53,29 @@ def test_snapshot_sync_does_not_change_existing_publication_and_photo_holds() ->
     assert all(p["publication_authorized"] is False for p in held)
     assert len(originals) == 10
     assert not ({p["product_id"] for p in held} & {p["product_id"] for p in published})
+
+
+def test_full_jarvis_state_graph_recomputed_with_identical_provenance() -> None:
+    from scripts.validate_scentai_jarvis_state_graph import OUTPUT_PATHS
+
+    master = read(DATA / "scentai_jarvis_master_status.json")
+    fresh = refresh_state(generated_at=master["generated_at"])
+    current = {name: read(path) for name, path in OUTPUT_PATHS.items()}
+    mismatches = sorted(name for name in fresh if current[name] != fresh[name])
+    fingerprint_map = {
+        name: {
+            "committed": current[name].get("source_fingerprint_sha256"),
+            "rebuilt": fresh[name].get("source_fingerprint_sha256"),
+            "non_fingerprint_drift": {
+                key: (key in current[name], key in fresh[name])
+                for key in set(current[name]) | set(fresh[name])
+                if key != "source_fingerprint_sha256"
+                and current[name].get(key) != fresh[name].get(key)
+            },
+        }
+        for name in mismatches
+    }
+    assert not mismatches, "Recompute complete canonical Jarvis graph first: " + json.dumps(
+        fingerprint_map, sort_keys=True
+    )
+    assert all(value["generated_at"] == master["generated_at"] for value in current.values())
