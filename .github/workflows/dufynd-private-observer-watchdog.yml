@@ -13,9 +13,9 @@ permissions:
   actions: write
 
 concurrency:
-  # Serialize main observer and watchdog checks; the target branch has its own group.
-  group: dufynd-private-observer-main
-  cancel-in-progress: false
+  # Preserve independent watchdog scheduling and failure isolation.
+  group: dufynd-private-observer-watchdog-main
+  cancel-in-progress: true
 
 jobs:
   dispatch:
