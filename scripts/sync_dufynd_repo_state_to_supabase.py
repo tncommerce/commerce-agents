@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
-from scripts.dufynd_jarvis_control_plane import HUMAN_REASONS
+from scripts.dufynd_jarvis_control_plane import ACTIVE_STATES, HUMAN_REASONS
 
 DEFAULT_REPO_STATUS_PATH = Path("examples/retail/data/scentai_jarvis_master_status.json")
 SNAPSHOT_KEY = "jarvis.repo_state_snapshot"
@@ -17,6 +17,10 @@ PRESERVED_SAME_FINGERPRINT_STATUSES = {
     "waiting_human_input",
     "waiting_external",
     "approval_required",
+    "cancelled",
+    "failed_retryable",
+    "failed_terminal",
+    "stale",
 }
 
 
@@ -136,12 +140,40 @@ def _preserve_same_fingerprint_state(
     bridge: DufyndJarvisBridge,
     task: dict[str, Any],
     fingerprint: str,
-) -> dict[str, Any]:
+) -> dict[str, Any] | None:
+    """Skip unsafe implicit task transitions; sync is not a per-task owner GO.
+
+    A new repo fingerprint is metadata about source content, not permission to
+    reopen completed, blocked, leased or model-budget work. An owner-approved
+    task transition uses its own explicit, separately audited lifecycle action.
+    """
     existing = bridge.load_autonomy_task(task["task_id"])
-    if not existing:
+    if existing is None:
         return task
+    if not isinstance(existing, dict):
+        raise ValueError("existing_repo_task_must_be_object")
 
     existing_status = str(existing.get("status") or "")
+    # The source generator does not carry this task's budget decision. Unknown
+    # cost class and all existing model tasks are immutable through repo sync,
+    # even when the fingerprint or source action changes.
+    if existing.get("budget_class") != "free":
+        return None
+    # Never overwrite a typed owner decision or an active worker lease.
+    if (
+        existing.get("requires_human_approval") is True
+        or existing.get("blocked_reason") in HUMAN_REASONS
+        or existing_status in ACTIVE_STATES
+        or existing.get("worker_state") in ACTIVE_STATES
+    ):
+        return None
+    # A changed repository hash must not turn historical done/held work into
+    # ready tasks. New work needs a distinct ID or a separately gated lifecycle.
+    if (
+        existing_status in PRESERVED_SAME_FINGERPRINT_STATUSES
+        and not _evidence_has_fingerprint(existing.get("evidence"), fingerprint)
+    ):
+        return None
     if (
         existing_status == "waiting_human_input"
         and task.get("status") == "waiting_external"
@@ -171,18 +203,31 @@ def _preserve_same_fingerprint_state(
 
 def apply_sync_plan(
     bridge: DufyndJarvisBridge, plan: dict[str, Any], *, snapshot_only: bool = False
-) -> None:
+) -> dict[str, int]:
     snapshot = plan["snapshot"]
-    bridge.upsert_master_status(**snapshot)
-    # A source-fingerprint change does not authorize reopening old blocked,
-    # waiting_external or finished model-budget tasks. A synchronization-only
-    # workflow must not implicitly requeue them.
     if snapshot_only:
-        return
+        bridge.upsert_master_status(**snapshot)
+        return {"tasks_written": 0, "existing_tasks_protected": 0}
 
+    # Read and classify every existing task before the first write. An API
+    # failure must not leave a new snapshot with half-reconciled task metadata.
     fingerprint = str(plan["source_fingerprint_sha256"])
+    approved_updates: list[dict[str, Any]] = []
+    protected_count = 0
     for task in plan["tasks"]:
-        bridge.upsert_autonomy_task(**_preserve_same_fingerprint_state(bridge, task, fingerprint))
+        candidate = _preserve_same_fingerprint_state(bridge, task, fingerprint)
+        if candidate is None:
+            protected_count += 1
+        else:
+            approved_updates.append(candidate)
+
+    bridge.upsert_master_status(**snapshot)
+    for task in approved_updates:
+        bridge.upsert_autonomy_task(**task)
+    return {
+        "tasks_written": len(approved_updates),
+        "existing_tasks_protected": protected_count,
+    }
 
 
 def main() -> int:
@@ -205,14 +250,18 @@ def main() -> int:
     repo_status = load_json(args.repo_status)
     plan = build_sync_plan(repo_status)
 
+    effects = {"tasks_written": 0, "existing_tasks_protected": 0}
     if args.write:
-        apply_sync_plan(DufyndJarvisBridge(), plan, snapshot_only=args.snapshot_only)
+        effects = apply_sync_plan(
+            DufyndJarvisBridge(), plan, snapshot_only=args.snapshot_only
+        )
 
     report = {
         "dry_run": not args.write,
         "wrote": bool(args.write),
         "snapshot_only": bool(args.snapshot_only),
-        "tasks_written": 0 if args.snapshot_only else len(plan["tasks"]),
+        "tasks_written": effects["tasks_written"],
+        "existing_tasks_protected": effects["existing_tasks_protected"],
         "snapshot_key": plan["snapshot"]["key"],
         "generated_at": plan["generated_at"],
         "source_fingerprint_sha256": plan["source_fingerprint_sha256"],
