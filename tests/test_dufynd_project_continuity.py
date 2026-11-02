@@ -421,4 +421,3 @@ def test_historical_matching_bootstrap_still_blocks_unsafe_work_today(
     assert {"repo_snapshot_expired", "supabase_snapshot_expired"} <= set(
         context["freshness"]["reasons"]
     )
-
