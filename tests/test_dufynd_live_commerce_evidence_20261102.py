@@ -8,7 +8,6 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-
 from scripts.validate_dufynd_live_commerce_evidence import validate_evidence
 
 DATA = Path("examples/retail/data")
@@ -42,6 +41,9 @@ def test_actual_live_evidence_has_complete_57_page_and_photo_partition() -> None
     assert result["approved_photos"] == 10
     assert result["public_missing_original"] == 47
     assert result["merchant_pages_examined"] == 5
+    assert result["top_gallery_leads_held"] == 4
+    assert result["wrong_og_preview_variants_blocked"] == 3
+    assert result["giftbox_photos_held"] == 1
     assert result["merchant_in_stock_history"] == 1
     assert result["merchant_out_of_stock_history"] == 4
     assert result["merchant_observations_fresh_for_private_review"] is True
@@ -203,3 +205,66 @@ def test_private_merchant_source_is_not_a_runtime_offer_registry() -> None:
         item["merchant_offer_activated"] is False
         for item in evidence["perfumetrader_crawl"]["merchant_source_pages"]
     )
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "reason"),
+    [
+        ("merchant_product_id", "849413", "top_gallery_exact_identity_mismatch"),
+        ("gtin", "0000000000000", "top_gallery_exact_identity_mismatch"),
+        (
+            "variant_gallery_image_url",
+            "https://www.topparfuemerie.de/media/catalog/product/cache/"
+            "d2ab279b21a5d94cbebd5a4e62d42d56/8/4/849413_3386460101059_051.png",
+            "top_gallery_exact_image_url_missing",
+        ),
+        ("og_preview_exact_variant", True, "top_og_preview_variant_mismatch_not_reported"),
+        ("source_image_bytes_downloaded", True, "top_gallery_wrongly_promoted"),
+        ("source_image_sha256", "a" * 64, "top_gallery_wrongly_promoted"),
+        ("exact_front_photo_visually_verified", True, "top_gallery_wrongly_promoted"),
+        ("merchant_image_rights_final_approved", True, "top_gallery_wrongly_promoted"),
+        ("owner_visual_approved", True, "top_gallery_wrongly_promoted"),
+        ("public_photo_activation", True, "top_gallery_wrongly_promoted"),
+        ("merchant_offer_activation", True, "top_gallery_wrongly_promoted"),
+        ("affiliate_url", "https://awin1.com/cread.php", "top_gallery_unexpected_fields"),
+    ],
+)
+def test_top_gallery_never_promotes_wrong_or_unlicensed_image(
+    field: str, value: object, reason: str
+) -> None:
+    base, *_ = sources()
+    changed = copy.deepcopy(base)
+    changed["top_parfuemerie_gallery_crawl"]["records"][0][field] = value
+    with pytest.raises(ValueError, match=reason):
+        report(changed)
+
+
+def test_top_gallery_missing_and_giftbox_mismatch_remain_held() -> None:
+    base, *_ = sources()
+    changed = copy.deepcopy(base)
+    changed["top_parfuemerie_gallery_crawl"]["records"].pop()
+    with pytest.raises(ValueError, match="top_gallery_scope_changed"):
+        report(changed)
+    changed = copy.deepcopy(base)
+    giftbox = next(
+        item for item in changed["top_parfuemerie_gallery_crawl"]["records"]
+        if item["product_id"] == "SC-XERJOFF-NAXOS-100"
+    )
+    giftbox["gift_box_source"] = False
+    with pytest.raises(ValueError, match="top_giftbox_not_held"):
+        report(changed)
+
+
+def test_three_wrong_og_size_variants_are_not_stored_as_approved_photos() -> None:
+    source, *_ = sources()
+    items = source["top_parfuemerie_gallery_crawl"]["records"]
+    mismatches = [item for item in items if not item["og_preview_exact_variant"]]
+    assert len(mismatches) == 3
+    assert {item["product_id"] for item in mismatches} == {
+        "SC-MONTBLANC-EXPLORER-100",
+        "SC-CREED-AVENTUS-100",
+        "SC-PRADA-LHOMME-100",
+    }
+    assert all(item["source_image_sha256"] is None for item in items)
+    assert all(item["public_photo_activation"] is False for item in items)
+    assert all(item["merchant_offer_activation"] is False for item in items)
