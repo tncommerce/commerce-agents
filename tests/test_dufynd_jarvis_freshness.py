@@ -176,4 +176,3 @@ def test_exact_48_hour_age_boundary_is_not_overdue() -> None:
     assert result["repo_age_hours"] == 48
     assert result["supabase_age_hours"] == 48
     assert result["checked_at"] == now.isoformat()
-
