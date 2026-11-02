@@ -156,6 +156,19 @@ jobs:
       - name: Install DUFYND runtime dependencies
         run: pip install -r requirements-dev.txt
 
+      - name: Validate explicit Nightshift pilot approval
+        env:
+          DUFYND_APPROVAL_TOKEN: ${{ inputs.approval_token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ "${GITHUB_EVENT_NAME}" = "issue_comment" ]; then
+            echo "Nightshift approval accepted from guarded DUFYND chat signal."
+          elif [ "${DUFYND_APPROVAL_TOKEN:-}" != "GO-JARVIS-NIGHTSHIFT" ]; then
+            echo "Nightshift pilot refused: explicit GO-JARVIS-NIGHTSHIFT token is required."
+            exit 27
+          fi
+
       - name: Refresh repository Jarvis state
         run: >-
           python -m scripts.refresh_scentai_jarvis_state
@@ -218,19 +231,6 @@ jobs:
             exit 29
           fi
           sha256sum -c "${RUNNER_TEMP}/dufynd-control-plane-audit.sha256"
-      - name: Validate explicit Nightshift pilot approval
-        env:
-          DUFYND_APPROVAL_TOKEN: ${{ inputs.approval_token }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${GITHUB_EVENT_NAME}" = "issue_comment" ]; then
-            echo "Nightshift approval accepted from guarded DUFYND chat signal."
-          elif [ "${DUFYND_APPROVAL_TOKEN:-}" != "GO-JARVIS-NIGHTSHIFT" ]; then
-            echo "Nightshift pilot refused: explicit GO-JARVIS-NIGHTSHIFT token is required."
-            exit 27
-          fi
-
       - name: Set up Node for branch-worker web validation
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
