@@ -28,9 +28,7 @@ def sources() -> tuple:
 
 def report(snapshot: dict, *, now: datetime = OBSERVATION) -> dict:
     _, legacy, released, held, originals, mappings = sources()
-    return validate_evidence(
-        snapshot, legacy, released, held, originals, mappings, now=now
-    )
+    return validate_evidence(snapshot, legacy, released, held, originals, mappings, now=now)
 
 
 def test_actual_live_evidence_has_complete_57_page_and_photo_partition() -> None:
@@ -55,15 +53,24 @@ def test_actual_live_evidence_has_complete_57_page_and_photo_partition() -> None
 
 def test_expired_stock_history_cannot_be_presented_as_fresh() -> None:
     evidence, *_ = sources()
-    assert report(evidence, now=OBSERVATION + timedelta(hours=25))[
-        "merchant_observations_fresh_for_private_review"
-    ] is False
-    assert report(evidence, now=OBSERVATION + timedelta(minutes=6))[
-        "merchant_observations_fresh_for_private_review"
-    ] is True
-    assert report(evidence, now=OBSERVATION - timedelta(minutes=6))[
-        "merchant_observations_fresh_for_private_review"
-    ] is False
+    assert (
+        report(evidence, now=OBSERVATION + timedelta(hours=25))[
+            "merchant_observations_fresh_for_private_review"
+        ]
+        is False
+    )
+    assert (
+        report(evidence, now=OBSERVATION + timedelta(minutes=6))[
+            "merchant_observations_fresh_for_private_review"
+        ]
+        is True
+    )
+    assert (
+        report(evidence, now=OBSERVATION - timedelta(minutes=6))[
+            "merchant_observations_fresh_for_private_review"
+        ]
+        is False
+    )
 
 
 @pytest.mark.parametrize(
@@ -84,9 +91,7 @@ def test_expired_stock_history_cannot_be_presented_as_fresh() -> None:
             "public_html_proof_missing",
         ),
         (
-            lambda d: d["public_crawl"]["records"][0].update(
-                {"photo_state": "VERIFIED_ORIGINAL"}
-            ),
+            lambda d: d["public_crawl"]["records"][0].update({"photo_state": "VERIFIED_ORIGINAL"}),
             "original_rights_state_inaccurate",
         ),
         (
@@ -130,9 +135,7 @@ def test_expired_stock_history_cannot_be_presented_as_fresh() -> None:
             "merchant_source_not_direct_https",
         ),
         (
-            lambda d: d["perfumetrader_crawl"]["merchant_source_pages"][0].update(
-                {"price": 71.90}
-            ),
+            lambda d: d["perfumetrader_crawl"]["merchant_source_pages"][0].update({"price": 71.90}),
             "unexpected_merchant_evidence_fields",
         ),
         (
@@ -154,9 +157,7 @@ def test_expired_stock_history_cannot_be_presented_as_fresh() -> None:
             "merchant_evidence_wrongly_promoted",
         ),
         (
-            lambda d: d["perfumetrader_crawl"].update(
-                {"product_csv_schema_verified": True}
-            ),
+            lambda d: d["perfumetrader_crawl"].update({"product_csv_schema_verified": True}),
             "unauthorized_product_feed_assertion",
         ),
         (
@@ -178,9 +179,7 @@ def test_evidence_remains_fail_closed_under_source_and_rights_mutation(
 def test_private_wave_two_cannot_be_smuggled_into_live_page_manifest() -> None:
     evidence, *_ = sources()
     changed = copy.deepcopy(evidence)
-    changed["public_crawl"]["records"][0]["product_id"] = (
-        "SC-TOM-FORD-OUD-WOOD-EDP-100"
-    )
+    changed["public_crawl"]["records"][0]["product_id"] = "SC-TOM-FORD-OUD-WOOD-EDP-100"
     with pytest.raises(ValueError, match="public_exact_scope_mismatch"):
         report(changed)
 
@@ -247,7 +246,8 @@ def test_top_gallery_missing_and_giftbox_mismatch_remain_held() -> None:
         report(changed)
     changed = copy.deepcopy(base)
     giftbox = next(
-        item for item in changed["top_parfuemerie_gallery_crawl"]["records"]
+        item
+        for item in changed["top_parfuemerie_gallery_crawl"]["records"]
         if item["product_id"] == "SC-XERJOFF-NAXOS-100"
     )
     giftbox["gift_box_source"] = False
