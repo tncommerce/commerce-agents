@@ -12,6 +12,7 @@ SESSION_KEY = "jarvis.nightshift_session"
 SUPERVISOR_KEY = "jarvis.nightshift_supervisor"
 TECH_LEASE_KEY = "continuity.tech_lease"
 DEFAULT_STALE_AFTER_MINUTES = 45
+DEFAULT_WAITING_EXTERNAL_REVIEW_DAYS = 14
 
 
 def _parse_iso(value: object) -> datetime | None:
@@ -40,6 +41,7 @@ def _queue_boundary(queue: dict[str, Any]) -> dict[str, Any]:
         "waiting_human_input": len(queue.get("waiting_human_input") or []),
         "waiting_external": len(queue.get("waiting_external") or []),
         "approval_required": len(queue.get("approval_required") or []),
+        "blocked": len(queue.get("blocked") or []),
     }
     if counts["safe_to_execute"]:
         state = "work_available"
@@ -49,9 +51,83 @@ def _queue_boundary(queue: dict[str, Any]) -> dict[str, Any]:
         state = "owner_review"
     elif counts["waiting_external"]:
         state = "waiting_external"
+    elif counts["blocked"]:
+        state = "blocked"
     else:
         state = "idle"
     return {"state": state, **counts}
+
+
+def _waiting_external_review(
+    queue: dict[str, Any],
+    *,
+    now: datetime,
+    review_after_days: int = DEFAULT_WAITING_EXTERNAL_REVIEW_DAYS,
+) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Flag aged external waits without inferring completion or altering state.
+
+    An old external dependency may still legitimately be pending. Never resend
+    outreach, grant rights, refresh offers, requeue tasks or claim a current
+    network result based on age alone.
+    """
+    rows = queue.get("waiting_external") or []
+    if not isinstance(rows, list):
+        return {
+            "available": False,
+            "reason": "waiting_external_queue_unavailable",
+            "review_after_days": review_after_days,
+        }, []
+
+    threshold = max(1, int(review_after_days))
+    overdue = []
+    undated = 0
+    for row in rows:
+        if not isinstance(row, dict):
+            undated += 1
+            continue
+        updated = _parse_iso(row.get("updated_at"))
+        if updated is None or updated > now:
+            undated += 1
+            continue
+        age_days = (now - updated).total_seconds() / 86400
+        if age_days >= threshold:
+            overdue.append(
+                {
+                    "task_id": str(row.get("task_id") or ""),
+                    "domain": str(row.get("domain") or ""),
+                    "age_days": int(age_days),
+                    "requires_human_approval": row.get("requires_human_approval") is True,
+                }
+            )
+    # Reporting is deterministic across queue order; don't print private
+    # instructions, external email addresses, rights evidence or secrets.
+    overdue.sort(key=lambda row: (-row["age_days"], row["task_id"]))
+    summary = {
+        "available": True,
+        "waiting_total": len(rows),
+        "review_after_days": threshold,
+        "review_overdue": len(overdue),
+        "unverifiable_timestamp": undated,
+        "overdue_tasks": overdue[:25],
+        "mutations_performed": 0,
+        "automatically_unblocked": 0,
+    }
+    issues = []
+    if overdue:
+        issues.append(
+            {
+                "code": "external_waiting_tasks_require_freshness_review",
+                "severity": "warning",
+                "message": (
+                    f"{len(overdue)} externally waiting Jarvis task(s) have not "
+                    f"been updated for at least {threshold} days. Recheck live "
+                    "dependencies; do not infer completion, resend outreach or "
+                    "change approval/offer/photo gates."
+                ),
+                "task_count": len(overdue),
+            }
+        )
+    return summary, issues
 
 
 def _budget_snapshot_drift(
@@ -253,13 +329,14 @@ def audit_control_plane(
     )
 
     queue = bridge.load_autonomy_queue()
+    waiting_review, waiting_issues = _waiting_external_review(queue, now=current_time)
     health = bridge.load_health()
     budget = bridge.load_budget_status(selected_budget_id)
     session_row = bridge.load_master_status_entry(SESSION_KEY)
     supervisor_row = bridge.load_master_status_entry(SUPERVISOR_KEY)
     lease_row = bridge.load_master_status_entry(TECH_LEASE_KEY)
 
-    issues: list[dict[str, Any]] = []
+    issues: list[dict[str, Any]] = list(waiting_issues)
     session, session_issues = _session_summary(
         session_row,
         now=current_time,
@@ -309,6 +386,7 @@ def audit_control_plane(
         "budget": budget,
         "budget_snapshot": budget_snapshot,
         "autonomy_boundary": _queue_boundary(queue),
+        "waiting_external_review": waiting_review,
         "inbox": inbox,
         "nightshift_session": session,
         "nightshift_supervisor": supervisor,
