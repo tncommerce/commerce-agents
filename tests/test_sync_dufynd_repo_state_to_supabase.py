@@ -291,4 +291,4 @@ def test_sync_state_retains_snapshot_only_after_early_approval_gates() -> None:
     )
     assert "--snapshot-only" in sync_step["run"]
     assert "--write --machine-readable" in sync_step["run"]
-    assert "if [[ \"${DUFYND_SYNC_STATE_ONLY:-}\" == \"1\" ]]" in sync_step["run"]
+    assert 'if [[ "${DUFYND_SYNC_STATE_ONLY:-}" == "1" ]]' in sync_step["run"]
