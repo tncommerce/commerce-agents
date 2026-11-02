@@ -11,6 +11,8 @@ from scripts.sync_dufynd_repo_state_to_supabase import SNAPSHOT_KEY
 
 DEFAULT_REPO_STATUS_PATH = Path("examples/retail/data/scentai_jarvis_master_status.json")
 DEFAULT_MAX_LAG_HOURS = 24.0
+DEFAULT_MAX_SNAPSHOT_AGE_HOURS = 48.0
+MAX_FUTURE_CLOCK_SKEW_HOURS = 5.0 / 60.0
 
 
 def parse_timestamp(value: object) -> datetime | None:
@@ -47,8 +49,12 @@ def evaluate_freshness(
     supabase_context: dict[str, Any],
     *,
     max_lag_hours: float = DEFAULT_MAX_LAG_HOURS,
+    max_snapshot_age_hours: float = DEFAULT_MAX_SNAPSHOT_AGE_HOURS,
+    now: datetime | None = None,
 ) -> dict[str, Any]:
     allowed_lag = max(0.0, float(max_lag_hours))
+    allowed_age = max(0.0, float(max_snapshot_age_hours))
+    checked_at = (now or datetime.now(UTC)).astimezone(UTC)
     repo_generated_at = parse_timestamp(repo_status.get("generated_at"))
     repo_fingerprint = str(repo_status.get("source_fingerprint_sha256") or "").strip()
 
@@ -89,6 +95,29 @@ def evaluate_freshness(
         if lag_hours > allowed_lag:
             reasons.append("supabase_control_plane_older_than_repo")
 
+    # A perfectly synchronized fingerprint can still describe weeks-old data.
+    # Explicit freshness is required independently of the relative DB/repo lag.
+    repo_age_hours = (
+        (checked_at - repo_generated_at).total_seconds() / 3600
+        if repo_generated_at is not None
+        else None
+    )
+    supabase_age_hours = (
+        (checked_at - supabase_generated_at).total_seconds() / 3600
+        if supabase_generated_at is not None
+        else None
+    )
+    for age, label in (
+        (repo_age_hours, "repo"),
+        (supabase_age_hours, "supabase"),
+    ):
+        if age is None:
+            continue
+        if age < -MAX_FUTURE_CLOCK_SKEW_HOURS:
+            reasons.append(f"{label}_snapshot_timestamp_in_future")
+        elif age > allowed_age:
+            reasons.append(f"{label}_snapshot_expired")
+
     stale = bool(reasons)
 
     return {
@@ -96,6 +125,12 @@ def evaluate_freshness(
         "safe_to_use_autonomy_queue": not stale,
         "snapshot_key": SNAPSHOT_KEY,
         "max_lag_hours": allowed_lag,
+        "max_snapshot_age_hours": allowed_age,
+        "checked_at": checked_at.isoformat(),
+        "repo_age_hours": round(repo_age_hours, 3) if repo_age_hours is not None else None,
+        "supabase_age_hours": (
+            round(supabase_age_hours, 3) if supabase_age_hours is not None else None
+        ),
         "lag_hours": lag_hours,
         "repo_generated_at": (
             repo_generated_at.isoformat() if repo_generated_at is not None else None
@@ -125,6 +160,9 @@ def main() -> int:
     )
     parser.add_argument("--repo-status", type=Path, default=DEFAULT_REPO_STATUS_PATH)
     parser.add_argument("--max-lag-hours", type=float, default=DEFAULT_MAX_LAG_HOURS)
+    parser.add_argument(
+        "--max-snapshot-age-hours", type=float, default=DEFAULT_MAX_SNAPSHOT_AGE_HOURS
+    )
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
@@ -134,6 +172,7 @@ def main() -> int:
         repo_status,
         context,
         max_lag_hours=args.max_lag_hours,
+        max_snapshot_age_hours=args.max_snapshot_age_hours,
     )
 
     if args.machine_readable:
