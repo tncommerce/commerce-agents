@@ -35,7 +35,7 @@ def test_guarded_owner_pr_comment_signal_must_stay_exact() -> None:
     assert "github.actor == github.repository_owner" in text
     assert "github.event.comment.body == 'GO-JARVIS-NIGHTSHIFT'" in text
     assert "persist-credentials: false" in text
-    assert "DUFYND_JARVIS_MAX_BUDGET_USD: \"0.25\"" in text
+    assert 'DUFYND_JARVIS_MAX_BUDGET_USD: "0.25"' in text
 
 
 def test_main_process_next_approval_remains_before_runtime() -> None:
