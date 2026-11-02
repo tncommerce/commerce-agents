@@ -5,7 +5,6 @@ from __future__ import annotations
 from collections import Counter
 
 import pytest
-
 from scripts.sync_dufynd_repo_state_to_supabase import apply_sync_plan, build_sync_plan
 
 NEW_FINGERPRINT = "a" * 64
