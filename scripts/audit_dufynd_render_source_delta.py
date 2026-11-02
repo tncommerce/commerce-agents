@@ -80,7 +80,10 @@ def validate_comparison(
     ahead = payload.get("ahead_by")
     commits = payload.get("total_commits")
     require(
-        type(ahead) is int and type(commits) is int and ahead >= 0 and ahead == commits
+        type(ahead) is int
+        and type(commits) is int
+        and ahead >= 0
+        and ahead == commits
         and ahead <= 250,
         "compare_commit_span_incomplete",
     )
@@ -101,8 +104,10 @@ def validate_comparison(
         require(isinstance(entry, dict), "comparison_file_invalid")
         name = entry.get("filename")
         require(
-            isinstance(name, str) and 1 <= len(name) <= 350
-            and bool(SAFE_PATH.fullmatch(name)) and "\\" not in name
+            isinstance(name, str)
+            and 1 <= len(name) <= 350
+            and bool(SAFE_PATH.fullmatch(name))
+            and "\\" not in name
             and name not in names,
             "unsafe_or_duplicate_compare_file",
         )
@@ -117,7 +122,8 @@ def validate_comparison(
             require(
                 isinstance(previous, str)
                 and bool(SAFE_PATH.fullmatch(previous))
-                and previous != name and "\\" not in previous,
+                and previous != name
+                and "\\" not in previous,
                 "rename_source_unverified",
             )
         group = classify(name)
@@ -153,7 +159,8 @@ def audit_release_snapshot(
     render = evidence.get("render_deployments")
     compares = evidence.get("github_compares")
     require(
-        isinstance(render, dict) and isinstance(compares, dict)
+        isinstance(render, dict)
+        and isinstance(compares, dict)
         and set(render) == set(compares) == set(SERVICES),
         "service_pair_incomplete",
     )
@@ -178,9 +185,9 @@ def audit_release_snapshot(
     stale = age > timedelta(hours=4)
     any_drift = any(x["commits_after_live"] for x in details.values())
     return {
-        "status": "STALE_READ_ONLY_EVIDENCE" if stale else (
-            "HEAD_AHEAD_OF_DEPLOYED_RELEASE" if any_drift else "HEAD_MATCHES_DEPLOYED_RELEASES"
-        ),
+        "status": "STALE_READ_ONLY_EVIDENCE"
+        if stale
+        else ("HEAD_AHEAD_OF_DEPLOYED_RELEASE" if any_drift else "HEAD_MATCHES_DEPLOYED_RELEASES"),
         "repository": REPO,
         "branch": BRANCH,
         "observed_repository_head": head,
@@ -205,7 +212,11 @@ def main() -> int:
     args = parser.parse_args()
     evidence = json.loads(args.evidence.read_text(encoding="utf-8"))
     result = audit_release_snapshot(evidence)
-    print(json.dumps(result, ensure_ascii=False, sort_keys=True, indent=None if args.machine_readable else 2))
+    print(
+        json.dumps(
+            result, ensure_ascii=False, sort_keys=True, indent=None if args.machine_readable else 2
+        )
+    )
     return 0
 
 
