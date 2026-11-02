@@ -13,8 +13,9 @@ permissions:
   actions: write
 
 concurrency:
-  group: dufynd-private-observer-watchdog-main
-  cancel-in-progress: true
+  # Serialize main observer and watchdog checks; the target branch has its own group.
+  group: dufynd-private-observer-main
+  cancel-in-progress: false
 
 jobs:
   dispatch:
@@ -22,7 +23,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 2
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Reject a recent duplicate observer dispatch
+        id: cooldown
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/dufynd_native_observer_dispatch_dedupe.py
       - name: Dispatch trusted Private Observer on scentai-mvp
+        if: steps.cooldown.outputs.dispatch == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           DUFYND_PRIVATE_BROKER_ENABLED: ${{ vars.DUFYND_PRIVATE_BROKER_ENABLED }}
