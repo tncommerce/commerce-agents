@@ -1,10 +1,31 @@
 from __future__ import annotations
 
+from datetime import UTC, datetime
+
+import pytest
+from scripts import dufynd_project_continuity as continuity
+from scripts.dufynd_jarvis_freshness import evaluate_freshness
 from scripts.dufynd_project_continuity import (
     bootstrap_instruction,
     build_bootstrap_context,
     build_checkpoint_row,
 )
+
+# Historical fixture times must be evaluated against their historical clock,
+# not against the real current date of the CI runner. The real age check
+# remains enforced in the production bootstrap and tested separately below.
+FIXTURE_NOW = datetime(2026, 9, 29, 20, 1, tzinfo=UTC)
+
+
+@pytest.fixture(autouse=True)
+def historical_freshness_clock(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(
+        continuity,
+        "evaluate_freshness",
+        lambda repo_status, live_context: evaluate_freshness(
+            repo_status, live_context, now=FIXTURE_NOW
+        ),
+    )
 
 
 def sample_repo_status(fingerprint: str = "abc123") -> dict:
@@ -373,3 +394,31 @@ def test_stale_checkpoint_never_supplies_fallback_action() -> None:
 
     assert context["freshness"]["stale"] is True
     assert context["next_safe_action"] is None
+
+
+def test_historical_matching_bootstrap_still_blocks_unsafe_work_today(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Preserve the real stale-state fail-closed behavior for cold starts.
+    monkeypatch.setattr(
+        continuity,
+        "evaluate_freshness",
+        lambda repo_status, live_context: evaluate_freshness(
+            repo_status, live_context, now=datetime(2026, 11, 2, 6, 0, tzinfo=UTC)
+        ),
+    )
+    context = build_bootstrap_context(
+        logical_domain="business",
+        repo_status=sample_repo_status(),
+        contract=sample_contract(),
+        live_context=live_context(),
+        autonomy_queue=queue(),
+        repo_head="deadbeef",
+    )
+    assert context["freshness"]["stale"] is True
+    assert context["work_allowed_after_live_git_check"] is False
+    assert context["next_safe_action"] is None
+    assert {"repo_snapshot_expired", "supabase_snapshot_expired"} <= set(
+        context["freshness"]["reasons"]
+    )
+
