@@ -169,9 +169,8 @@ def _preserve_same_fingerprint_state(
         return None
     # A changed repository hash must not turn historical done/held work into
     # ready tasks. New work needs a distinct ID or a separately gated lifecycle.
-    if (
-        existing_status in PRESERVED_SAME_FINGERPRINT_STATUSES
-        and not _evidence_has_fingerprint(existing.get("evidence"), fingerprint)
+    if existing_status in PRESERVED_SAME_FINGERPRINT_STATUSES and not _evidence_has_fingerprint(
+        existing.get("evidence"), fingerprint
     ):
         return None
     if (
@@ -252,9 +251,7 @@ def main() -> int:
 
     effects = {"tasks_written": 0, "existing_tasks_protected": 0}
     if args.write:
-        effects = apply_sync_plan(
-            DufyndJarvisBridge(), plan, snapshot_only=args.snapshot_only
-        )
+        effects = apply_sync_plan(DufyndJarvisBridge(), plan, snapshot_only=args.snapshot_only)
 
     report = {
         "dry_run": not args.write,
