@@ -18,15 +18,13 @@ def actual_evidence() -> dict:
 
 
 def checked_at(evidence: dict) -> datetime:
-    return datetime.fromisoformat(
-        evidence["observed_at_utc"].replace("Z", "+00:00")
-    ).astimezone(UTC)
+    return datetime.fromisoformat(evidence["observed_at_utc"].replace("Z", "+00:00")).astimezone(
+        UTC
+    )
 
 
 def audit(evidence: dict, *, hours: int = 0) -> dict:
-    return audit_release_snapshot(
-        evidence, now=checked_at(evidence) + timedelta(hours=hours)
-    )
+    return audit_release_snapshot(evidence, now=checked_at(evidence) + timedelta(hours=hours))
 
 
 def test_original_api_and_storefront_receipts_are_distinct_and_verifiable() -> None:
@@ -77,33 +75,23 @@ def test_only_fixed_classification_not_equivalence() -> None:
             "compare_not_descendant_of_live",
         ),
         (
-            lambda p: p["github_compares"]["api"].update(
-                {"base": "f" * 40}
-            ),
+            lambda p: p["github_compares"]["api"].update({"base": "f" * 40}),
             "compare_base_mismatch",
         ),
         (
-            lambda p: p["github_compares"]["api"].update(
-                {"head": "f" * 40}
-            ),
+            lambda p: p["github_compares"]["api"].update({"head": "f" * 40}),
             "compare_head_mismatch",
         ),
         (
-            lambda p: p["github_compares"]["api"].update(
-                {"too_large": True}
-            ),
+            lambda p: p["github_compares"]["api"].update({"too_large": True}),
             "compare_truncated",
         ),
         (
-            lambda p: p["github_compares"]["api"].update(
-                {"behind_by": 1}
-            ),
+            lambda p: p["github_compares"]["api"].update({"behind_by": 1}),
             "compare_branch_diverged",
         ),
         (
-            lambda p: p["github_compares"]["api"].update(
-                {"ahead_by": 300}
-            ),
+            lambda p: p["github_compares"]["api"].update({"ahead_by": 300}),
             "compare_commit_span_incomplete",
         ),
         (
@@ -113,39 +101,27 @@ def test_only_fixed_classification_not_equivalence() -> None:
             "unsafe_or_duplicate_compare_file",
         ),
         (
-            lambda p: p["github_compares"]["api"]["files"][0].update(
-                {"filename": "../../secret"}
-            ),
+            lambda p: p["github_compares"]["api"]["files"][0].update({"filename": "../../secret"}),
             "unsafe_or_duplicate_compare_file",
         ),
         (
-            lambda p: p["github_compares"]["api"]["files"][0].update(
-                {"status": "unknown"}
-            ),
+            lambda p: p["github_compares"]["api"]["files"][0].update({"status": "unknown"}),
             "unknown_file_change_status",
         ),
         (
-            lambda p: p["github_compares"]["api"]["files"][0].update(
-                {"changes": None}
-            ),
+            lambda p: p["github_compares"]["api"]["files"][0].update({"changes": None}),
             "file_delta_size_unverified",
         ),
         (
-            lambda p: p["render_deployments"]["api"].update(
-                {"live_status": "deactivated"}
-            ),
+            lambda p: p["render_deployments"]["api"].update({"live_status": "deactivated"}),
             "render_release_not_live",
         ),
         (
-            lambda p: p["render_deployments"]["api"].update(
-                {"deployed_source_sha": "f" * 40}
-            ),
+            lambda p: p["render_deployments"]["api"].update({"deployed_source_sha": "f" * 40}),
             "compare_base_mismatch",
         ),
         (
-            lambda p: p["render_deployments"]["storefront"].update(
-                {"service_id": "srv-unknown"}
-            ),
+            lambda p: p["render_deployments"]["storefront"].update({"service_id": "srv-unknown"}),
             "render_service_mismatch",
         ),
         (
@@ -153,9 +129,7 @@ def test_only_fixed_classification_not_equivalence() -> None:
             "service_pair_incomplete",
         ),
         (
-            lambda p: p.update(
-                {"observed_repository_head": "bad-sha"}
-            ),
+            lambda p: p.update({"observed_repository_head": "bad-sha"}),
             "invalid_repo_head",
         ),
     ],
