@@ -67,9 +67,7 @@ def trusted_env(workflow: str = "dufynd-private-observer.yml") -> dict[str, str]
         "GITHUB_REF": "refs/heads/main",
         "GITHUB_EVENT_NAME": "schedule",
         "GITHUB_RUN_ATTEMPT": "1",
-        "GITHUB_WORKFLOW_REF": (
-            f"{MODULE.REPO}/.github/workflows/{workflow}@refs/heads/main"
-        ),
+        "GITHUB_WORKFLOW_REF": (f"{MODULE.REPO}/.github/workflows/{workflow}@refs/heads/main"),
         "GH_TOKEN": "test-token-with-enough-length",
     }
 
@@ -84,19 +82,14 @@ def test_near_simultaneous_reader_watchdog_runs_deduplicated() -> None:
 @pytest.mark.parametrize("age", [0, 1, 30, 120, 179])
 @pytest.mark.parametrize("status", ["completed", "queued", "in_progress"])
 def test_any_recent_attempt_blocks_duplicate_dispatch(age: int, status: str) -> None:
-    assert (
-        MODULE.inspect_history(history(run(age, status=status)), now=NOW)["dispatch"]
-        is False
-    )
+    assert MODULE.inspect_history(history(run(age, status=status)), now=NOW)["dispatch"] is False
 
 
 def test_stale_or_empty_history_allows_only_normal_dispatch() -> None:
     assert MODULE.inspect_history(history(run(180)), now=NOW)["dispatch"] is True
     assert MODULE.inspect_history(history(), now=NOW)["dispatch"] is True
     assert (
-        MODULE.inspect_history(history(run(240), run(350, run_id=12346)), now=NOW)[
-            "dispatch"
-        ]
+        MODULE.inspect_history(history(run(240), run(350, run_id=12346)), now=NOW)["dispatch"]
         is True
     )
 
@@ -175,17 +168,13 @@ def test_untrusted_invocation_fails_identity_gate(field, value) -> None:
 
 def test_only_approved_main_workflow_files_can_call_dedupe() -> None:
     MODULE.validate_execution_identity(trusted_env())
-    MODULE.validate_execution_identity(
-        trusted_env("dufynd-private-observer-watchdog.yml")
-    )
+    MODULE.validate_execution_identity(trusted_env("dufynd-private-observer-watchdog.yml"))
     with pytest.raises(MODULE.Refused, match="source_workflow_identity_rejected"):
         MODULE.validate_execution_identity(trusted_env("untrusted.yml"))
 
 
 class FakeResponse:
-    def __init__(
-        self, data: bytes, *, status: int = 200, remaining: str = "100", retry: str = ""
-    ):
+    def __init__(self, data: bytes, *, status: int = 200, remaining: str = "100", retry: str = ""):
         self.data = data
         self.status = status
         self.headers = {"X-RateLimit-Remaining": remaining, "Retry-After": retry}
@@ -216,9 +205,7 @@ def test_fixed_origin_read_only_one_get_uses_existing_token() -> None:
     opener = FakeOpener(FakeResponse(json.dumps(history(run(40))).encode()))
     result = MODULE.evaluate(trusted_env(), now=NOW, opener=opener)
     assert result["dispatch"] is False
-    assert opener.calls == [
-        (MODULE.API_URL, "GET", 15, "Bearer test-token-with-enough-length")
-    ]
+    assert opener.calls == [(MODULE.API_URL, "GET", 15, "Bearer test-token-with-enough-length")]
 
 
 @pytest.mark.parametrize(
