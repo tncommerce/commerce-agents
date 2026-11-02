@@ -110,10 +110,7 @@ def inspect_history(body: object, *, now: datetime) -> dict:
     count = body.get("total_count")
     rows = body.get("workflow_runs")
     require(
-        type(count) is int
-        and count >= 0
-        and isinstance(rows, list)
-        and len(rows) == min(count, 3),
+        type(count) is int and count >= 0 and isinstance(rows, list) and len(rows) == min(count, 3),
         "github_history_truncated",
     )
     previous: datetime | None = None
@@ -210,7 +207,8 @@ def get_history(token: str, *, opener=None) -> dict:
 
 
 def evaluate(
-    env: dict[str, str], *,
+    env: dict[str, str],
+    *,
     now: datetime | None = None,
     opener=None,
 ) -> dict:
