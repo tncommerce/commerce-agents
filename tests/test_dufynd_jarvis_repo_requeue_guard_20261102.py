@@ -84,9 +84,7 @@ class GuardBridge:
     "status", ["ready", "done", "waiting_external", "blocked", "approval_required"]
 )
 @pytest.mark.parametrize("same_fingerprint", [True, False])
-def test_model_budget_task_never_auto_reopened(
-    status: str, same_fingerprint: bool
-) -> None:
+def test_model_budget_task_never_auto_reopened(status: str, same_fingerprint: bool) -> None:
     existing = task_state(
         status,
         budget_class="model",
@@ -103,9 +101,7 @@ def test_model_budget_task_never_auto_reopened(
 
 @pytest.mark.parametrize("budget", [None, "", "unknown", "Model", "paid"])
 def test_unknown_or_nonfree_existing_budget_fails_closed(budget: str | None) -> None:
-    bridge = GuardBridge(
-        {"repo_current_commerce": task_state("ready", budget_class=budget)}
-    )
+    bridge = GuardBridge({"repo_current_commerce": task_state("ready", budget_class=budget)})
     effect = apply_sync_plan(bridge, build_sync_plan(repo_state()))
     assert effect["existing_tasks_protected"] == 1
     assert not any(x["task_id"] == "repo_current_commerce" for x in bridge.tasks)
@@ -135,9 +131,7 @@ def test_old_free_terminal_or_waiting_work_remains_unmodified(status: str) -> No
 
 @pytest.mark.parametrize("status", ["claimed", "working", "verifying", "in_progress"])
 def test_active_free_worker_is_not_ever_rewritten(status: str) -> None:
-    bridge = GuardBridge(
-        {"repo_current_commerce": task_state("ready", worker_state=status)}
-    )
+    bridge = GuardBridge({"repo_current_commerce": task_state("ready", worker_state=status)})
     result = apply_sync_plan(bridge, build_sync_plan(repo_state()))
     assert result["existing_tasks_protected"] == 1
     assert bridge.existing["repo_current_commerce"]["worker_state"] == status
@@ -205,9 +199,7 @@ def test_preflight_retrieves_all_tasks_before_any_db_write() -> None:
 def test_snapshot_only_never_reads_or_writes_tasks() -> None:
     bridge = GuardBridge()
     bridge.throw_on = "repo_current_commerce"
-    report = apply_sync_plan(
-        bridge, build_sync_plan(repo_state()), snapshot_only=True
-    )
+    report = apply_sync_plan(bridge, build_sync_plan(repo_state()), snapshot_only=True)
     assert report == {"tasks_written": 0, "existing_tasks_protected": 0}
     assert bridge.lookups == []
     assert len(bridge.master) == 1
@@ -217,9 +209,7 @@ def test_snapshot_only_never_reads_or_writes_tasks() -> None:
 def test_no_budget_or_leases_implicitly_granted_by_a_repo_sync() -> None:
     bridge = GuardBridge(
         {
-            "repo_current_commerce": task_state(
-                "waiting_external", budget_class="model"
-            ),
+            "repo_current_commerce": task_state("waiting_external", budget_class="model"),
             "repo_current_content": {
                 **task_state("done", budget_class="model"),
                 "task_id": "repo_current_content",
@@ -229,6 +219,4 @@ def test_no_budget_or_leases_implicitly_granted_by_a_repo_sync() -> None:
     changes = apply_sync_plan(bridge, build_sync_plan(repo_state()))
     assert changes == {"tasks_written": 0, "existing_tasks_protected": 2}
     assert bridge.tasks == []
-    assert Counter(x.split(":")[0] for x in bridge.actions) == Counter(
-        {"read": 2, "write": 1}
-    )
+    assert Counter(x.split(":")[0] for x in bridge.actions) == Counter({"read": 2, "write": 1})
