@@ -88,10 +88,17 @@ jobs:
         env:
           SUPABASE_URL: "https://bqsdxaagklpkxioaqdqa.supabase.co"
           SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-        run: >-
-          python -m scripts.sync_dufynd_repo_state_to_supabase
-          --write
-          --machine-readable
+          DUFYND_SYNC_STATE_ONLY: ${{ inputs.mode == 'sync-state' && '1' || '0' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${DUFYND_SYNC_STATE_ONLY:-}" == "1" ]]; then
+            python -m scripts.sync_dufynd_repo_state_to_supabase \
+              --write --snapshot-only --machine-readable
+          else
+            python -m scripts.sync_dufynd_repo_state_to_supabase \
+              --write --machine-readable
+          fi
 
       - name: Verify Jarvis control-plane freshness
         if: inputs.mode == 'sync-state' || inputs.mode == 'process-next' || inputs.mode == 'process-loop' || inputs.mode == 'autonomous-cycle' || inputs.mode == 'process-safe-task' || inputs.mode == 'process-branch-task' || inputs.mode == 'process-branch-task-pr' || inputs.mode == 'nightshift-pilot'

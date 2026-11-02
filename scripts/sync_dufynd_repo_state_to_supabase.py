@@ -169,9 +169,16 @@ def _preserve_same_fingerprint_state(
     return preserved
 
 
-def apply_sync_plan(bridge: DufyndJarvisBridge, plan: dict[str, Any]) -> None:
+def apply_sync_plan(
+    bridge: DufyndJarvisBridge, plan: dict[str, Any], *, snapshot_only: bool = False
+) -> None:
     snapshot = plan["snapshot"]
     bridge.upsert_master_status(**snapshot)
+    # A source-fingerprint change does not authorize reopening old blocked,
+    # waiting_external or finished model-budget tasks. A synchronization-only
+    # workflow must not implicitly requeue them.
+    if snapshot_only:
+        return
 
     fingerprint = str(plan["source_fingerprint_sha256"])
     for task in plan["tasks"]:
@@ -187,6 +194,11 @@ def main() -> int:
     )
     parser.add_argument("--repo-status", type=Path, default=DEFAULT_REPO_STATUS_PATH)
     parser.add_argument("--write", action="store_true")
+    parser.add_argument(
+        "--snapshot-only",
+        action="store_true",
+        help="Update only the canonical control-plane snapshot; never requeue tasks.",
+    )
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
@@ -194,11 +206,13 @@ def main() -> int:
     plan = build_sync_plan(repo_status)
 
     if args.write:
-        apply_sync_plan(DufyndJarvisBridge(), plan)
+        apply_sync_plan(DufyndJarvisBridge(), plan, snapshot_only=args.snapshot_only)
 
     report = {
         "dry_run": not args.write,
         "wrote": bool(args.write),
+        "snapshot_only": bool(args.snapshot_only),
+        "tasks_written": 0 if args.snapshot_only else len(plan["tasks"]),
         "snapshot_key": plan["snapshot"]["key"],
         "generated_at": plan["generated_at"],
         "source_fingerprint_sha256": plan["source_fingerprint_sha256"],
