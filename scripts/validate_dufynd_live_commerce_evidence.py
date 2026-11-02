@@ -50,6 +50,111 @@ def _digest(value: str) -> bool:
     return isinstance(value, str) and re.fullmatch(r"[a-f0-9]{64}", value) is not None
 
 
+TOP_GALLERY_FIELDS = {
+    "product_id", "merchant_id", "source_page_url", "merchant_product_id",
+    "gtin", "observed_at_utc", "page_http_status", "page_html_sha256",
+    "page_title", "variant_gallery_image_url", "variant_gallery_url_in_live_html",
+    "og_preview_product_sku", "og_preview_gtin", "og_preview_exact_variant",
+    "gift_box_source", "source_image_bytes_downloaded", "source_image_sha256",
+    "exact_front_photo_visually_verified", "merchant_image_rights_final_approved",
+    "owner_visual_approved", "public_photo_activation", "merchant_offer_activation",
+}
+
+
+def validate_top_gallery(
+    evidence: dict, public_ids: set, photo_ids: set, mappings: dict
+) -> dict:
+    review = evidence["top_parfuemerie_gallery_crawl"]
+    records = review["records"]
+    _check(
+        review["advertiser_id"] == "31081"
+        and review["feed_id"] == "91379"
+        and review["source_scope"]
+        == "DIRECT_PUBLIC_MERCHANT_GALLERY_VARIANT_LEADS_NOT_AWIN_FEED_OR_APPROVED_ASSETS"
+        and review["image_bytes_downloaded"] == 0
+        and review["rights_reuse_permission_not_sufficient_for_auto_publication"] is True
+        and review["owner_visual_approval_required"] is True,
+        "top_source_rights_or_feed_gate",
+    )
+    _check(
+        review["product_page_count"] == len(records) == 4
+        and len({x["product_id"] for x in records}) == 4,
+        "top_gallery_scope_changed",
+    )
+    verified_mapping = {
+        m["product_id"]: m
+        for m in mappings["mappings"]
+        if m.get("merchant") == "top-parfuemerie"
+        and m.get("mapping_status") == "verified_current_variant"
+    }
+    stamp = _utc(review["observed_at_utc"])
+    incorrect_og = 0
+    gifts = 0
+    for row in records:
+        _check(set(row) == TOP_GALLERY_FIELDS, "top_gallery_unexpected_fields")
+        pid = row["product_id"]
+        mapping = verified_mapping.get(pid)
+        _check(
+            mapping is not None and pid in public_ids and pid not in photo_ids
+            and row["merchant_id"] == "top-parfuemerie"
+            and row["source_page_url"] == mapping.get("evidence_url")
+            and row["merchant_product_id"] == mapping["merchant_product_id"]
+            and row["gtin"] == mapping.get("gtin")
+            and row["page_http_status"] == 200
+            and _digest(row["page_html_sha256"])
+            and bool(row["page_title"]),
+            "top_gallery_exact_identity_mismatch",
+        )
+        url = urlsplit(row["variant_gallery_image_url"])
+        sku = re.escape(row["merchant_product_id"])
+        gtin = re.escape(row["gtin"])
+        path_contract = (
+            rf"/media/catalog/product/cache/[a-f0-9]{{32}}/"
+            rf"[0-9]/[0-9]/{sku}_{gtin}_[0-9]{{3}}[.]png"
+        )
+        _check(
+            url.scheme == "https"
+            and url.hostname == "www.topparfuemerie.de"
+            and url.username is None and url.password is None
+            and url.query == "" and url.fragment == "" and url.port is None
+            and re.fullmatch(path_contract, url.path) is not None
+            and row["variant_gallery_url_in_live_html"] is True,
+            "top_gallery_exact_image_url_missing",
+        )
+        og_exact = (
+            row["og_preview_product_sku"] == row["merchant_product_id"]
+            and row["og_preview_gtin"] == row["gtin"]
+        )
+        _check(
+            row["og_preview_exact_variant"] is og_exact
+            and re.fullmatch(r"[0-9]+", row["og_preview_product_sku"]) is not None
+            and re.fullmatch(r"[0-9]{12,14}", row["og_preview_gtin"]) is not None,
+            "top_og_preview_variant_mismatch_not_reported",
+        )
+        incorrect_og += int(not og_exact)
+        expected_giftbox = pid == "SC-XERJOFF-NAXOS-100"
+        _check(row["gift_box_source"] is expected_giftbox, "top_giftbox_not_held")
+        gifts += int(expected_giftbox)
+        _check(
+            _utc(row["observed_at_utc"]) == stamp
+            and row["source_image_bytes_downloaded"] is False
+            and row["source_image_sha256"] is None
+            and row["exact_front_photo_visually_verified"] is False
+            and row["merchant_image_rights_final_approved"] is False
+            and row["owner_visual_approved"] is False
+            and row["public_photo_activation"] is False
+            and row["merchant_offer_activation"] is False,
+            "top_gallery_wrongly_promoted",
+        )
+    _check(
+        incorrect_og == review["generic_og_preview_other_variant_count"] == 3
+        and review["exact_gallery_variant_filename_count"] == 4
+        and gifts == review["gift_box_source_hold_count"] == 1,
+        "top_gallery_review_summary_mismatch",
+    )
+    return {"private_gallery_leads": len(records), "wrong_og_variants": incorrect_og, "giftbox_hold": gifts}
+
+
 def validate_evidence(
     evidence: dict,
     legacy: dict,
@@ -78,6 +183,8 @@ def validate_evidence(
         "source_html_not_stored",
         "not_authoritative_for_current_stock_after_expiry",
         "merchant_page_not_awin_csv",
+        "no_top_parfuemerie_gallery_assets_downloaded",
+        "no_wrong_og_preview_promoted",
     }
     _check(all(safety.get(key) is True for key in required_true), "unsafe_source_claim")
 
@@ -229,6 +336,7 @@ def validate_evidence(
         and stock_count["MERCHANT_PAGE_OUT_OF_STOCK"] == merchant["out_of_stock_page_observations"] == 4,
         "merchant_stock_summary_mismatch",
     )
+    gallery = validate_top_gallery(evidence, public_ids, photo_ids, mappings)
     current = (now or datetime.now(UTC)).astimezone(UTC)
     age = current - observation
     fresh_for_private_review = timedelta(minutes=-5) <= age <= timedelta(hours=24)
@@ -238,6 +346,9 @@ def validate_evidence(
         "approved_photos": counters["VERIFIED_ORIGINAL"],
         "public_missing_original": counters["ORIGINAL_PENDING"] + counters["STUDIO_HOLD"],
         "merchant_pages_examined": len(records),
+        "top_gallery_leads_held": gallery["private_gallery_leads"],
+        "wrong_og_preview_variants_blocked": gallery["wrong_og_variants"],
+        "giftbox_photos_held": gallery["giftbox_hold"],
         "merchant_in_stock_history": stock_count["MERCHANT_PAGE_IN_STOCK"],
         "merchant_out_of_stock_history": stock_count["MERCHANT_PAGE_OUT_OF_STOCK"],
         "merchant_observations_fresh_for_private_review": fresh_for_private_review,
