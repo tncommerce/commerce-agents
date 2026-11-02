@@ -1,0 +1,783 @@
+{
+  "schema_version": 1,
+  "repository": "tncommerce/commerce-agents",
+  "branch": "scentai-mvp",
+  "observed_repository_head": "e2940406d86688f56e8e080b81962a90f1b3cc7c",
+  "observed_at_utc": "2026-11-02T20:18:42Z",
+  "source": "read_only_GitHub_connector_and_Render_connector_20261102",
+  "render_deployments": {
+    "api": {
+      "service_id": "srv-dakpfrnf3r2c73dr3f20",
+      "deployment_id": "dep-dbi7mlom7kps73c4in10",
+      "deployed_source_sha": "a3b35fd253831d5ea89590e7512d80445d132b94",
+      "live_status": "live",
+      "deploy_finished_at": "2026-10-30T11:12:31.015421Z",
+      "deploy_trigger": "api"
+    },
+    "storefront": {
+      "service_id": "srv-dakpiajl550s73cp4lvg",
+      "deployment_id": "dep-dbj7hretlv9c73celtm0",
+      "deployed_source_sha": "1c5aff0a23ada2e6d3688809fe329526e636c474",
+      "live_status": "live",
+      "deploy_finished_at": "2026-10-31T23:26:24.525774Z",
+      "deploy_trigger": "api"
+    }
+  },
+  "github_compares": {
+    "api": {
+      "repository_full_name": "tncommerce/commerce-agents",
+      "base": "a3b35fd253831d5ea89590e7512d80445d132b94",
+      "head": "e2940406d86688f56e8e080b81962a90f1b3cc7c",
+      "base_commit": {
+        "sha": "a3b35fd253831d5ea89590e7512d80445d132b94"
+      },
+      "merge_base_commit": {
+        "sha": "a3b35fd253831d5ea89590e7512d80445d132b94"
+      },
+      "status": "ahead",
+      "ahead_by": 105,
+      "behind_by": 0,
+      "total_commits": 105,
+      "too_large": null,
+      "files": [
+        {
+          "filename": ".github/dufynd-perfumetrader-review-recipient.pub",
+          "status": "added",
+          "changes": 1
+        },
+        {
+          "filename": ".github/workflows/dufynd-awin-feed-revalidation.yml",
+          "status": "modified",
+          "changes": 67
+        },
+        {
+          "filename": ".github/workflows/dufynd-jarvis-manual.yml",
+          "status": "modified",
+          "changes": 114
+        },
+        {
+          "filename": "docs/dufynd-delivery-standard-facts-only-mvp-20261031.md",
+          "status": "added",
+          "changes": 114
+        },
+        {
+          "filename": "docs/dufynd-image-sources-followup-20261030/README.md",
+          "status": "added",
+          "changes": 48
+        },
+        {
+          "filename": "docs/dufynd-image-sources-followup-20261030/source-candidates.json",
+          "status": "added",
+          "changes": 610
+        },
+        {
+          "filename": "docs/dufynd-perfumetrader-private-catalog-review-20261031.md",
+          "status": "added",
+          "changes": 68
+        },
+        {
+          "filename": "docs/dufynd-runtime-offer-migration-history-20261031.md",
+          "status": "added",
+          "changes": 86
+        },
+        {
+          "filename": "examples/retail/data/dufynd_awin_perfumetrader_provider_config.json",
+          "status": "modified",
+          "changes": 63
+        },
+        {
+          "filename": "examples/retail/data/dufynd_commons_original_photo_leads_20261101.json",
+          "status": "added",
+          "changes": 101
+        },
+        {
+          "filename": "examples/retail/data/dufynd_facts_wave_01_review.json",
+          "status": "added",
+          "changes": 842
+        },
+        {
+          "filename": "examples/retail/data/dufynd_facts_wave_02_review.json",
+          "status": "added",
+          "changes": 935
+        },
+        {
+          "filename": "examples/retail/data/dufynd_live_commerce_evidence_20261102.json",
+          "status": "added",
+          "changes": 938
+        },
+        {
+          "filename": "examples/retail/data/dufynd_release_authorizations.json",
+          "status": "modified",
+          "changes": 268
+        },
+        {
+          "filename": "examples/retail/data/dufynd_release_qa.json",
+          "status": "modified",
+          "changes": 82
+        },
+        {
+          "filename": "examples/retail/data/scentai_affiliate_activation_status.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_content_operations_status.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_content_operations_status_batch02.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_content_operations_status_batch03.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_content_pipeline_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/data/scentai_image_approval_work_queue.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_jarvis_master_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/data/scentai_jarvis_operations_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/data/scentai_media_generation_queue.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_merchant_mapping_work_queue.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_release_01_feed_activation_queue.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_release_01_gate_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/data/scentai_release_pipeline_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/storefront-web/components/AtelierHero.tsx",
+          "status": "modified",
+          "changes": 19
+        },
+        {
+          "filename": "examples/retail/storefront-web/components/FragranceDetailPage.tsx",
+          "status": "modified",
+          "changes": 83
+        },
+        {
+          "filename": "examples/retail/storefront-web/components/QualifiedProductPage.tsx",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/storefront-web/components/views/HomeView.tsx",
+          "status": "modified",
+          "changes": 55
+        },
+        {
+          "filename": "examples/retail/storefront-web/lib/generated/released-profiles.json",
+          "status": "modified",
+          "changes": 652
+        },
+        {
+          "filename": "examples/retail/storefront-web/lib/releasedProfileCatalog.ts",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/catalog-release-qa.mjs",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/catalog-rows-qa.mjs",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/compact-fragrance-search-qa.mjs",
+          "status": "modified",
+          "changes": 38
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/conversion-search-qa.mjs",
+          "status": "modified",
+          "changes": 29
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs",
+          "status": "modified",
+          "changes": 222
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/first-money-funnel-qa.mjs",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/generate-released-profiles.mjs",
+          "status": "modified",
+          "changes": 65
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/home-catalog-hydration-qa.mjs",
+          "status": "modified",
+          "changes": 141
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/mobile-discovery-qa.mjs",
+          "status": "modified",
+          "changes": 36
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/offer-recovery-qa.mjs",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/product-presentation-qa.mjs",
+          "status": "modified",
+          "changes": 6
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/site13-funnel-qa.mjs",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/social-product-entry-qa.mjs",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/test-catalog-growth.mjs",
+          "status": "modified",
+          "changes": 26
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/test-public-route-metadata.mjs",
+          "status": "modified",
+          "changes": 21
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/wow-experience-qa.mjs",
+          "status": "modified",
+          "changes": 23
+        },
+        {
+          "filename": "scripts/audit_dufynd_jarvis_control_plane.py",
+          "status": "modified",
+          "changes": 80
+        },
+        {
+          "filename": "scripts/build_dufynd_current_public_photo_gap.py",
+          "status": "added",
+          "changes": 242
+        },
+        {
+          "filename": "scripts/build_dufynd_facts_only_waves.py",
+          "status": "added",
+          "changes": 221
+        },
+        {
+          "filename": "scripts/check_dufynd_migration_history.py",
+          "status": "added",
+          "changes": 129
+        },
+        {
+          "filename": "scripts/dufynd_jarvis_freshness.py",
+          "status": "modified",
+          "changes": 39
+        },
+        {
+          "filename": "scripts/fetch_dufynd_awin_data_feed.py",
+          "status": "modified",
+          "changes": 37
+        },
+        {
+          "filename": "scripts/prepare_dufynd_runtime_offer_batch.py",
+          "status": "modified",
+          "changes": 14
+        },
+        {
+          "filename": "scripts/probe_dufynd_perfumetrader_feed_inventory.py",
+          "status": "added",
+          "changes": 111
+        },
+        {
+          "filename": "scripts/report_dufynd_public_photo_feed_leads.py",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "scripts/review_dufynd_perfumetrader_catalog.py",
+          "status": "added",
+          "changes": 719
+        },
+        {
+          "filename": "scripts/sync_dufynd_repo_state_to_supabase.py",
+          "status": "modified",
+          "changes": 18
+        },
+        {
+          "filename": "scripts/validate_dufynd_live_commerce_evidence.py",
+          "status": "added",
+          "changes": 435
+        },
+        {
+          "filename": "tests/test_dufynd_awin_perfumetrader_provider_config.py",
+          "status": "modified",
+          "changes": 9
+        },
+        {
+          "filename": "tests/test_dufynd_awin_revalidation_workflow.py",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "tests/test_dufynd_canonical_snapshot_sync_20261102.py",
+          "status": "added",
+          "changes": 81
+        },
+        {
+          "filename": "tests/test_dufynd_catalog_57_qa_contract.py",
+          "status": "added",
+          "changes": 58
+        },
+        {
+          "filename": "tests/test_dufynd_commons_original_photo_leads.py",
+          "status": "added",
+          "changes": 53
+        },
+        {
+          "filename": "tests/test_dufynd_compact_public_wave_search.py",
+          "status": "added",
+          "changes": 68
+        },
+        {
+          "filename": "tests/test_dufynd_current_public_photo_gap.py",
+          "status": "added",
+          "changes": 186
+        },
+        {
+          "filename": "tests/test_dufynd_facts_only_waves.py",
+          "status": "added",
+          "changes": 110
+        },
+        {
+          "filename": "tests/test_dufynd_facts_wave01_public_candidate.py",
+          "status": "added",
+          "changes": 87
+        },
+        {
+          "filename": "tests/test_dufynd_fragrance_detail_seo.py",
+          "status": "modified",
+          "changes": 22
+        },
+        {
+          "filename": "tests/test_dufynd_growth_public_release_qa.py",
+          "status": "added",
+          "changes": 52
+        },
+        {
+          "filename": "tests/test_dufynd_home_audience_discovery.py",
+          "status": "modified",
+          "changes": 14
+        },
+        {
+          "filename": "tests/test_dufynd_home_buyer_entry.py",
+          "status": "added",
+          "changes": 31
+        },
+        {
+          "filename": "tests/test_dufynd_jarvis_control_plane_audit.py",
+          "status": "modified",
+          "changes": 100
+        },
+        {
+          "filename": "tests/test_dufynd_jarvis_freshness.py",
+          "status": "modified",
+          "changes": 64
+        },
+        {
+          "filename": "tests/test_dufynd_jarvis_workflow_input_security.py",
+          "status": "added",
+          "changes": 142
+        },
+        {
+          "filename": "tests/test_dufynd_live_commerce_evidence_20261102.py",
+          "status": "added",
+          "changes": 270
+        },
+        {
+          "filename": "tests/test_dufynd_migration_history_guard.py",
+          "status": "added",
+          "changes": 114
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_feed_inventory_probe.py",
+          "status": "added",
+          "changes": 156
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_feed_schema.py",
+          "status": "added",
+          "changes": 218
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_inventory_truth.py",
+          "status": "added",
+          "changes": 75
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_private_catalog.py",
+          "status": "added",
+          "changes": 248
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_public_release_scope.py",
+          "status": "added",
+          "changes": 112
+        },
+        {
+          "filename": "tests/test_dufynd_project_continuity.py",
+          "status": "modified",
+          "changes": 48
+        },
+        {
+          "filename": "tests/test_dufynd_responsive_public_release_count.py",
+          "status": "added",
+          "changes": 80
+        },
+        {
+          "filename": "tests/test_dufynd_runtime_offer_snapshots_v1.py",
+          "status": "modified",
+          "changes": 56
+        },
+        {
+          "filename": "tests/test_dufynd_storefront_presentation_contract.py",
+          "status": "modified",
+          "changes": 3
+        },
+        {
+          "filename": "tests/test_dufynd_visual_qa_visibility_scope.py",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "tests/test_dufynd_wave01_owner_release_go.py",
+          "status": "added",
+          "changes": 57
+        },
+        {
+          "filename": "tests/test_sync_dufynd_repo_state_to_supabase.py",
+          "status": "modified",
+          "changes": 105
+        }
+      ]
+    },
+    "storefront": {
+      "repository_full_name": "tncommerce/commerce-agents",
+      "base": "1c5aff0a23ada2e6d3688809fe329526e636c474",
+      "head": "e2940406d86688f56e8e080b81962a90f1b3cc7c",
+      "base_commit": {
+        "sha": "1c5aff0a23ada2e6d3688809fe329526e636c474"
+      },
+      "merge_base_commit": {
+        "sha": "1c5aff0a23ada2e6d3688809fe329526e636c474"
+      },
+      "status": "ahead",
+      "ahead_by": 45,
+      "behind_by": 0,
+      "total_commits": 45,
+      "too_large": null,
+      "files": [
+        {
+          "filename": ".github/workflows/dufynd-awin-feed-revalidation.yml",
+          "status": "modified",
+          "changes": 12
+        },
+        {
+          "filename": ".github/workflows/dufynd-jarvis-manual.yml",
+          "status": "modified",
+          "changes": 114
+        },
+        {
+          "filename": "examples/retail/data/dufynd_awin_perfumetrader_provider_config.json",
+          "status": "modified",
+          "changes": 63
+        },
+        {
+          "filename": "examples/retail/data/dufynd_commons_original_photo_leads_20261101.json",
+          "status": "added",
+          "changes": 101
+        },
+        {
+          "filename": "examples/retail/data/dufynd_live_commerce_evidence_20261102.json",
+          "status": "added",
+          "changes": 938
+        },
+        {
+          "filename": "examples/retail/data/scentai_affiliate_activation_status.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_content_operations_status.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_content_operations_status_batch02.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_content_operations_status_batch03.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_content_pipeline_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/data/scentai_image_approval_work_queue.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_jarvis_master_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/data/scentai_jarvis_operations_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/data/scentai_media_generation_queue.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_merchant_mapping_work_queue.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_release_01_feed_activation_queue.json",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "examples/retail/data/scentai_release_01_gate_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/data/scentai_release_pipeline_status.json",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/compact-fragrance-search-qa.mjs",
+          "status": "modified",
+          "changes": 38
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/conversion-search-qa.mjs",
+          "status": "modified",
+          "changes": 29
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs",
+          "status": "modified",
+          "changes": 87
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/home-catalog-hydration-qa.mjs",
+          "status": "modified",
+          "changes": 141
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/mobile-discovery-qa.mjs",
+          "status": "modified",
+          "changes": 36
+        },
+        {
+          "filename": "examples/retail/storefront-web/scripts/test-catalog-growth.mjs",
+          "status": "modified",
+          "changes": 26
+        },
+        {
+          "filename": "scripts/audit_dufynd_jarvis_control_plane.py",
+          "status": "modified",
+          "changes": 80
+        },
+        {
+          "filename": "scripts/build_dufynd_current_public_photo_gap.py",
+          "status": "added",
+          "changes": 242
+        },
+        {
+          "filename": "scripts/dufynd_jarvis_freshness.py",
+          "status": "modified",
+          "changes": 39
+        },
+        {
+          "filename": "scripts/report_dufynd_public_photo_feed_leads.py",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "scripts/review_dufynd_perfumetrader_catalog.py",
+          "status": "modified",
+          "changes": 112
+        },
+        {
+          "filename": "scripts/sync_dufynd_repo_state_to_supabase.py",
+          "status": "modified",
+          "changes": 18
+        },
+        {
+          "filename": "scripts/validate_dufynd_live_commerce_evidence.py",
+          "status": "added",
+          "changes": 435
+        },
+        {
+          "filename": "tests/test_dufynd_awin_perfumetrader_provider_config.py",
+          "status": "modified",
+          "changes": 9
+        },
+        {
+          "filename": "tests/test_dufynd_canonical_snapshot_sync_20261102.py",
+          "status": "added",
+          "changes": 81
+        },
+        {
+          "filename": "tests/test_dufynd_catalog_57_qa_contract.py",
+          "status": "added",
+          "changes": 58
+        },
+        {
+          "filename": "tests/test_dufynd_commons_original_photo_leads.py",
+          "status": "added",
+          "changes": 53
+        },
+        {
+          "filename": "tests/test_dufynd_compact_public_wave_search.py",
+          "status": "added",
+          "changes": 68
+        },
+        {
+          "filename": "tests/test_dufynd_current_public_photo_gap.py",
+          "status": "added",
+          "changes": 186
+        },
+        {
+          "filename": "tests/test_dufynd_growth_public_release_qa.py",
+          "status": "added",
+          "changes": 52
+        },
+        {
+          "filename": "tests/test_dufynd_jarvis_control_plane_audit.py",
+          "status": "modified",
+          "changes": 100
+        },
+        {
+          "filename": "tests/test_dufynd_jarvis_freshness.py",
+          "status": "modified",
+          "changes": 64
+        },
+        {
+          "filename": "tests/test_dufynd_jarvis_workflow_input_security.py",
+          "status": "added",
+          "changes": 142
+        },
+        {
+          "filename": "tests/test_dufynd_live_commerce_evidence_20261102.py",
+          "status": "added",
+          "changes": 270
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_feed_schema.py",
+          "status": "modified",
+          "changes": 2
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_inventory_truth.py",
+          "status": "added",
+          "changes": 75
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_private_catalog.py",
+          "status": "modified",
+          "changes": 13
+        },
+        {
+          "filename": "tests/test_dufynd_perfumetrader_public_release_scope.py",
+          "status": "added",
+          "changes": 112
+        },
+        {
+          "filename": "tests/test_dufynd_project_continuity.py",
+          "status": "modified",
+          "changes": 48
+        },
+        {
+          "filename": "tests/test_dufynd_responsive_public_release_count.py",
+          "status": "added",
+          "changes": 80
+        },
+        {
+          "filename": "tests/test_dufynd_visual_qa_visibility_scope.py",
+          "status": "modified",
+          "changes": 4
+        },
+        {
+          "filename": "tests/test_sync_dufynd_repo_state_to_supabase.py",
+          "status": "modified",
+          "changes": 105
+        }
+      ]
+    }
+  },
+  "safety": {
+    "source_only_evidence": true,
+    "deployment_unchanged": true,
+    "no_automatic_release_go": true,
+    "no_database_write": true,
+    "no_paid_call": true,
+    "no_render_build": true,
+    "no_merchant_action": true
+  }
+}
