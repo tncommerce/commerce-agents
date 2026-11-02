@@ -36,7 +36,8 @@ def test_snapshot_sync_does_not_change_existing_publication_and_photo_holds() ->
     held = read(DATA / "dufynd_facts_wave_02_review.json")["profiles"]
     originals = read(WEB / "original-photos.json")
     public_base = [
-        p for p in catalog
+        p
+        for p in catalog
         if p.get("product_id", "").startswith("SC-")
         and p.get("category") == "fragrance"
         and p.get("in_stock") is not False
@@ -45,7 +46,9 @@ def test_snapshot_sync_does_not_change_existing_publication_and_photo_holds() ->
     assert len(public_base) == 37
     assert len(published) == len(approvals) == 20
     assert {p["product_id"] for p in published} == {a["product_id"] for a in approvals}
-    assert all(a["publication_approved"] is True and a["indexing_approved"] is True for a in approvals)
+    assert all(
+        a["publication_approved"] is True and a["indexing_approved"] is True for a in approvals
+    )
     assert len(held) == 21
     assert all(p["publication_authorized"] is False for p in held)
     assert len(originals) == 10
