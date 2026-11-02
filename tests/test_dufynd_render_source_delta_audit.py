@@ -8,7 +8,6 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-
 from scripts.audit_dufynd_render_source_delta import audit_release_snapshot, classify
 
 SOURCE = Path("docs/tech/dufynd-render-source-delta-20261102.json")
@@ -172,7 +171,6 @@ def test_docs_only_changes_still_cannot_authorize_release() -> None:
     evidence = copy.deepcopy(actual_evidence())
     head = evidence["observed_repository_head"]
     for component, compare in evidence["github_compares"].items():
-        base = evidence["render_deployments"][component]["deployed_source_sha"]
         compare["base"] = head
         compare["base_commit"] = {"sha": head}
         compare["merge_base_commit"] = {"sha": head}
