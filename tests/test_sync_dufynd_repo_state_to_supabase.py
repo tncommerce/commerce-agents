@@ -187,3 +187,47 @@ def test_sync_preserves_explicit_typed_owner_gate():
     apply_sync_plan(bridge, build_sync_plan(sample_repo_status()))
     content = next(t for t in bridge.tasks if t["task_id"] == "repo_current_content")
     assert content["status"] == "waiting_human_input"
+
+
+def test_snapshot_only_sync_preserves_waiting_model_tasks_after_fingerprint_drift() -> None:
+    bridge = RecordingBridge(
+        existing_tasks={
+            "repo_current_commerce": {
+                "status": "waiting_external",
+                "budget_class": "model",
+                "evidence": "source_fingerprint_sha256=previous-source",
+                "requires_human_approval": False,
+            },
+            "repo_current_content": {
+                "status": "done",
+                "evidence": "source_fingerprint_sha256=previous-source",
+            },
+        }
+    )
+    plan = build_sync_plan(sample_repo_status())
+    assert plan["tasks"][0]["status"] == "ready"
+    apply_sync_plan(bridge, plan, snapshot_only=True)
+    assert [row["key"] for row in bridge.master_rows] == [SNAPSHOT_KEY]
+    assert bridge.tasks == []
+    assert bridge.existing_tasks["repo_current_commerce"]["status"] == "waiting_external"
+    assert bridge.existing_tasks["repo_current_content"]["status"] == "done"
+
+
+def test_snapshot_only_mode_is_only_bound_to_manual_sync_state() -> None:
+    from pathlib import Path
+
+    import yaml
+
+    workflow = yaml.safe_load(
+        Path(".github/workflows/dufynd-jarvis-manual.yml").read_text(encoding="utf-8")
+    )
+    steps = workflow["jobs"]["jarvis"]["steps"]
+    sync_step = next(x for x in steps if x.get("name") == "Sync Jarvis control plane")
+    assert sync_step["env"]["DUFYND_SYNC_STATE_ONLY"] == (
+        "${{ inputs.mode == 'sync-state' && '1' || '0' }}"
+    )
+    script = sync_step["run"]
+    assert "--snapshot-only" in script
+    assert "--write" in script
+    assert "--machine-readable" in script
+    assert "${{ inputs." not in script
