@@ -3,14 +3,23 @@
 from __future__ import annotations
 
 import copy
+import importlib.util
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import pytest
-from scripts.audit_dufynd_render_source_delta import audit_release_snapshot, classify
 
-SOURCE = Path("docs/tech/dufynd-render-source-delta-20261102.json")
+ROOT = Path(__file__).resolve().parents[1]
+SCRIPT = ROOT / "scripts/audit_dufynd_render_source_delta.py"
+SOURCE = ROOT / "docs/tech/dufynd-render-source-delta-20261102.json"
+SPEC = importlib.util.spec_from_file_location("dufynd_render_source_delta", SCRIPT)
+if SPEC is None or SPEC.loader is None:
+    raise RuntimeError("Audit source module is unavailable")
+MODULE = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(MODULE)
+audit_release_snapshot = MODULE.audit_release_snapshot
+classify = MODULE.classify
 
 
 def actual_evidence() -> dict:
