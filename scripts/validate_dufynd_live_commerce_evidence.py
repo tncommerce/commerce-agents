@@ -19,15 +19,35 @@ SNAPSHOT = DATA / "dufynd_live_commerce_evidence_20261102.json"
 PUBLIC_ORIGIN = "https://dufynd.de"
 STOCK_STATES = {"MERCHANT_PAGE_IN_STOCK", "MERCHANT_PAGE_OUT_OF_STOCK"}
 PAGE_FIELDS = {
-    "product_id", "slug", "url", "http_status", "canonical", "robots",
-    "photo_state", "offers_section_rendered", "html_sha256", "html_bytes",
+    "product_id",
+    "slug",
+    "url",
+    "http_status",
+    "canonical",
+    "robots",
+    "photo_state",
+    "offers_section_rendered",
+    "html_sha256",
+    "html_bytes",
 }
 MERCHANT_FIELDS = {
-    "product_id", "merchant_id", "merchant_article", "gtin", "volume_ml",
-    "concentration", "source_page_url", "http_status", "page_title",
-    "observed_stock", "observed_at_utc", "html_sha256", "html_bytes",
-    "price_published", "tracked_link_currently_verified",
-    "merchant_offer_activated", "image_rights_granted",
+    "product_id",
+    "merchant_id",
+    "merchant_article",
+    "gtin",
+    "volume_ml",
+    "concentration",
+    "source_page_url",
+    "http_status",
+    "page_title",
+    "observed_stock",
+    "observed_at_utc",
+    "html_sha256",
+    "html_bytes",
+    "price_published",
+    "tracked_link_currently_verified",
+    "merchant_offer_activated",
+    "image_rights_granted",
 }
 
 
@@ -51,19 +71,32 @@ def _digest(value: str) -> bool:
 
 
 TOP_GALLERY_FIELDS = {
-    "product_id", "merchant_id", "source_page_url", "merchant_product_id",
-    "gtin", "observed_at_utc", "page_http_status", "page_html_sha256",
-    "page_title", "variant_gallery_image_url", "variant_gallery_url_in_live_html",
-    "og_preview_product_sku", "og_preview_gtin", "og_preview_exact_variant",
-    "gift_box_source", "source_image_bytes_downloaded", "source_image_sha256",
-    "exact_front_photo_visually_verified", "merchant_image_rights_final_approved",
-    "owner_visual_approved", "public_photo_activation", "merchant_offer_activation",
+    "product_id",
+    "merchant_id",
+    "source_page_url",
+    "merchant_product_id",
+    "gtin",
+    "observed_at_utc",
+    "page_http_status",
+    "page_html_sha256",
+    "page_title",
+    "variant_gallery_image_url",
+    "variant_gallery_url_in_live_html",
+    "og_preview_product_sku",
+    "og_preview_gtin",
+    "og_preview_exact_variant",
+    "gift_box_source",
+    "source_image_bytes_downloaded",
+    "source_image_sha256",
+    "exact_front_photo_visually_verified",
+    "merchant_image_rights_final_approved",
+    "owner_visual_approved",
+    "public_photo_activation",
+    "merchant_offer_activation",
 }
 
 
-def validate_top_gallery(
-    evidence: dict, public_ids: set, photo_ids: set, mappings: dict
-) -> dict:
+def validate_top_gallery(evidence: dict, public_ids: set, photo_ids: set, mappings: dict) -> dict:
     review = evidence["top_parfuemerie_gallery_crawl"]
     records = review["records"]
     _check(
@@ -95,7 +128,9 @@ def validate_top_gallery(
         pid = row["product_id"]
         mapping = verified_mapping.get(pid)
         _check(
-            mapping is not None and pid in public_ids and pid not in photo_ids
+            mapping is not None
+            and pid in public_ids
+            and pid not in photo_ids
             and row["merchant_id"] == "top-parfuemerie"
             and row["source_page_url"] == mapping.get("evidence_url")
             and row["merchant_product_id"] == mapping["merchant_product_id"]
@@ -115,8 +150,11 @@ def validate_top_gallery(
         _check(
             url.scheme == "https"
             and url.hostname == "www.topparfuemerie.de"
-            and url.username is None and url.password is None
-            and url.query == "" and url.fragment == "" and url.port is None
+            and url.username is None
+            and url.password is None
+            and url.query == ""
+            and url.fragment == ""
+            and url.port is None
             and re.fullmatch(path_contract, url.path) is not None
             and row["variant_gallery_url_in_live_html"] is True,
             "top_gallery_exact_image_url_missing",
@@ -152,7 +190,11 @@ def validate_top_gallery(
         and gifts == review["gift_box_source_hold_count"] == 1,
         "top_gallery_review_summary_mismatch",
     )
-    return {"private_gallery_leads": len(records), "wrong_og_variants": incorrect_og, "giftbox_hold": gifts}
+    return {
+        "private_gallery_leads": len(records),
+        "wrong_og_variants": incorrect_og,
+        "giftbox_hold": gifts,
+    }
 
 
 def validate_evidence(
@@ -189,7 +231,8 @@ def validate_evidence(
     _check(all(safety.get(key) is True for key in required_true), "unsafe_source_claim")
 
     originals_public = {
-        p["product_id"]: p for p in legacy["products"]
+        p["product_id"]: p
+        for p in legacy["products"]
         if not p.get("validation", {}).get("blockers")
     }
     fact_public = {p["product_id"]: p for p in released["profiles"]}
@@ -197,13 +240,16 @@ def validate_evidence(
     photo_ids = {p["product_id"] for p in originals}
     public_ids = set(originals_public) | set(fact_public)
     _check(
-        len(originals_public) == 37 and len(fact_public) == 20
-        and len(held_ids) == 21 and len(photo_ids) == 10,
+        len(originals_public) == 37
+        and len(fact_public) == 20
+        and len(held_ids) == 21
+        and len(photo_ids) == 10,
         "publication_inventory_changed",
     )
     _check(
         not (set(originals_public) & set(fact_public))
-        and not (held_ids & public_ids) and photo_ids <= public_ids,
+        and not (held_ids & public_ids)
+        and photo_ids <= public_ids,
         "public_private_scope_overlap",
     )
 
@@ -238,15 +284,19 @@ def validate_evidence(
             "unsafe_public_slug",
         )
         _check(
-            page["canonical"] == url and page["http_status"] == 200
+            page["canonical"] == url
+            and page["http_status"] == 200
             and page["robots"] == "index, follow"
             and _digest(page["html_sha256"])
-            and type(page["html_bytes"]) is int and page["html_bytes"] > 1000,
+            and type(page["html_bytes"]) is int
+            and page["html_bytes"] > 1000,
             "public_html_proof_missing",
         )
         state = (
-            "STUDIO_HOLD" if pid in fact_public
-            else "VERIFIED_ORIGINAL" if pid in photo_ids
+            "STUDIO_HOLD"
+            if pid in fact_public
+            else "VERIFIED_ORIGINAL"
+            if pid in photo_ids
             else "ORIGINAL_PENDING"
         )
         _check(page["photo_state"] == state, "original_rights_state_inaccurate")
@@ -283,8 +333,7 @@ def validate_evidence(
         "merchant_record_count_or_ttl",
     )
     mapped = {
-        x["product_id"]: x for x in mappings["mappings"]
-        if x.get("merchant") == "perfumetrader"
+        x["product_id"]: x for x in mappings["mappings"] if x.get("merchant") == "perfumetrader"
     }
     stock_count = {"MERCHANT_PAGE_IN_STOCK": 0, "MERCHANT_PAGE_OUT_OF_STOCK": 0}
     observation = _utc(evidence["checked_at_utc"])
@@ -299,9 +348,13 @@ def validate_evidence(
         )
         url = urlsplit(row["source_page_url"])
         _check(
-            url.scheme == "https" and url.hostname == "www.perfumetrader.de"
-            and not url.username and not url.password and not url.query
-            and not url.fragment and not url.port
+            url.scheme == "https"
+            and url.hostname == "www.perfumetrader.de"
+            and not url.username
+            and not url.password
+            and not url.query
+            and not url.fragment
+            and not url.port
             and re.fullmatch(r"/(de|en)/[a-z0-9/-]+", url.path) is not None,
             "merchant_source_not_direct_https",
         )
@@ -313,7 +366,8 @@ def validate_evidence(
             and row["concentration"] == product["concentration"]
             and row["http_status"] == 200
             and _digest(row["html_sha256"])
-            and type(row["html_bytes"]) is int and row["html_bytes"] > 1000,
+            and type(row["html_bytes"]) is int
+            and row["html_bytes"] > 1000,
             "merchant_exact_variant_proof_missing",
         )
         _check(
@@ -333,7 +387,9 @@ def validate_evidence(
         stock_count[row["observed_stock"]] += 1
     _check(
         stock_count["MERCHANT_PAGE_IN_STOCK"] == merchant["in_stock_page_observations"] == 1
-        and stock_count["MERCHANT_PAGE_OUT_OF_STOCK"] == merchant["out_of_stock_page_observations"] == 4,
+        and stock_count["MERCHANT_PAGE_OUT_OF_STOCK"]
+        == merchant["out_of_stock_page_observations"]
+        == 4,
         "merchant_stock_summary_mismatch",
     )
     gallery = validate_top_gallery(evidence, public_ids, photo_ids, mappings)
