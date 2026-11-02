@@ -270,7 +270,9 @@ def test_all_manual_active_approval_gates_run_before_any_state_writes() -> None:
         assert "${{ inputs." not in step["run"]
         assert step["shell"] == "bash"
     assert "GO-JARVIS-ACTIVE" in steps[names.index("Validate explicit active-run approval")]["run"]
-    assert "GO-JARVIS-NIGHTSHIFT" in steps[names.index("Validate explicit Nightshift pilot approval")]["run"]
+    assert (
+        "GO-JARVIS-NIGHTSHIFT" in steps[names.index("Validate explicit Nightshift pilot approval")]["run"]
+    )
 
 
 def test_sync_state_retains_snapshot_only_after_early_approval_gates() -> None:
