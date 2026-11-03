@@ -18,7 +18,7 @@ from urllib.parse import urlencode, urlsplit
 import httpx
 import jwt
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 from scripts.dufynd_observer_credentials import (
     GMAIL_SCOPE,
     KNOWN_THREADS,
@@ -35,6 +35,12 @@ from scripts.dufynd_observer_credentials import (
     metadata,
 )
 
+from private_broker.scheduler_oidc import (
+    GOOGLE_SCHEDULER_JWKS,
+    SCHEDULER_PATH,
+    SERVICE_ACCOUNT_PATTERN,
+    SchedulerOIDC,
+)
 from private_broker.store import EncryptedVault, FirestoreCAS
 
 ISSUER = "https://token.actions.githubusercontent.com"
@@ -53,6 +59,7 @@ class Config:
     repository_id: str = ""
     callback_logging_ready: bool = False
     render_services_v2: bool = False
+    scheduler_sa_email: str = ""  # Default off unless owner pins service-account identity.
 
     def validate(self):
         if type(self.render_services_v2) is not bool:
@@ -64,7 +71,8 @@ class Config:
             or url.path
             or url.query
             or url.fragment
-            or url.username
+            or url.username is not None
+            or url.password is not None
             or url.port not in {None, 443}
         ):
             raise BrokerError("missing_configuration")
@@ -72,6 +80,10 @@ class Config:
             not re.fullmatch(r"[^\s@]+@[^\s@]+", self.mailbox)
             or len(self.owner_key) < 32
             or not self.repository_id.isdigit()
+            or (
+                self.scheduler_sa_email
+                and not SERVICE_ACCOUNT_PATTERN.fullmatch(self.scheduler_sa_email)
+            )
         ):
             raise BrokerError("missing_configuration")
 
@@ -252,7 +264,13 @@ class OAuth:
             return {"status": "authorized"}
 
 
-def create_app(config: Config, vault: EncryptedVault, transport: FixedTransport, auth):
+def create_app(
+    config: Config,
+    vault: EncryptedVault,
+    transport: FixedTransport,
+    auth,
+    scheduler_auth=None,
+):
     config.validate()
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None, redirect_slashes=False)
     oauth = OAuth(config, vault, transport)
@@ -266,6 +284,20 @@ def create_app(config: Config, vault: EncryptedVault, transport: FixedTransport,
                 supplied = request.headers.get("authorization", "")
                 if not hmac.compare_digest(supplied, "Bearer " + config.owner_key):
                     raise BrokerError("broker_activation_required")
+            elif request.url.path == SCHEDULER_PATH:
+                if (
+                    request.method != "POST"
+                    or request.url.query
+                    or request.headers.get("transfer-encoding")
+                    or request.headers.get("content-length") not in (None, "0")
+                    or scheduler_auth is None
+                    or not config.scheduler_sa_email
+                ):
+                    raise BrokerError("broker_activation_required")
+                token = request.headers.get("authorization", "")
+                if not token.startswith("Bearer ") or len(token) > 16000:
+                    raise BrokerError("broker_activation_required")
+                scheduler_auth.verify(token[7:])
             elif request.url.path != "/oauth/gmail/callback":
                 token = request.headers.get("authorization", "")
                 if not token.startswith("Bearer ") or len(token) > 16000:
@@ -339,6 +371,14 @@ def create_app(config: Config, vault: EncryptedVault, transport: FixedTransport,
             "observed_at": datetime.now(UTC).isoformat(),
             "deployments": result,
         }
+
+    @app.post(SCHEDULER_PATH, status_code=204)
+    def scheduler_refresh(request: Request):
+        if request.url.query:
+            raise BrokerError("scope_mismatch")
+        # Rotation only; no Gmail reads, cursors, ACK or Supabase integration.
+        GmailRefreshBroker(vault, transport).refresh()
+        return Response(status_code=204)
 
     @app.get("/v1/health")
     def health():
@@ -496,6 +536,7 @@ def production_app():
         os.environ["BROKER_REPOSITORY_ID"],
         os.environ.get("BROKER_CALLBACK_LOGGING_READY") == "1",
         render_scope == "api-storefront-v2",
+        scheduler_sa_email=os.environ.get("BROKER_GMAIL_SCHEDULER_SA_EMAIL", ""),
     )
     client = httpx.Client(trust_env=False)
     vault = EncryptedVault(
@@ -503,9 +544,19 @@ def production_app():
         base64.b64decode(secret("encryption-key"), validate=True),
     )
     keys = jwt.PyJWKClient(ISSUER + "/.well-known/jwks", cache_keys=False, lifespan=300, timeout=5)
-    return create_app(
+    scheduler_auth = None
+    if config.scheduler_sa_email:
+        google_keys = jwt.PyJWKClient(
+            GOOGLE_SCHEDULER_JWKS, cache_keys=False, lifespan=300, timeout=5
+        )
+        scheduler_auth = SchedulerOIDC(config, google_keys)
+    app_args = (
         config,
         vault,
         FixedTransport(client, render_services_v2=config.render_services_v2),
         WorkloadAuth(config, keys),
     )
+    if scheduler_auth is None:
+        # Default-off deployments retain the four-argument application factory.
+        return create_app(*app_args)
+    return create_app(*app_args, scheduler_auth)
