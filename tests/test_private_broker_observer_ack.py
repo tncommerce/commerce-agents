@@ -104,7 +104,6 @@ def test_broker_ack_rejects_any_userinfo_before_oidc(monkeypatch, tmp_path, orig
         observer_ack.acknowledge(origin, plan, client_factory=refuse_network)
 
 
-
 def test_acknowledges_fixed_plan_then_verifies_idempotency(monkeypatch, tmp_path: Path) -> None:
     configure_oidc(monkeypatch)
     plan = tmp_path / "broker-acks.json"
