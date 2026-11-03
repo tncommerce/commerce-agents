@@ -30,8 +30,10 @@ def parse_timestamp(value: object) -> datetime | None:
     except ValueError:
         return None
 
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=UTC)
+    # A timestamp without an explicit timezone cannot certify current source data.
+    # Never infer UTC from the runner's or database writer's local environment.
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        return None
     return parsed.astimezone(UTC)
 
 
@@ -67,9 +69,10 @@ def evaluate_freshness(
     if not isinstance(snapshot_value, dict):
         snapshot_value = {}
 
+    # last_verified_at is a database metadata/write timestamp, not proof of when
+    # the canonical source snapshot was generated. It must never make stale
+    # or malformed embedded source data appear fresh.
     supabase_generated_at = parse_timestamp(snapshot_value.get("generated_at"))
-    if supabase_generated_at is None and isinstance(snapshot, dict):
-        supabase_generated_at = parse_timestamp(snapshot.get("last_verified_at"))
 
     supabase_fingerprint = str(snapshot_value.get("source_fingerprint_sha256") or "").strip()
 
