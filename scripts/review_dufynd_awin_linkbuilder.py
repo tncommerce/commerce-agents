@@ -8,11 +8,11 @@ never manufactures affiliate links and never prints the returned URL.
 from __future__ import annotations
 
 import argparse
-from datetime import datetime, timezone
 import hashlib
 import http.client
 import json
 import os
+from datetime import UTC, datetime
 from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
 
@@ -111,7 +111,7 @@ def write_private_receipt(path: Path, result: dict) -> dict:
         raise VerificationError("receipt_parent_missing")
     receipt = {
         "scope": "private_official_awin_linkbuilder_receipt",
-        "checked_at_utc": datetime.now(timezone.utc).isoformat(),
+        "checked_at_utc": datetime.now(UTC).isoformat(),
         "publisher_id": PUBLISHER_ID,
         "advertiser_id": ADVERTISER_ID,
         "destination_url": DESTINATION,
