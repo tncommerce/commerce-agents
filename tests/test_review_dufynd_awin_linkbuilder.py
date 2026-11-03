@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import importlib.util
 import json
-from pathlib import Path
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
 from urllib.parse import urlencode
 
@@ -98,9 +98,11 @@ class TestLinkBuilder(unittest.TestCase):
             def getresponse(self):
                 return FakeResponse(status=403)
 
-        with patch.object(module.http.client, "HTTPSConnection", Denied):
-            with self.assertRaises(module.VerificationError):
-                module.fetch_from_awin("dummy")
+        with (
+            patch.object(module.http.client, "HTTPSConnection", Denied),
+            self.assertRaises(module.VerificationError),
+        ):
+            module.fetch_from_awin("dummy")
 
     def test_private_receipt_created_once_without_stdout_url(self):
         with tempfile.TemporaryDirectory() as temp:
