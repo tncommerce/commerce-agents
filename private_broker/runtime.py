@@ -550,10 +550,13 @@ def production_app():
             GOOGLE_SCHEDULER_JWKS, cache_keys=False, lifespan=300, timeout=5
         )
         scheduler_auth = SchedulerOIDC(config, google_keys)
-    return create_app(
+    app_args = (
         config,
         vault,
         FixedTransport(client, render_services_v2=config.render_services_v2),
         WorkloadAuth(config, keys),
-        scheduler_auth,
     )
+    if scheduler_auth is None:
+        # Default-off deployments retain the four-argument application factory.
+        return create_app(*app_args)
+    return create_app(*app_args, scheduler_auth)
