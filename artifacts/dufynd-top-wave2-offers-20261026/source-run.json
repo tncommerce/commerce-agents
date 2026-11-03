@@ -1,0 +1,83 @@
+{
+  "run_id": 40347496483,
+  "job_id": 121658227071,
+  "head": "afda17e192b2bfa93b526111ad340ae20e9b9794",
+  "url": "https://github.com/tncommerce/commerce-agents/actions/runs/40347496483",
+  "status": "success",
+  "jobs": [
+    {
+      "id": 121658227071,
+      "name": "review-next-public-photo-gaps",
+      "status": "completed",
+      "conclusion": "success",
+      "run_id": 40347496483,
+      "logs_url": null,
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1
+        },
+        {
+          "name": "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2
+        },
+        {
+          "name": "Read official Awin feed and emit bounded next-wave review rows",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3
+        },
+        {
+          "name": "Remove downloaded source files",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4
+        },
+        {
+          "name": "Post Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 8
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 9
+        }
+      ]
+    },
+    {
+      "id": 121658229151,
+      "name": "revalidate-top-parfuemerie",
+      "status": "completed",
+      "conclusion": "skipped",
+      "run_id": 40347496483,
+      "logs_url": null,
+      "steps": null
+    }
+  ],
+  "timing": {
+    "billable": {
+      "UBUNTU": {
+        "total_ms": 0,
+        "jobs": 2,
+        "job_runs": [
+          {
+            "job_id": 121658227071,
+            "duration_ms": 0
+          },
+          {
+            "job_id": 121658229151,
+            "duration_ms": 0
+          }
+        ]
+      }
+    },
+    "run_duration_ms": 21000
+  }
+}

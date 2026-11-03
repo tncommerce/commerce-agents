@@ -1,6 +1,7 @@
 "use client";
+import CatalogReturnLink from "@/components/CatalogReturnLink";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { formatMoney } from "web-shared";
 
 import {
@@ -9,14 +10,29 @@ import {
 } from "@/lib/api";
 import {
   appendAcquisitionAttribution,
-  ensureAnalyticsSession,
   trackAnalyticsEvent,
 } from "@/lib/analytics";
 import { measurementAllowed, subscribeMeasurement } from "@/lib/measurementConsent";
 import type { MerchantOffersPayload } from "@/lib/types";
 import { OFFICIAL_PRODUCT_PAGES } from "@/lib/officialProductPages";
-import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import styles from "./FragranceOffers.module.css";
+
+// Recheck returning tabs without polling. A single deadline timer below also
+// covers a buyer who keeps the page visible across the API's 72-hour window.
+const RETURN_RECHECK_INTERVAL_MS = 5 * 60 * 1000;
+const OFFER_MAX_AGE_MS = 72 * 60 * 60 * 1000;
+const OFFER_CLOCK_SKEW_MS = 5 * 60 * 1000;
+
+function earliestOfferExpiry(payload: MerchantOffersPayload): number | null {
+  let deadline = Number.POSITIVE_INFINITY;
+  const now = Date.now();
+  for (const offer of payload.offers) {
+    const verifiedAt = Date.parse(offer.last_updated_at);
+    if (!Number.isFinite(verifiedAt) || verifiedAt > now + OFFER_CLOCK_SKEW_MS) return null;
+    deadline = Math.min(deadline, verifiedAt + OFFER_MAX_AGE_MS);
+  }
+  return deadline;
+}
 
 function OfferRecoveryLinks({ alternativesHref }: { alternativesHref?: string }) {
   return (
@@ -26,9 +42,9 @@ function OfferRecoveryLinks({ alternativesHref }: { alternativesHref?: string })
           Ähnliche Düfte entdecken
         </a>
       ) : null}
-      <AcquisitionInternalLink href="/duft" className="inline-flex min-h-11 items-center rounded-xl border border-(--line-strong) px-4 py-2 text-[12px] font-semibold text-(--accent-ink)">
+      <CatalogReturnLink href="/duft" className="inline-flex min-h-11 items-center rounded-xl border border-(--line-strong) px-4 py-2 text-[12px] font-semibold text-(--accent-ink)">
         Weitere Düfte & Angebote entdecken
-      </AcquisitionInternalLink>
+      </CatalogReturnLink>
     </nav>
   );
 }
@@ -89,36 +105,55 @@ export default function FragranceOffers({
   /** Compact commerce presentation for the existing first-money product page. */
   focusedLanding?: boolean;
 }) {
-  const [payload, setPayload] = useState<
-    MerchantOffersPayload | null | undefined
-  >(undefined);
+  // Bind each settled result (including errors) atomically to the request that
+  // produced it. A tab-return state update renders before passive effects run.
+  const [response, setResponse] = useState<{
+    productId: string;
+    reloadToken: number;
+    payload: MerchantOffersPayload | null | undefined;
+  } | undefined>(undefined);
+  const payload = response?.payload;
   const [loadError, setLoadError] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
-  const [clickoutSessionReady, setClickoutSessionReady] = useState(false);
+  // Consent changes must synchronously re-render link attribution, not wait on
+  // the optional analytics session. No sensitive data is stored by this tick.
+  const [, refreshConsentHref] = useState(0);
   const trackedDetailViewRef = useRef<string | null>(null);
   const offerSectionRef = useRef<HTMLElement | null>(null);
   const trackedOfferViewRef = useRef<string | null>(null);
+  const lastOfferFetchStartedAtRef = useRef(0);
+  const currentRequestRef = useRef<{
+    expiresAt: number | null;
+    revalidationPending: boolean;
+  } | null>(null);
+  const expiresAt = payload && response?.productId === productId &&
+    response?.reloadToken === reloadToken ? earliestOfferExpiry(payload) : null;
+
+  useLayoutEffect(() => {
+    // Only a committed render can replace the visible offer's ownership.
+    // An interrupted candidate render must leave its timer and observer intact.
+    const request = { expiresAt, revalidationPending: false };
+    currentRequestRef.current = request;
+    return () => {
+      if (currentRequestRef.current === request) currentRequestRef.current = null;
+    };
+  }, [analyticsSurface, expiresAt, productId, reloadToken, trackProductOpen]);
 
   // Consent can change after this product mounted. Observe that choice without
   // re-fetching the functional offers or replaying pre-consent shopping actions.
   useEffect(() => {
-    let active = true;
-    let attempt = 0;
     const refreshMeasurement = () => {
-      const currentAttempt = ++attempt;
+      // Rebuild the existing clickout href for grant and withdrawal alike.
+      // A verified merchant CTA remains available throughout the update.
+      refreshConsentHref((revision) => revision + 1);
       if (!measurementAllowed()) {
         trackedDetailViewRef.current = null;
-        setClickoutSessionReady(true);
         return;
       }
 
-      setClickoutSessionReady(false);
-      void ensureAnalyticsSession().finally(() => {
-        if (active && currentAttempt === attempt && measurementAllowed()) {
-          setClickoutSessionReady(true);
-        }
-      });
-
+      // Shopping never waits on the optional analytics-session transport.
+      // The clickout GET is public and independently revalidates the offer.
+      // trackAnalyticsEvent keeps best-effort, consent-bound first-party data.
       const detailViewKey = `${productId}:${analyticsSurface}`;
       if (trackProductOpen && trackedDetailViewRef.current !== detailViewKey) {
         trackedDetailViewRef.current = detailViewKey;
@@ -133,21 +168,28 @@ export default function FragranceOffers({
     const unsubscribe = subscribeMeasurement(refreshMeasurement);
     refreshMeasurement();
     return () => {
-      active = false;
-      attempt += 1;
       unsubscribe();
     };
   }, [analyticsSurface, productId, reloadToken, trackProductOpen]);
 
   useEffect(() => {
     let active = true;
+    const setPayload = (value: MerchantOffersPayload | null | undefined) => {
+      setResponse({ productId, reloadToken, payload: value });
+    };
     setLoadError(false);
     setPayload(undefined);
+    lastOfferFetchStartedAtRef.current = Date.now();
 
     void fetchMerchantOffers(productId)
       .then((value) => {
         if (!active) return;
-        if (value === null) {
+        // Reject a response for a different fragrance; never reuse its purchase links.
+        const deadline = value === null ? null : earliestOfferExpiry(value);
+        if (value === null || value.product_id !== productId ||
+            deadline === null || deadline <= Date.now()) {
+          // A cached or late response cannot revive an expired purchase link.
+          // Settle as an error rather than automatically retrying it in a loop.
           setLoadError(true);
           setPayload(null);
           return;
@@ -164,8 +206,58 @@ export default function FragranceOffers({
   }, [analyticsSurface, productId, reloadToken, trackProductOpen]);
 
   useEffect(() => {
+    const recheckOnReturn = () => {
+      if (document.visibilityState !== "visible") return;
+      const request = currentRequestRef.current;
+      if (!request || request.revalidationPending) return;
+      const expired = request.expiresAt !== null && request.expiresAt <= Date.now();
+      if (!expired && Date.now() - lastOfferFetchStartedAtRef.current < RETURN_RECHECK_INTERVAL_MS) return;
+      // The same fail-closed API fetch runs again. No clickout or measurement
+      // event is emitted by this functional freshness check.
+      // Reserve the recheck immediately; pageshow and visibilitychange may both
+      // fire before React commits the reload and starts the next request.
+      request.revalidationPending = true;
+      lastOfferFetchStartedAtRef.current = Date.now();
+      setReloadToken((current) => current + 1);
+    };
+    document.addEventListener("visibilitychange", recheckOnReturn);
+    window.addEventListener("pageshow", recheckOnReturn);
+    return () => {
+      document.removeEventListener("visibilitychange", recheckOnReturn);
+      window.removeEventListener("pageshow", recheckOnReturn);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (expiresAt === null || !Number.isFinite(expiresAt)) return;
+    const request = currentRequestRef.current;
+    if (!request) return;
+    let active = true;
+    const timeoutId = setTimeout(() => {
+      // The captured identity also guards a queued timer during a product
+      // change, before passive-effect cleanup has had a chance to run.
+      if (!active || currentRequestRef.current !== request || request.revalidationPending) return;
+      // Hidden tabs defer this one functional read until their return handler.
+      if (document.visibilityState !== "visible") return;
+      request.revalidationPending = true;
+      lastOfferFetchStartedAtRef.current = Date.now();
+      setReloadToken((current) => current === reloadToken ? current + 1 : current);
+    }, Math.max(1, expiresAt - Date.now()));
+    return () => {
+      active = false;
+      clearTimeout(timeoutId);
+    };
+  }, [analyticsSurface, expiresAt, productId, reloadToken, trackProductOpen]);
+
+  useEffect(() => {
     const section = offerSectionRef.current;
-    if (!section || !payload || payload.offers.length === 0) return;
+    if (!section || !payload || payload.offers.length === 0 ||
+        response?.productId !== productId || response?.reloadToken !== reloadToken ||
+        expiresAt === null || expiresAt <= Date.now()) return;
+    const request = currentRequestRef.current;
+    if (!request) return;
+    const isCurrentOffer = () => currentRequestRef.current === request &&
+      !request.revalidationPending && expiresAt > Date.now();
     const impressionKey = `${productId}:${analyticsSurface}`;
     let observer: IntersectionObserver | null = null;
     let observation = 0;
@@ -179,9 +271,9 @@ export default function FragranceOffers({
         trackedOfferViewRef.current = null;
         return;
       }
-      if (trackedOfferViewRef.current === impressionKey) return;
+      if (!isCurrentOffer() || trackedOfferViewRef.current === impressionKey) return;
       const trackImpression = () => {
-        if (!active || currentObservation !== observation || !measurementAllowed() ||
+        if (!active || !isCurrentOffer() || currentObservation !== observation || !measurementAllowed() ||
             trackedOfferViewRef.current === impressionKey) return;
         trackedOfferViewRef.current = impressionKey;
         void trackAnalyticsEvent("offer_section_view", {
@@ -191,11 +283,12 @@ export default function FragranceOffers({
         });
       };
       if (typeof IntersectionObserver === "undefined") {
-        trackImpression();
+        // No viewport proof: do not report an offer impression merely because
+        // offers loaded. Shopping and navigation remain fully functional.
         return;
       }
       observer = new IntersectionObserver(([entry]) => {
-        if (!active || currentObservation !== observation ||
+        if (!active || !isCurrentOffer() || currentObservation !== observation ||
             !entry?.isIntersecting || entry.intersectionRatio < 0.35) return;
         trackImpression();
         observer?.disconnect();
@@ -210,9 +303,14 @@ export default function FragranceOffers({
       observer?.disconnect();
       unsubscribe();
     };
-  }, [analyticsSurface, payload, productId]);
+  }, [analyticsSurface, expiresAt, payload, productId, reloadToken,
+      response?.productId, response?.reloadToken, trackProductOpen]);
 
-  if (payload === undefined) {
+  // Product props can change before the passive fetch effect clears old data.
+  // Never render the previous fragrance's offer or CTA in that intermediate render.
+  if (payload === undefined || response?.productId !== productId ||
+      response?.reloadToken !== reloadToken ||
+      (payload !== null && payload.product_id !== productId)) {
     return (
       <section
         className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}
@@ -226,7 +324,8 @@ export default function FragranceOffers({
     );
   }
 
-  if (loadError) {
+  if (loadError || (payload !== null && payload.offers.length > 0 &&
+      (expiresAt === null || expiresAt <= Date.now()))) {
     return (
       <section data-offer-state="error" className={`dufynd-journey-offers rounded-2xl border border-(--line) bg-(--card) ${compact ? "p-4" : "p-5"} shadow-(--shadow-sm)`}>
         <h2 className="text-[17px] font-semibold text-(--ink)">
@@ -361,8 +460,7 @@ export default function FragranceOffers({
                   </div>
                 ) : null}
               </div>
-              {clickoutSessionReady ? (
-                <a
+              <a
                   href={appendAcquisitionAttribution(merchantClickoutUrl(offer.clickout_path))}
                   target="_blank"
                   title="Öffnet einen neuen Tab"
@@ -381,15 +479,6 @@ export default function FragranceOffers({
                 >
                   Bei {offer.merchant_name} ansehen <span aria-hidden="true" className="ml-2">↗</span>
                 </a>
-              ) : (
-                <span
-                  aria-disabled="true"
-                  data-clickout-preparing
-                  className={`${styles.merchantAction} inline-flex items-center justify-center w-full cursor-wait rounded-xl px-4 py-2.5 text-center text-[13px] font-semibold text-white opacity-70 sm:w-auto ${best ? "bg-(--accent-strong)" : "bg-(--ink)"}`}
-                >
-                  Link wird vorbereitet …
-                </span>
-              )}
             </div>
           );
         })}

@@ -41,7 +41,7 @@ CONFIG = Config(
     "render-secret-canary",
     "12345",
     True,
-    EMAIL,
+    scheduler_sa_email=EMAIL,
 )
 
 
@@ -204,6 +204,20 @@ def test_scheduler_can_refresh_but_not_read_ack_or_admin():
     assert "refresh-canary" not in reply.text
     assert "new-access-canary" not in reply.text
     assert not json.loads(json.dumps({"status": "read-only"})).get("secret")
+
+
+@pytest.mark.parametrize(
+    "bad_origin",
+    [
+        "https://@broker.example.com",
+        "https://:embedded-secret@broker.example.com",
+        "https://user:@broker.example.com",
+        "https://user:embedded-secret@broker.example.com",
+    ],
+)
+def test_scheduler_origin_rejects_embedded_userinfo_before_any_token_use(bad_origin):
+    with pytest.raises(BrokerError, match="missing_configuration"):
+        replace(CONFIG, origin=bad_origin).validate()
 
 
 def test_scheduler_feature_not_enabled_by_default():

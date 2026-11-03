@@ -1,0 +1,732 @@
+{
+  "schema_version": 1,
+  "status": "STATIC_SOURCE_ACQUISITION_HANDOFF_NOT_LIVE",
+  "basis_date": "2026-10-24",
+  "basis_repository": "tncommerce/commerce-agents",
+  "basis_ref": "043c476df0ca5484c6891015ab0ace9401dbe988",
+  "selection_rule": "first_20_unpublished_staging_products",
+  "total_staging": 50,
+  "already_public_in_staging": 5,
+  "unpublished_total": 45,
+  "batch_size": 20,
+  "summary": {
+    "SOURCE_ACQUISITION_HOLD": 18,
+    "TRACKED_ROUTE_IMAGE_HOLD": 1,
+    "GTIN_CONFLICT_HOLD": 1,
+    "known_merchant_mappings_by_type": {
+      "douglas": {
+        "mapped": 16,
+        "verified_sku_gtin": 1
+      },
+      "flaconi": {
+        "mapped": 11,
+        "verified_sku_gtin": 0
+      },
+      "parfumgroup": {
+        "mapped": 2,
+        "verified_sku_gtin": 0
+      },
+      "sephora": {
+        "mapped": 3,
+        "verified_sku_gtin": 0
+      },
+      "parfumdreams": {
+        "mapped": 3,
+        "verified_sku_gtin": 0
+      },
+      "jean-paul-gaultier": {
+        "mapped": 1,
+        "verified_sku_gtin": 0
+      },
+      "notino": {
+        "mapped": 3,
+        "verified_sku_gtin": 0
+      },
+      "oriental-style": {
+        "mapped": 1,
+        "verified_sku_gtin": 0
+      },
+      "dm": {
+        "mapped": 1,
+        "verified_sku_gtin": 0
+      },
+      "perfumetrader": {
+        "mapped": 2,
+        "verified_sku_gtin": 0
+      }
+    },
+    "registered_original_photos": 0,
+    "historical_affiliate_routes": 1,
+    "recorded_gtin_conflicts": 1
+  },
+  "manual_priority_order": [
+    "SC-LATTAFA-ECLAIRE-EDP-100",
+    "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+    "SC-BURBERRY-GODDESS-EDP-100",
+    "SC-HUGO-BOSS-BOTTLED-EDT-100",
+    "SC-JPG-LE-MALE-LE-PARFUM-125",
+    "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+    "SC-PRADA-LHOMME-INTENSE-EDP-100",
+    "SC-PRADA-PARADOXE-EDP-90",
+    "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+    "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+    "SC-CHLOE-CHLOE-EDP-100",
+    "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+    "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+    "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+    "SC-LATTAFA-ANGHAM-EDP-100",
+    "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+    "SC-YSL-MYSLF-LE-PARFUM-100",
+    "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+    "SC-DIOR-SAUVAGE-ELIXIR-100",
+    "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100"
+  ],
+  "source_guard": "Recorded merchant SKU/GTIN is not fresh partner approval or rights proof; name-only feed matches are human review leads, never auto mapping",
+  "auth_cj_notino_feed_verified": false,
+  "auth_awin_current_feed_91379_verified": false,
+  "prices_stock_shipping_authenticated_now": false,
+  "image_rights_approved_for_new_assets": false,
+  "offer_writes": 0,
+  "publications": 0,
+  "affiliate_clickouts": 0,
+  "items": [
+    {
+      "rank": 1,
+      "product_id": "SC-BURBERRY-GODDESS-EDP-100",
+      "brand": "Burberry",
+      "name": "Goddess",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011035040",
+          "recorded_gtin": "3616302020652",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "90001263-0001775",
+          "recorded_gtin": "3616302020652",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 2,
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "1010209304",
+          "recorded_gtin": "0737052351100",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": null,
+          "recorded_gtin": "0737052351100",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 3,
+      "product_id": "SC-JPG-LE-MALE-LE-PARFUM-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Le Parfum",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 125,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5002490497",
+          "recorded_gtin": "8435415032315",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "parfumgroup",
+          "merchant_product_id": null,
+          "recorded_gtin": "8435415032315",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 4,
+      "product_id": "SC-NARCISO-RODRIGUEZ-PURE-MUSC-EDP-100",
+      "brand": "Narciso Rodriguez",
+      "name": "for her PURE MUSC",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3001052443",
+          "recorded_gtin": "3423478515956",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": null,
+          "recorded_gtin": "3423478515956",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "sephora",
+          "merchant_product_id": "467702",
+          "recorded_gtin": "3423478515956",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 5,
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "brand": "Prada",
+      "name": "L'Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3001037535",
+          "recorded_gtin": "8435137764730",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": null,
+          "recorded_gtin": "8435137764730",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 6,
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "brand": "Prada",
+      "name": "Paradoxe",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5010687030",
+          "recorded_gtin": "3614273760164",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80070411-90",
+          "recorded_gtin": "3614273760164",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 7,
+      "product_id": "SC-VIKTOR-ROLF-SPICEBOMB-EXTREME-EDP-90",
+      "brand": "Viktor & Rolf",
+      "name": "Spicebomb Extreme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "3001012427",
+          "recorded_gtin": "3614270659706",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "parfumdreams",
+          "merchant_product_id": null,
+          "recorded_gtin": "3614270659706",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 8,
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "brand": "Amouage",
+      "name": "Guidance 46",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011534080",
+          "recorded_gtin": "0701666410980",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "parfumdreams",
+          "merchant_product_id": "131905",
+          "recorded_gtin": "0701666410980",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 9,
+      "product_id": "SC-CHLOE-CHLOE-EDP-100",
+      "brand": "Chloé",
+      "name": "Chloé",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "2010007429",
+          "recorded_gtin": "3616302038633",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "80070876-100",
+          "recorded_gtin": "3616302038633",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "sephora",
+          "merchant_product_id": "620496",
+          "recorded_gtin": "3616302038633",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 10,
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled Absolu",
+      "concentration": "Parfum Intense",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011497004",
+          "recorded_gtin": "3616305480620",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "90007350-0011241",
+          "recorded_gtin": "3616305480620",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 11,
+      "product_id": "SC-JPG-FLEUR-DU-MALE-2026-EDT-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Fleur du Mâle (2026)",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 125,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "jean-paul-gaultier",
+          "merchant_product_id": "000000000065228018",
+          "recorded_gtin": null,
+          "mapping_status": "verified_current_variant"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 12,
+      "product_id": "SC-KAYALI-YUM-BOUJEE-MARSHMALLOW-81-EDPI-100",
+      "brand": "Kayali",
+      "name": "Yum Boujee Marshmallow | 81",
+      "concentration": "Eau de Parfum Intense",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "notino",
+          "merchant_product_id": "KAY01896",
+          "recorded_gtin": "6294018405283",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "sephora",
+          "merchant_product_id": "733612",
+          "recorded_gtin": "6294018405283",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 13,
+      "product_id": "SC-LATTAFA-ANGHAM-EDP-100",
+      "brand": "Lattafa",
+      "name": "Angham",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "notino",
+          "merchant_product_id": "LTF00992",
+          "recorded_gtin": null,
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "oriental-style",
+          "merchant_product_id": "SP-LTT-AGH",
+          "recorded_gtin": "6291108738924",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 14,
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "brand": "Lattafa",
+      "name": "Eclaire",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": true,
+      "review_priority": "TRACKED_ROUTE_IMAGE_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "dm",
+          "merchant_product_id": "3061570",
+          "recorded_gtin": "6290362340638",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "notino",
+          "merchant_product_id": "LTF00869",
+          "recorded_gtin": "6290362340638",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 15,
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "brand": "Parfums de Marly",
+      "name": "Valaya Exclusif",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011718153",
+          "recorded_gtin": "3700578505767",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "90012283-0019379",
+          "recorded_gtin": "3700578505767",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "parfumdreams",
+          "merchant_product_id": "136630-221001",
+          "recorded_gtin": "3700578505767",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 16,
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "brand": "Yves Saint Laurent",
+      "name": "MYSLF Le Parfum",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011499070",
+          "recorded_gtin": "3614274114645",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": null,
+          "recorded_gtin": "3614274114645",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 17,
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "brand": "Amouage",
+      "name": "Reflection Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "GTIN_CONFLICT_HOLD",
+      "recorded_gtin_conflict": true,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5010864026",
+          "recorded_gtin": "0701666410058",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "perfumetrader",
+          "merchant_product_id": "48029617",
+          "recorded_gtin": "701666312055",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 18,
+      "product_id": "SC-DIOR-HYPNOTIC-POISON-EDT-100",
+      "brand": "Dior",
+      "name": "Hypnotic Poison",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "1069032304",
+          "recorded_gtin": "3348900425309",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": "20101775",
+          "recorded_gtin": "3348900425309",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "perfumetrader",
+          "merchant_product_id": "33204791",
+          "recorded_gtin": "3348900425309",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 19,
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "brand": "Dior",
+      "name": "Sauvage Elixir",
+      "concentration": "Elixir",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5010236005",
+          "recorded_gtin": "3348901640916",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        },
+        {
+          "merchant": "parfumgroup",
+          "merchant_product_id": null,
+          "recorded_gtin": "3348901640916",
+          "mapping_status": "NOT_VERIFIED_CURRENT_VARIANT"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    },
+    {
+      "rank": 20,
+      "product_id": "SC-DOLCE-GABBANA-THE-ONE-MEN-EDP-2025-100",
+      "brand": "Dolce & Gabbana",
+      "name": "The One for Men (2025)",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "already_public": false,
+      "existing_original_registered": false,
+      "historical_affiliate_link_recorded": false,
+      "review_priority": "SOURCE_ACQUISITION_HOLD",
+      "recorded_gtin_conflict": false,
+      "recorded_variant_ids": [
+        {
+          "merchant": "douglas",
+          "merchant_product_id": "5011977029",
+          "recorded_gtin": "8056669925859",
+          "mapping_status": "verified_current_variant"
+        },
+        {
+          "merchant": "flaconi",
+          "merchant_product_id": null,
+          "recorded_gtin": "8056669925859",
+          "mapping_status": "verified_current_variant"
+        }
+      ],
+      "source_check": "NO_FRESH_OFFICIAL_FEED_EVIDENCE",
+      "photo_review_status": "OWNER_VISUAL_REVIEW_REQUIRED",
+      "photo_license_approved_by_manifest": false,
+      "product_release_authorized": false
+    }
+  ]
+}

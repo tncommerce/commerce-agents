@@ -1,0 +1,238 @@
+{
+  "checked_at": "2026-10-26T13:12:23.670Z",
+  "scope": "Isolated local candidate with both image patches applied; original image responses fulfilled with the freshly hash-verified source bytes. Public API requests blocked, never substituted with live-offer mocks. No deployment.",
+  "public_profile_count": 37,
+  "development_original_photo_count": 10,
+  "production_original_photo_count": 4,
+  "affiliate_or_analytics_requests": 0,
+  "checks": [
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_sku": "924719",
+      "route": "/duft/essential-parfums-bois-imperial",
+      "width": 390,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
+      "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+      "source_size": [
+        286,
+        600
+      ],
+      "display_size": [
+        123.921875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant_sku": "707368",
+      "route": "/duft/rabanne-1-million",
+      "width": 390,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
+      "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+      "source_size": [
+        229,
+        600
+      ],
+      "display_size": [
+        99.21875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "merchant_sku": "849484",
+      "route": "/duft/giorgio-armani-stronger-with-you-intensely",
+      "width": 390,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+      "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+      "source_size": [
+        381,
+        600
+      ],
+      "display_size": [
+        165.09375,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "merchant_sku": "812773",
+      "route": "/duft/parfums-de-marly-layton",
+      "width": 390,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
+      "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+      "source_size": [
+        270,
+        524
+      ],
+      "display_size": [
+        133.96875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "merchant_sku": "897029",
+      "route": "/duft/valentino-uomo-born-in-roma-intense",
+      "width": 390,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
+      "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+      "source_size": [
+        361,
+        600
+      ],
+      "display_size": [
+        156.421875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "merchant_sku": "904707",
+      "route": "/duft/parfums-de-marly-althair",
+      "width": 390,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
+      "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
+      "source_size": [
+        800,
+        800
+      ],
+      "display_size": [
+        260,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_sku": "924719",
+      "route": "/duft/essential-parfums-bois-imperial",
+      "width": 1440,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
+      "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+      "source_size": [
+        286,
+        600
+      ],
+      "display_size": [
+        123.921875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant_sku": "707368",
+      "route": "/duft/rabanne-1-million",
+      "width": 1440,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
+      "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+      "source_size": [
+        229,
+        600
+      ],
+      "display_size": [
+        99.21875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "merchant_sku": "849484",
+      "route": "/duft/giorgio-armani-stronger-with-you-intensely",
+      "width": 1440,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+      "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+      "source_size": [
+        381,
+        600
+      ],
+      "display_size": [
+        165.09375,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "merchant_sku": "812773",
+      "route": "/duft/parfums-de-marly-layton",
+      "width": 1440,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
+      "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+      "source_size": [
+        270,
+        524
+      ],
+      "display_size": [
+        133.96875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "merchant_sku": "897029",
+      "route": "/duft/valentino-uomo-born-in-roma-intense",
+      "width": 1440,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
+      "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+      "source_size": [
+        361,
+        600
+      ],
+      "display_size": [
+        156.421875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "merchant_sku": "904707",
+      "route": "/duft/parfums-de-marly-althair",
+      "width": 1440,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
+      "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
+      "source_size": [
+        800,
+        800
+      ],
+      "display_size": [
+        260,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    }
+  ]
+}

@@ -1,0 +1,935 @@
+{
+  "schema_version": 1,
+  "batch_id": "DUFYND-FACTS-ONLY-WAVE-02",
+  "status": "REVIEW_ONLY_NOT_PUBLISHED",
+  "source": "existing_qualified_facts_and_curated_review_pilots",
+  "new_public_profiles": 0,
+  "public_release_authorized": false,
+  "merchant_offer_activation": false,
+  "new_images_published": false,
+  "prices_or_tracking_links_added": false,
+  "profile_count": 21,
+  "profiles": [
+    {
+      "product_id": "SC-PRADA-PARADIGME-EDP-100",
+      "slug": "prada-paradigme-edp-100",
+      "brand": "Prada",
+      "name": "Paradigme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern.",
+      "editorial_description_de": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern. Kopfnoten: Calabrian bergamot; Herznoten: Bourbon geranium; Basisnoten: amber woods.",
+      "notes": {
+        "top": [
+          "Calabrian bergamot"
+        ],
+        "heart": [
+          "Bourbon geranium"
+        ],
+        "base": [
+          "amber woods"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "2A1451_2H0Q_F0Z99_P_ML100",
+        "source_url": "https://www.prada.com/de/de/p/paradigme-edp-100-ml/2A1451_2H0Q_F0Z99_P_ML100"
+      },
+      "notes_source_url": "https://www.prada.com/de/de/p/paradigme-edp-100-ml/2A1451_2H0Q_F0Z99_P_ML100",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "670371ecdd97f2bfb26724ee6bc880315258ed4486226a09fea30c35853621e5",
+      "seo": {
+        "title": "Prada Paradigme – Eau de Parfum 100 ml",
+        "description": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern.",
+        "public_path": "/duft/prada-paradigme-edp-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-MAISON-MARGIELA-BY-THE-FIREPLACE-EDT-100",
+      "slug": "maison-margiela-by-the-fireplace-edt-100",
+      "brand": "Maison Margiela",
+      "name": "REPLICA By the Fireplace",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "summary_de": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis.",
+      "editorial_description_de": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis. Kopfnoten: pink pepper, orange blossom, clove; Herznoten: chestnut accord, guaiac wood, cade oil; Basisnoten: vanilla accord, Peru balsam, cashmeran.",
+      "notes": {
+        "top": [
+          "pink pepper",
+          "orange blossom",
+          "clove"
+        ],
+        "heart": [
+          "chestnut accord",
+          "guaiac wood",
+          "cade oil"
+        ],
+        "base": [
+          "vanilla accord",
+          "Peru balsam",
+          "cashmeran"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "MM005",
+        "source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html"
+      },
+      "notes_source_url": "https://www.maisonmargiela-fragrances.us/fragrances/replica-eau-de-toilette/replica-by-the-fireplace/MM005.html",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "9bb113f85e93e969a2ff807ecddaf907c8f47ac44d67f73cce6efed4914dfac9",
+      "seo": {
+        "title": "Maison Margiela REPLICA By the Fireplace – Eau de Toilette 100 ml",
+        "description": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis.",
+        "public_path": "/duft/maison-margiela-by-the-fireplace-edt-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-VERSACE-EROS-EDP-100",
+      "slug": "versace-eros-edp-100",
+      "brand": "Versace",
+      "name": "Eros Pour Homme",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille.",
+      "editorial_description_de": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille. Kopfnoten: Italian lemon, mandarin, mint oil, candied apple; Herznoten: geranium, clary sage, AmberMax; Basisnoten: Atlas cedar, Virginia cedar, vetiver, patchouli, sandalwood, vanilla.",
+      "notes": {
+        "top": [
+          "Italian lemon",
+          "mandarin",
+          "mint oil",
+          "candied apple"
+        ],
+        "heart": [
+          "geranium",
+          "clary sage",
+          "AmberMax"
+        ],
+        "base": [
+          "Atlas cedar",
+          "Virginia cedar",
+          "vetiver",
+          "patchouli",
+          "sandalwood",
+          "vanilla"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "R740110-R100MLS",
+        "source_url": "https://www.versace.com/gb/en/eros-edp-100-ml/R740110-R100MLS.html"
+      },
+      "notes_source_url": "https://www.versace.com/gb/en/eros-edp-100-ml/R740110-R100MLS.html",
+      "facts_checked_at": "2026-10-10",
+      "evidence_sha256": "f2b12798090809b1ba69e55ef92c5452cdfb42eb67c1ec41a48fd58a070ff892",
+      "seo": {
+        "title": "Versace Eros Pour Homme – Eau de Parfum 100 ml",
+        "description": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille.",
+        "public_path": "/duft/versace-eros-edp-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-MFK-BACCARAT-ROUGE-540-EDP-70",
+      "slug": "mfk-baccarat-rouge-540-edp-70",
+      "brand": "Maison Francis Kurkdjian",
+      "name": "Baccarat Rouge 540",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 70,
+      "summary_de": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten.",
+      "editorial_description_de": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten. Dokumentierte Duftnoten: jasmine flowers, saffron, ambergris accord, dry woody notes, ethyl maltol. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "jasmine flowers",
+          "saffron",
+          "ambergris accord",
+          "dry woody notes",
+          "ethyl maltol"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "10223021",
+        "source_url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html"
+      },
+      "notes_source_url": "https://www.franciskurkdjian.com/eu-de/p/baccarat-rouge-540-eau-de-parfum-10223021.html",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "cac3d82f181dfd5ba5fcead4b1fcc8a00b6bfec9ff5cade70fb6b5dcb7af3332",
+      "seo": {
+        "title": "Maison Francis Kurkdjian Baccarat Rouge 540 – Eau de Parfum 70 ml",
+        "description": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten.",
+        "public_path": "/duft/mfk-baccarat-rouge-540-edp-70"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-JPG-LE-MALE-ELIXIR-PARFUM-125",
+      "slug": "jpg-le-male-elixir-parfum-125",
+      "brand": "Jean Paul Gaultier",
+      "name": "Le Male Elixir",
+      "concentration": "Parfum",
+      "volume_ml": 125,
+      "summary_de": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz.",
+      "editorial_description_de": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz. Dokumentierte Duftnoten: mint, lavender, tonka bean, benzoin. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "mint",
+          "lavender",
+          "tonka bean",
+          "benzoin"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "000000000065189084",
+        "source_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084"
+      },
+      "notes_source_url": "https://www.jeanpaulgaultier.com/de/de/p/linie-le-male/le-male-elixir-parfum-000000000065189084",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "f5a220c33de8642258230981c27319a7ec19cdcb088e7e8457dd0d172deea6f8",
+      "seo": {
+        "title": "Jean Paul Gaultier Le Male Elixir – Parfum 125 ml",
+        "description": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz.",
+        "public_path": "/duft/jpg-le-male-elixir-parfum-125"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-INTENSE-EDP-100",
+      "slug": "prada-lhomme-intense-edp-100",
+      "brand": "Prada",
+      "name": "L'Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne.",
+      "editorial_description_de": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne. Dokumentierte Duftnoten: amber, patchouli, iris, sandalwood, roasted tonka bean. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "amber",
+          "patchouli",
+          "iris",
+          "sandalwood",
+          "roasted tonka bean"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "2A1252_2HC1_F0Z99_P_ML100",
+        "source_url": "https://www.prada.com/de/de/p/lhomme-prada-intense-edp-100-ml/2A1252_2HC1_F0Z99_P_ML100"
+      },
+      "notes_source_url": "https://www.prada.com/de/de/p/lhomme-prada-intense-edp-100-ml/2A1252_2HC1_F0Z99_P_ML100",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "2e7342c46c56922ad8a720ffcc3733bd509c21e5997a8b964df5dca89f7990aa",
+      "seo": {
+        "title": "Prada L'Homme Intense – Eau de Parfum 100 ml",
+        "description": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne.",
+        "public_path": "/duft/prada-lhomme-intense-edp-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-LATTAFA-KHAMRAH-EDP-100",
+      "slug": "lattafa-khamrah-edp-100",
+      "brand": "Lattafa",
+      "name": "Khamrah",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil.",
+      "editorial_description_de": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil. Dokumentierte Duftnoten: cinnamon, nutmeg, bergamot, dates, praline, tuberose, vanilla, tonka bean, benzoin, myrrh, Akigalawood, amber wood. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "cinnamon",
+          "nutmeg",
+          "bergamot",
+          "dates",
+          "praline",
+          "tuberose",
+          "vanilla",
+          "tonka bean",
+          "benzoin",
+          "myrrh",
+          "Akigalawood",
+          "amber wood"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "gtin",
+        "value": "6291108737194",
+        "source_url": "https://www.dm.de/p/d/2970208/lattafa-khamrah-eau-de-parfum"
+      },
+      "notes_source_url": "https://lattafa.com/product/khamrah/",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "e241274ea36967d2dd5c657be9f41a335d55d17659339b13fb1e7b22c96b644f",
+      "seo": {
+        "title": "Lattafa Khamrah – Eau de Parfum 100 ml",
+        "description": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil.",
+        "public_path": "/duft/lattafa-khamrah-edp-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-EDT-100",
+      "slug": "hugo-boss-bottled-edt-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "summary_de": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver.",
+      "editorial_description_de": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver. Dokumentierte Duftnoten: geranium, clove, sandalwood, cedar, vetiver. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "geranium",
+          "clove",
+          "sandalwood",
+          "cedar",
+          "vetiver"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "58000026",
+        "source_url": "https://www.hugoboss.com/boss-bottled-eau-de-toilette-100ml/hbeu58000026_999.html"
+      },
+      "notes_source_url": "https://www.hugoboss.com/de/boss-bottled-eau-de-toilette-gift-set/hbeu58130252_999.html",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "76772d55038fb05aed57c5b2497c796484f3a67e0d1d55c6b66b981b0d6cab59",
+      "seo": {
+        "title": "Hugo Boss BOSS Bottled – Eau de Toilette 100 ml",
+        "description": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver.",
+        "public_path": "/duft/hugo-boss-bottled-edt-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-HUGO-BOSS-BOTTLED-ABSOLU-100",
+      "slug": "hugo-boss-bottled-absolu-100",
+      "brand": "Hugo Boss",
+      "name": "BOSS Bottled Absolu",
+      "concentration": "Parfum Intense",
+      "volume_ml": 100,
+      "summary_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana.",
+      "editorial_description_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana. Dokumentierte Duftnoten: leather accord, patchouli, myrrh, cedar, amber, davana. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "leather accord",
+          "patchouli",
+          "myrrh",
+          "cedar",
+          "amber",
+          "davana"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "58139181",
+        "source_url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html"
+      },
+      "notes_source_url": "https://www.hugoboss.com/de/boss-bottled-absolu-parfum-intense-100-ml/hbeu58139181_999.html",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "47301483597574ef759b4cb5bcee467fab64d5f24a9eb7b8290f0cd42f410985",
+      "seo": {
+        "title": "Hugo Boss BOSS Bottled Absolu – Parfum Intense 100 ml",
+        "description": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana.",
+        "public_path": "/duft/hugo-boss-bottled-absolu-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-PDM-HEROD-EDP-125",
+      "slug": "pdm-herod-edp-125",
+      "brand": "Parfums de Marly",
+      "name": "Herod",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125,
+      "summary_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz.",
+      "editorial_description_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz. Kopfnoten: cinnamon, pepper; Herznoten: tobacco leaf, incense, cistus, osmanthus; Basisnoten: vanilla, musk, cedarwood.",
+      "notes": {
+        "top": [
+          "cinnamon",
+          "pepper"
+        ],
+        "heart": [
+          "tobacco leaf",
+          "incense",
+          "cistus",
+          "osmanthus"
+        ],
+        "base": [
+          "vanilla",
+          "musk",
+          "cedarwood"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "herod",
+        "source_url": "https://us.parfums-de-marly.com/products/herod"
+      },
+      "notes_source_url": "https://us.parfums-de-marly.com/products/herod",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "d6f3a528a62d13d07c2f3f3625b3029e0697a181d212e2aecb222ca4814d1611",
+      "seo": {
+        "title": "Parfums de Marly Herod – Eau de Parfum 125 ml",
+        "description": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz.",
+        "public_path": "/duft/pdm-herod-edp-125"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-NISHANE-ANI-EXTRAIT-100",
+      "slug": "nishane-ani-extrait-100",
+      "brand": "Nishane",
+      "name": "Ani",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis.",
+      "editorial_description_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis. Kopfnoten: bergamot, green notes, blue ginger, pink pepper; Herznoten: blackcurrant, Turkish rose, cardamom; Basisnoten: patchouli, cedarwood, vanilla, benzoin, ambergris, musk, sandalwood.",
+      "notes": {
+        "top": [
+          "bergamot",
+          "green notes",
+          "blue ginger",
+          "pink pepper"
+        ],
+        "heart": [
+          "blackcurrant",
+          "Turkish rose",
+          "cardamom"
+        ],
+        "base": [
+          "patchouli",
+          "cedarwood",
+          "vanilla",
+          "benzoin",
+          "ambergris",
+          "musk",
+          "sandalwood"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "ani",
+        "source_url": "https://nishane.com/product/ani/"
+      },
+      "notes_source_url": "https://nishane.com/product/ani/",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "048fe9660669d5ce36a08633a22a69cae99db688732b4a6aa62c7c98fb943368",
+      "seo": {
+        "title": "Nishane Ani – Extrait de Parfum 100 ml",
+        "description": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis.",
+        "public_path": "/duft/nishane-ani-extrait-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-AMOUAGE-REFLECTION-MAN-EDP-100",
+      "slug": "amouage-reflection-man-edp-100",
+      "brand": "Amouage",
+      "name": "Reflection Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis.",
+      "editorial_description_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis. Kopfnoten: rosemary, red pepper berries, bitter orange leaves; Herznoten: neroli, orris, jasmine, ylang-ylang; Basisnoten: vetiver, patchouli, sandalwood, cedarwood.",
+      "notes": {
+        "top": [
+          "rosemary",
+          "red pepper berries",
+          "bitter orange leaves"
+        ],
+        "heart": [
+          "neroli",
+          "orris",
+          "jasmine",
+          "ylang-ylang"
+        ],
+        "base": [
+          "vetiver",
+          "patchouli",
+          "sandalwood",
+          "cedarwood"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "reflection-man-100ml",
+        "source_url": "https://amouage.com/products/reflection-man-100ml"
+      },
+      "notes_source_url": "https://amouage.com/products/reflection-man-100ml",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "431f23df1a7ab51adf9b0e40c970a36ec9962740bac04ed2ddf3c364fb09a2ae",
+      "seo": {
+        "title": "Amouage Reflection Man – Eau de Parfum 100 ml",
+        "description": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis.",
+        "public_path": "/duft/amouage-reflection-man-edp-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-TOM-FORD-OMBRE-LEATHER-EDP-100",
+      "slug": "tom-ford-ombre-leather-edp-100",
+      "brand": "Tom Ford",
+      "name": "Ombré Leather",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber.",
+      "editorial_description_de": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber. Dokumentierte Duftnoten: black leather accord, cardamom, jasmine sambac, patchouli, white moss, amber. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "black leather accord",
+          "cardamom",
+          "jasmine sambac",
+          "patchouli",
+          "white moss",
+          "amber"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "ombre-leather-eau-de-parfum",
+        "source_url": "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum"
+      },
+      "notes_source_url": "https://www.tomfordbeauty.co.uk/product/ombre-leather-eau-de-parfum",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "df706e0457fa730922224568ea3fef62d05a4cbc7943a143c43e411a85e493bb",
+      "seo": {
+        "title": "Tom Ford Ombré Leather – Eau de Parfum 100 ml",
+        "description": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber.",
+        "public_path": "/duft/tom-ford-ombre-leather-edp-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-TOM-FORD-OUD-WOOD-EDP-100",
+      "slug": "tom-ford-oud-wood-edp-100",
+      "brand": "Tom Ford",
+      "name": "Oud Wood",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne.",
+      "editorial_description_de": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne. Dokumentierte Duftnoten: cardamom, pink pepper, patchouli, amber, oud, tonka bean. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "cardamom",
+          "pink pepper",
+          "patchouli",
+          "amber",
+          "oud",
+          "tonka bean"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "oud-wood-eau-de-parfum",
+        "source_url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml"
+      },
+      "notes_source_url": "https://www.tomfordbeauty.co.uk/product/oud-wood-eau-de-parfum?size=100_ml",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "0c66adf8eeac28d63b6b7f2324f5c8de234b7e7abd8be151d58bcfa01dca8e5b",
+      "seo": {
+        "title": "Tom Ford Oud Wood – Eau de Parfum 100 ml",
+        "description": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne.",
+        "public_path": "/duft/tom-ford-oud-wood-edp-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-AMOUAGE-GUIDANCE-46-EXTRAIT-100",
+      "slug": "amouage-guidance-46-extrait-100",
+      "brand": "Amouage",
+      "name": "Guidance 46",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100,
+      "summary_de": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis.",
+      "editorial_description_de": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis. Kopfnoten: pear, frankincense, hazelnut, rose water, pink pepper, bitter almond; Herznoten: saffron, rose, sambac jasmine, osmanthus; Basisnoten: cistus, sandalwood, akigalawood, ambergris, vanilla, ambrette, georgywood, cypriol.",
+      "notes": {
+        "top": [
+          "pear",
+          "frankincense",
+          "hazelnut",
+          "rose water",
+          "pink pepper",
+          "bitter almond"
+        ],
+        "heart": [
+          "saffron",
+          "rose",
+          "sambac jasmine",
+          "osmanthus"
+        ],
+        "base": [
+          "cistus",
+          "sandalwood",
+          "akigalawood",
+          "ambergris",
+          "vanilla",
+          "ambrette",
+          "georgywood",
+          "cypriol"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "new-guidance-46",
+        "source_url": "https://amouage.com/products/new-guidance-46"
+      },
+      "notes_source_url": "https://amouage.com/products/new-guidance-46",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "1abbe5f9007a32dd4efd2940676c471aba50be9e2d2af9f25ca01eaea1e66ab9",
+      "seo": {
+        "title": "Amouage Guidance 46 – Extrait de Parfum 100 ml",
+        "description": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis.",
+        "public_path": "/duft/amouage-guidance-46-extrait-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-PDM-VALAYA-EXCLUSIF-EDP-75",
+      "slug": "parfums-de-marly-valaya-exclusif-edp-75",
+      "brand": "Parfums de Marly",
+      "name": "Valaya Exclusif",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "summary_de": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille.",
+      "editorial_description_de": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille. Kopfnoten: almond, bergamot, mandarin; Herznoten: orange blossom, white flowers, powdery facets; Basisnoten: akigalawood, sandalwood, ambroxan, vanilla.",
+      "notes": {
+        "top": [
+          "almond",
+          "bergamot",
+          "mandarin"
+        ],
+        "heart": [
+          "orange blossom",
+          "white flowers",
+          "powdery facets"
+        ],
+        "base": [
+          "akigalawood",
+          "sandalwood",
+          "ambroxan",
+          "vanilla"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "valaya-exclusif",
+        "source_url": "https://parfums-de-marly.com/es/products/valaya-exclusif"
+      },
+      "notes_source_url": "https://parfums-de-marly.com/es/products/valaya-exclusif",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "06baa899992b9bc136bd8c947fb2fd946212f117f8713ddf384e022039c14436",
+      "seo": {
+        "title": "Parfums de Marly Valaya Exclusif – Eau de Parfum 75 ml",
+        "description": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille.",
+        "public_path": "/duft/parfums-de-marly-valaya-exclusif-edp-75"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-YSL-MYSLF-LE-PARFUM-100",
+      "slug": "yves-saint-laurent-myslf-le-parfum-100",
+      "brand": "Yves Saint Laurent",
+      "name": "MYSLF Le Parfum",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "summary_de": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang.",
+      "editorial_description_de": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang. Kopfnoten: black pepper; Herznoten: orange blossom absolute; Basisnoten: woods, bourbon vanilla.",
+      "notes": {
+        "top": [
+          "black pepper"
+        ],
+        "heart": [
+          "orange blossom absolute"
+        ],
+        "base": [
+          "woods",
+          "bourbon vanilla"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "3614274114645",
+        "source_url": "https://www.yslbeauty.com/int/fragrance/masculine-fragrance/myslf/myslf-le-parfum/3614274114645.html"
+      },
+      "notes_source_url": "https://www.yslbeauty.com/int/fragrance/masculine-fragrance/myslf/myslf-le-parfum/3614274114645.html",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "d360067b4a0e50225b3d29a65cb20b9c8564f3e3ab69c508bbdad907121ca79f",
+      "seo": {
+        "title": "Yves Saint Laurent MYSLF Le Parfum – Parfum 100 ml",
+        "description": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang.",
+        "public_path": "/duft/yves-saint-laurent-myslf-le-parfum-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-ELIXIR-100",
+      "slug": "dior-sauvage-elixir-100",
+      "brand": "Dior",
+      "name": "Sauvage Elixir",
+      "concentration": "Elixir",
+      "volume_ml": 100,
+      "summary_de": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter.",
+      "editorial_description_de": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter. Dokumentierte Duftnoten: grapefruit, cinnamon, nutmeg, cardamom, lavender, licorice, vetiver, patchouli, amber accord. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "grapefruit",
+          "cinnamon",
+          "nutmeg",
+          "cardamom",
+          "lavender",
+          "licorice",
+          "vetiver",
+          "patchouli",
+          "amber accord"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "Y0996460",
+        "source_url": "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html"
+      },
+      "notes_source_url": "https://www.dior.com/de_de/beauty/products/sauvage-elixir-Y0996460.html",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "0473a047bf1ed3e6494a2ad6715c25713afb91efadd014aab6c83398adcc7363",
+      "seo": {
+        "title": "Dior Sauvage Elixir – Elixir 100 ml",
+        "description": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter.",
+        "public_path": "/duft/dior-sauvage-elixir-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-INITIO-SIDE-EFFECT-EDP-90",
+      "slug": "initio-side-effect-edp-90",
+      "brand": "Initio Parfums Privés",
+      "name": "Side Effect",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "summary_de": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten.",
+      "editorial_description_de": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten. Dokumentierte Duftnoten: cinnamon, rum, tobacco, saffron, sandalwood, hedione. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "notes": {
+        "top": [],
+        "heart": [],
+        "base": [],
+        "key": [
+          "cinnamon",
+          "rum",
+          "tobacco",
+          "saffron",
+          "sandalwood",
+          "hedione"
+        ]
+      },
+      "notes_display_kind": "documented_notes_only",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "side-effect",
+        "source_url": "https://us.initioparfums.com/products/side-effect"
+      },
+      "notes_source_url": "https://us.initioparfums.com/products/side-effect",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "d97e3c8b21b2b488059860c0602dee13c8eae7203e46845f9b06d438486ad335",
+      "seo": {
+        "title": "Initio Parfums Privés Side Effect – Eau de Parfum 90 ml",
+        "description": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten.",
+        "public_path": "/duft/initio-side-effect-edp-90"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-YSL-LA-NUIT-DE-LHOMME-EDT-100",
+      "slug": "yves-saint-laurent-la-nuit-de-lhomme-edt-100",
+      "brand": "Yves Saint Laurent",
+      "name": "La Nuit de L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "summary_de": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis.",
+      "editorial_description_de": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis. Kopfnoten: bergamot; Herznoten: cedar, lavender; Basisnoten: vetiver.",
+      "notes": {
+        "top": [
+          "bergamot"
+        ],
+        "heart": [
+          "cedar",
+          "lavender"
+        ],
+        "base": [
+          "vetiver"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "426YSL",
+        "source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/426YSL.html"
+      },
+      "notes_source_url": "https://www.yslbeauty.de/dufte/dufte-fur-ihn/la-nuit-de-l-homme/la-nuit-de-l-homme-eau-de-toilette-spray/426YSL.html",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "086e3df35c2b044d7fef5d98502a09964e688758bfdc33f401f56f55c19a15e9",
+      "seo": {
+        "title": "Yves Saint Laurent La Nuit de L'Homme – Eau de Toilette 100 ml",
+        "description": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis.",
+        "public_path": "/duft/yves-saint-laurent-la-nuit-de-lhomme-edt-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    },
+    {
+      "product_id": "SC-ARMANI-ACQUA-DI-GIO-PROFONDO-PARFUM-100",
+      "slug": "giorgio-armani-acqua-di-gio-profondo-parfum-100",
+      "brand": "Giorgio Armani",
+      "name": "Acqua di Giò Profondo",
+      "concentration": "Parfum",
+      "volume_ml": 100,
+      "summary_de": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli.",
+      "editorial_description_de": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli. Kopfnoten: marine notes, bergamot; Herznoten: immortelle; Basisnoten: cistus absolute, patchouli.",
+      "notes": {
+        "top": [
+          "marine notes",
+          "bergamot"
+        ],
+        "heart": [
+          "immortelle"
+        ],
+        "base": [
+          "cistus absolute",
+          "patchouli"
+        ],
+        "key": []
+      },
+      "notes_display_kind": "documented_pyramid",
+      "identity": {
+        "kind": "manufacturer_reference",
+        "value": "ww-00854-arm",
+        "source_url": "https://www.armanibeauty.it/fragranze/fragranze-da-uomo/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html"
+      },
+      "notes_source_url": "https://www.armanibeauty.it/fragranze/fragranze-da-uomo/acqua-di-gio/acqua-di-gio-profondo-parfum/ww-00854-arm.html",
+      "facts_checked_at": "2026-10-11",
+      "evidence_sha256": "b38fd27bc831d07f4588fc358d301dc9d1ca3809f6950756ad6ad87261e07a01",
+      "seo": {
+        "title": "Giorgio Armani Acqua di Giò Profondo – Parfum 100 ml",
+        "description": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli.",
+        "public_path": "/duft/giorgio-armani-acqua-di-gio-profondo-parfum-100"
+      },
+      "visual_mode": "neutral_studio_card_no_packshot",
+      "commerce_mode": "no_merchant_offer_no_price",
+      "publication_authorized": false,
+      "indexing_approved": false
+    }
+  ]
+}

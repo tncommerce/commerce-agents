@@ -1,0 +1,151 @@
+{
+  "status": "PASSED_APPLIED_TO_WEBSITE_DEVELOPMENT_NOT_PRODUCTION",
+  "base_head": "5ffd422081bbec23d1892906f9f1186190e26de0",
+  "source_workflow": {
+    "id": 40324201008,
+    "job_id": 121576555286,
+    "head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb"
+  },
+  "feed_checked_at": "2026-10-26T12:39:33+00:00",
+  "public_original_count_before": 4,
+  "public_original_count_after_current_work": 10,
+  "image_bytes_matched_owner_archive": 6,
+  "current_feed_page_variant_matches": 6,
+  "tests": [
+    {
+      "stage": 1,
+      "generation": "Public fragrance projection: third-party community metrics excluded.",
+      "public_data_test": "Public fragrance projection: third-party community metrics excluded.\nPublic boundary: third-party metrics stripped, private sources intact, 9 exact approved photographs; source dimensions and Top merchant binding verified.",
+      "image_only_contract": "passed",
+      "private_qa_syntax": "passed",
+      "registry_count": 9
+    },
+    {
+      "stage": 2,
+      "generation": "Public fragrance projection: third-party community metrics excluded.",
+      "public_data_test": "Public fragrance projection: third-party community metrics excluded.\nPublic boundary: third-party metrics stripped, private sources intact, 10 exact approved photographs; source dimensions and Top merchant binding verified.",
+      "image_only_contract": "passed",
+      "private_qa_syntax": "passed",
+      "registry_count": 10
+    },
+    {
+      "patch_apply_order": "01 then 02 passed",
+      "reverse_order": "02 then 01 passed",
+      "byte_identical_baseline_restored": true,
+      "public_data_test_after_each_apply": "passed"
+    }
+  ],
+  "patches": [
+    {
+      "filename": "01-five-top-parfuemerie-originals.patch",
+      "sha256": "c53471e235f752343a09f0bb5994535445f3a879ca2f03c437fddb0e2ea9a2b3",
+      "proposed_product_ids": [
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-ARMANI-SWY-INTENSELY-100",
+        "SC-PDM-LAYTON-125",
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+        "SC-PDM-ALTHAIR-125"
+      ],
+      "files": [
+        "examples/retail/data/catalog.json",
+        "examples/retail/data/dufynd_approved_feed_image_candidates.json",
+        "examples/retail/data/scentai_products.json",
+        "examples/retail/storefront-web/lib/generated/original-photos.json",
+        "examples/retail/storefront-web/lib/generated/public-catalog.json",
+        "examples/retail/storefront-web/lib/generated/public-fragrances.json",
+        "examples/retail/storefront-web/scripts/generate-public-fragrance-data.mjs",
+        "examples/retail/storefront-web/scripts/photo-integration-qa.mjs",
+        "examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs"
+      ]
+    },
+    {
+      "filename": "02-rabanne-original-after-matching-top-offer.patch",
+      "sha256": "595a1c1d3d1bae85a630c65b1c5ec1271f7b96e7f98feb1e16f8c78fb0cea993",
+      "proposed_product_ids": [
+        "SC-RABANNE-1-MILLION-EDT-100"
+      ],
+      "files": [
+        "examples/retail/data/catalog.json",
+        "examples/retail/data/dufynd_approved_feed_image_candidates.json",
+        "examples/retail/data/scentai_products.json",
+        "examples/retail/storefront-web/lib/generated/original-photos.json",
+        "examples/retail/storefront-web/lib/generated/public-catalog.json",
+        "examples/retail/storefront-web/lib/generated/public-fragrances.json",
+        "examples/retail/storefront-web/scripts/photo-integration-qa.mjs",
+        "examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs"
+      ]
+    }
+  ],
+  "production_or_offer_changes": false,
+  "baseline_file_sha256": {
+    "examples/retail/data/dufynd_approved_feed_image_candidates.json": "d2c9f55d13b8e77ec12eb61c96c2a29c10a8f760ba75561b4c55c22a9f33087d",
+    "examples/retail/data/catalog.json": "63527afe5392e2668e18698540965bfb0c7fe692a3e33306fabc2da8f2b26545",
+    "examples/retail/data/scentai_products.json": "fdf675f0e5254a17a98d26871529674e0e7f4e420b4e234c942958d893b79096",
+    "examples/retail/storefront-web/scripts/generate-public-fragrance-data.mjs": "6412990dd826a30f740a308e0ff92d63fea662b16fa72a5f1a87c64700161a11",
+    "examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs": "4b42b3bd66cbf66716fe8a58d5cd04430581b62ce589b1d41e0ad609c7d5d56d",
+    "examples/retail/storefront-web/scripts/photo-integration-qa.mjs": "d19657fc103aa1ee4aa941d6a59083e24e3f59d006dcc0f9bfe93fd5164db5e9",
+    "examples/retail/storefront-web/lib/generated/public-catalog.json": "486f136dcbd776dec0419bed867ee15c3ed06b972f0768248f7f0898acf9802b",
+    "examples/retail/storefront-web/lib/generated/public-fragrances.json": "5af3fa0a40556b13db1970eb9b05895fc3818eca4a43279155ae809d25587410",
+    "examples/retail/storefront-web/lib/generated/original-photos.json": "d4ef668b4e3e86a5af1120239565a5bdb8fc86ce2797e4029f3b1d624bf3451d",
+    "examples/retail/data/dufynd_rights_cleared_image_candidates.json": "a1c85a0eb2ded3452403a030730c50e369eddbd3d84932c9c10732cdd3d3559a"
+  },
+  "production_original_count": 4,
+  "public_profile_count": 37,
+  "actual_browser_qa": {
+    "private_profile_checks": 18,
+    "private_widths": [
+      390,
+      768,
+      1440
+    ],
+    "public_profile_checks": 12,
+    "public_widths": [
+      390,
+      1440
+    ],
+    "catalog_original_photo_count": 10,
+    "affiliate_or_analytics_requests": 0,
+    "public_api_mocked": false,
+    "public_api_requests_blocked_for_render_check": true,
+    "source_image_bytes": "fresh official merchant bytes, exact owner-manifest SHA-256, supplied locally to isolated render QA"
+  },
+  "export_boundary": {
+    "positive_checks": 1,
+    "negative_checks": 5,
+    "negative_cases": [
+      "missing approval",
+      "different hash",
+      "different URL",
+      "different size",
+      "different rights basis"
+    ],
+    "registry_restored": true
+  },
+  "public_route_metadata_checks": 55,
+  "build": "Actual Next.js 16.3.6 optimized static build, TypeScript and37 public product routes; private release separately built with6 photo/offer routes. This is not a complete GitHub CI run.",
+  "final_source_matches_tested_build": {
+    "files": 19,
+    "sha256": {
+      "examples/retail/data/catalog.json": "1b6b448d4a3f5b9c75b3906da235c6e9d5e7ee64a33831769c74e384abd5cce6",
+      "examples/retail/data/dufynd_approved_feed_image_candidates.json": "4b13f7992ad1728951e557645ef5dccbba63b80a5f8c3d94db6c41544eb7d086",
+      "examples/retail/data/dufynd_photo_integration_review.json": "2b4ab8fe24ac117a740c692c76f2442e0e15753dead37cb5a907c6801c58f063",
+      "examples/retail/data/scentai_products.json": "0a397a3c9ed52ef6a501f137e65cf70faa9a23ff2e61c8fc93f5cd3e25943dab",
+      "examples/retail/storefront-web/app/review/photos/page.tsx": "fac5399b8075167633224ce09f29d8f1defe7807e678634ecc4f944a288a36b2",
+      "examples/retail/storefront-web/components/FragranceDetailPage.tsx": "69a757a536ece231981d8a765d0a220599723cb7a1a4ab575c02faf2627c1f6f",
+      "examples/retail/storefront-web/components/FragranceVisual.tsx": "5fdeda66a7f4b70ad1195d576576d9550f574a92cfce63c247b73c5ca1faf712",
+      "examples/retail/storefront-web/components/ImageAttribution.tsx": "0e89ead80d1bcdb4249f9a0994db7feda001a872a7e72a322bdeb216f1977726",
+      "examples/retail/storefront-web/lib/fragranceCatalog.ts": "3f4694fd79d4bc104c26ad4ac9a761a8c67c7f8421d66130ec859d526a20b680",
+      "examples/retail/storefront-web/lib/generated/original-photos.json": "3fd4d1f2fb9390c6089894b3404589ee03e7d02ba4a08435d9bb1a3feb9950c8",
+      "examples/retail/storefront-web/lib/generated/public-catalog.json": "af515ac9e68dedce7ee1ec38b4b766f109559a4d5ae0cbc95a4aae0d0a42b21b",
+      "examples/retail/storefront-web/lib/generated/public-fragrances.json": "b508399f6fc4950dbb10c1e1f4abc0e378eaac32fe3a89f9bb4cd07031a964f3",
+      "examples/retail/storefront-web/scripts/generate-public-fragrance-data.mjs": "6c07f11980c4eecece30f74a2376a7668cd01c2b76044c5c52f6cae4feb54cbd",
+      "examples/retail/storefront-web/scripts/photo-integration-qa.mjs": "fa3b33983188c6e9c544721110d5ddae6f0e506dc05f68017f97891a11589cb3",
+      "examples/retail/storefront-web/scripts/test-photo-integration.mjs": "b952894e88b8a7ef4819ed8914d5c48930ac6ae989e1005a9b10eba4527af3fc",
+      "examples/retail/storefront-web/scripts/test-public-fragrance-data.mjs": "d532f25ab1de8647c68fefb303d86d360a0522bf5d94aeec592b7da41e7aa11c",
+      "examples/retail/storefront-web/scripts/verify-public-export.mjs": "44f238cdae99a41396d31a6daf8316c0c2af358e5591684de34bfa9132b9879f",
+      "examples/retail/storefront-web/components/PrivatePhotoOffer.tsx": "c5400ddd754e449ff6acf9169be764e4bddeefa857d41799d5cbae107302ca71",
+      "examples/retail/data/dufynd_photo_offer_review.json": "ac93b9698a66a12f02e1cff922ea0535e614943558099b620abf1d4df4d86029"
+    }
+  },
+  "updated_patch_reverse_and_reapply": "PASS: 02 reverse,01 reverse,01 apply,02 apply; final source byte-identical to the actual public build"
+}

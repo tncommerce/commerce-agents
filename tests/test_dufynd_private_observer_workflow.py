@@ -60,3 +60,40 @@ def test_private_observer_activity_fallback_covers_every_scentai_mvp_push():
     bridge = workflow.split("  refresh-after-change:")[1].split("  read:")[0]
     assert "after scentai-mvp changes" in bridge
     assert "--ref scentai-mvp" in bridge
+
+
+def test_observer_finalize_survives_unrelated_public_merchant_outage() -> None:
+    """Never turn a fully accepted Gmail receipt into a false observer failure."""
+    workflow = workflow_source()
+    finalized = workflow.split("  finalize:")[1].split("  failure-receipt:")[0]
+    assert "needs: ack" in finalized
+    guarded = "python -m scripts.dufynd_private_observer_finalize"
+    diagnostic = "if python -m scripts.dufynd_production_smoke --machine-readable; then"
+    assert guarded in finalized
+    assert diagnostic in finalized
+    assert finalized.index(guarded) < finalized.index(diagnostic)
+    assert "smoke_exit=$?" in finalized
+    assert "::warning::DUFYND public smoke failed" in finalized
+    assert 'echo "::error::' not in finalized
+    assert "continue-on-error: true" not in finalized
+    # Only commerce smoke is diagnostic here; finalizer remains unweakened.
+    from pathlib import Path
+
+    dedicated = Path(".github/workflows/dufynd-production-smoke.yml").read_text(encoding="utf-8")
+    assert "python scripts/dufynd_production_smoke.py --expected-indexing enabled" in dedicated
+    assert "if python scripts/dufynd_production_smoke.py" in dedicated
+
+
+def test_private_observer_failure_receipt_has_pinned_python_dependencies() -> None:
+    """A failed broker read must not lose the bounded failure receipt to missing Pydantic."""
+    workflow = workflow_source()
+    failure_receipt = workflow.split("  failure-receipt:", 1)[1]
+    read_job = workflow.split("  read:", 1)[1].split("  ingest:", 1)[0]
+    ack_job = workflow.split("  ack:", 1)[1].split("  finalize:", 1)[0]
+    assert "pip install httpx==0.28.1 pydantic==2.13.4" in failure_receipt
+    assert "pip install httpx==0.28.1 pydantic==2.13.4" not in read_job
+    assert "pip install httpx==0.28.1 pydantic==2.13.4" not in ack_job
+    assert "python -m scripts.dufynd_private_observer_failure" in failure_receipt
+    assert "if: failure() && needs.read.result == 'failure'" in failure_receipt
+    assert "GMAIL_REFRESH_TOKEN" not in failure_receipt
+    assert 'gh run download "$GITHUB_RUN_ID"' in failure_receipt

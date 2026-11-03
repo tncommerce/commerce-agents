@@ -1,3 +1,8 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
+import { verifyProductPresentation } from "./product-presentation-qa.mjs";
+import { verifyMobileDiscovery } from "./mobile-discovery-qa.mjs";
+import { offerFixtureProductId } from "./merchant-offer-fixture-qa.mjs";
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import { verifyBrandDiscovery } from "./brand-discovery-qa.mjs";
 import { verifyNoteSculpture } from "./note-sculpture-qa.mjs";
@@ -9,7 +14,7 @@ import path from "node:path";
 import process from "node:process";
 
 import { chromium } from "playwright";
-import { verifyWowExperience } from "./wow-experience-qa.mjs";
+import { assertCatalogSearchFirstFold, verifyWowExperience } from "./wow-experience-qa.mjs";
 import { verifyOfferRecovery } from "./offer-recovery-qa.mjs";
 import { verifyCatalogRecovery } from "./catalog-recovery-qa.mjs";
 import { verifyFirstMoneyFunnel } from "./first-money-funnel-qa.mjs";
@@ -75,16 +80,67 @@ function slugifyFragrance(value) {
     .replace(/^-+|-+$/g, "");
 }
 
-const expectedFragranceCount = sourceCatalog.products.filter(
+const sourceQualifiedProducts = sourceCatalog.products.filter(
   (product) =>
     String(product?.product_id || "").startsWith("SC-") &&
     !hasValidationBlockers(product),
-).length;
+);
+// The public catalog has two independently gated cohorts: original source
+// products and the owner-released, fact-only profiles. Review wave 2 never
+// appears here; a review-only source packet is not a published catalog row.
+const releasedProfiles = JSON.parse(
+  await readFile(
+    new URL("../lib/generated/released-profiles.json", import.meta.url),
+    "utf-8",
+  ),
+).profiles;
+const releaseApprovals = JSON.parse(
+  await readFile(
+    new URL("../../data/dufynd_release_authorizations.json", import.meta.url),
+    "utf-8",
+  ),
+).approvals;
+if (!Array.isArray(releasedProfiles) || !Array.isArray(releaseApprovals)) {
+  throw new Error("Catalog release/authorization register is malformed");
+}
+const releasedProductIds = new Set(releasedProfiles.map((p) => p.product_id));
+const approvedProductIds = new Set(
+  releaseApprovals
+    .filter((row) => row.publication_approved === true && row.indexing_approved === true)
+    .map((row) => row.product_id),
+);
+if (
+  approvedProductIds.size !== releasedProfiles.length ||
+  releasedProductIds.size !== releasedProfiles.length ||
+  releasedProfiles.some((p) =>
+    !approvedProductIds.has(p.product_id) ||
+    p.indexing_approved !== true ||
+    p.seo?.public_path !== `/duft/${p.slug}` ||
+    !Array.isArray(p.target_groups)
+  )
+) {
+  throw new Error("Owner-release scope drift in visual QA");
+}
+const sourceQualifiedRoutes = sourceQualifiedProducts.map((product) =>
+  "/duft/" +
+  slugifyFragrance(
+    String(product?.brand || "").trim() + " " +
+    String(product?.name || "").trim(),
+  ),
+);
+const publishedRoutes = [
+  ...sourceQualifiedRoutes,
+  ...releasedProfiles.map((row) => row.seo.public_path),
+];
+if (new Set(publishedRoutes).size !== publishedRoutes.length) {
+  throw new Error("Duplicate public fragrance route in visual QA source");
+}
+const expectedFragranceCount = publishedRoutes.length;
 const audienceKeys = ["men", "women", "unisex"];
 
-function exclusiveAudience(product) {
+function audienceForGroups(values) {
   const groups = new Set(
-    (product?.classification?.scentai_target_groups || [])
+    (values || [])
       .map((group) => String(group || "").trim().toLowerCase())
       .filter(Boolean),
   );
@@ -96,26 +152,32 @@ function exclusiveAudience(product) {
   return null;
 }
 
+function exclusiveAudience(product) {
+  return audienceForGroups(product?.classification?.scentai_target_groups);
+}
+
+if (releasedProfiles.some((row) => !audienceForGroups(row.target_groups))) {
+  throw new Error("Missing released-profile audience classification");
+}
+
 const expectedAudienceRoutes = Object.fromEntries(
   audienceKeys.map((audience) => [
     audience,
-    sourceCatalog.products
-      .filter(
-        (product) =>
-          String(product?.product_id || "").startsWith("SC-") &&
-          !hasValidationBlockers(product) &&
-          exclusiveAudience(product) === audience,
-      )
-      .map(
-        (product) =>
+    [
+      ...sourceQualifiedProducts
+        .filter((product) => exclusiveAudience(product) === audience)
+        .map((product) =>
           "/duft/" +
           slugifyFragrance(
             String(product?.brand || "").trim() +
               " " +
               String(product?.name || "").trim(),
           ),
-      )
-      .sort(),
+        ),
+      ...releasedProfiles
+        .filter((row) => audienceForGroups(row.target_groups) === audience)
+        .map((row) => row.seo.public_path),
+    ].sort(),
   ]),
 );
 
@@ -188,7 +250,7 @@ const viewports = [
 ];
 
 const coreRoutes = [
-  { name: "home", route: "/", marker: "Finde den Duft," },
+  { name: "home", route: "/", marker: "Nicht irgendein" },
   {
     name: "social-start",
     route: "/start",
@@ -287,6 +349,15 @@ const report = {
 };
 
 try {
+  try {
+    const results = await verifyProductPresentation(browser, baseUrl, outputDir);
+    report.checks.push({ label: "product-presentation", status: "passed", results });
+  } catch (error) { report.failures.push({ label: "product-presentation", message: String(error) }); }
+
+  try {
+    const results = await verifyMobileDiscovery(browser, baseUrl, outputDir);
+    report.checks.push({ label: "mobile-discovery-journey", status: "passed", results });
+  } catch (error) { report.failures.push({ label: "mobile-discovery-journey", message: String(error) }); }
   try {
     const results = await verifyWowExperience(browser, baseUrl, outputDir);
     report.checks.push({ label: "wow22-experience", status: "passed", results });
@@ -573,7 +644,7 @@ try {
             );
 
             return images
-              .filter((image) => !image.complete)
+              .filter((image) => image.isConnected && !image.complete)
               .map((image) => image.getAttribute("src") || "(missing src)");
           },
           imageDecodeTimeoutMs,
@@ -649,7 +720,9 @@ try {
             const rect = (selector) =>
               document.querySelector(selector)?.getBoundingClientRect() || null;
             const title = rect(".dufynd-fragrance-hero h1");
-            const stage = rect(".dufynd-fragrance-hero[data-product-id=\"SC-RABANNE-1-MILLION-EDT-100\"][data-dufynd-photo-hold=\"true\"] .dufynd-fragrance-stage-shell, .dufynd-fragrance-hero .dufynd-product-stage, .dufynd-fragrance-hero .dufynd-editorial-depth-stage, .dufynd-fragrance-hero .dufynd-model-stage, .dufynd-fragrance-hero .dufynd-neutral-visual-stage");
+            // The released original uses the ordinary stage shell, not the
+            // former Rabanne-only [data-dufynd-photo-hold] state.
+            const stage = rect(".dufynd-fragrance-hero .dufynd-fragrance-stage-shell");
             const cutout = rect(".dufynd-fragrance-hero .dufynd-product-image");
             const offers = rect("#angebote");
             const exploded = rect(".dufynd-exploded-notes");
@@ -665,12 +738,13 @@ try {
             };
           });
           const mobileProductFirst = viewport.width <= 390;
+          const hasReleasedOriginal = verifiedTruthByRoute.has(target.route);
           const maxIdentityTop = mobileProductFirst ? 620 : 260;
           if (layout.title_top == null || layout.title_top > maxIdentityTop) {
             throw new Error(`fragrance identity starts too far below the intended first-screen composition: ${layout.title_top}px`);
           }
           if (
-            mobileProductFirst &&
+            mobileProductFirst && !hasReleasedOriginal &&
             (
               layout.stage_top == null ||
               layout.title_top == null ||
@@ -683,7 +757,8 @@ try {
           }
           if (
             mobileProductFirst &&
-            (layout.stage_height == null || layout.stage_height > 270)
+            (layout.stage_height == null ||
+              layout.stage_height > (hasReleasedOriginal ? 520 : 270))
           ) {
             throw new Error(`mobile fragrance visual is too tall: ${layout.stage_height}px`);
           }
@@ -730,61 +805,33 @@ try {
         }
 
         if (target.route.startsWith("/duft/")) {
-          const productSchema = await page.evaluate(() => {
-            const schemas = Array.from(
-              document.querySelectorAll('script[type="application/ld+json"]'),
-            )
-              .map((script) => {
-                try {
-                  return JSON.parse(script.textContent || "{}");
-                } catch {
-                  return null;
-                }
-              })
-              .filter(Boolean);
-
-            return schemas.find((schema) => schema?.["@type"] === "Product") || null;
-          });
-
-          if (!productSchema) {
-            throw new Error("fragrance detail page is missing Product JSON-LD");
+          const schemas = await page.evaluate(() => Array.from(
+            document.querySelectorAll('script[type="application/ld+json"]'),
+          ).map((script) => JSON.parse(script.textContent || "{}")));
+          const breadcrumb = schemas.find((schema) => schema?.["@type"] === "BreadcrumbList");
+          if (!breadcrumb?.itemListElement?.length) {
+            throw new Error("fragrance detail page is missing BreadcrumbList JSON-LD");
           }
-
-          if (!String(productSchema.name || "").trim()) {
-            throw new Error("Product JSON-LD has no usable product name");
+          const productSchema = schemas.find((schema) => schema?.["@type"] === "Product");
+          if (productSchema && !(productSchema.offers || productSchema.review || productSchema.aggregateRating)) {
+            throw new Error("Product JSON-LD requires qualifying offers, review or aggregateRating");
           }
-          const sourceProduct = sourceCatalog.products.find((product) => product.product_id === productSchema.sku);
-          if (!sourceProduct) throw new Error("Product JSON-LD has an unknown SKU");
+          const productId = await page.locator('.dufynd-fragrance-hero[data-product-id]').getAttribute('data-product-id');
+          const sourceProduct = sourceCatalog.products.find((product) => product.product_id === productId);
+          if (!sourceProduct) throw new Error("Fragrance hero has an unknown SKU");
           const exactVariant = `${sourceProduct.concentration} ${sourceProduct.volume_ml} ml`;
           const description = await page.locator('meta[name="description"]').getAttribute("content");
-          if (![await page.title(), description, productSchema.name].every((value) => String(value).includes(exactVariant))) {
+          if (![await page.title(), description].every((value) => String(value).includes(exactVariant))) {
             throw new Error(`Search metadata must identify the exact variant: ${exactVariant}`);
           }
-          if (productSchema.offers || productSchema.aggregateRating || productSchema.review) {
-            throw new Error("Static product metadata must not claim live prices, stock or ratings");
-          }
-
-          const schemaImages = Array.isArray(productSchema.image)
-            ? productSchema.image
-            : productSchema.image
-              ? [productSchema.image]
-              : [];
-
+          const shareImages = await page.locator('meta[property="og:image"]').evaluateAll((nodes) => nodes.map((node) => node.getAttribute('content')));
           const expectedTruthVisual = verifiedTruthByRoute.get(target.route);
           if (expectedTruthVisual) {
-            if (
-              !schemaImages.some((image) =>
-                String(image).endsWith(String(expectedTruthVisual.url)),
-              )
-            ) {
-              throw new Error(
-                `verified Product JSON-LD does not use the expected product-truth visual: ${expectedTruthVisual.url}`,
-              );
+            if (!shareImages.some((image) => String(image).endsWith(String(expectedTruthVisual.url)))) {
+              throw new Error(`Social metadata does not use the expected product-truth visual: ${expectedTruthVisual.url}`);
             }
-          } else if (schemaImages.length > 0) {
-            throw new Error(
-              "unverified fragrance exposed an image as Product JSON-LD truth",
-            );
+          } else if (shareImages.length > 0) {
+            throw new Error("unverified fragrance exposed an image in social metadata");
           }
         }
 
@@ -925,18 +972,39 @@ try {
 
         if (["absolu-aventus", "bois-imperial"].includes(target.name)) {
           const hero = page.locator(".dufynd-fragrance-hero");
-          if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
-            throw new Error("unapproved product hero failed the source-honest studio fallback");
-          }
-          const text = await hero.innerText();
-          if (!text.includes("Originalfoto in Prüfung")) {
-            throw new Error("unapproved detail hero omitted exact-original rights hold");
-          }
-          if (text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
-            throw new Error("unapproved detail still presents an editorial bottle scene");
-          }
-          if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) > 0) {
-            throw new Error("unapproved bottle claims were exposed through the advanced 3D notes");
+          const approvedId = target.name === "bois-imperial"
+            ? "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100" : null;
+          const releasedPhoto = approvedId ? approvedImages.get(approvedId) : null;
+          if (releasedPhoto) {
+            const exactTruth = verifiedTruthByRoute.get(target.route);
+            if (!exactTruth || exactTruth.url !== releasedPhoto.url ||
+                Number(releasedPhoto.volume_ml) !== 100) {
+              throw new Error("approved Bois Imperial photo mismatches its exact product identity");
+            }
+            if ((await hero.getAttribute("data-dufynd-photo-status")) !== "verified" ||
+                (await hero.getAttribute("data-dufynd-photo-hold")) !== null) {
+              throw new Error("approved Bois Imperial original remains incorrectly on image hold");
+            }
+            if ((await hero.locator('[data-original-photo-source="top-parfuemerie"]').count()) !== 1) {
+              throw new Error("licensed Bois Imperial original lost its public source attribution");
+            }
+            if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) > 0) {
+              throw new Error("registered Bois Imperial image incorrectly reverted to an unlicensed visual");
+            }
+          } else {
+            if ((await hero.locator('[data-dufynd-visual-state="missing"]').count()) !== 1) {
+              throw new Error("unapproved product hero failed the source-honest studio fallback");
+            }
+            const text = await hero.innerText();
+            if (!text.includes("Originalfoto in Prüfung")) {
+              throw new Error("unapproved detail hero omitted exact-original rights hold");
+            }
+            if (text.includes("Bild: stilisierte DUFYND-Inszenierung")) {
+              throw new Error("unapproved detail still presents an editorial bottle scene");
+            }
+            if ((await page.locator('[aria-labelledby="dufynd-exploded-heading"]').count()) > 0) {
+              throw new Error("unapproved bottle claims were exposed through the advanced 3D notes");
+            }
           }
         }
 
@@ -980,11 +1048,7 @@ try {
               "catalog is missing the immersive discovery hero",
             );
           }
-          const heroBounds = await discoveryHero.boundingBox();
-          const searchBounds = await page.getByRole("searchbox").boundingBox();
-          if (!heroBounds || heroBounds.height > 350 || !searchBounds || searchBounds.y > 800) {
-            throw new Error("catalog search must remain accessible without an oversized photo hero");
-          }
+          await assertCatalogSearchFirstFold(page);
           if ((await page.locator(".dufynd-brand-directory summary").count()) !== 1) {
             throw new Error("catalog is missing its accessible brand directory");
           }
@@ -1306,8 +1370,8 @@ try {
     await context.close();
   }
 
-  // The full catalog selection should survive sharing and reloads,
-  // without discarding acquisition attribution from the incoming link.
+  // Functional catalog filters must survive sharing and reloads; optional
+  // attribution parameters are intentionally removed after consent denial.
   const shareContext = await browser.newContext();
   try {
     const sharePage = await shareContext.newPage();
@@ -1324,21 +1388,38 @@ try {
     if ((await freshProfile.getAttribute("aria-pressed")) !== "true") {
       throw new Error("catalog did not restore the shared scent world");
     }
+    await chooseMeasurement(sharePage, "denied");
     await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).fill("Naxos");
+    const shareFilterToggle = sharePage.locator('button[aria-controls="catalog-filter-panel"]');
+    if (await shareFilterToggle.getAttribute("aria-expanded") === "false") await shareFilterToggle.click();
     await sharePage.getByRole("button", { name: "Herren", exact: true }).click();
     await sharePage.getByRole("combobox", { name: "Marke" }).selectOption("Xerjoff");
     if (await sharePage.getByRole("combobox", { name: "Bewertung" }).count()) throw new Error("Unlicensed community rating filter is exposed");
     await sharePage.getByRole("combobox", { name: "Sortierung" }).selectOption("brand");
-    await sharePage.waitForFunction(() => {
-      const url = new URL(window.location.href);
-      return url.searchParams.get("q") === "Naxos" &&
-        url.searchParams.get("profil") === "freshness" &&
-        url.searchParams.get("zielgruppe") === "men" &&
-        url.searchParams.get("marke") === "Xerjoff" &&
-        url.searchParams.get("sort") === "brand" &&
-        url.searchParams.get("utm_source") === "qa";
-    });
+    try {
+      await sharePage.waitForFunction(() => {
+        const url = new URL(window.location.href);
+        return url.searchParams.get("q") === "Naxos" &&
+          url.searchParams.get("profil") === "freshness" &&
+          url.searchParams.get("zielgruppe") === "men" &&
+          url.searchParams.get("marke") === "Xerjoff" &&
+          url.searchParams.get("sort") === "brand" &&
+          !url.searchParams.has("utm_source");
+      }, undefined, {timeout: 12_000});
+    } catch (error) {
+      // A timeout alone conceals the broken field. Report the local test URL
+      // and visible field values, never drop any of the required assertions.
+      const diagnostic = await sharePage.evaluate(() => ({
+        url: location.pathname + location.search,
+        search: document.querySelector('input[type="search"]')?.value ?? null,
+        brand: document.querySelector('select[aria-label="Marke"]')?.value ?? null,
+      }));
+      throw new Error("catalog shared filters did not converge: " +
+        JSON.stringify(diagnostic), {cause: error});
+    }
     await sharePage.reload({ waitUntil: "networkidle" });
+    await chooseMeasurement(sharePage, "denied");
+    if (await shareFilterToggle.getAttribute("aria-expanded") === "false") await shareFilterToggle.click();
     if ((await sharePage.getByRole("searchbox", { name: "Duft, Marke oder Profil" }).inputValue()) !== "Naxos" ||
         (await freshProfile.getAttribute("aria-pressed")) !== "true" ||
         (await sharePage.getByRole("button", { name: "Herren", exact: true }).getAttribute("aria-pressed")) !== "true" ||
@@ -1380,6 +1461,11 @@ try {
         );
       }
 
+      await chooseMeasurement(audiencePage, "denied");
+      const filterToggle = audiencePage.locator('button[aria-controls="catalog-filter-panel"]');
+      if (await filterToggle.isVisible() && await filterToggle.getAttribute("aria-expanded") === "false") {
+        await filterToggle.click();
+      }
       const audienceButton = audiencePage.getByRole("button", {
         name: label,
         exact: true,
@@ -1594,7 +1680,7 @@ try {
     if (
       !(await fallback.innerText()).includes("Produktbild derzeit nicht verfügbar") ||
       !(await fallback.innerText()).includes("Delina") ||
-      (await hero.locator("img.dufynd-product-image").count()) !== 0
+      (await hero.locator("[data-dufynd-original-photo] img, img.dufynd-product-image").count()) !== 0
     ) {
       throw new Error("failed licensed original did not preserve identity in a neutral fallback");
     }
@@ -1603,10 +1689,10 @@ try {
     }
     failPrimaryImage = false;
     await imageFailurePage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
-    const recoveredImage = hero.locator("img.dufynd-product-image");
+    const recoveredImage = hero.locator("[data-dufynd-original-photo] img, img.dufynd-product-image");
     await recoveredImage.waitFor({ state: "visible", timeout: 10_000 });
     await imageFailurePage.waitForFunction(() => {
-      const image = document.querySelector(".dufynd-fragrance-hero img.dufynd-product-image");
+      const image = document.querySelector(".dufynd-fragrance-hero [data-dufynd-original-photo] img, .dufynd-fragrance-hero img.dufynd-product-image");
       return image?.complete && image.naturalWidth > 0;
     }, undefined, { timeout: 10_000 });
     if ((await fallback.count()) !== 0) {
@@ -1624,6 +1710,50 @@ try {
     report.checks.push({ label: "product-image-error-fallback", status: "failed", message });
   } finally {
     await imageFailureContext.close();
+  }
+
+  const stalledProductImageContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  try {
+    const page = await stalledProductImageContext.newPage();
+    let blockedImageCount = 0;
+    // Deliberately hold a local route; no third-party image request is made.
+    await page.route(
+      "**/media/catalog/product/8/2/825869_3700578501998_051.png",
+      () => { blockedImageCount += 1; },
+    );
+    const response = await page.goto(baseUrl + "/duft/parfums-de-marly-delina", {
+      waitUntil: "domcontentloaded",
+      timeout: 45_000,
+    });
+    if (!response?.ok()) throw new Error("stalled-image QA page failed to load");
+    const hero = page.locator(".dufynd-fragrance-hero");
+    const fallback = hero.locator('[data-dufynd-visual-state="unavailable"]');
+    await fallback.waitFor({ state: "visible", timeout: 13_000 });
+    const copy = await fallback.innerText();
+    if (
+      blockedImageCount !== 1 ||
+      !copy.includes("Produktbild derzeit nicht verfügbar") ||
+      !copy.includes("Delina") ||
+      (await hero.locator("img.dufynd-product-image").count()) !== 0 ||
+      (await page.locator("#angebote").count()) !== 1
+    ) {
+      throw new Error("stalled product photo did not become the neutral identity fallback");
+    }
+    report.checks.push({
+      label: "product-image-stall-fallback", status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({ label: "product-image-stall-fallback", message });
+    report.checks.push({
+      label: "product-image-stall-fallback", status: "failed", message,
+    });
+  } finally {
+    await stalledProductImageContext.close();
   }
 
   const merchantOfferTimeoutContext = await browser.newContext({
@@ -1683,12 +1813,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-TIMEOUT-RECOVERY",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-timeout-recovery-offer",
             offers: [
               {
                 offer_id: "qa-timeout-recovery-offer",
-                product_id: "SC-QA-TIMEOUT-RECOVERY",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-timeout-merchant",
                 merchant_name: "QA Timeout Merchant",
                 merchant_product_id: "qa-timeout-sku",
@@ -1701,7 +1831,7 @@ try {
                 variant_label: "QA Recovery",
                 clickout_path: "/api/clickout/qa-timeout-recovery-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA recovery fixture",
@@ -1827,17 +1957,21 @@ try {
         status: 200,
         contentType: "application/json",
         body: JSON.stringify({
-          product_id: "SC-QA-SESSION-TIMEOUT",
+          product_id: offerFixtureProductId(route),
           best_offer_id: "qa-session-timeout-offer",
+          affiliate_disclosure: "Isolated QA session timeout fixture",
           offers: [{
             offer_id: "qa-session-timeout-offer",
+            product_id: offerFixtureProductId(route),
+            merchant_id: "qa-session-timeout-merchant",
+            in_stock: true,
             merchant_name: "QA Session Timeout Merchant",
             price: 99,
             total_price: 99,
             currency: "EUR",
             clickout_path: "/api/clickout/qa-session-timeout-offer",
             affiliate_link: false,
-            last_updated_at: "2026-09-30T12:00:00Z",
+            last_updated_at: new Date().toISOString(),
           }],
         }),
       }),
@@ -1850,11 +1984,10 @@ try {
     await chooseMeasurement(sessionTimeoutPage, "granted");
     const offers = sessionTimeoutPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 5_000 });
-    await offers.locator("[data-clickout-preparing]").waitFor({
-      state: "visible", timeout: 5_000,
-    });
     const clickout = offers.getByRole("link", { name: "Bei QA Session Timeout Merchant ansehen" });
-    await clickout.waitFor({ state: "visible", timeout: 12_000 });
+    // A consented, valid offer must be immediately actionable even while
+    // the optional session POST is deliberately stalled for 8.5 seconds.
+    await clickout.waitFor({ state: "visible", timeout: 5_000 });
     await new Promise((resolve) => setTimeout(resolve, 750));
     const failOpenUrl = new URL(await clickout.getAttribute("href"));
     const measurementSid = failOpenUrl.searchParams.get("sid");
@@ -1869,7 +2002,7 @@ try {
       throw new Error("session timeout fail-open lost independent measurement or acquisition context");
     }
     if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
-      throw new Error("stalled session kept a loaded merchant offer blocked");
+      throw new Error("optional analytics session hid an eligible merchant link");
     }
     sessionRecoveryAllowed = true;
     await sessionTimeoutPage.reload({ waitUntil: "domcontentloaded", timeout: 45_000 });
@@ -1927,12 +2060,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-ATTRIBUTION",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-attribution-offer",
             offers: [
               {
                 offer_id: "qa-attribution-offer",
-                product_id: "SC-QA-ATTRIBUTION",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-merchant",
                 merchant_name: "QA Merchant",
                 merchant_product_id: "qa-sku",
@@ -1945,7 +2078,7 @@ try {
                 variant_label: "QA",
                 clickout_path: "/api/clickout/qa-attribution-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2091,12 +2224,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-OFFER-IMPRESSION",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-offer-impression-offer",
             offers: [
               {
                 offer_id: "qa-offer-impression-offer",
-                product_id: "SC-QA-OFFER-IMPRESSION",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-merchant",
                 merchant_name: "QA Merchant",
                 merchant_product_id: "qa-offer-impression-sku",
@@ -2109,7 +2242,7 @@ try {
                 variant_label: "QA Impression",
                 clickout_path: "/api/clickout/qa-offer-impression-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2204,12 +2337,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-ATTRIBUTION-NAV",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-attribution-nav-offer",
             offers: [
               {
                 offer_id: "qa-attribution-nav-offer",
-                product_id: "SC-QA-ATTRIBUTION-NAV",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-merchant",
                 merchant_name: "QA Merchant",
                 merchant_product_id: "qa-nav-sku",
@@ -2222,7 +2355,7 @@ try {
                 variant_label: "QA Navigation",
                 clickout_path: "/api/clickout/qa-attribution-nav-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2320,12 +2453,15 @@ try {
     deviceScaleFactor: 1,
     reducedMotion: "reduce",
   });
+  // Released in finally even when the pre-session CTA assertion fails.
+  let releaseClickoutSession;
+  const sessionGate = new Promise((resolve) => { releaseClickoutSession = resolve; });
   try {
     const clickoutSessionPage = await clickoutSessionContext.newPage();
     const expectedSessionId = "qa-clickout_session-1234567890";
 
     await clickoutSessionPage.route("**/api/session", async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 1200));
+      await sessionGate;
       await route.fulfill({
         status: 200,
         contentType: "application/json",
@@ -2352,12 +2488,12 @@ try {
           status: 200,
           contentType: "application/json",
           body: JSON.stringify({
-            product_id: "SC-QA-SESSION-CORRELATION",
+            product_id: offerFixtureProductId(route),
             best_offer_id: "qa-session-correlation-offer",
             offers: [
               {
                 offer_id: "qa-session-correlation-offer",
-                product_id: "SC-QA-SESSION-CORRELATION",
+                product_id: offerFixtureProductId(route),
                 merchant_id: "qa-merchant",
                 merchant_name: "QA Merchant",
                 merchant_product_id: "qa-session-sku",
@@ -2370,7 +2506,7 @@ try {
                 variant_label: "QA Session",
                 clickout_path: "/api/clickout/qa-session-correlation-offer",
                 affiliate_link: false,
-                last_updated_at: "2026-09-30T12:00:00Z",
+                last_updated_at: new Date().toISOString(),
               },
             ],
             affiliate_disclosure: "QA fixture",
@@ -2395,17 +2531,18 @@ try {
     const offers = clickoutSessionPage.locator("[data-merchant-offers]");
     await offers.waitFor({ state: "visible", timeout: 20_000 });
 
-    const preparing = offers.locator("[data-clickout-preparing]").first();
-    await preparing.waitFor({ state: "visible", timeout: 5_000 });
-    if (
-      (await offers.locator('a[href*="/api/clickout/"]').count()) !== 0
-    ) {
+    // No response is released from /api/session yet. The verified-offer
+    // link must already exist while optional measurement transport is blocked.
+    const clickout = offers.locator('a[href*="/api/clickout/"]').first();
+    if ((await clickout.count()) !== 1) {
       throw new Error(
-        "merchant clickout became actionable before analytics session correlation completed",
+        "verified merchant clickout unavailable while optional analytics session pending",
       );
     }
-
-    const clickout = offers.locator('a[href*="/api/clickout/"]').first();
+    if ((await offers.locator("[data-clickout-preparing]").count()) !== 0) {
+      throw new Error("merchant clickout blocked on optional analytics session");
+    }
+    releaseClickoutSession();
     await clickout.waitFor({ state: "visible", timeout: 10_000 });
 
     await clickoutSessionPage.waitForFunction(
@@ -2457,6 +2594,7 @@ try {
       message,
     });
   } finally {
+    releaseClickoutSession?.();
     await clickoutSessionContext.close();
   }
 
@@ -2988,6 +3126,114 @@ try {
     await partnerTimeoutRecoveryContext.close();
   }
 
+  // First Money: consented homepage telemetry must not wait for advisor transport.
+  const homePageViewContext = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    deviceScaleFactor: 1,
+    reducedMotion: "reduce",
+  });
+  let releaseAdvisorSession = () => {};
+  try {
+    const homePageViewPage = await homePageViewContext.newPage();
+    let sessionRequestCount = 0;
+    let markAdvisorSessionStarted = () => {};
+    const advisorSessionStarted = new Promise((resolve) => {
+      markAdvisorSessionStarted = resolve;
+    });
+    const advisorSessionGate = new Promise((resolve) => {
+      releaseAdvisorSession = resolve;
+    });
+    let firstPageViewObserved = () => {};
+    const pageViewReceived = new Promise((resolve) => {
+      firstPageViewObserved = resolve;
+    });
+    const pageViewEvents = [];
+    await homePageViewPage.route("**/api/session", async (route) => {
+      sessionRequestCount += 1;
+      if (sessionRequestCount === 1) {
+        markAdvisorSessionStarted();
+        await advisorSessionGate;
+        try {
+          await route.fulfill({
+            status: 503, contentType: "application/json",
+            body: JSON.stringify({ detail: "QA advisor delayed" }),
+          });
+        } catch {
+          // The context may close while the advisor request is held.
+        }
+        return;
+      }
+      await route.fulfill({
+        status: 200, contentType: "application/json",
+        body: JSON.stringify({
+          session_id: "qa-independent-analytics-transport-1234567890",
+          name: "QA Guest",
+        }),
+      });
+    });
+    await homePageViewPage.route(
+      (url) => url.pathname === "/api/analytics/events",
+      async (route) => {
+        const payload = route.request().postDataJSON();
+        if (payload?.event === "page_view") {
+          pageViewEvents.push(payload);
+          firstPageViewObserved();
+        }
+        await route.fulfill({
+          status: 200, contentType: "application/json", body: '{"ok":true}',
+        });
+      },
+    );
+    await homePageViewPage.route("**/api/merchant-partners", (route) =>
+      route.fulfill({
+        status: 200, contentType: "application/json",
+        body: JSON.stringify({ partners: [], affiliate_disclosure: "QA" }),
+      }),
+    );
+    const response = await homePageViewPage.goto(
+      baseUrl + "/?src=instagram&cmp=qa_home_pageview_independent",
+      { waitUntil: "domcontentloaded", timeout: 45_000 },
+    );
+    if (!response?.ok()) throw new Error("homepage pageview QA did not load");
+    // An unloaded or changed homepage must fail promptly, not hang the full CI.
+    await Promise.race([
+      advisorSessionStarted,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("advisor session request never began")), 7_000),
+      ),
+    ]);
+    await chooseMeasurement(homePageViewPage, "granted");
+    await Promise.race([
+      pageViewReceived,
+      new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("page_view waited for advisor session")), 5_000),
+      ),
+    ]);
+    if (
+      sessionRequestCount < 2 ||
+      pageViewEvents.length !== 1 ||
+      pageViewEvents[0].source !== "storefront" ||
+      pageViewEvents[0].acquisition_source !== "instagram" ||
+      pageViewEvents[0].campaign_id !== "qa_home_pageview_independent"
+    ) {
+      throw new Error("homepage pageview lost consent, dedupe or attribution");
+    }
+    report.checks.push({
+      label: "home-pageview-advisor-independent", status: "passed",
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    report.failures.push({
+      label: "home-pageview-advisor-independent", message,
+    });
+    report.checks.push({
+      label: "home-pageview-advisor-independent", status: "failed", message,
+    });
+  } finally {
+    releaseAdvisorSession();
+    await homePageViewContext.close();
+  }
+
   const homeSessionTimeoutContext = await browser.newContext({
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 1,
@@ -3488,7 +3734,7 @@ try {
           timeout: 20_000,
         });
 
-        await sweepPage.evaluate(async () => {
+        await sweepPage.evaluate(async (decodeTimeoutMs) => {
           const step = Math.max(
             320,
             Math.floor(window.innerHeight * 0.75),
@@ -3515,16 +3761,35 @@ try {
             images.map(async (image) => {
               image.loading = "eager";
               try {
-                await image.decode();
+                await Promise.race([
+                  image.decode().catch(() => undefined),
+                  new Promise((resolve) =>
+                    window.setTimeout(resolve, decodeTimeoutMs),
+                  ),
+                ]);
               } catch {
                 // Broken-image diagnostics below report failed loads.
               }
             }),
           );
-        });
+        }, imageDecodeTimeoutMs);
 
         const diagnostics = await sweepPage.evaluate((blocked) => {
           const bodyText = document.body.innerText;
+          const visiblePendingImages = Array.from(document.images)
+            .filter((image) => {
+              const rect = image.getBoundingClientRect();
+              const style = window.getComputedStyle(image);
+              return (
+                image.isConnected &&
+                !image.complete &&
+                style.display !== "none" &&
+                style.visibility !== "hidden" &&
+                rect.width > 1 &&
+                rect.height > 1
+              );
+            })
+            .map((image) => image.getAttribute("src") || "(missing src)");
           const visibleBrokenImages = Array.from(document.images)
             .filter((image) => {
               const rect = image.getBoundingClientRect();
@@ -3547,6 +3812,7 @@ try {
             body_length: bodyText.length,
             horizontal_overflow:
               document.documentElement.scrollWidth - window.innerWidth,
+            visible_pending_images: visiblePendingImages,
             visible_broken_images: visibleBrokenImages,
             forbidden_ui: blocked.filter((phrase) =>
               bodyText.includes(phrase),
@@ -3567,6 +3833,11 @@ try {
             `horizontal overflow: ${diagnostics.horizontal_overflow}px`,
           );
         }
+        if (diagnostics.visible_pending_images.length) {
+          throw new Error(
+            `images remained pending after bounded fallback: ${diagnostics.visible_pending_images.join(", ")}`,
+          );
+        }
         if (diagnostics.visible_broken_images.length) {
           throw new Error(
             `broken images: ${diagnostics.visible_broken_images.join(", ")}`,
@@ -3583,37 +3854,16 @@ try {
           );
         }
 
-        const productSchema = await sweepPage.evaluate(() => {
-          const schemas = Array.from(
-            document.querySelectorAll(
-              'script[type="application/ld+json"]',
-            ),
-          )
-            .map((script) => {
-              try {
-                return JSON.parse(script.textContent || "{}");
-              } catch {
-                return null;
-              }
-            })
-            .filter(Boolean);
-
-          return (
-            schemas.find(
-              (schema) => schema?.["@type"] === "Product",
-            ) || null
-          );
-        });
-
-        if (!productSchema) {
-          throw new Error(
-            "fragrance detail page is missing Product JSON-LD",
-          );
+        const schemas = await sweepPage.evaluate(() => Array.from(
+          document.querySelectorAll('script[type="application/ld+json"]'),
+        ).map((script) => JSON.parse(script.textContent || "{}")));
+        const breadcrumb = schemas.find((schema) => schema?.["@type"] === "BreadcrumbList");
+        if (!breadcrumb?.itemListElement?.length) {
+          throw new Error("fragrance detail page is missing BreadcrumbList JSON-LD");
         }
-        if (!String(productSchema.name || "").trim()) {
-          throw new Error(
-            "Product JSON-LD has no usable product name",
-          );
+        const productSchema = schemas.find((schema) => schema?.["@type"] === "Product");
+        if (productSchema && !(productSchema.offers || productSchema.review || productSchema.aggregateRating)) {
+          throw new Error("Product JSON-LD requires qualifying offers, review or aggregateRating");
         }
 
         report.checks.push({

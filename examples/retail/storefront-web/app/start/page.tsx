@@ -6,12 +6,15 @@ import LegalFooter from "@/components/LegalFooter";
 import SocialFragranceSearch from "@/components/SocialFragranceSearch";
 import FragranceVariantLinks from "@/components/FragranceVariantLinks";
 import { LIVE_FRAGRANCES } from "@/lib/fragranceCatalog";
-import { SITE_INDEXABLE } from "@/lib/site";
+import { SITE_INDEXABLE, SITE_URL } from "@/lib/site";
+
+const title = "DUFYND – Duftfinder, Katalog, Alternativen & Geschenkberatung";
+const description =
+  "Starte bei DUFYND mit Duftfinder, Duftkatalog, Parfum-Alternativen oder Geschenkberatung.";
 
 export const metadata: Metadata = {
-  title: "DUFYND – Duftfinder, Katalog, Alternativen & Geschenkberatung",
-  description:
-    "Starte bei DUFYND mit Duftfinder, Duftkatalog, Parfum-Alternativen oder Geschenkberatung.",
+  title,
+  description,
   alternates: {
     canonical: "/start",
   },
@@ -20,6 +23,15 @@ export const metadata: Metadata = {
     follow: SITE_INDEXABLE,
     nocache: true,
   },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "DUFYND",
+    url: `${SITE_URL}/start`,
+    title,
+    description,
+  },
+  twitter: { card: "summary", title, description },
 };
 
 const paths = [

@@ -1,0 +1,41 @@
+{
+  "observed_at": "2026-10-26T15:21:14.041855+00:00",
+  "purpose": "Independent product identity only; no alternate image license or purchase offer is inferred. Current Top SKU/size binding is separately observed by root browser.",
+  "products": [
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "gtin": "8435137749607",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100,
+      "primary_source": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
+      "source_declares": "Manufacturer ProductGroup variant sku8435137749607, EDT100ml. Historical independent Notino record explicitly labels codegtin.",
+      "historical_mapping": "examples/retail/data/scentai_notino_public_catalog_evidence_20260930.json",
+      "current_evidence": "prada-manufacturer-identity.json"
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "gtin": "3386460101035",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "primary_source": "https://www.shop-apotheke.com/beauty/upmPHMRG7/montblanc-eau-de-parfum.htm",
+      "secondary_primary_source": "https://www.galeria.de/produkt/montblanc-explorer-eau-de-parfum-3386460101035",
+      "source_declares": "Shop Apotheke lists EAN3386460101035, Eau de Parfum100ml. Galeria lists product article3386460101035 Explorer100ml."
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "gtin": "3508441001114",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "primary_source": "https://www.careofcarl.de/de/creed-aventus-eau-de-parfum-100ml",
+      "source_declares": "Product Aventus Eau de Parfum100ml; manufacturer information EAN/GTIN3508441001114."
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "gtin": "8033488155070",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "primary_source": "https://monparfum.de/Xerjoff-Naxos-Eau-de-Parfum-100ml",
+      "source_declares": "Xerjoff Naxos EDP100ml, EAN8033488155070, manufacturer referenceXJ.NAX.100; this corroborates fragrance identity, not exact Top giftbox packaging contents."
+    }
+  ]
+}

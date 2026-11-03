@@ -1,0 +1,43 @@
+{
+  "checked_at": "2026-10-26T12:52:42.240195+00:00",
+  "scope": "13 targeted offline candidate and pclick regression tests; no external clickouts or analytics; no full CI",
+  "command": "python -m pytest -q tests/test_dufynd_top_six_offer_candidates.py",
+  "passed": 13,
+  "failed": 0,
+  "observed_summary": "13 passed in 0.21s",
+  "actual_browser_qa": "merchant-browser-observations.json",
+  "actual_shipping_browser_qa": "shipping-browser-observation.json",
+  "original_official_feed_run": 40324201008,
+  "canonical_live_configuration_changed": false,
+  "canonical_development_configuration_changed": true,
+  "development_delta": {
+    "checked_at": "2026-10-26T13:06:15.798972+00:00",
+    "passed": 5,
+    "failed": 0,
+    "new_integration_tests": 4,
+    "changed_negative_test": 1,
+    "observed_summary": "5 passed in 0.25s",
+    "command": "python -m pytest -q tests/test_dufynd_top_six_development_integration.py tests/test_dufynd_top_six_offer_candidates.py::test_pending_partner_cannot_use_proposed_routes_and_expiry_is_real",
+    "real_canonical_dry_run": "canonical-development-dry-run.json",
+    "runtime_sql_required_for_initial_static_release": false,
+    "runtime_environment_changed": false,
+    "production_changed": false
+  },
+  "canonical_contract_delta": {
+    "tests_passed": 2,
+    "observed_summary": "2 passed in 0.15s",
+    "tests": [
+      "test_top_parfuemerie_mappings_are_unique_and_exact",
+      "test_current_release01_perfumetrader_variant_audit_matches_repo_sources"
+    ],
+    "release01_changed_fields": [
+      "source_fingerprint_sha256"
+    ]
+  },
+  "libre_and_preservation_delta": {
+    "tests_passed": 3,
+    "observed_summary": "3 passed in 0.31s",
+    "new_libre_tests": 2,
+    "adjusted_preservation_test": 1
+  }
+}

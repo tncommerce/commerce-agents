@@ -118,7 +118,11 @@ function acquisitionTarget(url: string): URL | null {
   } catch { return null; }
 }
 function stripOptionalFields(target: URL): void {
-  for (const key of OPTIONAL_URL_FIELDS) target.searchParams.delete(key);
+  // URLSearchParams.delete also reserializes an unchanged query (%20 becomes
+  // +). Leave functional SSR links intact when there is no optional data.
+  for (const key of OPTIONAL_URL_FIELDS) {
+    if (target.searchParams.has(key)) target.searchParams.delete(key);
+  }
 }
 export function appendAcquisitionAttribution(url: string): string {
   // A fragment is same-document navigation, not a new acquisition or clickout.

@@ -4,6 +4,7 @@ import { FormEvent, useMemo, useRef, useState } from "react";
 
 import {
   fragranceSearchIdentity,
+  fragranceSearchTokens,
   matchesRequestedVariant,
   normalizeFragranceSearch as normalize,
 } from "@/lib/fragranceSearchIdentity";
@@ -40,7 +41,7 @@ export default function SocialFragranceSearch({
     return fragrances
       .filter((fragrance) =>
         matchesRequestedVariant(fragrance, query) &&
-        normalizedQuery.split(" ").every((token) => fragranceSearchIdentity(fragrance).includes(token)),
+        fragranceSearchTokens(fragrance, query).every((token) => fragranceSearchIdentity(fragrance).includes(token)),
       )
       .slice(0, 5);
   }, [fragrances, normalizedQuery, query]);
@@ -81,7 +82,9 @@ export default function SocialFragranceSearch({
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!matches[0]) {
+    // A broad query may name several concentrations or bottle sizes. Only a
+    // unique match can open directly; preserve the visitor's choice otherwise.
+    if (matches.length !== 1) {
       const tracking = recordSearch();
       const target = new URL(appendAcquisitionAttribution("/duft"), window.location.origin);
       target.searchParams.set("q", query);
@@ -135,7 +138,11 @@ export default function SocialFragranceSearch({
           type="submit"
           className="shrink-0 rounded-xl bg-(--ink) px-4 py-2.5 text-[12px] font-semibold text-white transition hover:opacity-90"
         >
-          {matches.length ? "Direkt öffnen" : "Direkt suchen"}
+          {matches.length === 1
+            ? "Direkt öffnen"
+            : matches.length > 1
+              ? "Treffer ansehen"
+              : "Direkt suchen"}
         </button>
       </div>
 

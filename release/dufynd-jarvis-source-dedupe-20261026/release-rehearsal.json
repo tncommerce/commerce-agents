@@ -1,0 +1,30 @@
+{
+  "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+  "passed": 20,
+  "cases": [
+    "01 exact reviewed migration and package hashes",
+    "02 captured production baseline reproduced byte for byte",
+    "03 guarded apply commits exact reviewed planner",
+    "04 apply preserves tasks, checkpoint, assets and workflows byte for byte",
+    "05 exact function hashes, owner, ACL and invoker postflight passes",
+    "06 rollback restores complete planner definition and permissions",
+    "07 rollback preserves tasks, checkpoint, assets and workflows byte for byte",
+    "08 private helper retained without drop or recreation",
+    "09 reapply after rollback preserves the existing checkpoint and task history",
+    "10 double apply fails closed instead of silently overwriting state",
+    "11 rollback refuses an unexpected function metadata change",
+    "12 rollback refuses unexpected additional role access",
+    "13 non-owner deployment role fails closed",
+    "14 missing runtime dependency prevents application",
+    "15 failing postflight aborts the transaction",
+    "16 failed deployment leaves prior definition, ACL and business rows unchanged",
+    "17 reapply refuses altered inert helper permissions",
+    "18 failing rollback postflight aborts the rollback",
+    "19 failed rollback preserves new planner and business rows",
+    "20 final rollback returns to the exact captured production baseline"
+  ],
+  "scope": "new release payload rehearsal only; offline PostgreSQL-WASM; no native concurrent-lock claim",
+  "productionExecution": false,
+  "existingDedupeSuiteRerun": false,
+  "migrationSha256": "65caae22624b26fd925d8e341a78696ed9e21e9b3ef45ced49d6335f15a04eb4"
+}

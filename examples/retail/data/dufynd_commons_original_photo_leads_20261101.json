@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "status": "PRIVATE_ORIGINAL_PHOTO_CANDIDATES_VARIANT_UNVERIFIED",
+  "observed_at": "2026-11-01",
+  "purpose": "Publicly licensed independent original photography leads for DUFYND's existing released profiles. This record is a rights/source lead, not a variant/asset/publication approval.",
+  "gates": {
+    "current_original_bytes_downloaded": false,
+    "asset_sha256_verified": false,
+    "file_visual_variant_verified": false,
+    "exact_licensed_original_reuse_approved": false,
+    "public_product_image_activation": false,
+    "merchant_offer_activation": false,
+    "no_auto_promotion": true,
+    "next_steps": [
+      "Read source original bytes and verify Wikimedia SHA-1 against the source record",
+      "Independently identify photographed bottle concentration and volume (no inference from product family)",
+      "Human visual acceptance of exact DUFYND public variant",
+      "Validate CC BY-SA 4.0 attribution, changes and share-alike presentation",
+      "Separate product-image publication authorization before any public registry change"
+    ]
+  },
+  "products": [
+    {
+      "product_id": "SC-PRADA-PARADOXE-EDP-90",
+      "public_path": "/duft/prada-paradoxe-edp-90",
+      "target_variant": {
+        "concentration": "Eau de Parfum",
+        "volume_ml": 90,
+        "manufacturer_reference": "1A1351_2HDZ_F0Z99_P_ML090"
+      },
+      "source_verified_only": {
+        "family": "Prada Paradoxe Eau de Parfum",
+        "exact_variant_visible": false,
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "creator": "Jacek Halicki",
+        "source": "Wikimedia Commons",
+        "source_kind": "independent_creator_photo"
+      },
+      "candidates": [
+        {
+          "file_page": "https://commons.wikimedia.org/wiki/File:2023_Woda_perfumowana_Prada_Paradoxe_(1).jpg",
+          "original_name": "2023 Woda perfumowana Prada Paradoxe (1).jpg",
+          "source_file_sha1": "f579f9e7ff12a905c2196b12c48deeb2b5f334f7",
+          "source_file_size_bytes": 3723628,
+          "source_checked_at": "2026-11-01",
+          "exact_size_evidence": "unverified",
+          "byte_sha256": null,
+          "public_activation": false
+        },
+        {
+          "file_page": "https://commons.wikimedia.org/wiki/File:2023_Woda_perfumowana_Prada_Paradoxe_(2).jpg",
+          "original_name": "2023 Woda perfumowana Prada Paradoxe (2).jpg",
+          "source_file_sha1": "c07921320c1e956f2abe806a6c74905c98df981a",
+          "source_file_size_bytes": 3742016,
+          "source_checked_at": "2026-11-01",
+          "exact_size_evidence": "unverified",
+          "byte_sha256": null,
+          "public_activation": false
+        }
+      ],
+      "variant_approved": false,
+      "rights_scope_final_approved": false,
+      "publication_authorized": false
+    },
+    {
+      "product_id": "SC-YSL-Y-EDP-100",
+      "public_path": "/duft/ysl-y-edp-100",
+      "target_variant": {
+        "concentration": "Eau de Parfum",
+        "volume_ml": 100,
+        "manufacturer_reference": null
+      },
+      "source_verified_only": {
+        "family": "Yves Saint Laurent Y",
+        "exact_variant_visible": false,
+        "license": "CC BY-SA 4.0",
+        "license_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "creator": "DYVER (Wikimedia); source EXIF: HOLY-DYVR",
+        "source": "Wikimedia Commons",
+        "source_kind": "independent_creator_photo"
+      },
+      "candidates": [
+        {
+          "file_page": "https://commons.wikimedia.org/wiki/File:Yves_Saint_Laurent_Y_-_1.jpg",
+          "original_name": "Yves Saint Laurent Y - 1.jpg",
+          "source_file_sha1": "7e696cc0a106b5cbdf5478e03f5dfec5cab7dc7f",
+          "source_file_size_bytes": 21515358,
+          "source_checked_at": "2026-11-01",
+          "exact_size_evidence": "unverified",
+          "concentration_evidence": "unverified",
+          "byte_sha256": null,
+          "public_activation": false
+        }
+      ],
+      "variant_approved": false,
+      "rights_scope_final_approved": false,
+      "publication_authorized": false
+    }
+  ]
+}

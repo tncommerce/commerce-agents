@@ -1,9 +1,19 @@
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const OPTIONAL=['dufynd_analytics_session_v1','dufynd_acquisition_attribution_v1','dufynd_internal_qa_v1'];
 const FIELDS=['sid','src','cmp','content','measurement'];
+// Consent QA never sends merchant-media requests to third parties. The
+// exact, rights-scoped original-photo registry is the ONLY recognized exception
+// to the unexpected-request diagnostic; recognized requests are still ABORTED.
+const APPROVED_EXTERNAL_ORIGINAL_URLS=new Set(
+  JSON.parse(readFileSync(new URL('../lib/generated/original-photos.json',import.meta.url),'utf8'))
+    .filter(photo=>typeof photo?.url==='string'&&photo.url.startsWith('https://')&&
+      typeof photo.rights_basis_id==='string'&&photo.rights_basis_id.length>0)
+    .map(photo=>photo.url),
+);
 const PID='SC-RABANNE-1-MILLION-EDT-100';
 const OFFER='qa-consent-rabanne';
 const entry='/duft/rabanne-1-million?qa=1&measurement=granted-v1&sid=qa_untrusted_shared_123456&src=instagram&cmp=qa_consent26&content=qa_product';
@@ -65,6 +75,12 @@ async function isolatedContext(browser,baseUrl,width,{hold=false,blocked=false}=
       stats.clickouts++;return route.abort('blockedbyclient');
     }
     if(url.origin===origin&&!url.pathname.startsWith('/api/'))return route.continue();
+    if(APPROVED_EXTERNAL_ORIGINAL_URLS.has(request.url())){
+      // An approved original image is expected on this product page, but
+      // loading its bytes would leak the QA visitor to the merchant host.
+      stats.approvedMediaBlocked=(stats.approvedMediaBlocked||0)+1;
+      return route.abort('blockedbyclient');
+    }
     // These discovery endpoints are fixture-only too, never forwarded.
     if(url.pathname==='/api/products')return route.fulfill({json:{products:[]}});
     if(url.pathname==='/api/merchant-partners')return route.fulfill({json:{partners:[],affiliate_disclosure:'QA'}});

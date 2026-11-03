@@ -6,6 +6,11 @@ import path from 'node:path';
 
 const PID = 'SC-RABANNE-1-MILLION-EDT-100';
 const OFFER = 'qa-late-grant-rabanne';
+// The newly released licensed Rabanne packshot is an off-origin image. This
+// consent harness must intercept its exact request without internet egress,
+// while still rejecting *all other* third-party resources and clickouts.
+// This does NOT certify production as first-party media delivery.
+const APPROVED_RABANNE_MEDIA = 'https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png';
 const FIELDS = ['sid', 'src', 'cmp', 'content', 'measurement'];
 const entry = '/duft/rabanne-1-million?qa=1&src=instagram&cmp=qa_late_grant&content=qa_current_product&measurement=granted-v1&sid=qa_shared_not_permission_123456';
 const merchant = page => page.locator(`[data-merchant-offers] a[href*="/api/clickout/${OFFER}"]`).first();
@@ -39,7 +44,7 @@ export async function verifyLateMeasurementGrant(browser, baseUrl, outputDir) {
   const results = [];
   for (const width of [320, 390, 768, 1440]) {
     const context = await browser.newContext({viewport:{width, height:900}, serviceWorkers:'block', reducedMotion:'reduce'});
-    const stats = {events:[], sessions:0, offers:0, clickouts:0, unexpected:[]};
+    const stats = {events:[], sessions:0, offers:0, clickouts:0, blockedLicensedMedia:0, unexpected:[]};
     try {
       await context.route('**/*', async route => {
         const request = route.request(), url = new URL(request.url());
@@ -67,6 +72,12 @@ export async function verifyLateMeasurementGrant(browser, baseUrl, outputDir) {
         }
         if (url.pathname === '/api/products') return route.fulfill({json:{products:[]}});
         if (url.pathname === '/api/merchant-partners') return route.fulfill({json:{partners:[]}});
+        if (request.resourceType() === 'image' && request.url() === APPROVED_RABANNE_MEDIA) {
+          // Strict allowlist for the *attempted* external image request only.
+          // Abort in the QA browser; never contact the actual merchant host.
+          stats.blockedLicensedMedia++;
+          return route.abort('blockedbyclient');
+        }
         if (url.origin === origin && !url.pathname.startsWith('/api/')) return route.continue();
         stats.unexpected.push(`${url.origin}${url.pathname}`);
         return route.abort('blockedbyclient');
@@ -146,8 +157,12 @@ export async function verifyLateMeasurementGrant(browser, baseUrl, outputDir) {
       assert.equal(regranted.searchParams.has('cmp'), false, 'Withdrawn campaign state is not replayed');
       assert.equal(stats.offers, offersBefore);
       assert.equal(stats.clickouts, 0);
-      assert.deepEqual(stats.unexpected, []);
-      results.push({width, case:'late-grant-current-product', passed:true, noOfferRefetch:true, noImplicitGrant:true, realMerchantClicks:0});
+      assert.ok(stats.blockedLicensedMedia >= 1,
+        'Current Rabanne product must request the exact registered original photo');
+      assert.deepEqual(stats.unexpected, [], 'All other third-party requests remain forbidden');
+      results.push({width, case:'late-grant-current-product', passed:true, noOfferRefetch:true,
+        noImplicitGrant:true, blockedLicensedMedia:stats.blockedLicensedMedia,
+        externalMediaFetched:0, realMerchantClicks:0});
     } finally {
       await context.close();
     }

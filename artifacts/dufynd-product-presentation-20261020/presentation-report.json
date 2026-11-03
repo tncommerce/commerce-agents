@@ -1,0 +1,217 @@
+{
+  "commit": null,
+  "sources": {
+    "scripts/product-presentation-qa.mjs": "343ce0ef05a0c0e108f2eef59156a21f690017ade73cacb609afa3ce091e26cc",
+    "scripts/test-comparison-trust.mjs": "412831c13d1f8c15f78d3b4159a32aa736babcb97e0b2449fd6e7faa608f7445",
+    "app/product-presentation.css": "73ad7aa17ab0c25adffabe6d9e4e604f9e76e3f288e3c953f025c934c50eda75",
+    "components/FragranceVisual.tsx": "d2455710472141b3e5968726580e10aab8161578cd5580cb9995e30b9b90cb46",
+    "components/FragranceVariant.tsx": "6c21b629ebbab755cd26a27e8111f7c4ba2ece4f02c10fa3688b76185f8aed09",
+    "components/FragranceCatalogBrowser.tsx": "87bf3041f1b78eda8dcefb1885fe987ada8d2ec025425cdbd578182d424f1200",
+    "components/FragranceDetailPage.tsx": "1a568d6267e1386ad651ed3d429528abe660df7dd77b648562bb9d5aea76ec80",
+    "components/FragranceComparisonPicker.tsx": "25134cdcf53427a5a950443b60c34e708e3c85fc248a11468f0e8312e97c1c9c",
+    "components/FragranceComparisonEvidence.tsx": "e850cd712e18caa67e815f8fe2732eb663e6773ebc28e9913f90daad8f0d9e10",
+    "lib/generated/public-fragrances.json": "5af3fa0a40556b13db1970eb9b05895fc3818eca4a43279155ae809d25587410"
+  },
+  "results": [
+    {
+      "width": 320,
+      "profiles": 5,
+      "images": [
+        {
+          "productId": "SC-YSL-LIBRE-EDP-90",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+          "naturalWidth": 258,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+          "naturalWidth": 412,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+          "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+          "naturalWidth": 600,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-PDM-DELINA-EDP-75",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+          "naturalWidth": 252,
+          "naturalHeight": 519,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        }
+      ],
+      "status": "passed",
+      "nativeTouch": true,
+      "measurementRequests": 0,
+      "clickouts": 0
+    },
+    {
+      "width": 390,
+      "profiles": 5,
+      "images": [
+        {
+          "productId": "SC-YSL-LIBRE-EDP-90",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+          "naturalWidth": 258,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+          "naturalWidth": 412,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+          "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+          "naturalWidth": 600,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-PDM-DELINA-EDP-75",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+          "naturalWidth": 252,
+          "naturalHeight": 519,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        }
+      ],
+      "status": "passed",
+      "nativeTouch": true,
+      "measurementRequests": 0,
+      "clickouts": 0
+    },
+    {
+      "width": 768,
+      "profiles": 5,
+      "images": [
+        {
+          "productId": "SC-YSL-LIBRE-EDP-90",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+          "naturalWidth": 258,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+          "naturalWidth": 412,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+          "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+          "naturalWidth": 600,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-PDM-DELINA-EDP-75",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+          "naturalWidth": 252,
+          "naturalHeight": 519,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        }
+      ],
+      "status": "passed",
+      "nativeTouch": false,
+      "measurementRequests": 0,
+      "clickouts": 0
+    },
+    {
+      "width": 1440,
+      "profiles": 5,
+      "images": [
+        {
+          "productId": "SC-YSL-LIBRE-EDP-90",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+          "naturalWidth": 258,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+          "naturalWidth": 412,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+          "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+          "naturalWidth": 600,
+          "naturalHeight": 600,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        },
+        {
+          "productId": "SC-PDM-DELINA-EDP-75",
+          "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+          "naturalWidth": 252,
+          "naturalHeight": 519,
+          "complete": true,
+          "fit": "contain",
+          "transform": "none",
+          "contained": true
+        }
+      ],
+      "status": "passed",
+      "nativeTouch": false,
+      "measurementRequests": 0,
+      "clickouts": 0
+    }
+  ]
+}

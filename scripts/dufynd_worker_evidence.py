@@ -114,7 +114,7 @@ CODE_WINDOWS = {
         ("useEffect(() =>", 0, 25)
     ],
     "examples/retail/storefront-web/components/FragranceOffers.tsx": [
-        ("ensureAnalyticsSession().finally", 2, 10),
+        ("refreshConsentHref((revision) => revision + 1)", 2, 7),
         ("href={appendAcquisitionAttribution", 2, 4),
         ('trackAnalyticsEvent("merchant_clickout"', 1, 8),
     ],

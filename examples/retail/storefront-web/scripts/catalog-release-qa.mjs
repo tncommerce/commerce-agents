@@ -30,7 +30,7 @@ for(const width of [320,390,768,1440]) {
    assert.ok(imgs.every(src=>photos.some(p=>p.url===src)),'Only approved original product photos');
    const approved = (await card.getAttribute("data-original-photo")) === "true";
    const studioHold = card.locator(".dufynd-catalog-photo-pending");
-   const approvedImageStage = card.locator("[data-dufynd-photo-state], [data-dufynd-visual-state='unavailable']");
+   const approvedImageStage = card.locator("[data-dufynd-original-photo], [data-dufynd-photo-state], [data-dufynd-visual-state='unavailable']");
    if (approved) {
      assert.equal(await studioHold.count(),0,"Approved photo cards must not pretend to need a license");
      assert.ok(await approvedImageStage.count() >= 1,"Registered source needs a real image stage or explicit failure");

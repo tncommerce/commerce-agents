@@ -1,3 +1,4 @@
+import CatalogReturnLink from "@/components/CatalogReturnLink";
 import type { Metadata } from "next";
 import {RELEASED_PROFILES} from '@/lib/releasedProfileCatalog';
 import {RELEASE_PILOTS} from '@/lib/releasePilots';
@@ -11,8 +12,14 @@ import FragranceNoteSculpture from "@/components/FragranceNoteSculpture";
 import FragranceNotesOverview from "@/components/FragranceNotesOverview";
 import FragranceExplodedNotes from "@/components/FragranceExplodedNotes";
 import FragranceOffers from "@/components/FragranceOffers";
+import PrivatePhotoOffer from "@/components/PrivatePhotoOffer";
+import LibreRefillGuide, {
+  LIBRE_REFILL_SEO_DESCRIPTION,
+  LIBRE_REFILL_SEO_TITLE,
+} from "@/components/LibreRefillGuide";
 import MobileOfferBar from "@/components/MobileOfferBar";
 import OfferSectionLink from "@/components/OfferSectionLink";
+import FragranceVariant from "@/components/FragranceVariant";
 import FragranceVisual from "@/components/FragranceVisual";
 import ImageAttribution from "@/components/ImageAttribution";
 import FragranceSaveControls from "@/components/FragranceSaveControls";
@@ -196,9 +203,13 @@ export async function generateMetadata({
     };
   }
 
-  const title =
-    `${fragrance.brand} ${fragrance.name} – ${fragrance.concentration} ${fragrance.volume_ml} ml`;
-  const description = descriptionFor(fragrance);
+  const isLibreEDP90 = fragrance.product_id === "SC-YSL-LIBRE-EDP-90";
+  const title = isLibreEDP90
+    ? LIBRE_REFILL_SEO_TITLE
+    : `${fragrance.brand} ${fragrance.name} – ${fragrance.concentration} ${fragrance.volume_ml} ml`;
+  const description = isLibreEDP90
+    ? LIBRE_REFILL_SEO_DESCRIPTION
+    : descriptionFor(fragrance);
   const canonical = `/duft/${fragrance.slug}`;
   const shareImage = originalPhotoFor(fragrance)?.url || null;
 
@@ -230,7 +241,42 @@ export default async function FragrancePage({
 }: PageProps & { merchantPhotoReview?: boolean }) {
   const { slug } = await params;
   const released=RELEASED_PROFILES.find(p=>p.slug===slug);
-  if(released){const profiles=RELEASE_PILOTS.filter(p=>RELEASED_PROFILES.some(r=>r.product_id===p.product_id));const pilot=profiles.find(p=>p.slug===slug);if(!pilot)notFound();return <QualifiedProductPage pilot={pilot} profiles={profiles} publicMode/>;}
+  if (released) {
+    const profiles = RELEASE_PILOTS.filter((p) =>
+      RELEASED_PROFILES.some((row) => row.product_id === p.product_id),
+    );
+    const pilot = profiles.find((p) => p.slug === slug);
+    if (!pilot) notFound();
+    const breadcrumbJson = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "DUFYND", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Düfte", item: `${SITE_URL}/duft` },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: `${released.brand} ${released.name}`,
+          item: `${SITE_URL}${released.seo.public_path}`,
+        },
+      ],
+    }).replaceAll("<", "\\u003c");
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
+        />
+        <AcquisitionAnalytics source="fragrance_detail" />
+        <QualifiedProductPage
+          pilot={pilot}
+          profiles={profiles}
+          publicMode
+          editorialDescription={released.editorial_description_de}
+        />
+      </>
+    );
+  }
   const fragrance = getLiveFragranceBySlug(slug);
 
   if (!fragrance) notFound();
@@ -296,56 +342,20 @@ export default async function FragrancePage({
   const breadcrumbJson = JSON.stringify(
     breadcrumbStructuredData,
   ).replaceAll("<", "\\u003c");
-  const verifiedProductImage =
-    productTruthIsVerified && productTruthVisual?.url
-      ? productTruthVisual.url.startsWith("http")
-        ? productTruthVisual.url
-        : `${SITE_URL}${productTruthVisual.url}`
-      : null;
-  const productStructuredData = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: `${fragrance.brand} ${fragrance.name} ${fragrance.concentration} ${fragrance.volume_ml} ml`,
-    sku: fragrance.product_id,
-    category: "Parfum",
-    url: canonicalUrl,
-    description: descriptionFor(fragrance),
-    brand: {
-      "@type": "Brand",
-      name: fragrance.brand,
-    },
-    ...(verifiedProductImage
-      ? { image: [verifiedProductImage] }
-      : {}),
-    additionalProperty: [
-      {
-        "@type": "PropertyValue",
-        name: "Konzentration",
-        value: fragrance.concentration,
-      },
-      {
-        "@type": "PropertyValue",
-        name: "Füllmenge",
-        value: `${fragrance.volume_ml} ml`,
-      },
-    ],
-  };
-  const productJson = JSON.stringify(
-    productStructuredData,
-  ).replaceAll("<", "\\u003c");
+  // Product snippets require a qualifying offer or review. This static profile
+  // has neither: live merchant offers are loaded separately and must not be
+  // copied into build-time JSON-LD or replaced with editorial/community scores.
+  // Keep BreadcrumbList and the layout's WebSite markup until qualified data
+  // can be emitted with the same freshness and provenance gates as the page.
 
   return (
-    <main className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
+    <main data-dufynd-visual-reset={!review ? "editorial" : undefined} data-dufynd-product-editorial={!review && !offerOnlyPricing || undefined} className="dufynd-detail-page min-h-screen pb-24 text-(--ink) sm:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadcrumbJson }}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: productJson }}
-      />
       {review ? <aside data-photo-review-boundary className="border-b border-(--line) bg-[#ede9df] px-5 py-3 text-center text-[12px] text-(--ink)">
-        <strong>Designprüfung · top Parfümerie</strong> · nicht veröffentlicht · keine Kaufangebote
+        <strong>Designprüfung · top Parfümerie</strong> · nicht veröffentlicht · deaktivierte Kaufbuttons
         <a className="ml-3 underline" href="/review/photos">Zur Bildauswahl</a>
       </aside> : <AcquisitionAnalytics source="fragrance_detail" />}
       <header className="border-b border-(--line) bg-(--card)">
@@ -384,7 +394,7 @@ export default async function FragrancePage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1080px] px-4 py-5 sm:px-6 sm:py-8">
+      <div className="pe-detail-content mx-auto max-w-[1080px] px-4 py-5 sm:px-6 sm:py-8">
         <nav
           aria-label="Breadcrumb"
           className="mb-5 text-[12px] text-(--ink-soft)"
@@ -393,9 +403,9 @@ export default async function FragrancePage({
             DUFYND
           </AcquisitionInternalLink>
           <span className="px-2">/</span>
-          <AcquisitionInternalLink href="/duft" className="hover:underline">
+          <CatalogReturnLink href="/duft" className="inline-flex min-h-11 items-center hover:underline">
             Düfte
-          </AcquisitionInternalLink>
+          </CatalogReturnLink>
           <span className="px-2">/</span>
           <span className="text-(--ink)">
             {fragrance.brand} {fragrance.name}
@@ -404,6 +414,8 @@ export default async function FragrancePage({
 
         <section
           data-product-id={fragrance.product_id}
+          data-dufynd-product-presentation={!review && !offerOnlyPricing || undefined}
+          data-dufynd-photo-status={heroIsProductTruth ? "verified" : "pending"}
           data-dufynd-photo-hold={!heroIsProductTruth || undefined}
           data-merchant-photo-review={review ? "top-parfuemerie" : undefined}
           data-dufynd-studio-photo={heroIsProductTruth && ["merchant_feed", "licensed"].includes(heroVisual?.provenance || "") ? true : undefined}
@@ -431,12 +443,19 @@ export default async function FragrancePage({
           />
           <div className="dufynd-fragrance-hero-grid relative z-10 grid lg:grid-cols-[1.08fr_0.92fr]">
             <div className="dufynd-fragrance-identity dufynd-fragrance-panel-section dufynd-fragrance-panel-section--identity p-5 pb-4 sm:p-7 sm:pb-5 lg:col-start-2 lg:row-start-1 lg:p-9 lg:pb-0">
+              {!review && !offerOnlyPricing ? <p className="vr-pdp-eyebrow">DUFYND <span aria-hidden="true">/</span> Das Duftporträt</p> : null}
               <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-(--accent-ink)">
                 {fragrance.brand}
               </div>
               <h1 className="mt-1.5 text-[32px] font-semibold leading-[1.05] tracking-[-0.045em] sm:text-[46px]">
                 {fragrance.name}
               </h1>
+              {!review && !offerOnlyPricing ? <>
+                <FragranceVariant concentration={fragrance.concentration} volume={fragrance.volume_ml} />
+                <p className="dufynd-product-context">
+                  {[targetGroupLabel(fragrance.target_groups), fragrance.release_year ? `Seit ${fragrance.release_year}` : null].filter(Boolean).join(" · ")}
+                </p>
+              </> : <>
               <div className="mt-3 flex flex-wrap gap-1.5 text-[11px] text-(--ink-soft) sm:gap-2 sm:text-[12px]">
                 <span className="rounded-full border border-(--line) bg-(--surface) px-2.5 py-1.5 sm:px-3">
                   {fragrance.concentration}
@@ -455,15 +474,11 @@ export default async function FragrancePage({
                   </span>
                 ) : null}
               </div>
+              </>}
+
               {fragrance.accords.length ? (
                 <p className="mt-3 text-[11px] leading-4 text-(--ink-soft) sm:text-[12px]">
                   Duftcharakter: {fragrance.accords.slice(0, 3).map(accordLabel).join(" · ")}
-                </p>
-              ) : null}
-              {!review && !offerOnlyPricing && fragrance.market.reference_price_eur != null ? (
-                <p className="mt-2 text-[11px] leading-4 text-(--ink-soft)">
-                  Preisreferenz {formatPrice(fragrance.market.reference_price_eur)}
-                  {checkedAt ? ` · Stand ${checkedAt}` : ""} · aktuelle Angebote separat prüfen
                 </p>
               ) : null}
               {fragrance.community.rating_10 != null ? (
@@ -481,6 +496,7 @@ export default async function FragrancePage({
               ) : null}
             </div>
             <div className="dufynd-fragrance-stage-shell relative min-h-[270px] overflow-hidden sm:min-h-[380px] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:min-h-[560px]">
+              {!review && !offerOnlyPricing ? <span className="vr-pdp-stage-label" aria-hidden="true">DUFYND / Duftarchiv</span> : null}
               <FragranceVisual
                 sourceSize={review ? { width: review.width, height: review.height } : undefined}
                 imageUrl={heroVisual?.url}
@@ -529,6 +545,7 @@ export default async function FragrancePage({
             </div>
 
             <div className="dufynd-fragrance-hero-copy dufynd-fragrance-panel-section dufynd-fragrance-panel-section--copy flex flex-col justify-center p-5 pt-4 sm:p-7 sm:pt-5 lg:col-start-2 lg:row-start-2 lg:p-9 lg:pt-3">
+              {!review && !offerOnlyPricing ? <div className="pe-purchase-intro"><p className="vr-pdp-offer-context">Dein nächster Schritt</p><h2>Entdeckt.<br /><em>Jetzt vergleichen.</em></h2><p>Prüfe die Händlerangebote für diese exakte Duftvariante.</p></div> : null}
               <div className={`grid gap-2 sm:flex sm:flex-wrap sm:gap-2.5 ${related.length ? "grid-cols-2" : "grid-cols-1"}`}>
                 {review ? <a href="#duftnoten" className="rounded-xl bg-(--ink) px-4 py-3 text-center text-[13px] font-semibold text-white">Die Komposition entdecken ↓</a> : <OfferSectionLink
                   id="dufynd-hero-offer-cta"
@@ -653,11 +670,13 @@ export default async function FragrancePage({
               </> : null}
 
               <p className="mt-4 text-[10.5px] leading-4 text-(--ink-soft)">
-                {review ? "Originalaufnahme aus dem Sortiment von top Parfümerie. Kaufangebote bleiben bis zur gesonderten Tracking- und Release-Freigabe deaktiviert." : "DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler."}
+                {review ? "Originalaufnahme aus dem Sortiment von top Parfümerie. Kaufbuttons bleiben bis zur gesonderten Veröffentlichung und Händleraktivierung deaktiviert." : "DUFYND verkauft nicht selbst. Kauf und Versand erfolgen beim jeweiligen Händler."}
               </p>
             </div>
           </div>
         </section>
+
+        {review ? <PrivatePhotoOffer productId={fragrance.product_id} /> : null}
 
         <nav
           aria-label="Schnellnavigation auf der Duftseite"
@@ -671,6 +690,14 @@ export default async function FragrancePage({
             >
               Angebote
             </OfferSectionLink>}
+            {!review && fragrance.product_id === "SC-YSL-LIBRE-EDP-90" ? (
+              <a
+                href="#libre-nachfuellbar"
+                className="rounded-xl px-3 py-2 text-[11px] font-semibold text-(--ink) transition hover:bg-(--well) sm:px-4 sm:text-[12px]"
+              >
+                Flakon oder Refill?
+              </a>
+            ) : null}
             <a
               href="#duftprofil"
               className="rounded-xl px-3 py-2 text-[11px] font-semibold text-(--ink) transition hover:bg-(--well) sm:px-4 sm:text-[12px]"
@@ -700,6 +727,13 @@ export default async function FragrancePage({
             className="dufynd-fragrance-journey-axis"
           />
 
+          {!review && !offerOnlyPricing && <div
+            className="dufynd-fragrance-chapter dufynd-fragrance-chapter--notes mt-5"
+            data-dufynd-chapter="duftnoten"
+          >
+            <FragranceNotesOverview notes={fragrance.notes} />
+          </div>}
+
           {!review && <div
             id="angebote"
             className="dufynd-fragrance-chapter dufynd-fragrance-chapter--offers mt-5 scroll-mt-24"
@@ -718,12 +752,18 @@ export default async function FragrancePage({
             />
           </div>}
 
+        {!review && fragrance.product_id === "SC-YSL-LIBRE-EDP-90" ? (
+          <LibreRefillGuide />
+        ) : null}
+
+        {(review || offerOnlyPricing) && <>
         <div
           className="dufynd-fragrance-chapter dufynd-fragrance-chapter--notes mt-5"
           data-dufynd-chapter="duftnoten"
         >
           <FragranceNotesOverview notes={fragrance.notes} />
         </div>
+        </>}
         <div
           className="dufynd-fragrance-chapter dufynd-fragrance-chapter--profile mt-5"
           data-dufynd-chapter="verstehen"
@@ -735,6 +775,12 @@ export default async function FragrancePage({
             <h2 className="text-[17px] font-semibold">
               Duftprofil
             </h2>
+
+            {fragrance.short_description?.trim() ? (
+              <p className="mt-3 text-[13px] leading-6 text-(--ink-soft)" data-dufynd-profile-description>
+                {fragrance.short_description}
+              </p>
+            ) : null}
 
             <div className="mt-3 flex flex-wrap gap-2">
               {fragrance.accords.map((accord) => (

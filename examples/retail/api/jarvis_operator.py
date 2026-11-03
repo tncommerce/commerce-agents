@@ -167,6 +167,7 @@ def build_operator_diagnosis(
     business_planner_state = str(business_planner.get("state") or "")
     business_next_move = str(business_planner.get("business_next_move") or "")
     business_planner_requires_master = business_planner.get("master_action_required") is True
+    technical_remediation = business_planner_state == "technical_remediation_required"
     planner_gap = business_planner_state == "planner_gap" and not business_planner_requires_master
     business_move_label = {
         "social_publication_readiness": "die heutige Social-Publishing-Bereitschaft",
@@ -195,6 +196,14 @@ def build_operator_diagnosis(
         cause = (
             f"{ready_count} zertifizierte kostenlose Aufgabe(n) sind bereit, "
             "aber aktuell noch nicht in Ausführung."
+        )
+    elif technical_remediation:
+        state = "TECHNICAL_REMEDIATION_REQUIRED"
+        headline = "Technische Arbeit ist offen"
+        cause = (
+            "Die Systembeobachtung oder ihre Verarbeitung ist nicht vollständig bestätigt. "
+            "Diese technische Restarbeit bleibt auch bei einer leeren ausführbaren Arbeitsliste bestehen. "
+            "Ein erfolgreicher Zeitplanlauf bestätigt weder die Reparatur noch eine Geschäftsaktion."
         )
     elif planner_gap:
         state = "PLANNING_REQUIRED"
@@ -233,6 +242,20 @@ def build_operator_diagnosis(
 
     moves: list[dict[str, Any]] = []
 
+    if state == "TECHNICAL_REMEDIATION_REQUIRED":
+        moves.append(
+            {
+                "id": "repair_technical_monitoring",
+                "title": "Systembeobachtung und Verarbeitungskette wiederherstellen",
+                "reason": (
+                    "Der aktuelle Planner weist technische Restarbeit aus. "
+                    "Eine vollständige Verarbeitung oder Reparatur ist damit noch nicht bestätigt."
+                ),
+                "master_required": False,
+                "jarvis_can_execute_now": False,
+            }
+        )
+
     if planner_gap:
         moves.append(
             {
@@ -265,7 +288,7 @@ def build_operator_diagnosis(
             }
         )
 
-    if internal_observer_issues:
+    if internal_observer_issues and state != "TECHNICAL_REMEDIATION_REQUIRED":
         providers = sorted(
             {
                 str(row.get("source_type") or row.get("provider") or "observer").split(":", 1)[0]
@@ -318,6 +341,7 @@ def build_operator_diagnosis(
         not active_count
         and not ready
         and not planner_gap
+        and not technical_remediation
         and planner_state not in {"scheduled_safe_work", "waiting_for_business_signal"}
     ):
         moves.append(
@@ -349,6 +373,11 @@ def build_operator_diagnosis(
         )
     elif state == "READY":
         jarvis_message = "Jarvis kann die bereitliegende sichere Arbeit anstoßen."
+    elif state == "TECHNICAL_REMEDIATION_REQUIRED":
+        jarvis_message = (
+            "Jarvis muss aktuelle Quellbelege und die Verarbeitungskette prüfen. "
+            "Eine Reparatur darf erst nach bestätigter Ausführung als erledigt gelten."
+        )
     elif state == "PLANNING_REQUIRED":
         jarvis_message = (
             "Jarvis muss aus der aktuellen Geschäftspriorität sichere interne Arbeit erzeugen; "

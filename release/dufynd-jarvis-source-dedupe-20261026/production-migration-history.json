@@ -1,0 +1,590 @@
+[
+  {
+    "version": "20260918124101",
+    "name": "create_scentai_analytics_events"
+  },
+  {
+    "version": "20260918194622",
+    "name": "add_catalog_search_analytics"
+  },
+  {
+    "version": "20260918194814",
+    "name": "add_scentai_demand_views"
+  },
+  {
+    "version": "20260918195705",
+    "name": "add_no_result_session_metrics_v2"
+  },
+  {
+    "version": "20260918201814",
+    "name": "add_scentai_conversion_funnel_analytics"
+  },
+  {
+    "version": "20260918202107",
+    "name": "refine_scentai_conversion_funnel_sequence_v2"
+  },
+  {
+    "version": "20260918202202",
+    "name": "add_scentai_clickout_surface_summary"
+  },
+  {
+    "version": "20260918203033",
+    "name": "require_consultation_before_scentai_recommendation"
+  },
+  {
+    "version": "20260918214737",
+    "name": "add_scentai_acquisition_funnel"
+  },
+  {
+    "version": "20260919070835",
+    "name": "add_scentai_personal_library_analytics"
+  },
+  {
+    "version": "20260919072340",
+    "name": "add_scentai_retention_summary"
+  },
+  {
+    "version": "20260919172047",
+    "name": "add_scentai_social_attribution_fields_v2"
+  },
+  {
+    "version": "20260920143317",
+    "name": "create_dufynd_jarvis_knowledge_base"
+  },
+  {
+    "version": "20260920143630",
+    "name": "extend_dufynd_jarvis_learning_loop"
+  },
+  {
+    "version": "20260920145956",
+    "name": "extend_dufynd_creative_library_v2"
+  },
+  {
+    "version": "20260920151658",
+    "name": "extend_dufynd_jarvis_learning_loop"
+  },
+  {
+    "version": "20260920152744",
+    "name": "harden_dufynd_jarvis_knowledge_security"
+  },
+  {
+    "version": "20260920154016",
+    "name": "add_dufynd_content_funnel_to_jarvis"
+  },
+  {
+    "version": "20260920154108",
+    "name": "add_dufynd_launch_gate"
+  },
+  {
+    "version": "20260920154601",
+    "name": "add_dufynd_affiliate_partner_registry"
+  },
+  {
+    "version": "20260920154749",
+    "name": "add_dufynd_creative_learning_aggregates"
+  },
+  {
+    "version": "20260920155251",
+    "name": "automate_dufynd_launch_gate_state_checks"
+  },
+  {
+    "version": "20260920155748",
+    "name": "link_dufynd_content_assets_to_tracking_ids_v2"
+  },
+  {
+    "version": "20260920155850",
+    "name": "complete_dufynd_jarvis_context"
+  },
+  {
+    "version": "20260920160017",
+    "name": "add_dufynd_video_rnd_gate"
+  },
+  {
+    "version": "20260920160423",
+    "name": "add_dufynd_rnd_pilot_shortlist"
+  },
+  {
+    "version": "20260920160440",
+    "name": "add_rnd_pilot_shortlist_to_jarvis_context"
+  },
+  {
+    "version": "20260920160839",
+    "name": "add_dufynd_ai_video_asset_requirements"
+  },
+  {
+    "version": "20260920161057",
+    "name": "index_dufynd_rnd_pilot_format"
+  },
+  {
+    "version": "20260920162312",
+    "name": "add_naxos_genesis_candidate_brief"
+  },
+  {
+    "version": "20260920162424",
+    "name": "add_dufynd_content_learning_metrics_v2"
+  },
+  {
+    "version": "20260920162619",
+    "name": "automate_dufynd_analytics_launch_checks"
+  },
+  {
+    "version": "20260920162651",
+    "name": "automate_dufynd_rnd_gate"
+  },
+  {
+    "version": "20260920162857",
+    "name": "index_dufynd_rnd_pilot_brief_foreign_keys"
+  },
+  {
+    "version": "20260920162913",
+    "name": "add_dufynd_rnd_pilot_selection_rpc"
+  },
+  {
+    "version": "20260920163012",
+    "name": "add_dufynd_platform_smoke_recorder"
+  },
+  {
+    "version": "20260920171929",
+    "name": "record_dufynd_production_smoke_gate"
+  },
+  {
+    "version": "20260920174128",
+    "name": "add_dufynd_rnd_asset_inventory"
+  },
+  {
+    "version": "20260920174141",
+    "name": "expose_dufynd_rnd_asset_inventory_to_jarvis"
+  },
+  {
+    "version": "20260920174723",
+    "name": "add_dufynd_rnd_pilot_asset_preflight"
+  },
+  {
+    "version": "20260920174740",
+    "name": "expose_dufynd_pilot_asset_preflight_to_jarvis"
+  },
+  {
+    "version": "20260920174900",
+    "name": "add_dufynd_naxos_sound_and_prompt_package"
+  },
+  {
+    "version": "20260920175003",
+    "name": "expose_dufynd_prompt_and_sound_plans_to_jarvis"
+  },
+  {
+    "version": "20260920175054",
+    "name": "add_dufynd_controlled_rnd_sprint_plan"
+  },
+  {
+    "version": "20260920175110",
+    "name": "expose_dufynd_rnd_sprint_plan_to_jarvis"
+  },
+  {
+    "version": "20260920180047",
+    "name": "add_dufynd_rnd_asset_source_policy"
+  },
+  {
+    "version": "20260920180102",
+    "name": "expose_dufynd_asset_source_policy_to_jarvis"
+  },
+  {
+    "version": "20260920181450",
+    "name": "add_dufynd_creative_pattern_memory"
+  },
+  {
+    "version": "20260920181925",
+    "name": "add_dufynd_creative_rights_policy"
+  },
+  {
+    "version": "20260920184647",
+    "name": "add_dufynd_jarvis_autonomy_control_plane"
+  },
+  {
+    "version": "20260920184815",
+    "name": "add_dufynd_experiment_rubric"
+  },
+  {
+    "version": "20260920185037",
+    "name": "include_autonomy_and_rubric_in_jarvis_context"
+  },
+  {
+    "version": "20260920185207",
+    "name": "harden_dufynd_jarvis_internal_functions"
+  },
+  {
+    "version": "20260920185228",
+    "name": "enrich_dufynd_content_ideas_for_jarvis"
+  },
+  {
+    "version": "20260920185248",
+    "name": "create_dufynd_content_board_v1"
+  },
+  {
+    "version": "20260920185337",
+    "name": "expose_dufynd_content_board_to_jarvis"
+  },
+  {
+    "version": "20260920185456",
+    "name": "version_dufynd_jarvis_context_contract"
+  },
+  {
+    "version": "20260920185505",
+    "name": "add_dufynd_context_schema_version"
+  },
+  {
+    "version": "20260920185553",
+    "name": "link_rnd_briefs_to_content_ideas_v2"
+  },
+  {
+    "version": "20260920185725",
+    "name": "create_dufynd_content_board_learning_view"
+  },
+  {
+    "version": "20260920185736",
+    "name": "expose_dufynd_content_board_learning"
+  },
+  {
+    "version": "20260920190519",
+    "name": "add_dufynd_jarvis_decision_helpers"
+  },
+  {
+    "version": "20260920191508",
+    "name": "add_dufynd_jarvis_event_inbox"
+  },
+  {
+    "version": "20260920192420",
+    "name": "add_dufynd_human_decision_queue"
+  },
+  {
+    "version": "20260920192444",
+    "name": "add_dufynd_human_decision_resolution"
+  },
+  {
+    "version": "20260920192924",
+    "name": "extend_dufynd_jarvis_event_capture"
+  },
+  {
+    "version": "20260920193101",
+    "name": "add_dufynd_jarvis_health"
+  },
+  {
+    "version": "20260920193215",
+    "name": "include_decisions_in_dufynd_jarvis_context_v21"
+  },
+  {
+    "version": "20260920193232",
+    "name": "harden_dufynd_jarvis_trigger_functions"
+  },
+  {
+    "version": "20260920193631",
+    "name": "add_dufynd_jarvis_usage_tracking"
+  },
+  {
+    "version": "20260920193703",
+    "name": "add_dufynd_jarvis_budget_window"
+  },
+  {
+    "version": "20260920194037",
+    "name": "guard_dufynd_jarvis_budget_activation"
+  },
+  {
+    "version": "20260930051227",
+    "name": "dufynd_autonomy_blocked_queue"
+  },
+  {
+    "version": "20260930113518",
+    "name": "dufynd_approval_queue_hygiene"
+  },
+  {
+    "version": "20260930124955",
+    "name": "dufynd_next_action_approval_hygiene"
+  },
+  {
+    "version": "20260930195621",
+    "name": "add_offer_section_analytics_events"
+  },
+  {
+    "version": "20261002071843",
+    "name": "dufynd_supervisor_v2_phase1"
+  },
+  {
+    "version": "20261002081205",
+    "name": "dufynd_supervisor_v2_cost_reservations"
+  },
+  {
+    "version": "20261002092402",
+    "name": "dufynd_supervisor_v2_durable_executions"
+  },
+  {
+    "version": "20261002101450",
+    "name": "dufynd_supervisor_v2_external_events"
+  },
+  {
+    "version": "20261002114533",
+    "name": "dufynd_supervisor_v2_capability_packets"
+  },
+  {
+    "version": "20261002115754",
+    "name": "dufynd_supervisor_v2_state_audit_handler"
+  },
+  {
+    "version": "20261002120640",
+    "name": "dufynd_supervisor_v2_acceptance_receipt_projection"
+  },
+  {
+    "version": "20261002133404",
+    "name": "dufynd_purchase_freshness_handler"
+  },
+  {
+    "version": "20261002134248",
+    "name": "dufynd_purchase_acceptance_receipt"
+  },
+  {
+    "version": "20261002135902",
+    "name": "dufynd_ci_pr_verifier"
+  },
+  {
+    "version": "20261002161114",
+    "name": "dufynd_supervisor_recovery_audit"
+  },
+  {
+    "version": "20261002162638",
+    "name": "dufynd_observer_credential_plane"
+  },
+  {
+    "version": "20261002163413",
+    "name": "dufynd_audit_known_terminal_states"
+  },
+  {
+    "version": "20261003101747",
+    "name": "dufynd_private_observer_health_projection"
+  },
+  {
+    "version": "20261003151826",
+    "name": "dufynd_private_observer_acceptance_gate"
+  },
+  {
+    "version": "20261003165754",
+    "name": "dufynd_control_room_owner_session"
+  },
+  {
+    "version": "20261003210604",
+    "name": "dufynd_paid_dispatch_revalidation"
+  },
+  {
+    "version": "20261003221326",
+    "name": "dufynd_nightshift_budget_resolver"
+  },
+  {
+    "version": "20261003230559",
+    "name": "dufynd_counted_preflight_snapshot"
+  },
+  {
+    "version": "20261004075909",
+    "name": "dufynd_private_observer_recurring_capture"
+  },
+  {
+    "version": "20261004144856",
+    "name": "first_money_analytics_offer_context"
+  },
+  {
+    "version": "20261004170216",
+    "name": "jarvis_thin_v1_free_orchestration"
+  },
+  {
+    "version": "20261004170417",
+    "name": "jarvis_thin_v1_null_safe_selection"
+  },
+  {
+    "version": "20261004170519",
+    "name": "jarvis_thin_v1_stop_evidence"
+  },
+  {
+    "version": "20261004170541",
+    "name": "jarvis_thin_v1_claim_denial_evidence"
+  },
+  {
+    "version": "20261004170618",
+    "name": "jarvis_thin_v1_dependency_claim_guard"
+  },
+  {
+    "version": "20261004170636",
+    "name": "jarvis_thin_v1_generated_inbox_projection"
+  },
+  {
+    "version": "20261004171025",
+    "name": "jarvis_thin_v1_null_safe_head_freshness"
+  },
+  {
+    "version": "20261004195843",
+    "name": "jarvis_first_money_free_work_v1"
+  },
+  {
+    "version": "20261004200417",
+    "name": "jarvis_thin_v1_head_freshness"
+  },
+  {
+    "version": "20261005044709",
+    "name": "jarvis_thin_v1_head_cadence_v2"
+  },
+  {
+    "version": "20261005051511",
+    "name": "first_money_launch_day_v1"
+  },
+  {
+    "version": "20261005053941",
+    "name": "content_candidate_owner_gate_v1"
+  },
+  {
+    "version": "20261005093209",
+    "name": "content_publish_quality_gate_v2"
+  },
+  {
+    "version": "20261005111739",
+    "name": "dufynd_dependency_observer_reliability"
+  },
+  {
+    "version": "20261005113031",
+    "name": "dufynd_content_workflow_control_plane"
+  },
+  {
+    "version": "20261005114104",
+    "name": "dufynd_first_money_replacement_measurement"
+  },
+  {
+    "version": "20261006205233",
+    "name": "jarvis_autonomous_business_planner_v1"
+  },
+  {
+    "version": "20261006205327",
+    "name": "jarvis_autonomous_business_planner_v1_priority_fix"
+  },
+  {
+    "version": "20261006205356",
+    "name": "jarvis_autonomous_business_planner_v1_scope_fix"
+  },
+  {
+    "version": "20261006210952",
+    "name": "jarvis_autonomous_business_planner_v1_capability_fix"
+  },
+  {
+    "version": "20261006211355",
+    "name": "jarvis_content_reuse_worker_v1"
+  },
+  {
+    "version": "20261006211534",
+    "name": "jarvis_productive_integrity_sentinel_v1"
+  },
+  {
+    "version": "20261006212414",
+    "name": "jarvis_affiliate_evidence_worker_v1"
+  },
+  {
+    "version": "20261006212536",
+    "name": "jarvis_zero_budget_content_queue_v1"
+  },
+  {
+    "version": "20261006213108",
+    "name": "jarvis_content_production_packet_v1"
+  },
+  {
+    "version": "20261006213758",
+    "name": "jarvis_private_observer_integrity_v2"
+  },
+  {
+    "version": "20261007044306",
+    "name": "jarvis_measurement_continuity_v1"
+  },
+  {
+    "version": "20261007060755",
+    "name": "jarvis_performance_learning_schema_fix_v1"
+  },
+  {
+    "version": "20261007060951",
+    "name": "jarvis_content_performance_learning_v1"
+  },
+  {
+    "version": "20261007061310",
+    "name": "jarvis_content_performance_generated_status_fix"
+  },
+  {
+    "version": "20261008045807",
+    "name": "jarvis_photo_first_content_binding_fix"
+  },
+  {
+    "version": "20261008083217",
+    "name": "jarvis_ceo_safe_cycle_v1"
+  },
+  {
+    "version": "20261008101521",
+    "name": "jarvis_ceo_real_work_v2"
+  },
+  {
+    "version": "20261008101524",
+    "name": "jarvis_ceo_cycle_route_v2"
+  },
+  {
+    "version": "20261008101527",
+    "name": "jarvis_ceo_v2_free_cron"
+  },
+  {
+    "version": "20261008233714",
+    "name": "dufynd_production_audio_gate"
+  },
+  {
+    "version": "20261008233920",
+    "name": "dufynd_audio_review_invalidation"
+  },
+  {
+    "version": "20261009001632",
+    "name": "dufynd_publish_dispatch"
+  },
+  {
+    "version": "20261010074032",
+    "name": "gmail_observer_recovery"
+  },
+  {
+    "version": "20261010082053",
+    "name": "jarvis_bounded_missions"
+  },
+  {
+    "version": "20261010082057",
+    "name": "gmail_owner_gate_persistence"
+  },
+  {
+    "version": "20261010094506",
+    "name": "three_platform_release_contract"
+  },
+  {
+    "version": "20261010094507",
+    "name": "first_money_qa_provenance"
+  },
+  {
+    "version": "20261010094940",
+    "name": "release_platform_content_identity"
+  },
+  {
+    "version": "20261013073701",
+    "name": "dufynd_native_nightshift_v1"
+  },
+  {
+    "version": "20261014073054",
+    "name": "dufynd_nightshift_value_runtime_v2"
+  },
+  {
+    "version": "20261015185527",
+    "name": "dufynd_analytics_retention_v1"
+  },
+  {
+    "version": "20261018210324",
+    "name": "dufynd_purchase_event_rearm_guard_20261017194500"
+  },
+  {
+    "version": "20261019053422",
+    "name": "dufynd_thin_noop_suppression_20261017214500"
+  },
+  {
+    "version": "20261021130229",
+    "name": "jarvis_planner_external_signal_truth"
+  }
+]

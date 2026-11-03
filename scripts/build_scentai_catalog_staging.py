@@ -24,6 +24,71 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
+def validate_existing_public_feed_image(
+    candidate: dict, candidates: dict, rights: dict, public_products: list[dict]
+) -> None:
+    """Validate a public photo update without rewriting its old staging record."""
+    matches = [row for row in public_products if row["product_id"] == candidate["product_id"]]
+    if len(matches) != 1 or any(
+        matches[0].get(field) != candidate.get(field)
+        for field in ("brand", "name", "concentration", "volume_ml")
+    ):
+        raise ValueError("approved_feed_candidate_identity_mismatch")
+    product = matches[0]
+    visuals = [
+        visual
+        for visual in product.get("visuals", [])
+        if visual.get("role") == "primary" and visual.get("url") == candidate.get("image_url")
+    ]
+    if (
+        product.get("validation", {}).get("catalog_ready") is not True
+        or product.get("validation", {}).get("blockers")
+        or product.get("image_url") != candidate.get("image_url")
+        or len(visuals) != 1
+        or visuals[0].get("provenance") != "merchant_feed"
+        or visuals[0].get("fidelity_status") != "verified"
+        or visuals[0].get("exact_variant_verified") is not True
+        or not candidate.get("image_sha256")
+        or any(
+            visuals[0].get(field) != candidate.get(field)
+            for field in ("image_sha256", "reviewed_at", "rights_basis_id", "rights_checked_at")
+        )
+    ):
+        raise ValueError("approved_public_feed_image_evidence_mismatch")
+    reviewed_at = str(candidate.get("reviewed_at") or "").strip()
+    if not reviewed_at or not candidate.get("visual_approval_basis"):
+        raise ValueError("approved_feed_candidate_missing_visual_review_evidence")
+    reviews = [
+        row
+        for row in candidates.get("additional_feed_reviews", [])
+        if row.get("review_id") == candidate.get("feed_review_id")
+    ]
+    if len(reviews) != 1 or (
+        reviews[0].get("feed_provenance", {}).get("download_sha256")
+        != candidate.get("source_feed_download_sha256")
+    ):
+        raise ValueError("approved_public_feed_source_mismatch")
+    source = reviews[0].get("source_workflow", {})
+    if not source.get("id") or any(
+        source.get(key) != candidate.get(field)
+        for key, field in (
+            ("id", "source_run_id"),
+            ("job_id", "source_job_id"),
+            ("head_sha", "source_run_head_sha"),
+        )
+    ):
+        raise ValueError("approved_public_feed_source_mismatch")
+    # Run the original rights, advertiser/feed membership, checked-at and URL
+    # guards against this image's own source review. Do not create an approval.
+    feed_approval_plan(
+        {"products": [product]},
+        {**candidates, "feed_provenance": reviews[0]["feed_provenance"]},
+        product_id=candidate["product_id"],
+        image_url=candidate["image_url"],
+        rights_registry=rights,
+    )
+
+
 def attach_discovery_qualifications(products: list[dict], evidence: dict) -> None:
     """Prepare factual discovery independently; never loosen a release gate."""
     by_id = {row["product_id"]: row for row in products}
@@ -543,9 +608,18 @@ def build_staging_payload() -> dict:
 
     feed_candidates = load_json(DATA_DIR / "dufynd_approved_feed_image_candidates.json")
     feed_rights = load_json(DATA_DIR / "dufynd_affiliate_feed_image_rights.json")
+    public_products = load_json(LIVE_SOURCE)["products"]
     for candidate in feed_candidates.get("candidates", []):
         if candidate.get("review_status") != "approved":
             continue
+        scope = candidate.get("application_scope", "staging")
+        if scope == "existing_public_profile":
+            validate_existing_public_feed_image(
+                candidate, feed_candidates, feed_rights, public_products
+            )
+            continue
+        if scope != "staging":
+            raise ValueError("approved_feed_candidate_unknown_application_scope")
         product = next(
             (row for row in products if row["product_id"] == candidate["product_id"]),
             None,

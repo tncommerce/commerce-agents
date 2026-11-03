@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "redacted_original_tool_responses",
+  "recorded_at": "2026-10-26T12:27:42.724Z",
+  "project_id": "bqsdxaagklpkxioaqdqa",
+  "owner_authorization": "Explicit owner GO on 2026-10-26 for the exact prepared Jarvis source-dedupe fix; exact database-only application completed.",
+  "approved_pr_head": "7cc25aff0dd0152124b366e7624d7b6be00eab84",
+  "production_branch_head": "7b793cf7ce1223967e66d768fcb7930ecdfc0e40",
+  "payloads": {
+    "source_migration": {
+      "path": "supabase/migrations/20261026122726_jarvis_business_source_dedupe.sql",
+      "sha256": "65caae22624b26fd925d8e341a78696ed9e21e9b3ef45ced49d6335f15a04eb4",
+      "path_at_apply": "supabase/migrations/20261026083433_jarvis_business_source_dedupe.sql"
+    },
+    "apply": {
+      "path": "apply-body.sql",
+      "sha256": "75b46ae9e5b9b2be16b0d10990b26666cabbd63e4ba0702168c47094152b8170"
+    },
+    "postflight": {
+      "path": "postflight.sql",
+      "sha256": "10e1a137de3773100215252426a6630d87fb77e0bc88d4ac40d882af888c225b"
+    },
+    "rollback": {
+      "path": "rollback-body.sql",
+      "sha256": "e6a371188f2872082e57f9b6102646ba85bc65f7f5394591f605cd77cd17be6b",
+      "executed": false
+    }
+  },
+  "apply_method": "Supabase apply_migration",
+  "apply_result": {
+    "success": true
+  },
+  "actual_migration_history_entry": {
+    "version": "20261026122726",
+    "name": "jarvis_business_source_dedupe"
+  },
+  "history_mapping_note": "The repository migration was renamed without byte changes from 20261026083433 to the actual tool-generated version 20261026122726 after applying. This avoids replaying this already-applied migration under the old version. No generic db push or migration-history repair was performed; unrelated historical mismatches remain.",
+  "postflight": [
+    {
+      "checked_at": "2026-10-26 12:27:42.144844+00",
+      "function": "plan_dufynd_autonomous_business_work_v1()",
+      "definition_md5": "8668638435b216b4c0dd9fa535448669",
+      "owner": "postgres",
+      "security_definer": false,
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    },
+    {
+      "checked_at": "2026-10-26 12:27:42.144844+00",
+      "function": "read_dufynd_business_source_v1(jsonb)",
+      "definition_md5": "6b8852a51087ba57bf2222481e651bc7",
+      "owner": "postgres",
+      "security_definer": false,
+      "acl": "{postgres=X/postgres,service_role=X/postgres}"
+    }
+  ],
+  "github_merge": false,
+  "render_deployment": false,
+  "merge_gate_at_execution": {
+    "pr_number": 839,
+    "url": "https://github.com/tncommerce/commerce-agents/pull/839",
+    "head": "7cc25aff0dd0152124b366e7624d7b6be00eab84",
+    "draft": false,
+    "state": "open",
+    "mergeable": true,
+    "mergeable_state": "blocked",
+    "check_runs_on_head": 0,
+    "statuses_on_head": 0,
+    "ruleset": {
+      "id": 25193573,
+      "enforcement": "active",
+      "can_bypass": "never",
+      "bypass_actors": [],
+      "required_checks": [
+        "web",
+        "python (3.11)",
+        "python (3.12)",
+        "no-pypi-fallback",
+        "budget-postgres",
+        "private-broker-container"
+      ],
+      "strict": false
+    }
+  },
+  "reused_validation": {
+    "ci": {
+      "run": 40303294857,
+      "sha": "3d272051c2ece547e3a5cff8f9b9bc76d61f8600",
+      "status": "completed",
+      "conclusion": "success",
+      "scope": "Historical integration CI; does not satisfy current PR HEAD checks. Tests were reused, not rerun."
+    },
+    "prior_tests": {
+      "offline_release_rollback": 28,
+      "source_dedupe_in_native_ci": 31,
+      "total_native_ci": 233,
+      "rerun_this_turn": false
+    },
+    "new_test_runs": false
+  },
+  "original_apply_evidence_sha256": "490609081173fe322668478967689ed763607ebf34573173a0adafd72e70cfa3",
+  "redaction": "Only the applied migration entry is retained; unrelated migration history and transport wrappers are omitted. No secrets or credentials are included."
+}

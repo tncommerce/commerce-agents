@@ -52,3 +52,66 @@ Production evidence is newly refreshed, so its normal pre-expiry boundary is two
 | STATE_SNAPSHOT | Manual state audits and stale acceptance receipts | Existing certified state audit and receipt projection cover this | No repair authority | Covered |
 
 No additional parallel handler is introduced. Next highest-impact general verification handler is post-merge verification, after its evidence sources and credential boundary are available.
+
+## Transport evidence follow-up — 2026-10-29
+
+Prepared against production commit `a2d6bfefcc80efe34ebcb212cf887d8aa98473e8`;
+the new forward migration `20261029100006_dufynd_purchase_transport_diagnostics.sql`
+has been tested locally and is not applied to production by this change.
+
+The live read found four released, completed purchase attempts from 19–20 October
+whose business decision remains `transport_unverified`. Later successful reports
+for the identical contract already exist. Their original failure reports and
+hashes remain historical evidence; they must not be rearmed or called successful.
+The reports omitted HTTP status and response size, and the old pg_net response
+rows were no longer present, so the original individual cause cannot be recovered.
+
+The same poller also accepted future/nonfinite receipt timestamps and could choose
+one row silently when an ID had multiple responses. Local PostgreSQL reproduced
+`safe_evidence_refresh` from both future and `infinity` timestamps, including an
+invalid `observed_at` when both receipts were affected, and from a duplicate ID
+with contradictory status codes. A missing or nonfinite persisted request time
+also passed the task-packet guard: fresh receipts could certify an unprovable
+source order, while missing receipts with an unknown, infinite or future request
+time could remain pending beyond the intended window.
+
+The forward change replaces only `poll_dufynd_purchase_verification(uuid)`:
+
+- Read each response and its cardinality in one SQL snapshot, bounded at two rows.
+  Multiple matches are ambiguous and cannot certify an observation.
+- Require finite, non-null receipt times no later than `clock_timestamp()` read
+  after the execution row lock and receipt reads. A legitimate receipt arriving
+  after transaction or statement start remains eligible. The existing pre-request
+  and five-minute freshness checks still apply.
+- Keep missing responses pending for the existing 60-second window. Negative
+  results gain a versioned `transport` object containing only `product` and
+  `shipping` diagnostics: fixed error class, response state, valid HTTP status
+  or null, byte count or null, and timeout flag or null. Missing/ambiguous rows
+  cannot supply status, byte count or timeout data. Raw error strings, bodies,
+  headers, URLs and credentials are excluded.
+- Require a finite persisted request time no later than the post-read clock when
+  request IDs already exist. Its absence/nonfinite/future value yields
+  `transport_unverified` with the fixed
+  `request_error_class=request_time_invalid`; actual response diagnostics still
+  describe only the received/missing responses. This adds no request or retry.
+
+The merchant evaluator is unchanged (source MD5
+`d0ae71c5061dd94c3d6d19ffab2830a1`). All valid-source business decisions and
+successful report shapes remain unchanged. Request creation, six-hour technical
+retry, 72-hour offer expiry, source hashes, fencing, replay protection and private
+invoker-only ACLs retain their existing contracts. The normal checkpoint/finish
+path hashes and persists each new negative report; the migration itself rewrites
+no execution, report, task, target or verification timestamp.
+
+Local validation: 18 expected failures on the original poller and three more
+request-time failures before their narrow fix, followed by
+**68/68 real PostgreSQL 17.11 tests passing** on the final change: 54 focused regression
+cases and 14 adjacent existing purchase cases. Coverage includes both response
+sides, null/invalid HTTP status, UTF-8 byte boundaries, timeout/error redaction,
+pending/missing responses, invalid source times, duplicate IDs, valid receipts
+arriving during the statement, actual fenced report/hash persistence, unchanged
+historical records on repeated migration, and private execution grants. The
+existing native PostgreSQL CI job already includes this test module. Transport is
+substituted only by local SQL fixtures; these tests performed no merchant, network,
+OAuth, paid-model or production request. Exact combined-head CI remains a release
+gate rather than an inferred success from these local results.

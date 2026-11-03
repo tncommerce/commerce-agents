@@ -70,27 +70,32 @@ def test_acquisition_attribution_survives_internal_navigation() -> None:
     assert 'navClickoutUrl.searchParams.get("content") !== "qa_navigation_content"' in source
 
 
-def test_clickout_waits_for_first_party_analytics_session() -> None:
+def test_verified_clickout_is_not_blocked_by_optional_analytics_session() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
 
     assert 'label: "merchant-clickout-session-correlation"' in source
     assert '"**/api/session"' in source
     assert "qa-clickout_session-1234567890" in source
-    assert "setTimeout(resolve, 1200)" in source
+    assert "await sessionGate;" in source
     assert 'clickoutUrl.searchParams.get("sid") === expectedSessionId' in source
     assert 'clickoutUrl.searchParams.get("measurement") !== "granted-v1"' in source
     assert '!/^[0-9a-f-]{36}$/i.test(clickoutUrl.searchParams.get("sid") || "")' in source
     assert "merchant clickout did not correlate acquisition and analytics session context" in source
     assert (
-        "merchant clickout became actionable before analytics session correlation completed"
-        in source
+        "verified merchant clickout unavailable while optional analytics session pending" in source
     )
+    assert "merchant clickout blocked on optional analytics session" in source
 
     offers_source = FRAGRANCE_OFFERS.read_text(encoding="utf-8")
     analytics_source = ANALYTICS.read_text(encoding="utf-8")
-    assert "ensureAnalyticsSession" in offers_source
-    assert "data-clickout-preparing" in offers_source
-    assert "clickoutSessionReady ? (" in offers_source
+    assert "ensureAnalyticsSession" not in offers_source
+    assert "data-clickout-preparing" not in offers_source
+    assert "clickoutSessionReady" not in offers_source
+    assert (
+        "href={appendAcquisitionAttribution(merchantClickoutUrl(offer.clickout_path))}"
+        in offers_source
+    )
+    assert 'trackAnalyticsEvent("merchant_clickout"' in offers_source
     assert "export async function ensureAnalyticsSession" in analytics_source
 
 
@@ -179,7 +184,10 @@ def test_comparison_product_links_preserve_acquisition_attribution() -> None:
     assert "qa_comparison_campaign" in source
     assert "qa_comparison_content" in source
     assert "free comparison product navigation lost acquisition attribution" in source
-    assert "appendAcquisitionAttribution(`/duft/${fragrance.slug}`)" in picker_source
+    assert (
+        "appendAcquisitionAttribution(withCatalogContext(`/duft/${fragrance.slug}`, context))"
+        in picker_source
+    )
     assert 'source="comparison" trackPageView={false}' in comparison_page_source
 
 
@@ -259,7 +267,17 @@ def test_product_detail_internal_links_preserve_acquisition_attribution() -> Non
     assert "qa_product_detail_content" in source
     assert "product detail navigation lost acquisition attribution" in source
     assert "AcquisitionInternalLink" in detail_source
-    assert '<AcquisitionInternalLink href="/duft" className="hover:underline">' in detail_source
+    assert '<CatalogReturnLink href="/duft"' in detail_source
+    return_link = Path("examples/retail/storefront-web/components/CatalogReturnLink.tsx").read_text(
+        encoding="utf-8"
+    )
+    # Functional return state still delegates every click/consent change to the
+    # same acquisition-aware link, including its ordinary no-context fallback.
+    assert 'import AcquisitionInternalLink from "./AcquisitionInternalLink"' in return_link
+    assert (
+        "<AcquisitionInternalLink {...props} href={context ? catalogReturnHref(context) : props.href}>"
+        in return_link
+    )
     assert (
         '<AcquisitionInternalLink href="/transparenz" className="hover:underline">' in detail_source
     )

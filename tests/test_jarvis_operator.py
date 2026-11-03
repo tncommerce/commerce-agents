@@ -223,3 +223,64 @@ def test_business_planner_gap_wins_over_later_scheduled_maintenance():
     assert result["evidence"]["business_planner_state"] == "planner_gap"
     assert result["evidence"]["planner_state"] == "scheduled_safe_work"
     assert "spätere Wartungscheck" in result["jarvis_message"]
+
+
+def test_technical_work_precedes_scheduled_market_wait_without_claiming_execution():
+    result = build_operator_diagnosis(
+        tasks=[],
+        waits=[],
+        observers=[],
+        credentials=[],
+        thin={
+            "active_leases": 0,
+            "planner": {"state": "waiting_for_business_signal"},
+            "business_planner": {
+                "state": "technical_remediation_required",
+                "master_action_required": False,
+            },
+        },
+        runtime={},
+        now=NOW,
+    )
+    assert result["state"] == "TECHNICAL_REMEDIATION_REQUIRED"
+    assert "Zeitplanlauf" in result["cause"]
+    assert result["owner_action_required"] is False
+    assert result["recommended_now"]["id"] == "repair_technical_monitoring"
+    assert result["recommended_now"]["jarvis_can_execute_now"] is False
+    assert "restore_autonomy" not in {move["id"] for move in result["next_moves"]}
+    assert "bestätigter Ausführung" in result["jarvis_message"]
+
+
+def test_real_active_work_precedes_technical_remediation_diagnosis():
+    result = build_operator_diagnosis(
+        tasks=[{"task_id": "real-work", "status": "working", "priority": 10}],
+        waits=[],
+        observers=[],
+        credentials=[],
+        thin={
+            "active_leases": 1,
+            "business_planner": {"state": "technical_remediation_required"},
+        },
+        runtime={},
+        now=NOW,
+    )
+    assert result["state"] == "WORKING"
+    assert result["recommended_now"] is None
+
+
+def test_real_ready_work_precedes_older_technical_recommendation():
+    result = build_operator_diagnosis(
+        tasks=[{"task_id": "real-ready", "status": "ready", "priority": 10}],
+        waits=[],
+        observers=[],
+        credentials=[],
+        thin={
+            "active_leases": 0,
+            "planner": {"state": "work_ready"},
+            "business_planner": {"state": "technical_remediation_required"},
+        },
+        runtime={},
+        now=NOW,
+    )
+    assert result["state"] == "READY"
+    assert result["recommended_now"] is None

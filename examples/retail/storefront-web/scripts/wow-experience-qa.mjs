@@ -1,6 +1,38 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
+
+// The approved editorial layout has a responsive two-row introduction. Guard
+// the user's actual first-fold search, not the previous 350px hero-height proxy.
+// Call before any focus or scrolling so an off-screen search cannot pass.
+export async function assertCatalogSearchFirstFold(page) {
+  assert.equal(await page.evaluate(() => window.scrollY), 0,
+    'catalog first-fold geometry must be measured before scrolling');
+  const bounds = await page.getByRole('searchbox').boundingBox();
+  const viewport = page.viewportSize();
+  assert.ok(bounds && viewport && bounds.width > 0 && bounds.height > 0 &&
+    bounds.x >= -1 && bounds.x + bounds.width <= viewport.width + 1 &&
+    bounds.y >= 0 && bounds.y + bounds.height <= Math.min(800, viewport.height),
+    `catalog search must fit completely in the first viewport: ${JSON.stringify({bounds, viewport})}`);
+  return bounds;
+}
+
+// The editorial atlas is deliberately stationary in both motion preferences.
+// Test the actual note display, including descendants, instead of requiring a
+// decorative SVG. Interaction and source-truth checks below remain unchanged.
+async function assertStationaryAtlas(atlas, mode) {
+  const core = atlas.locator('.wow-atlas-core');
+  assert.equal(await core.count(), 1, `${mode}: one selected-note composition`);
+  const styles = await core.evaluate(el => [el, ...el.querySelectorAll('*')].map(node => {
+    const css = getComputedStyle(node);
+    return { transition: css.transitionDuration, animation: css.animationName, transform: css.transform };
+  }));
+  assert.ok(styles.every(css => css.transition.split(',').every(value => parseFloat(value) === 0) && css.animation === 'none' && css.transform === 'none'), `${mode}: selected-note composition remains stationary`);
+  assert.equal(await atlas.locator('.wow-atlas-material svg, .wow-atlas-material canvas, .wow-atlas-material img').count(), 0, 'note composition uses source text, without fabricated imagery');
+}
 
 // CI-only, localhost/static export. Every API response is a fixture: no live sessions,
 // no merchant navigation, no analytics delivery, no advisor/model calls.
@@ -36,6 +68,30 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
         if (name === 'home') {
           await page.locator('.wow-search input').waitFor({state:'visible'});
           await page.locator('[data-scent-atlas] select').waitFor({state:'visible'});
+        }
+        if(name==='catalog') {
+          const editorial=page.locator('[data-dufynd-directory-original]');
+          assert.equal(await editorial.count(),1,'catalog firstfold shows one exact licensed original editorial profile');
+          const previewLink=editorial.locator('a.dufynd-directory-feature-link');
+          assert.equal(await previewLink.count(),1,'editorial photo remains a native accessible product link');
+          assert.match(String(await previewLink.getAttribute('href')),/\/duft\/.*libre/);
+          assert.equal(await page.locator('[data-social-product-entry]').count(),1,'separate Rabanne social product card remains available');
+          const sourceImage=editorial.locator('img').first();
+          await sourceImage.evaluate(image=>image.decode());
+          assert.ok(await sourceImage.evaluate(image=>image.naturalWidth>0),'original Libre EDP photo must decode before editorial publication');
+          const mediaLabel=editorial.locator('.dufynd-directory-original-tag');
+          assert.equal(await mediaLabel.count(),1,'exact approved editorial photo shows its original-image identity');
+          assert.match(await mediaLabel.innerText(),/Originalaufnahme/);
+          // Not all approved affiliate feed assets require/source a visible
+          // attribution paragraph. Never invent a license or assume one exists.
+          const credits=editorial.locator('p');
+          if(await credits.count()) {
+            assert.match(await credits.last().innerText(),/Bild:/);
+          }
+          await assertCatalogSearchFirstFold(page);
+          const imageBounds=await sourceImage.boundingBox();
+          assert.ok(imageBounds && imageBounds.x>=-1 && imageBounds.x+imageBounds.width<=width+1,
+            'actual original product photo stays inside the viewport');
         }
         if(name==='lancome') {
           assert.match(await page.locator('h1').innerText(),/La Vie est Belle/);
@@ -78,8 +134,8 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
             await link.focus(); // Existing link contract refreshes attribution on native focus/pointerdown.
             assert.equal(new URL(await link.getAttribute('href'),baseUrl).searchParams.get('cmp'),'wow22_fixture');
           }
-          const transition=await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration);
-          assert.equal(transition,'0s','reduced motion removes atlas transitions');
+          await assertStationaryAtlas(atlas, 'reduced motion');
+          assert.equal(await atlas.locator('.wow-atlas-core strong').innerText(), 'Leder', 'selected documented note is reflected in the typographic composition');
           await atlas.scrollIntoViewIfNeeded();
           await page.screenshot({path:`${outputDir}/wow22-atlas-${width}-interaction.png`});
           await atlas.screenshot({path:`${outputDir}/polish23-atlas-${width}-complete.png`});
@@ -159,29 +215,31 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
           await page.screenshot({path:`${outputDir}/wow22-${name}-${width}-full.png`,fullPage:true});
         }
         if(name==='rabanne') {
-          const heldNotes=page.locator('[data-dufynd-source-honest-notes="rabanne-edt-100"]');
-          assert.equal(await heldNotes.count(),1,'Rabanne EDT 100ml has a source-honest editorial note identity during photo hold');
-          assert.equal(await heldNotes.locator('img').count(),0,'Rabanne source-hold identity is not fake original photography');
-          assert.deepEqual(await heldNotes.locator('li').allTextContents(),
-            ['Minze','Mandarine','Rose','Zimt','Amber','Leder'],
-            'Rabanne editorial notes match exact documented variant, never invented bottle or concentration claims');
-          assert.match(await heldNotes.innerText(),/Originalfoto in Prüfung/);
-          const summary=heldNotes.locator('summary');
-          const heldBounds=await heldNotes.boundingBox();
-          assert.ok(heldBounds&&heldBounds.x>=0&&heldBounds.x+heldBounds.width<=width
-            &&heldBounds.height>=44&&heldBounds.height<=64,
-            'Collapsed honest Rabanne note teaser preserves compact first-money landing');
-          assert.equal(await heldNotes.locator('li').first().isVisible(),false,
-            'Additional editorial content does not displace the initial offers CTA');
-          await summary.focus();await page.keyboard.press('Enter');
-          await heldNotes.locator('li').first().waitFor({state:'visible'});
-          const expandedBounds=await heldNotes.boundingBox();
-          assert.ok(expandedBounds&&expandedBounds.height>=160,
-            'Expanded note study stays genuinely readable on demand');
-          await summary.click();
-          assert.equal(await heldNotes.locator('li').first().isVisible(),false,
-            'Closing note study restores compact purchase journey');
-          const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:'2026-10-14T00:00:00Z'};
+          // This release uses the original, rights-bound Rabanne 100-ml photo.
+          // A blocked external QA image request is not a reason to resurrect
+          // the old "Originalfoto in Prüfung" source-hold user interface.
+          const approvedPhoto = JSON.parse(readFileSync(
+            new URL("../lib/generated/original-photos.json", import.meta.url), "utf8",
+          )).find((photo) => photo.product_id === 'SC-RABANNE-1-MILLION-EDT-100');
+          assert.ok(approvedPhoto &&
+            approvedPhoto.url === 'https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png' &&
+            approvedPhoto.rights_basis_id === 'awin_top_parfuemerie_feed_materials_20260928',
+            'Only the released, exact 100-ml photo and its recorded rights are accepted');
+          const hero = page.locator('.dufynd-fragrance-hero[data-product-id="SC-RABANNE-1-MILLION-EDT-100"]');
+          assert.equal(await hero.getAttribute('data-dufynd-photo-status'), 'verified',
+            'A published original must not fall back to an unapproved source-hold claim');
+          assert.equal(await hero.getAttribute('data-dufynd-photo-hold'), null);
+          assert.equal(await hero.locator('[data-dufynd-source-honest-notes="rabanne-edt-100"]').count(), 0,
+            'Old photo-hold teaser must not coexist with a licensed original');
+          const photoCredit = hero.locator('[data-original-photo-source="top-parfuemerie"] a');
+          assert.equal(await photoCredit.count(), 1, 'Licensed product retains merchant image attribution');
+          assert.equal(new URL(await photoCredit.getAttribute('href')).hostname, 'www.topparfuemerie.de');
+          const noteOverview = page.locator('#duftnoten.dufynd-notes-overview');
+          assert.equal(await noteOverview.count(), 1, 'Released product retains its genuine notes overview');
+          const ctaBounds = await page.locator('#dufynd-hero-offer-cta').boundingBox();
+          assert.ok(ctaBounds && ctaBounds.height >= 44,
+            'Buyer access must remain keyboard/touch accessible after image release');
+          const offer={offer_id:'wow22-mock-offer',product_id:'SC-RABANNE-1-MILLION-EDT-100',merchant_id:'qa-only',merchant_name:'QA-Testhändler',price:90,currency:'EUR',shipping_cost:5,total_price:95,shipping_label:'5,00 € Versand (QA)',in_stock:true,variant_label:'100 ml · Eau de Toilette',affiliate_link:true,clickout_path:'/api/clickout/wow22-mock-offer',last_updated_at:new Date().toISOString()};
           let available=true;
           await page.route('**/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100',r=>r.fulfill({json:{product_id:offer.product_id,best_offer_id:available?offer.offer_id:null,offers:available?[offer]:[],affiliate_disclosure:'Isolated QA fixture'}}));
           await page.reload({waitUntil:'load'});
@@ -209,9 +267,11 @@ export async function verifyWowExperience(browser, baseUrl, outputDir) {
     await context.route('**/api/**',r=>r.fulfill({json:{session_id:'wow22-motion-fixture',products:[],partners:[],ok:true}}));
     const p=await context.newPage();await p.goto(baseUrl,{waitUntil:'load'});await chooseMeasurement(p,'denied');
     const atlas=p.locator('[data-scent-atlas]');
-    assert.notEqual(await atlas.locator('svg').evaluate(el=>getComputedStyle(el).transitionDuration),'0s');
+    await assertStationaryAtlas(atlas, 'normal motion');
     await atlas.locator('select').selectOption('1');
     await atlas.locator('.wow-atlas-notes button').first().click();
+    assert.equal(await atlas.locator('.wow-atlas-core strong').innerText(), await atlas.locator('.wow-atlas-notes button').first().innerText(), 'normal-motion choice updates the displayed documented note');
+    await assertStationaryAtlas(atlas, 'normal motion after note change');
     await p.screenshot({path:`${outputDir}/wow22-atlas-390-motion.png`});
     results.push({normalMotion:true});
   } finally {await context.close();}

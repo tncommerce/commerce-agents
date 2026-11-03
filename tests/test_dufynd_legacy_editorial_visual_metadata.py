@@ -17,7 +17,15 @@ def test_legacy_pilot_art_is_explicit_storefront_presentation() -> None:
         if str(product.get("image_url") or "").startswith("/products/pilot/")
     ]
 
-    assert len(pilot_rows) == 28
+    # Four former pilot primaries were replaced by the exact approved Top
+    # photographs. Their editorial assets remain explicitly non-product-truth.
+    assert len(pilot_rows) == 24
+    assert {
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-PDM-LAYTON-125",
+        "SC-PDM-ALTHAIR-125",
+        "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+    }.isdisjoint({product["product_id"] for product in pilot_rows})
 
     for product in pilot_rows:
         matches = [

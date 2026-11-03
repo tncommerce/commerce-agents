@@ -23,7 +23,7 @@ try{for(const width of [320,390,768,1440]){
  // renderer, must never show unlicensed product-scene artwork.
  const productStages=await cards.evaluateAll(xs=>xs.map(node=>({
    approved:node.getAttribute('data-original-photo')==='true',
-   original:!!node.querySelector('.dufynd-product-stage'),
+   original:!!node.querySelector('[data-dufynd-original-photo], .dufynd-product-stage'),
    unavailable:!!node.querySelector('[data-dufynd-visual-state="unavailable"]'),
    pending:!!node.querySelector('.dufynd-catalog-photo-pending'),
    artwork:!!node.querySelector('[data-scent-artwork], .dufynd-editorial-depth-stage')

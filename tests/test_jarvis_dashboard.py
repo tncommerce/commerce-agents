@@ -1251,6 +1251,31 @@ def test_defense_in_depth_output_scrubber_blocks_future_nested_secret_paths():
     assert "person@example.org" not in encoded
 
 
+def test_dashboard_does_not_hide_technical_work_behind_business_signal_wait():
+    data = ceo_data()
+    data["thin"][0].update(
+        {
+            "stop_reason": "no_safe_work",
+            "planner_state": "waiting_for_business_signal",
+            "planner_ready_free": 0,
+        }
+    )
+    data["business_planner"] = [
+        {
+            "state": "technical_remediation_required",
+            "master_action_required": False,
+            "queue_state": "planner_gap",
+            "queue_stop_reason": "no_executable_work",
+        }
+    ]
+    result = build_snapshot(data, now=NOW)
+    assert result["command_center"]["ceo_status"] == "TECHNIKARBEIT OFFEN"
+    assert result["operator_diagnosis"]["state"] == "TECHNICAL_REMEDIATION_REQUIRED"
+    assert result["operator_diagnosis"]["recommended_now"]["id"] == "repair_technical_monitoring"
+    assert result["operator_diagnosis"]["recommended_now"]["jarvis_can_execute_now"] is False
+    assert result["operator_diagnosis"]["owner_action_required"] is False
+
+
 def test_ceo_dashboard_surfaces_business_planning_gap_before_future_maintenance():
     data = ceo_data()
     next_safe = (NOW + timedelta(hours=9)).isoformat()

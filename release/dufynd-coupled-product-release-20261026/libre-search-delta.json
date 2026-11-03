@@ -1,0 +1,30 @@
+{
+  "base_website_remote_sha": "d953d3ad6aff48fe915c298acc40fdd352c94f81",
+  "base_local_tree_equivalent_sha": "958f0445c54b3eedbc82f0553239e4a9e05f5d4c",
+  "scope": "Shared catalog and social direct search; exact verified Libre EDP90 refillable bottle only",
+  "before": {
+    "query": "YSL Libre EDP 90 ml nachfüllbar",
+    "actual_matches": [],
+    "regression_test_exit_code": 1
+  },
+  "after": {
+    "same_query_matches": [
+      "SC-YSL-LIBRE-EDP-90"
+    ],
+    "command": "node scripts/test-fragrance-search-identity.mjs",
+    "exit_code": 0,
+    "new_positive_customer_queries": 4,
+    "new_negative_refill_size_flanker_queries": 8,
+    "new_negative_identity_mutations": 5,
+    "existing_affected_search_assertions": "passed",
+    "git_diff_check": "passed"
+  },
+  "provenance": "Existing LibreRefillGuide.tsx and validated SC-YSL-LIBRE-EDP-90 source. No new price or rights claim.",
+  "not_performed": [
+    "production publication",
+    "browser QA of this delta",
+    "full CI",
+    "external analytics event"
+  ],
+  "dependencies": "TypeScript5.9.3 installed from pre-existing npm cache with --offline, no network acquisition or paid service."
+}

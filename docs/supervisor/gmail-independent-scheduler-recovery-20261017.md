@@ -71,3 +71,7 @@ Remove the `BROKER_GMAIL_SCHEDULER_SA_EMAIL` environment value and deploy the pr
 - New: `private_broker/scheduler_oidc.py`, `tests/test_private_broker_scheduler_refresh.py`
 - Narrow update: `private_broker/runtime.py` and optional broker deployment template comment.
 - This PR does **not** change `scentai-mvp`, `main`, `dufynd_autonomy_tasks`, `cron.job`, `dufynd_observer_credentials`, `scripts/dufynd_observer_credentials.py`, any GitHub Actions workflow, or any social/commerce data.
+
+## Rebaseline 03.11.2026 – source-only, no activation
+
+Brought this draft onto the verified `scentai-mvp` source base `0d8055e8` while preserving the existing `render_services_v2` scope and other released private-broker protections. The Google OIDC route remains disabled without a separately approved pinned `BROKER_GMAIL_SCHEDULER_SA_EMAIL`, approved Google identity, proven zero-additional-cost scheduler, and explicit production authorization. Added fail-closed username/password origin validation and tests for embedded credentials. This is a source review, not a live refresh, credential recovery, deployment, Gmail read, or broker activation.

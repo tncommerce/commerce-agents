@@ -1,14 +1,27 @@
 import type { Metadata } from "next";
 
 import AcquisitionLanding from "@/components/AcquisitionLanding";
+import { SITE_URL } from "@/lib/site";
+
+const title = "Duftfinder – Parfum nach Anlass, Budget & Profil";
+const description =
+  "Finde mit DUFYND passende Parfums nach Anlass, Budget, Duftprofil, Haltbarkeit und Ausstrahlung.";
 
 export const metadata: Metadata = {
-  title: "Duftfinder – Parfum nach Anlass, Budget & Profil",
-  description:
-    "Finde mit DUFYND passende Parfums nach Anlass, Budget, Duftprofil, Haltbarkeit und Ausstrahlung.",
+  title,
+  description,
   alternates: {
     canonical: "/duftfinder",
   },
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    siteName: "DUFYND",
+    url: `${SITE_URL}/duftfinder`,
+    title,
+    description,
+  },
+  twitter: { card: "summary", title, description },
 };
 
 export default function DuftfinderPage() {

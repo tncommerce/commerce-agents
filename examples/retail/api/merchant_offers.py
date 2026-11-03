@@ -9,7 +9,7 @@ from typing import Any
 from urllib.parse import parse_qsl, urlencode, urlparse
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 MAX_FUTURE_CLOCK_SKEW_HOURS = 5 / 60
 
@@ -30,9 +30,9 @@ class MerchantOffer(BaseModel):
     merchant_id: str
     merchant_name: str
     merchant_product_id: str | None = None
-    price: float = Field(gt=0)
+    price: float = Field(gt=0, allow_inf_nan=False)
     currency: str = "EUR"
-    shipping_cost: float | None = Field(default=None, ge=0)
+    shipping_cost: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     shipping_label: str | None = None
     in_stock: bool = False
     variant_label: str | None = None
@@ -44,7 +44,7 @@ class MerchantOffer(BaseModel):
 
     # Internal economics only. Never use this for fragrance recommendations or
     # to outrank a lower-price or materially fresher customer offer.
-    commission_rate: float | None = Field(default=None, ge=0)
+    commission_rate: float | None = Field(default=None, ge=0, allow_inf_nan=False)
 
 
 def _as_utc(value: datetime) -> datetime:
@@ -232,13 +232,57 @@ class MerchantOfferStore:
         self.path = path
 
     def _load(
-        self, *, product_id: str | None = None, offer_id: str | None = None
+        self,
+        *,
+        product_id: str | None = None,
+        offer_id: str | None = None,
+        fresh_runtime_clickout: bool = False,
     ) -> list[MerchantOffer]:
         if not self.path.exists():
             return []
 
-        raw = json.loads(self.path.read_text(encoding="utf-8"))
-        rows = raw.get("offers", raw if isinstance(raw, list) else [])
+        try:
+            raw = json.loads(self.path.read_text(encoding="utf-8"))
+        except (OSError, ValueError, UnicodeDecodeError):
+            return []  # Corrupt released commerce data must never reach buyers.
+        if isinstance(raw, dict):
+            rows = raw.get("offers", [])
+        elif isinstance(raw, list):
+            rows = raw
+        else:
+            return []
+        if not isinstance(rows, list) or any(not isinstance(row, dict) for row in rows):
+            return []
+        ids = [row.get("offer_id") for row in rows]
+        # A duplicate canonical offer ID makes a /clickout/<id> ambiguous.
+        # Check the entire released list before narrowing to one product.
+        if (
+            any(
+                not isinstance(offer_id, str)
+                or re.fullmatch(r"[A-Za-z0-9._:-]{1,120}", offer_id) is None
+                for offer_id in ids
+            )
+            or len(ids) != len(set(ids))
+            or any(
+                not isinstance(row.get("product_id"), str)
+                or not row["product_id"]
+                or not isinstance(row.get("merchant_id"), str)
+                or not row["merchant_id"]
+                for row in rows
+            )
+        ):
+            return []
+        # A file may be valid JSON with unique IDs but contain malformed
+        # prices, timestamps or incomplete offers. Validate the entire
+        # released contract before any private read or buyer routing; never
+        # surface a partial catalog or let a broken row trigger a buyer 500.
+        # Explicitly reject NaN/infinity to preserve JSON-safe customer prices.
+        try:
+            for row in rows:
+                MerchantOffer.model_validate(row)
+        except (ValidationError, ValueError, TypeError):
+            return []
+
         # Select before certified evidence reads: an unrelated merchant's cold
         # cache or outage must not delay this product or clickout eligibility.
         rows = [
@@ -247,7 +291,75 @@ class MerchantOfferStore:
             if (product_id is None or row["product_id"] == product_id)
             and (offer_id is None or row["offer_id"] == offer_id)
         ]
+        if not rows:
+            return []
+
+        # A one-time, owner-approved rollout can switch live commerce values to
+        # private Supabase snapshots without committing prices or deploying each
+        # 72-hour refresh. No snapshot, failed auth or uncertain source => no
+        # purchase action. Always use the released file for destination and SKU.
         from .purchase_freshness import apply_evidence, evidence_for
+        from .runtime_offer_snapshots import (
+            apply_runtime_snapshot,
+            approved_affiliate_route,
+            load_runtime_snapshots,
+            runtime_offer_scope,
+            runtime_offer_snapshots_enabled,
+        )
+
+        if runtime_offer_snapshots_enabled():
+            scope = runtime_offer_scope()
+            if scope is None:
+                return []  # Malformed activation never falls back to static prices.
+            selected = [row for row in rows if row["merchant_id"] in scope]
+            # A private DB row alone cannot restore an unapproved, paused or
+            # wrong-scope affiliate offer. Recheck the released partner source
+            # both before the DB request and before the clickout decision.
+            partners: dict = {"partners": []}
+            if selected:
+                try:
+                    partner_data = json.loads(
+                        self.path.with_name("merchant_partners.json").read_text(
+                            encoding="utf-8-sig"
+                        )
+                    )
+                    if isinstance(partner_data, dict):
+                        partners = partner_data
+                except (OSError, ValueError):
+                    pass  # Missing/corrupt partner evidence fails closed.
+            selected = [row for row in selected if approved_affiliate_route(row, partners)]
+            allowed_ids = {row["offer_id"] for row in selected}
+            if not selected:
+                snapshots = {}
+            elif fresh_runtime_clickout:
+                # Buyer-action gate: never reuse a positive listing cache after
+                # the merchant was held or marked out of stock in Supabase.
+                snapshots = load_runtime_snapshots(selected, bypass_cache=True)
+            else:
+                snapshots = load_runtime_snapshots(selected)
+            verified_rows = []
+            for row in rows:
+                if row["merchant_id"] in scope:
+                    # An unauthorized merchant never receives a runtime offer,
+                    # including when a previously cached DB snapshot exists.
+                    current = apply_runtime_snapshot(
+                        row,
+                        (
+                            snapshots.get(row["offer_id"])
+                            if snapshots is not None and row["offer_id"] in allowed_ids
+                            else None
+                        ),
+                    )
+                else:
+                    # Preserve existing Rabanne purchase certification until
+                    # separately migrated with the same verified safeguards.
+                    current = apply_evidence(row, evidence_for(row["offer_id"]))
+                if current is not None:
+                    verified_rows.append(MerchantOffer.model_validate(current))
+            return verified_rows
+
+        # Legacy source remains the production default until the schema, first
+        # verified snapshot batch and explicit deployment GO are complete.
 
         return [
             MerchantOffer.model_validate(verified)
@@ -277,7 +389,7 @@ class MerchantOfferStore:
         max_age_hours: float = 72.0,
     ) -> MerchantOffer | None:
         candidate = next(
-            iter(self._load(offer_id=offer_id)),
+            iter(self._load(offer_id=offer_id, fresh_runtime_clickout=True)),
             None,
         )
         if candidate is None:

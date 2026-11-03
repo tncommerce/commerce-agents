@@ -1,0 +1,11 @@
+{
+  "README.md": "7cf83f0c99783f248c92e441671d03f9e3c998e4340207dd08a4b77492a4fc8f",
+  "batch-input.json": "b61f042c5bad24d89082f0a574fe35c3441f9a15242aaef20adb448df312fc80",
+  "canonical-before.json": "bf6eef4e09b376aec3f67d32876ac1852a7bf57b4b5df0b928258b563fb6b21f",
+  "cj-original-conditions-review.json": "c49c2921a28469b51fe7a636d6e656794e701d47c834ba6248832af09d041284",
+  "development-integration.json": "77300b77da9e28a2d15d25f4b1eadf1c9a74b7253d306ea4f1f55fe44cda8908",
+  "dry-run.json": "a9fe83579416cb73fb76c9ef033ed9ff2168cee29d7fbb1907709c3da3fdab56",
+  "source-observation.json": "33bc4ae6d945a1b74e52bf07c88f6b78eb194361a39b327a9b162631ba857e71",
+  "validation.json": "4413dac2bead830883faea6bffe1c82a39a74ac5fd9468949eef6c99d9b69fa7",
+  "verify-candidate.py": "5048df5a4ca5de1c0d5dcb6c42dd71391670c6ac4c18ec26cb78651e10c339a3"
+}

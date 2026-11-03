@@ -3,6 +3,7 @@ import { canonicalBrand } from '@/lib/brandIdentity';
 
 import {
   fragranceSearchIdentity,
+  fragranceSearchTokens,
   matchesRequestedVariant,
   normalizeFragranceSearch as normalize,
 } from "@/lib/fragranceSearchIdentity";
@@ -12,6 +13,7 @@ import AcquisitionInternalLink from "@/components/AcquisitionInternalLink";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import FragranceSaveControls from "@/components/FragranceSaveControls";
+import FragranceVariant from "@/components/FragranceVariant";
 import FragranceVisual from "@/components/FragranceVisual";
 import { accordLabel } from "@/lib/accordLabels";
 import {
@@ -32,6 +34,8 @@ import { noteLabel } from "@/lib/noteLabels";
 import { targetLabel } from "@/lib/targetLabels";
 import { publicShareUrl } from "@/lib/shareUrl";
 import ManualShareLink from "@/components/ManualShareLink";
+import { catalogContext, withCatalogContext } from "@/lib/catalogJourney";
+import styles from "./CatalogJourney.module.css";
 
 type AudienceFilter = "all" | CatalogAudience;
 type ProfileFilter =
@@ -173,12 +177,6 @@ const PROFILE_SEARCH_TERMS: Record<
   spiciness: ["spiciness", "spicy", "spice", "wuerzig", "wurzig"],
 };
 
-function searchTokens(search: string): string[] {
-  return normalize(search)
-    .split(/\s+/)
-    .filter(Boolean);
-}
-
 function searchDocument(
   fragrance: StaticFragrance,
 ): string {
@@ -238,7 +236,7 @@ function searchScore(
   search: string,
 ): number {
   if (!matchesRequestedVariant(fragrance, search)) return -1;
-  const tokens = searchTokens(search);
+  const tokens = fragranceSearchTokens(fragrance, search);
 
   if (!tokens.length) return 0;
 
@@ -360,6 +358,7 @@ function catalogLink({
   brand,
   minimumRating,
   sort,
+  compareSelection,
 }: {
   search: string;
   audience: AudienceFilter;
@@ -367,6 +366,7 @@ function catalogLink({
   brand: string;
   minimumRating: string;
   sort: SortMode;
+  compareSelection: string[];
 }): URL {
   const url = new URL(window.location.href);
   const setFilter = (key: string, value: string, defaultValue: string) => {
@@ -380,6 +380,7 @@ function catalogLink({
   setFilter("marke", brand, "all");
   setFilter("bewertung", minimumRating, "0");
   setFilter("sort", sort, "popular");
+  setFilter("compare", compareSelection.join(","), "");
   return url;
 }
 
@@ -440,43 +441,54 @@ export default function FragranceCatalogBrowser({
   }, [profile]);
 
   useEffect(() => {
-    if (initialSearchAppliedRef.current) return;
-    initialSearchAppliedRef.current = true;
+    const restore = () => {
+      const params = new URLSearchParams(window.location.search);
+      const initialSearch = params.get("q")?.trim();
+      const initialProfile = params.get("profil");
+      const initialAudience = AUDIENCE_OPTIONS.find(
+        (option) => option.value === params.get("zielgruppe") && option.value !== "all",
+      );
+      const initialBrand = canonicalBrand(params.get("marke") || '');
+      const initialRating = params.get("bewertung");
+      const initialSort = SORT_OPTIONS.find(
+        (option) => option.value === params.get("sort"),
+      );
 
-    const params = new URLSearchParams(window.location.search);
-    const initialSearch = params.get("q")?.trim();
-    const initialProfile = params.get("profil");
-    const initialAudience = AUDIENCE_OPTIONS.find(
-      (option) => option.value === params.get("zielgruppe") && option.value !== "all",
-    );
-    const initialBrand = canonicalBrand(params.get("marke") || '');
-    const initialRating = params.get("bewertung");
-    const initialSort = SORT_OPTIONS.find(
-      (option) => option.value === params.get("sort"),
-    );
+      if (initialSearch) setSearch(initialSearch.slice(0, 80));
+      else setSearch("");
+      setAudience("all");
+      setBrand("all");
+      setMinimumRating("0");
+      setProfile("all");
+      setSort("popular");
+      setCompareSelection([...new Set((params.get("compare") || "").split(","))]
+        .filter(id => fragrances.some(item => item.product_id === id)).slice(0, 2));
 
-    if (initialSearch) {
-      setSearch(initialSearch.slice(0, 80));
+      const matchedProfile = PROFILE_DISCOVERY.find(
+        (card) => card.value === initialProfile,
+      );
+      if (matchedProfile) {
+        setProfile(matchedProfile.value);
+        setSort("profile");
+      }
+      if (initialAudience) setAudience(initialAudience.value);
+      if (initialBrand && fragrances.some((item) => item.brand === initialBrand)) {
+        setBrand(initialBrand);
+      }
+      if (fragrances.some(item => item.community.rating_10 != null) && initialRating && ["8", "8.3", "8.5"].includes(initialRating)) {
+        setMinimumRating(initialRating);
+      }
+      if (initialSort && (initialSort.value !== "profile" || matchedProfile)) {
+        setSort(initialSort.value);
+      }
+      setUrlReady(true);
+    };
+    if (!initialSearchAppliedRef.current) {
+      initialSearchAppliedRef.current = true;
+      restore();
     }
-
-    const matchedProfile = PROFILE_DISCOVERY.find(
-      (card) => card.value === initialProfile,
-    );
-    if (matchedProfile) {
-      setProfile(matchedProfile.value);
-      setSort("profile");
-    }
-    if (initialAudience) setAudience(initialAudience.value);
-    if (initialBrand && fragrances.some((item) => item.brand === initialBrand)) {
-      setBrand(initialBrand);
-    }
-    if (fragrances.some(item => item.community.rating_10 != null) && initialRating && ["8", "8.3", "8.5"].includes(initialRating)) {
-      setMinimumRating(initialRating);
-    }
-    if (initialSort && (initialSort.value !== "profile" || matchedProfile)) {
-      setSort(initialSort.value);
-    }
-    setUrlReady(true);
+    window.addEventListener("popstate", restore);
+    return () => window.removeEventListener("popstate", restore);
   }, [fragrances]);
 
   useEffect(() => {
@@ -485,25 +497,22 @@ export default function FragranceCatalogBrowser({
     setCopyStatus("");
     setManualUrl("");
 
-    const timeout = window.setTimeout(() => {
-      const url = catalogLink({
-        search, audience, profile, brand, minimumRating, sort,
-      });
-
-      const nextUrl = `${url.pathname}${url.search}${url.hash}`;
-      const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
-      if (nextUrl !== currentUrl) {
-        window.history.replaceState(window.history.state, "", nextUrl);
-      }
-    }, 250);
-
-    return () => window.clearTimeout(timeout);
-  }, [search, audience, profile, brand, minimumRating, sort, urlReady]);
+    // Commit functional state before a visitor can leave for a product page.
+    // A delayed update loses the latest selection on native browser Back.
+    const url = catalogLink({
+      search, audience, profile, brand, minimumRating, sort, compareSelection,
+    });
+    const nextUrl = `${url.pathname}${url.search}${url.hash}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}${window.location.hash}`;
+    if (nextUrl !== currentUrl) {
+      window.history.replaceState(window.history.state, "", nextUrl);
+    }
+  }, [search, audience, profile, brand, minimumRating, sort, compareSelection, urlReady]);
 
   const copyCatalogLink = async () => {
     const request = ++copyRequestRef.current;
     const url = catalogLink({
-      search, audience, profile, brand, minimumRating, sort,
+      search, audience, profile, brand, minimumRating, sort, compareSelection,
     });
     const shareUrl = publicShareUrl(url.href);
     setCopyStatus("");
@@ -807,14 +816,26 @@ export default function FragranceCatalogBrowser({
     });
   };
 
-  const comparisonHref =
-    selectedComparisonFragrances.length === 2
-      ? `/vergleich?left=${encodeURIComponent(
-          selectedComparisonFragrances[0].product_id,
-        )}&right=${encodeURIComponent(
-          selectedComparisonFragrances[1].product_id,
-        )}`
-      : null;
+  const contextParams = new URLSearchParams();
+  if (search.trim()) contextParams.set("q", search.trim().slice(0, 80));
+  if (audience !== "all") contextParams.set("zielgruppe", audience);
+  if (profile !== "all") contextParams.set("profil", profile);
+  if (brand !== "all") contextParams.set("marke", brand);
+  if (minimumRating !== "0") contextParams.set("bewertung", minimumRating);
+  if (sort !== "popular") contextParams.set("sort", sort);
+  if (compareSelection.length) contextParams.set("compare", compareSelection.join(","));
+  const navigationContext = catalogContext(contextParams);
+  const comparisonHref = selectedComparisonFragrances.length === 2
+    ? withCatalogContext(`/vergleich?left=${encodeURIComponent(selectedComparisonFragrances[0].product_id)}&right=${encodeURIComponent(selectedComparisonFragrances[1].product_id)}`, navigationContext)
+    : null;
+  const showResults = () => {
+    setMobileFiltersOpen(false);
+    window.requestAnimationFrame(() => {
+      const results = document.getElementById("catalog-results");
+      results?.focus({ preventScroll: true });
+      results?.scrollIntoView({ block: "start" });
+    });
+  };
 
   return (
     <>
@@ -823,7 +844,7 @@ export default function FragranceCatalogBrowser({
         className="mt-4 rounded-2xl scroll-mt-3 border border-(--line) bg-(--card) p-4 shadow-(--shadow-sm) sm:p-5"
         aria-label="Duftkatalog filtern"
       >
-        <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
+        <div className={styles.searchRow}>
           <label className="block">
             <span className="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.07em] text-(--ink-soft)">
               Duft, Marke oder Profil
@@ -834,7 +855,9 @@ export default function FragranceCatalogBrowser({
               onChange={(event) =>
                 setSearch(event.target.value)
               }
-              placeholder="z. B. Prada Herren frisch, Naxos würzig …"
+              placeholder="Duft oder Marke suchen …"
+              enterKeyHint="search"
+              onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); showResults(); } }}
               className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[13px] text-(--ink) outline-none transition placeholder:text-(--ink-soft)/70 focus:border-(--accent)"
             />
           </label>
@@ -844,7 +867,7 @@ export default function FragranceCatalogBrowser({
             onClick={() =>
               setMobileFiltersOpen((open) => !open)
             }
-            className="flex h-11 items-center justify-between rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] font-semibold text-(--ink) md:hidden"
+            className="flex h-11 items-center justify-between rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] font-semibold text-(--ink)"
             aria-expanded={mobileFiltersOpen}
             aria-controls="catalog-filter-panel"
           >
@@ -862,7 +885,7 @@ export default function FragranceCatalogBrowser({
 
         <div
           id="catalog-filter-panel"
-          className={`${mobileFiltersOpen ? "block" : "hidden"} md:block`}
+          className={mobileFiltersOpen ? "block" : "hidden"}
         >
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <label className="block">
@@ -999,7 +1022,7 @@ export default function FragranceCatalogBrowser({
         </div>
 
         {hasChanges ? (
-          <div className="mt-4 flex gap-2 overflow-x-auto border-t border-(--line) pt-3 pb-1">
+          <div className={styles.activeFilters}>
             {search.trim() ? (
               <button
                 type="button"
@@ -1076,9 +1099,14 @@ export default function FragranceCatalogBrowser({
           </div>
         ) : null}
 
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-(--line) pt-3">
-          <div
-            className="text-[12px] text-(--ink-soft)"
+        <div
+          className="dufynd-catalog-results-summary mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-(--line) pt-3"
+          data-originals-summary={!hasChanges && featuredOriginalCount > 0 || undefined}
+        >
+          <h2
+            id="catalog-results"
+            tabIndex={-1}
+            className={`${styles.resultsAnchor} text-[12px] text-(--ink-soft)`}
             aria-live="polite"
           >
             <span className="font-semibold text-(--ink)">
@@ -1091,28 +1119,52 @@ export default function FragranceCatalogBrowser({
                 · {visibleFragrances.length} angezeigt
               </span>
             ) : null}
-          </div>
+          </h2>
+
+          {!hasChanges && featuredOriginalCount > 0 ? (
+            <div
+              className="dufynd-catalog-originals-note mt-4"
+              aria-label="Originalaufnahmen zuerst"
+            >
+              <div>
+                <p>
+                  <strong>{featuredOriginalCount} Originalaufnahmen</strong>
+                </p>
+              </div>
+              <AcquisitionInternalLink
+                href="/bildnachweise"
+                className="dufynd-catalog-photo-evidence"
+              >
+                Bildnachweise <span aria-hidden>↗</span>
+              </AcquisitionInternalLink>
+            </div>
+          ) : null}
 
           {hasChanges ? (
             <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
                 onClick={() => void copyCatalogLink()}
-                className="text-[12px] font-semibold text-(--accent-ink) hover:underline"
+                className={styles.filterAction}
               >
                 Filterlink kopieren
               </button>
               <button
                 type="button"
                 onClick={resetFilters}
-                className="text-[12px] font-semibold text-(--accent-ink) hover:underline"
+                className={styles.filterAction}
               >
                 Filter zurücksetzen
               </button>
             </div>
           ) : null}
         </div>
-        <span role="status" className="text-[11px] text-(--ink-soft)">
+        {mobileFiltersOpen ? (
+          <button type="button" onClick={showResults} className={styles.showResults}>
+            {filtered.length} {filtered.length === 1 ? "Duft" : "Düfte"} anzeigen ↓
+          </button>
+        ) : null}
+        <span role="status" className="dufynd-catalog-copy-status text-[11px] text-(--ink-soft)">
           {copyStatus}
         </span>
         <ManualShareLink url={manualUrl} />
@@ -1135,93 +1187,9 @@ export default function FragranceCatalogBrowser({
         </div>
       ) : null}
 
-      {compareSelection.length ? (
-        <aside
-          className="sticky bottom-3 z-30 mt-5 rounded-2xl border border-[#d9bd82]/30 bg-[#15120f]/95 p-3 text-white shadow-[0_20px_55px_-28px_rgba(20,14,6,0.92)] backdrop-blur sm:p-4"
-          aria-label="Duftvergleich vorbereiten"
-        >
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <div className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-[#d9bd82]">
-                Vergleich vorbereiten
-              </div>
-              <div className="mt-1 flex flex-wrap gap-1.5 text-[11px] text-white/70">
-                {selectedComparisonFragrances.map((fragrance, index) => (
-                  <span
-                    key={fragrance.product_id}
-                    className="rounded-full border border-white/10 bg-white/[0.06] px-2.5 py-1"
-                  >
-                    {index + 1}. {fragrance.brand} {fragrance.name}
-                  </span>
-                ))}
-                {selectedComparisonFragrances.length < 2 ? (
-                  <span className="px-1 py-1 text-white/45">
-                    Noch einen Duft auswählen
-                  </span>
-                ) : null}
-              </div>
-            </div>
-            <div className="flex shrink-0 items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setCompareSelection([])}
-                className="rounded-xl border border-white/10 px-3 py-2 text-[11px] font-semibold text-white/65 transition hover:border-white/20 hover:text-white"
-              >
-                Leeren
-              </button>
-              {comparisonHref ? (
-                <AcquisitionInternalLink
-                  href={comparisonHref}
-                  className="rounded-xl bg-[#d9bd82] px-4 py-2 text-[11px] font-semibold text-[#241b0e] transition hover:bg-[#e4cb98]"
-                >
-                  Jetzt vergleichen →
-                </AcquisitionInternalLink>
-              ) : (
-                <span
-                  className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-semibold text-white/35"
-                  aria-disabled="true"
-                >
-                  2 Düfte wählen
-                </span>
-              )}
-            </div>
-          </div>
-        </aside>
-      ) : null}
-
-      <details className="dufynd-brand-directory">
-        <summary>Marken A–Z <span>· {brands.length} Marken entdecken</span></summary>
-        <nav aria-label="Marken A–Z">
-          {brands.map((name) => (
-            <button key={name} type="button" aria-pressed={brand === name}
-              onClick={() => { setBrand(brand === name ? "all" : name); }}>
-              {name}<span>{fragrances.filter((item) => item.brand === name).length}</span>
-            </button>
-          ))}
-        </nav>
-      </details>
-
       {filtered.length ? (
         <>
-          {!hasChanges && featuredOriginalCount > 0 ? (
-            <div
-              className="dufynd-catalog-originals-note mt-4"
-              aria-label="Originalaufnahmen zuerst"
-            >
-              <div>
-                <p>
-                  <strong>{featuredOriginalCount} Originalaufnahmen zuerst.</strong>{" "}
-                  Illustrationen sind gekennzeichnet.
-                </p>
-              </div>
-              <AcquisitionInternalLink
-                href="/bildnachweise"
-                className="dufynd-catalog-photo-evidence"
-              >
-                Bildnachweise ansehen <span aria-hidden>↗</span>
-              </AcquisitionInternalLink>
-            </div>
-          ) : null}
+
           <section
             className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
             aria-label="Passende Düfte"
@@ -1233,6 +1201,10 @@ export default function FragranceCatalogBrowser({
                 isVerifiedProductTruthVisual(visual);
               const dominantProfile =
                 dominantCatalogProfile(fragrance);
+              // Only the independently published RC1 has an approved
+              // affiliate offer path. This is not live stock or price data.
+              const isPublishedRc1 =
+                fragrance.product_id === "SC-RABANNE-1-MILLION-EDT-100";
 
               return (
               <article
@@ -1244,7 +1216,7 @@ export default function FragranceCatalogBrowser({
                 }
               >
                 <AcquisitionInternalLink
-                  href={`/duft/${fragrance.slug}`}
+                  href={withCatalogContext(`/duft/${fragrance.slug}`, navigationContext)}
                   onClick={() =>
                     void trackAnalyticsEvent(
                       "product_open",
@@ -1317,6 +1289,7 @@ export default function FragranceCatalogBrowser({
                       {fragrance.name}
                     </h2>
 
+                    {isPublishedRc1 ? (
                     <div className="mt-2 flex flex-wrap gap-1.5 text-[10.5px] text-(--ink-soft)">
                       <span>
                         {fragrance.concentration}
@@ -1335,6 +1308,13 @@ export default function FragranceCatalogBrowser({
                       ) : null}
                     </div>
 
+                    ) : (
+                    <div className="mt-3">
+                      <FragranceVariant concentration={fragrance.concentration} volume={fragrance.volume_ml} />
+                      {ratingLabel(fragrance) ? <span>{ratingLabel(fragrance)}</span> : null}
+                    </div>
+                    )}
+
                     <div className="mt-3 flex flex-wrap gap-1.5">
                       {fragrance.accords
                         .slice(0, 3)
@@ -1349,10 +1329,26 @@ export default function FragranceCatalogBrowser({
                     </div>
 
                     <div className="dufynd-catalog-card-cta mt-4 border-t border-(--line) pt-3 text-[11px] font-semibold text-(--accent-ink)">
-                      Duftprofil & Angebote ansehen →
+                      {isPublishedRc1
+                        ? "Duftprofil & Händlerangebote ansehen →"
+                        : "Duftprofil entdecken →"}
                     </div>
                   </div>
                 </AcquisitionInternalLink>
+
+                {isPublishedRc1 ? (
+                  <div className="dufynd-catalog-rc1-offer mx-3 mb-3">
+                    <AcquisitionInternalLink
+                      data-dufynd-catalog-rc1-offer
+                      href={withCatalogContext("/duft/rabanne-1-million#angebote", navigationContext)}
+                      aria-label="Rabanne 1 Million Eau de Toilette 100 ml: Händlerangebote prüfen"
+                      className="flex min-h-11 w-full items-center justify-between gap-3 rounded-lg bg-[#715328] px-4 py-2 text-[12px] font-semibold text-[#fff6e7] transition-colors hover:bg-[#553d1d] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#715328]"
+                    >
+                      <span>Händlerangebote prüfen</span>
+                      <span aria-hidden="true">↗</span>
+                    </AcquisitionInternalLink>
+                  </div>
+                ) : null}
 
                 <div className="dufynd-catalog-card-actions flex flex-wrap items-center justify-between gap-2 border-t border-(--line) p-3">
                   <FragranceSaveControls
@@ -1501,6 +1497,46 @@ export default function FragranceCatalogBrowser({
           </div>
         </section>
       )}
+      <details className="dufynd-brand-directory">
+        <summary>Marken A–Z <span>· {brands.length} Marken entdecken</span></summary>
+        <nav aria-label="Marken A–Z">
+          {brands.map((name) => (
+            <button key={name} type="button" aria-pressed={brand === name}
+              onClick={() => { setBrand(brand === name ? "all" : name); }}>
+              {name}<span>{fragrances.filter((item) => item.brand === name).length}</span>
+            </button>
+          ))}
+        </nav>
+      </details>
+
+      {compareSelection.length ? (
+        <aside className={styles.compareTray} aria-label="Duftvergleich vorbereiten">
+          <div className={styles.trayHeading}>
+            <span role="status">{compareSelection.length} von 2 Düften ausgewählt</span>
+            <button type="button" onClick={() => setCompareSelection([])}>Leeren</button>
+          </div>
+          <div className={styles.trayBody}>
+            <div className={styles.slots}>
+              {selectedComparisonFragrances.map((fragrance) => (
+                <button key={fragrance.product_id} type="button" className={styles.slot}
+                  onClick={() => toggleComparisonSelection(fragrance.product_id)}
+                  aria-label={`${fragrance.brand} ${fragrance.name} ${fragrance.concentration} ${fragrance.volume_ml} ml aus Vergleich entfernen`}>
+                  <span className={styles.slotBrand}>{fragrance.brand}</span>
+                  <strong>{fragrance.name}</strong>
+                  <span>{fragrance.concentration} · {fragrance.volume_ml}&nbsp;ml</span>
+                  <span className={styles.remove} aria-hidden="true">×</span>
+                </button>
+              ))}
+              {compareSelection.length < 2 ? <div className={styles.emptySlot}>Noch einen Duft auswählen</div> : null}
+            </div>
+            {comparisonHref ? (
+              <AcquisitionInternalLink href={comparisonHref} className={styles.compareAction}>
+                Jetzt vergleichen →
+              </AcquisitionInternalLink>
+            ) : <span className={styles.compareAction} aria-disabled="true">2 Düfte wählen</span>}
+          </div>
+        </aside>
+      ) : null}
       {compareSelection.length === 0 ? (
         <div className="sticky bottom-3 z-20 mt-4 md:hidden">
           <div className="mx-auto flex max-w-sm items-center gap-2 rounded-2xl border border-(--line) bg-(--card)/95 p-2 shadow-[0_18px_48px_-24px_rgba(20,18,16,0.45)] backdrop-blur">

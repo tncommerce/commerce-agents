@@ -1,0 +1,23 @@
+{
+  "production_base": "5099ec4564a319c15bca8f8dc1c22a56c333e947",
+  "build": {
+    "command": "npm run build --workspace acme-retail-storefront-web",
+    "result": "PASS",
+    "log": "build.log"
+  },
+  "python": {
+    "command": "/tmp/pr817-venv/bin/python -m pytest -q tests/test_dufynd_home_discovery_search.py tests/test_dufynd_catalog_discovery_rail.py tests/test_dufynd_detail_discovery_links.py tests/test_dufynd_mobile_catalog_toolbar.py tests/test_dufynd_discovery_qualification.py tests/test_dufynd_discovery_release.py tests/test_dufynd_fragrance_cart_guard.py",
+    "passed": 27
+  },
+  "identity": {
+    "command": "node examples/retail/storefront-web/scripts/test-fragrance-search-identity.mjs",
+    "result": "PASS"
+  },
+  "browser": {
+    "result": "PASS",
+    "conversion_cases": 15,
+    "mobile_widths": 4,
+    "log": "browser-regression.log"
+  },
+  "evidence_binding": "Local captures precede the commit; source SHA-256 hashes bind them to the tested files. CI generates a separate manifest with its actual PR head and checkout SHA. No prior evidence hashes were edited."
+}

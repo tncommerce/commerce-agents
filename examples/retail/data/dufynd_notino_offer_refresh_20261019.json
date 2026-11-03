@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "source": "direct_notino_product_page_read_only",
+  "capture_policy": "Freshness preferred (ttl=0); merchant originals independently fetched without affiliate redirect; observation timestamp recorded after three pages were retrieved.",
+  "observed_at": "2026-10-19T19:08:38.130Z",
+  "affiliate_links_reverified": false,
+  "network_transactions_verified": false,
+  "products": [
+    {
+      "offer_id": "notino-pdm-delina-edp-75",
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant_product_id": "PDM0227",
+      "variant": "Delina Eau de Parfum 75 ml",
+      "price_eur": 285,
+      "shipping_cost_eur": 0,
+      "in_stock": true,
+      "product_url": "https://www.notino.de/parfums-de-marly/darley-royal-essence-delina-eau-de-parfum-fuer-damen/p-11598204/"
+    },
+    {
+      "offer_id": "notino-ysl-black-opium-edp-90",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant_product_id": "YSL2377",
+      "variant": "YSL Black Opium Eau de Parfum 90 ml",
+      "price_eur": 116,
+      "shipping_cost_eur": 0,
+      "in_stock": true,
+      "product_url": "https://www.notino.de/yves-saint-laurent/black-opium-eau-de-parfum-fur-damen/p-451726/"
+    },
+    {
+      "offer_id": "notino-ysl-libre-edp-90",
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "VZR11010",
+      "variant": "YSL Libre Eau de Parfum 90 ml, nachfüllbarer Flakon",
+      "price_eur": 130,
+      "shipping_cost_eur": 0,
+      "in_stock": true,
+      "product_url": "https://www.notino.de/yves-saint-laurent/yves-saint-laurent-libre-eau-de-parfum-fuer-damen/p-15968532/"
+    }
+  ]
+}

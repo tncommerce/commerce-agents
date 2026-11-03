@@ -68,7 +68,10 @@ def test_perfumetrader_awin_config_maps_documented_columns() -> None:
 def test_perfumetrader_awin_config_keeps_no_feed_safeguards_enabled() -> None:
     config = load_config()
 
-    assert config["status"] == ("awin_product_feed_unavailable_direct_merchant_data_required")
+    assert config["status"] == "feed_list_verified_product_csv_schema_unverified_hold"
+    assert config["source_availability"]["feed_list_verified"] is True
+    assert config["source_availability"]["verified_product_schema"] is False
+    assert config["source_availability"]["verified_product_rows"] == 0
     assert config["safety"] == {
         "real_feed_preflight_required": True,
         "release_checker_required": True,
@@ -81,13 +84,13 @@ def test_perfumetrader_awin_config_keeps_no_feed_safeguards_enabled() -> None:
     assert config["merchant_scope"]["awin_advertiser_id"] == "11672"
 
 
-def test_perfumetrader_awin_feed_is_marked_unavailable() -> None:
+def test_perfumetrader_awin_product_rows_remain_unverified() -> None:
     config = load_config()
     availability = config["source_availability"]
 
     assert availability["awin_product_data_available"] is False
     assert availability["create_a_feed_expected"] is False
     assert availability["next_source_paths"] == [
-        "direct_perfumetrader_feed_or_api",
+        "independent_fresh_germany_csv_schema_validation",
         "exact_product_page_evidence_plus_awin_deeplink",
     ]

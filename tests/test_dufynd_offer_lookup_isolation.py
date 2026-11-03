@@ -88,7 +88,13 @@ def test_selected_offer_keeps_variant_price_and_expiry(monkeypatch):
     offers = store.offers_for("SC-YSL-LIBRE-EDP-90", now=now)
     offer = store.eligible_offer("notino-ysl-libre-edp-90", now=now)
     assert offers == [offer]
-    assert offer.price == 132
+    merchant_evidence = json.loads(
+        Path("examples/retail/data/dufynd_notino_offer_refresh_20261020.json").read_text()
+    )
+    verified = next(
+        row for row in merchant_evidence["products"] if row["offer_id"] == offer.offer_id
+    )
+    assert offer.price == verified["price_eur"]
     assert offer.variant_label == "90 ml · Eau de Parfum · nachfüllbarer Flakon"
     expired = offer.last_updated_at + timedelta(hours=72, seconds=1)
     assert store.offers_for(offer.product_id, now=expired) == []

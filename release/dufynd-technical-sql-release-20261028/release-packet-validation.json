@@ -1,0 +1,14 @@
+{
+  "runtime": "PostgreSQL16.15 disposable localhost",
+  "scope": "New release guard and rollback packet only; existing 29 regression tests not repeated",
+  "results": [
+    "fresh_live_fingerprint_preflight_pass",
+    "unknown_definition_blocked",
+    "observer_guarded_apply_pass",
+    "partial_release_rollback_exact_pass",
+    "combined_guarded_apply_pass",
+    "complete_release_rollback_exact_pass"
+  ],
+  "local_transaction": "rolled_back",
+  "production_ddl": false
+}

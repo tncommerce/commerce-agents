@@ -5,9 +5,9 @@ import {createHash} from 'node:crypto';
 export async function photoIntegrationQa(browser,{base,out}) {
   const {items,holds}=JSON.parse(readFileSync(new URL('../../data/dufynd_photo_integration_review.json',import.meta.url),'utf8'));
   const originals=JSON.parse(readFileSync(new URL('../lib/generated/original-photos.json',import.meta.url),'utf8'));
-  assert.equal(items.length,5);
-  assert.equal(originals.length,4,'Public registry unchanged');
-  assert.ok(holds.some(x=>x.product_id==='SC-PDM-ALTHAIR-125'&&!x.owner_visual_approved));
+  assert.equal(items.length,6);
+  assert.equal(originals.length,10,'Explicitly prepared public image set; private review remains separate');
+  assert.equal(holds.length,0,'All six exact source photographs visually accepted on 26 October');
   mkdirSync(`${out}/photo-integration`,{recursive:true});
   const report=[];
   for(const width of [390,1440]) {
@@ -25,7 +25,7 @@ export async function photoIntegrationQa(browser,{base,out}) {
     await page.evaluate(()=>scrollTo(0,0));
     await page.screenshot({path:`${out}/photo-integration/catalog-public-before-${width}.png`,fullPage:true});
     await page.goto(`${base}/review/photos`);
-    assert.equal(await page.locator('[data-photo-review-card]').count(),5);
+    assert.equal(await page.locator('[data-photo-review-card]').count(),6);
     assert.ok((await page.locator('meta[name=robots]').getAttribute('content')).includes('noindex'));
     assert.equal(await page.locator('a[href*=clickout],a[href*=awin]').count(),0);
     const links=await page.locator('[data-photo-review-card] a').evaluateAll(xs=>xs.map(x=>x.getAttribute('href')));
@@ -64,8 +64,6 @@ export async function photoIntegrationQa(browser,{base,out}) {
       await page.screenshot({path:`${out}/photo-integration/${item.merchant_product_id}-after-full-${width}.png`,fullPage:true});
       report.push({product_id:item.product_id,width,image_sha256:item.image_sha256,display_height:actual.displayHeight,stage_gaps:frame,status:'passed',public_registry_unchanged:true,merchant:'top-parfuemerie',public_release:false});
     }
-    const blocked=await page.goto(`${base}/review/photos/parfums-de-marly-althair`);
-    assert.equal(blocked.status(),404,'Rejected Althair image cannot enter preview');
     assert.deepEqual(errors,[]);await page.close();
   }
   writeFileSync(`${out}/photo-integration/report.json`,JSON.stringify(report,null,2)+'\n');

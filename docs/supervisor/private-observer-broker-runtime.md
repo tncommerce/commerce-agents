@@ -2,15 +2,17 @@
 
 ## Status and architecture
 
-This supersedes the deployment gaps in observer-activation-readiness.md. The
-standalone `private_broker.runtime:production_app` ASGI factory and Dockerfile are
-ready for an **owner-created separate runtime**. Nothing is provisioned by this PR;
-Render/Gmail activation remains false. Production-secret tests use fakes only.
+The standalone `private_broker.runtime:production_app` ASGI factory and Dockerfile
+form the separate owner-controlled provider boundary. Repository source does not
+establish the live deployment or activation state; verify those in the existing
+runtime and masterstatus. Production-secret tests use fakes only. The explicitly
+gated two-service extension is described in [render-services-v2.md](render-services-v2.md).
 
 The image copies only `private_broker` and the provider filtering library. It does
 not include Jarvis, task executors, connector sessions or the Supabase worker. The observer harness is also excluded from the image.
-Deploy it in a NEW owner-controlled GCP project, with a dedicated service account,
-Firestore Native default database and four Secret Manager secrets. Jarvis/Actions
+Use the verified existing owner-controlled GCP project, dedicated service account,
+Firestore Native default database and four Secret Manager secrets. Do not create
+a replacement project or resources as a recovery shortcut. Jarvis/Actions
 must have **no IAM role, project access, image-deploy permission or Secret Manager
 access** in that project. Neither the runtime identity nor its project grants access
 to the existing DUFYND Supabase service-role or management credentials.
@@ -65,9 +67,14 @@ Allowed workload endpoints:
 | GET | /v1/gmail/threads/{registered-thread}/metadata | thread/history IDs, message IDs, dates, From, sanitized MIME type, delivery-failure flag |
 | POST | /v1/gmail/threads/{registered-thread}/ack/{observation-digest} | Advance private cursor only after durable ingestion; idempotent ack |
 
+V2 adds only the two fixed Render deployment-list paths under `/v2/render/`,
+disabled unless the explicit owner runtime gate is enabled. It has its own
+per-service evidence and capture scope; the v1 metadata and API-only endpoint
+remain unchanged. See the [versioned contract and rollout](render-services-v2.md).
+
 Registered threads: 1a0f385ed98c6af8, 1a0f69c169fb928f, 1a0f6a90772a743d.
 No query parameters or arbitrary provider URL/path are accepted on reads. All
-upstream URLs are fixed. Render accepts only GET of the one service's deploy list;
+upstream URLs are fixed. The v1 Render endpoint accepts only GET of the API service's deploy list;
 redirects, settings, env, logs, deploy/restart and mutations are unavailable.
 Gmail uses profile for account proof, history for local known-thread filtering,
 and known-thread metadata with From/Content-Type only. No search, body, attachments,
@@ -129,19 +136,149 @@ by owner-controlled maintenance; no paid Firestore TTL feature is required.
 
 ## Owner deployment helper
 
-For owner-authorized Cloud Shell deployment, use
-`scripts/deploy_dufynd_private_broker.sh <40-char scentai-mvp SHA>`.
-The helper checks out exactly the requested immutable commit, builds and pushes a
-commit-tagged broker image, resolves its Artifact Registry SHA-256 digest and deploys
-that digest-pinned image while changing **only** the existing Cloud Run service image.
-It then fails closed unless the newest revision is Ready, reports the exact same image
-digest and receives 100% traffic. It does not create IAM bindings, alter secrets/environment
-variables, change ingress/scaling, enable public access or touch Supabase/Render.
+Use the existing owner-controlled deployment environment and supply the verified
+target explicitly. The helper has no project, region, service or registry default:
 
-The helper still requires an owner-authenticated Google Cloud Shell (or equivalent
-owner-controlled environment) with the already-approved deployment permissions.
-Jarvis/GitHub Actions must not receive those GCP deployment credentials. This is
-deliberately an owner operation, not an autonomous worker capability.
+```bash
+bash scripts/deploy_dufynd_private_broker.sh \
+  --project "$VERIFIED_PROJECT_ID" \
+  --region "$VERIFIED_REGION" \
+  --service "$VERIFIED_SERVICE" \
+  --image-repository "$VERIFIED_IMAGE_REPOSITORY" \
+  --expected-origin "$VERIFIED_SERVICE_ORIGIN" \
+  "$APPROVED_COMMIT_SHA"
+```
+
+`VERIFIED_IMAGE_REPOSITORY` has the form
+`LOCATION-docker.pkg.dev/PROJECT/REPOSITORY/IMAGE`, without a tag or digest. Its
+project must equal the explicitly supplied project. The origin is the existing
+Cloud Run `status.url`, not an inferred project name or arbitrary callback URL.
+In particular, the former hardcoded `dufynd-private-broker-01` is no longer used.
+
+Before clone, build or push, the helper reads narrowly projected metadata for the
+existing active project, standard Docker registry repository, service and ready
+revision. It verifies project/namespace, region, origin, resource UID/version,
+completed reconciliation, the existing image repository and resolved digest. It
+requires the broker's single-container configuration and an existing 100%-to-latest
+traffic policy, so the later image-only update needs no routing change. A wrong,
+unreadable, missing or unready target stops before those operations. No IAM or
+Secret Manager read operations are added. `--format` is a client-side output
+projection, not a server-side field mask: environment and secret fields are
+excluded from the emitted and temporarily saved metadata. The explicit
+`spec.template.spec.containers[].image` slice preserves the container array while
+omitting its other fields; this shape was verified offline with Google's official
+SDK Core build `20261026202537`, including an excluded environment-value canary.
+
+The owner environment also requires Docker buildx, checked before any build or
+push. A pinned service image can identify an OCI index or Docker manifest list
+while Cloud Run's ready revision identifies its `linux/amd64` image. For that
+case, the helper reads the exact digest from the already bound repository with
+`docker buildx imagetools inspect --format '{{json .Manifest}}'`, using existing
+registry authentication. It checks the returned root digest, schema and media
+type and requires exactly one supported `linux/amd64` child. Missing, duplicate,
+foreign or ambiguous evidence fails closed; an attestation descriptor is not a
+runtime image. No digest comparison is skipped.
+
+By default it checks out the exact immutable commit, builds and pushes the commit-tagged
+image and verifies both the registry's SHA-256 digest and its fully qualified image
+identity. The service UID/version/revision/image are checked again after build and
+immediately before update. The pushed digest's runtime child is resolved before
+the update as well. The sole Cloud Run mutation remains `services update
+--image=IMAGE@sha256:…`; no IAM, secrets, environment, ingress, scaling, traffic or
+resource-creation operations are added. The user's gcloud default project and
+Docker authentication configuration are never changed.
+
+Final verification binds **all** positive traffic to the specific ready revision,
+checks that it is also the latest created revision and verifies its exact resolved
+image digest. Reading only `traffic[0].percent` is insufficient. Bare SHA-256 values
+and fully qualified digest references are normalized only for the explicitly bound
+image repository; a foreign image with the same hash is rejected. Metadata-readback
+checks are not an atomic lock against another owner deployment, so the existing
+owner deployment channel must serialize updates to this service. A verification
+failure exits without a success claim or automatic rollback; an image update that
+already completed is not silently undone.
+
+The final proof reports both `verified_image` (the pinned registry image or index)
+and `verified_runtime_image` (the resolved image actually reported by the ready
+revision). These may legitimately differ only through the verified registry
+index relationship. The runtime source SHA remains the explicit helper argument;
+an operational-helper correction does not require rebuilding from a different
+application commit.
+
+### Resume an already published, verified image
+
+When an owner-controlled build and upload have already completed, use the optional
+resume arguments to avoid rebuilding or uploading the image again. This path still
+runs the same project/repository/service/revision preflight, current-service drift
+guard, image-only update and final traffic/runtime-digest verification. It requires
+Docker buildx for authenticated digest-bound manifest reads; it does not invoke Git,
+`docker build` or `docker push`.
+
+Supply all three additional arguments together:
+
+```bash
+bash scripts/deploy_dufynd_private_broker.sh \
+  --project "$VERIFIED_PROJECT_ID" \
+  --region "$VERIFIED_REGION" \
+  --service "$VERIFIED_SERVICE" \
+  --image-repository "$VERIFIED_IMAGE_REPOSITORY" \
+  --expected-origin "$VERIFIED_SERVICE_ORIGIN" \
+  --existing-image "$VERIFIED_PINNED_IMAGE" \
+  --expected-runtime-digest "$VERIFIED_RUNTIME_DIGEST" \
+  --build-evidence "$PRIVATE_OWNER_BUILD_RECORD" \
+  "$APPROVED_COMMIT_SHA"
+```
+
+`VERIFIED_PINNED_IMAGE` must be the full, exact bound repository followed by
+`@sha256:` and 64 lowercase hexadecimal characters. The runtime digest identifies
+the independently verified `linux/amd64` child (or the same digest for a direct
+image manifest). Mutable tags and foreign image repositories are rejected.
+
+The private owner build record is a bounded JSON object with exactly these fields;
+replace the example placeholders with the previously verified build evidence:
+
+```json
+{
+  "version": 1,
+  "source_repository": "https://github.com/tncommerce/commerce-agents.git",
+  "source_sha": "<approved 40-character source commit SHA>",
+  "image": "<verified repository>@sha256:<verified root digest>",
+  "runtime_digest": "sha256:<verified runtime digest>",
+  "evidence_ref": "<existing owner build log or masterstatus record reference>"
+}
+```
+
+This record is an owner-supplied binding to existing evidence, **not a cryptographic
+source attestation**. A SHA-shaped argument or image tag alone does not prove how
+an image was built. The helper checks the record's exact repository/source/root/
+runtime bindings and requires a concrete evidence reference; the owner must have
+verified that underlying build record independently. Missing, ambiguous or
+mismatched metadata stops before remote reads or writes.
+
+The registry must independently resolve both the explicit immutable image and the
+`IMAGE_REPOSITORY:APPROVED_COMMIT_SHA` tag to the expected root. The selected runtime
+child must equal the owner record before update. The tag is an additional consistency
+check; it is never used as the deployment target. A missing or retargeted tag stops
+the operation. On success the helper also reports a SHA-256 of the canonicalized
+validated owner record for the operational audit trail. All existing cost,
+authentication and owner-channel conditions below still apply.
+
+This flow follows the primary Google contracts for
+[Artifact Registry image digests](https://docs.cloud.google.com/build/docs/securing-builds/generate-validate-build-provenance),
+[Cloud Run service status and resolved traffic targets](https://docs.cloud.google.com/run/docs/reference/rest/v1/namespaces.services),
+[revision imageDigest](https://docs.cloud.google.com/run/docs/reference/rest/v1/namespaces.revisions),
+and [resource identity/version](https://docs.cloud.google.com/run/docs/reference/rest/v1/ObjectMeta).
+The index handling follows the [Cloud Run container contract](https://docs.cloud.google.com/run/docs/container-contract)
+and [Docker's manifest inspection contract](https://docs.docker.com/reference/cli/docker/buildx/imagetools/inspect/).
+
+The helper still requires existing owner-authenticated GCP and Docker registry
+access, plus independently verified available capacity under the standing **zero
+additional cost** constraint. It does not verify billing headroom, infer a zero
+bill from a free-tier label or start login/configuration flows. No deployment is
+performed by the repository change or its subprocess tests. Jarvis/GitHub Actions
+must not receive these GCP deployment credentials. Execution requires an existing
+authenticated deployment channel and evidenced target/cost conditions; no new
+approval dialog is implied when the standing owner authorization already applies.
 
 ## Separated ingestion and acknowledgment preparation
 
@@ -216,7 +353,12 @@ Primary references:
 - https://render.com/pricing
 - https://render.com/docs/disks
 
-## Tuan's exact setup order — STOP before owner provisioning
+## Historical initial-provisioning reference
+
+The following records the original setup procedure, not the recovery procedure
+for the existing broker. Use the verified existing owner runtime and the staged
+[v2 rollout](render-services-v2.md) for this extension. Do not repeat provisioning,
+accept billing or restart paused Gmail consent to resolve a Render read gap.
 
 1. **PRIVATE BROKER:** Owner creates/chooses an isolated GCP project/account and
    explicitly accepts billing; create Firestore Native default DB, Secret Manager,

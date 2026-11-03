@@ -5,7 +5,7 @@ import { canonicalBrand, brandSlug } from '@/lib/brandIdentity';
 import { PUBLIC_BRANDS } from '@/lib/brands';
 import styles from '@/app/review/duft/[slug]/review.module.css';
 type Pilot=typeof RELEASE_PILOTS[number];
-export default function QualifiedProductPage({pilot,profiles,publicMode=false}:{pilot:Pilot;profiles:Pilot[];publicMode?:boolean}) {
+export default function QualifiedProductPage({pilot,profiles,publicMode=false,editorialDescription}:{pilot:Pilot;profiles:Pilot[];publicMode?:boolean;editorialDescription?:string}) {
  const {fact}=pilot;const brand=canonicalBrand(fact.brand);
  const displayName=fact.name===fact.name.toUpperCase()?fact.name.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()):fact.name;
 
@@ -29,7 +29,7 @@ export default function QualifiedProductPage({pilot,profiles,publicMode=false}:{
       </div>
       <span data-dufynd-studio-source-label className={styles.photoHold}>Originalfoto in Prüfung</span>
     </div>
-   <div className={styles.intro}><p className={styles.chapter}>DAS DUFTPORTRÄT <span>01 — 03</span></p><h2>{pilot.headline}</h2><p className={styles.summary}>{fact.summary_de}</p><a className={styles.cta} href="#duftverlauf">Die Komposition entdecken <span>↓</span></a><p className={styles.footnote}>Neutrale Studiokarte, kein Markenflakon. Produktinformationen unabhängig von Händlerangeboten.</p></div>
+   <div className={styles.intro}><p className={styles.chapter}>DAS DUFTPORTRÄT <span>01 — 03</span></p><h2>{pilot.headline}</h2><p className={styles.summary}>{publicMode && editorialDescription ? editorialDescription : fact.summary_de}</p><a className={styles.cta} href="#duftverlauf">Die Komposition entdecken <span>↓</span></a><p className={styles.footnote}>Neutrale Studiokarte, kein Markenflakon. Produktinformationen unabhängig von Händlerangeboten.</p></div>
   </section>
   <nav className={styles.sectionNav} aria-label="Auf dieser Duftseite"><a href="#duftverlauf">01 · Duftnoten</a><a href="#einordnung">02 · Einordnung</a><a href="#quellen">03 · Quellen</a></nav>
   <section id="duftverlauf" className={styles.notes}>

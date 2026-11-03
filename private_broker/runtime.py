@@ -22,6 +22,8 @@ from fastapi.responses import JSONResponse, Response
 from scripts.dufynd_observer_credentials import (
     GMAIL_SCOPE,
     KNOWN_THREADS,
+    RENDER_SCOPE_V2,
+    RENDER_SERVICES_V2,
     TOKEN_ENDPOINT,
     BrokerError,
     FixedTransport,
@@ -29,6 +31,7 @@ from scripts.dufynd_observer_credentials import (
     GmailRefreshBroker,
     PrivateCredential,
     RenderReadBroker,
+    RenderServicesReadBroker,
     metadata,
 )
 
@@ -55,9 +58,12 @@ class Config:
     render_key: str = ""
     repository_id: str = ""
     callback_logging_ready: bool = False
-    scheduler_sa_email: str = ""  # Disabled unless owner pins a Google Scheduler identity.
+    render_services_v2: bool = False
+    scheduler_sa_email: str = ""  # Default off unless owner pins service-account identity.
 
     def validate(self):
+        if type(self.render_services_v2) is not bool:
+            raise BrokerError("missing_configuration")
         url = urlsplit(self.origin)
         if (
             url.scheme != "https"
@@ -65,7 +71,8 @@ class Config:
             or url.path
             or url.query
             or url.fragment
-            or url.username
+            or url.username is not None
+            or url.password is not None
             or url.port not in {None, 443}
         ):
             raise BrokerError("missing_configuration")
@@ -346,12 +353,30 @@ def create_app(
                 raise BrokerError("refresh_race")
             return result
 
+    @app.get("/v2/render/services/{service_id}/deployments")
+    def render_service_v2(service_id: str, request: Request):
+        if request.query_params or service_id not in RENDER_SERVICES_V2:
+            raise BrokerError("scope_mismatch")
+        if config.render_services_v2 is not True:
+            raise BrokerError("broker_activation_required")
+        result = RenderServicesReadBroker(transport, PrivateCredential(config.render_key)).read(
+            service_id=service_id
+        )
+        # This timestamp belongs only to the completed read above. The v1
+        # credential/global health document and Gmail are deliberately untouched.
+        return {
+            "version": 2,
+            "scope_id": RENDER_SCOPE_V2,
+            "service_id": service_id,
+            "observed_at": datetime.now(UTC).isoformat(),
+            "deployments": result,
+        }
+
     @app.post(SCHEDULER_PATH, status_code=204)
     def scheduler_refresh(request: Request):
         if request.url.query:
             raise BrokerError("scope_mismatch")
-        # Only token rotation. No Gmail read, cursor advancement, ack or
-        # Supabase integration; those stay in the existing OIDC observer flow.
+        # Rotation only; no Gmail reads, cursors, ACK or Supabase integration.
         GmailRefreshBroker(vault, transport).refresh()
         return Response(status_code=204)
 
@@ -495,6 +520,12 @@ def production_app():
         with open("/run/secrets/" + name + "-dir/value", encoding="utf-8") as source:
             return source.read().strip()
 
+    # A code/image update alone never widens the running owner's read scope.
+    # Only this exact explicit opt-in enables both fixed service reads.
+    render_scope = os.environ.get("BROKER_RENDER_SERVICES_V2", "")
+    if render_scope not in {"", "api-storefront-v2"}:
+        raise BrokerError("missing_configuration")
+
     config = Config(
         os.environ["BROKER_ORIGIN"],
         os.environ["BROKER_MAILBOX"],
@@ -504,7 +535,8 @@ def production_app():
         secret("render-key"),
         os.environ["BROKER_REPOSITORY_ID"],
         os.environ.get("BROKER_CALLBACK_LOGGING_READY") == "1",
-        os.environ.get("BROKER_GMAIL_SCHEDULER_SA_EMAIL", ""),
+        render_scope == "api-storefront-v2",
+        scheduler_sa_email=os.environ.get("BROKER_GMAIL_SCHEDULER_SA_EMAIL", ""),
     )
     client = httpx.Client(trust_env=False)
     vault = EncryptedVault(
@@ -519,5 +551,9 @@ def production_app():
         )
         scheduler_auth = SchedulerOIDC(config, google_keys)
     return create_app(
-        config, vault, FixedTransport(client), WorkloadAuth(config, keys), scheduler_auth
+        config,
+        vault,
+        FixedTransport(client, render_services_v2=config.render_services_v2),
+        WorkloadAuth(config, keys),
+        scheduler_auth,
     )

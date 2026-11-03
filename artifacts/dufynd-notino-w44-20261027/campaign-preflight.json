@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "status": "REVIEW_ONLY_NOT_PUBLIC_NOT_DISCOUNT_VERIFIED",
+  "created_for_review_date_local": "2026-10-27",
+  "market": "DE",
+  "currency": "EUR",
+  "timezone": "Europe/Berlin",
+  "campaign_source": {
+    "network": "CJ Affiliate",
+    "advertiser": "Notino.de",
+    "origin": "direct_notino_advertiser_cj_email",
+    "email_received_date": "2026-10-23",
+    "email_subject": "Notino affiliate: Up to 20% discount on selected products | 15% discount on every order - W44 (26.10. - 1.11.2026)",
+    "source_owner": "authenticated_connected_gmail_read",
+    "source_has_network_transaction_report": false,
+    "provenance_policy": "Sanitized advertiser campaign terms from authenticated CJ newsletter; mailbox item ID and personalized tracking links intentionally excluded from public repository."
+  },
+  "campaign_window": {
+    "starts_date": "2026-10-26",
+    "ends_date": "2026-11-01"
+  },
+  "offers": [
+    {
+      "code": "SALE",
+      "description": "Up to 20% on selected items",
+      "min_percent": 0,
+      "max_percent": 20,
+      "product_eligibility_unverified": true,
+      "exact_product_discount_claim_allowed": false
+    },
+    {
+      "code": "BLACK",
+      "description": "Black Friday up to 30% on selected items",
+      "min_percent": 0,
+      "max_percent": 30,
+      "product_eligibility_unverified": true,
+      "exact_product_discount_claim_allowed": false
+    },
+    {
+      "code": "FLASH",
+      "description": "15% on orders meeting minimum order value",
+      "nominal_percent": 15,
+      "starts_date": "2026-10-30",
+      "ends_date": "2026-11-01",
+      "minimum_order_value_eur": 20,
+      "product_eligibility_unverified": true,
+      "exact_product_discount_claim_allowed": false
+    }
+  ],
+  "restrictions": {
+    "prohibited_brands_for_affiliate_promotion": [
+      "HERMES",
+      "DIOR",
+      "GUERLAIN"
+    ],
+    "brand_bidding_prohibited_all_matches": true,
+    "css_ads_without_written_permission_prohibited": true,
+    "affiliate_terms_override": true,
+    "no_invented_discounted_prices": true,
+    "no_coupon_checkout_validation_performed": true,
+    "no_cj_network_sale_inferred": true
+  },
+  "canonical_notino_scope": [
+    "SC-LATTAFA-ECLAIRE-EDP-100",
+    "SC-PDM-DELINA-EDP-75",
+    "SC-YSL-BLACK-OPIUM-EDP-90",
+    "SC-YSL-LIBRE-EDP-90"
+  ],
+  "review_anchor_utc": "2026-10-27T06:45:00Z",
+  "candidate_products": [
+    {
+      "product_id": "SC-LATTAFA-ECLAIRE-EDP-100",
+      "name": "Lattafa Eclaire",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100,
+      "merchant_product_id": "LTF00869",
+      "canonical_offer_id": "notino-lattafa-eclaire-edp-100",
+      "original_affiliate_link_in_canonical_data": true,
+      "source_snapshot_total_eur": 37.4,
+      "source_snapshot_at_utc": "2026-09-30T16:16:00Z",
+      "source_snapshot_under_72h_at_review": false,
+      "affiliate_promotion_brand_excluded": false,
+      "exact_product_coupon_eligibility_confirmed": false,
+      "promotional_discounted_price_verified": false,
+      "state": "HOLD_STAGING_PRODUCT_NOT_PUBLIC",
+      "public_profile_available": false
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "name": "Parfums de Marly Delina",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 75,
+      "merchant_product_id": "PDM0227",
+      "canonical_offer_id": "notino-pdm-delina-edp-75",
+      "original_affiliate_link_in_canonical_data": true,
+      "source_snapshot_total_eur": 285,
+      "source_snapshot_at_utc": "2026-10-20T19:53:41.793Z",
+      "source_snapshot_under_72h_at_review": false,
+      "affiliate_promotion_brand_excluded": false,
+      "exact_product_coupon_eligibility_confirmed": false,
+      "promotional_discounted_price_verified": false,
+      "state": "HOLD_EXPIRED_BASE_OFFER",
+      "public_profile_available": true
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "name": "Yves Saint Laurent Black Opium",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "merchant_product_id": "YSL2377",
+      "canonical_offer_id": "notino-ysl-black-opium-edp-90",
+      "original_affiliate_link_in_canonical_data": true,
+      "source_snapshot_total_eur": 116,
+      "source_snapshot_at_utc": "2026-10-20T19:53:42.736Z",
+      "source_snapshot_under_72h_at_review": false,
+      "affiliate_promotion_brand_excluded": false,
+      "exact_product_coupon_eligibility_confirmed": false,
+      "promotional_discounted_price_verified": false,
+      "state": "HOLD_EXPIRED_BASE_OFFER",
+      "public_profile_available": true
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "name": "Yves Saint Laurent Libre",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90,
+      "merchant_product_id": "VZR11010",
+      "canonical_offer_id": "notino-ysl-libre-edp-90",
+      "original_affiliate_link_in_canonical_data": true,
+      "source_snapshot_total_eur": 130,
+      "source_snapshot_at_utc": "2026-10-26T10:42:37.210Z",
+      "source_snapshot_under_72h_at_review": true,
+      "affiliate_promotion_brand_excluded": false,
+      "exact_product_coupon_eligibility_confirmed": false,
+      "promotional_discounted_price_verified": false,
+      "state": "REVIEW_ONLY_FRESH_BASE_OFFER",
+      "public_profile_available": true
+    }
+  ],
+  "approval": {
+    "publisher_live_announcement": false,
+    "social_announcement": false,
+    "affiliate_clickout_executed": false,
+    "merchant_checkout_executed": false,
+    "new_purchase_offer_activated": false,
+    "owner_release_go": false,
+    "incremental_cost_eur": 0
+  },
+  "notes": [
+    "Keep existing 72-hour merchant price/stock freshness gate; a new coupon email does not renew any product price or stock.",
+    "Merchant code eligibility and actual checkout discount are not confirmed for any of the four products.",
+    "Do not add HERMES, DIOR or GUERLAIN to affiliate promotion even if offer exists.",
+    "W44 campaign code dates are date-only; no exact opening/closing hour was supplied.",
+    "This packet changes no production offer and does not alter the frozen coupled PR #836."
+  ]
+}

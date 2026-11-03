@@ -1,0 +1,40 @@
+{
+  "baseline_sha": "2bb6041874e987a19a8d298a0612bbeb16247dca",
+  "status": "passed",
+  "production_release_authorized": false,
+  "paid_calls": 0,
+  "production_analytics": 0,
+  "merchant_clickouts": 0,
+  "build": "Complete public and gated review builds passed, existing lockfile installation",
+  "responsive_checks": 176,
+  "widths": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "presentation_profiles": 5,
+  "touch_widths": [
+    320,
+    390
+  ],
+  "review_profiles": 41,
+  "private_photo_checks": 10,
+  "python": {
+    "passed": 3592,
+    "skipped": 205,
+    "note": "3591 passed in full run; source-brand test passed after generated outputs were moved outside the source tree. Same compiled legacy context string exists in baseline; no assertion changed."
+  },
+  "lint": "ruff check passed; 730 files already formatted",
+  "component_regressions": "All prebuild contracts plus comparison missing-data/exact-overlap/non-inferred-synonym checks passed",
+  "control_room_widths": [
+    320,
+    390,
+    430,
+    768,
+    1280,
+    1440
+  ],
+  "image_input_boundary": "Unchanged approved original bytes replayed locally, independently hash-checked. No new assets or image approval flags.",
+  "final_ci": "Verify the GitHub Actions run on the commit containing this evidence; local reports bind the renderer/data hashes."
+}

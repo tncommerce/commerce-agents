@@ -11,7 +11,7 @@ def test_offer_listing_requires_live_dufynd_catalog_product() -> None:
     source = API_MAIN.read_text(encoding="utf-8")
 
     guard = "if not _live_dufynd_offer_product(product_id):"
-    lookup = "offers = offer_store.offers_for(product_id)"
+    lookup = "offers = await run_in_threadpool(offer_store.offers_for, product_id)"
 
     assert "def _live_dufynd_offer_product(product_id: str) -> bool:" in source
     assert 'product.product_id.startswith("SC-")' in source

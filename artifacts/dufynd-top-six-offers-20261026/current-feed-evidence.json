@@ -1,0 +1,285 @@
+{
+  "schema_version": 1,
+  "status": "CURRENT_SOURCE_REVIEW_ONLY",
+  "feed": {
+    "checked_at": "2026-10-26T12:39:33+00:00",
+    "source": "awin_product_feed_list",
+    "advertiser_id": "31081",
+    "feed_id": "91379",
+    "membership_status": "active",
+    "joined": true,
+    "last_imported": "2026-10-26 00:04:22",
+    "downloaded": true,
+    "downloaded_bytes": 12194085,
+    "download_sha256": "669e9fc954c44f84d13db4aa4f0ec3f7459ff5923939bae0fda119a426fcaf5d"
+  },
+  "rows": [
+    {
+      "merchant_product_id": "924719",
+      "expected_gtin": "3770010614630",
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "93ba71c3b2221026f92e2b150cb514e3535e11cdf221c05a1b143759f24e67f1",
+      "fields": {
+        "aw_product_id": "38332629354",
+        "merchant_product_id": "924719",
+        "search_price": "91.95",
+        "last_updated": "2026-10-22 11:31:08",
+        "product_name": "ESSENTIAL PARFUMS BOIS IMPERIAL by Quentin Bisch EdP Nat. Spray (nachfüllbar)",
+        "brand_name": "",
+        "description": "Nachhaltiges Thaï-Basilikum und schwarzer Pfeffer aus Timut eröffnen diesen Duft  gefolgt von nachhaltig produziertem haitianischem Vetiver und Freesiennoten aus Petalia (synthetische Molekül  welches blumige Noten verströmt). Die Herznote besteht aus Akigalawood- einem Upcylcling Inhalststoff  der aus nicht verwendeten Patchouli-Resten in Indonesien gewonnen wird. Das nachhaltig produzierte Pathchouli aus Indonesien bringt würzige Noten  zusammen mit einem nachhaltigen Ambrofix. Die Produktionsbetriebe werden in nachhaltigen Produktionsmethoden geschult  um die Anbaumethoden und die Destillation zu verbessern und die Auswirkungen auf die Umwelt zu verringern. Dieser Flakon ist nachfüllbar. die Umwelt zu reduzieren. Diese Flasche ist nachfüllbar.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=38332629354&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ]
+    },
+    {
+      "merchant_product_id": "707368",
+      "expected_gtin": "3349666007921",
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "04b392ad1688997f454a246d47d1d42604326dd62d96c023d0f385cc4b15f56f",
+      "fields": {
+        "aw_product_id": "37127263142",
+        "merchant_product_id": "707368",
+        "search_price": "102.95",
+        "last_updated": "2026-09-24 08:31:07",
+        "product_name": "rabanne 1 Million EdT Nat. Spray",
+        "brand_name": "",
+        "description": "Extravagant und gefährlich - 1 MILLION Eau de Toilette ist ein Herrenduft der mit seinen würzigen Noten wahrlich verführt. Lass' Deine Fantasie Deine Realität werden! Gehorche niemandem. Verkörpere einen wahren Gentleman mit der unwiderstehlichen Kombination aus Leder und Mandarine.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127263142&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ]
+    },
+    {
+      "merchant_product_id": "849484",
+      "expected_gtin": "3614272225718",
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "8ff904f7304ea4692b3b9af502b791f20deb707b53dc97745dc4e9de1afd75a8",
+      "fields": {
+        "aw_product_id": "37127260028",
+        "merchant_product_id": "849484",
+        "search_price": "107.95",
+        "last_updated": "2026-08-13 17:30:58",
+        "product_name": "Giorgio Armani Emporio Armani Stronger with You Intensely EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Emporio Armani Stronger With You Intensely EdP: Eine Liebesgeschichte voller Sinnlichkeit und AbenteuerEmporio Armani Stronger With You Intensely EdP ist eine olfaktorische Liebeserklärung an die pulsierende Energie moderner Metropolen und die romantische Atmosphäre des Mittelmeers. Der Duft entführt uns auf eine Reise nach Lissabon  wo sich enge Gassen mit atemberaubenden Aussichtspunkten abwechseln und die Luft nach Abenteuer und prickelnder Sinnlichkeit duftet. Als männlicher Part eines unwiderstehlichen Duftduos erzählt Stronger With You Intensely EdP ein neues Kapitel einer modernen Liebesgeschichte. Es ist der Duft für den Mann  der sich mit Leidenschaft und Hingabe auf neue Abenteuer einlässt und gleichzeitig die Geborgenheit und Wärme einer tiefen Verbundenheit sucht. Die Komposition eröffnet mit einem unwiderstehlichen Auftakt: Würziger rosa Pfeffer weckt die Sinne und lässt erahnen  welche Geheimnisse noch vor einem liegen. Ein einzigartiger Akkord aus aromatischem Salbei und warmem Zimt verleiht dem Duft eine unverwechselbare männliche Note und verführt mit orientalischem Flair. Im Herzen von Stronger With You Intensely verschmelzen die würzigen Noten mit einer verführerischen Süße. Die warme  umhüllende Note der Tonkabohne trifft auf den rauen  animalischen Duft von Wildleder und kreiert eine Aura von Geborgenheit und intensiver Sinnlichkeit. • raffinierter  würziger und sinnlicher Duft • die männliche Hälfte des magischen Duftpaars • nimmt dich mit auf eine Reise ins romantische Lissabon • holzig-orientalischer Fougère Duft • Duft für den modernen Mann",
+        "merchant_deep_link": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127260028&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ]
+    },
+    {
+      "merchant_product_id": "812773",
+      "expected_gtin": "3700578502322",
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "16afc401eccf9c7238792cd16e6deaa616d1a7291cbd97b890759a59dccb7c48",
+      "fields": {
+        "aw_product_id": "37127262708",
+        "merchant_product_id": "812773",
+        "search_price": "290",
+        "last_updated": "2026-10-14 11:31:07",
+        "product_name": "Parfums de Marly Layton EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Unverwechselbar und innovativ mit seinen Kaffeenoten  bietet dieser warme Duft eine langanhaltende Sinnlichkeit. Er hinterlässt eine kraftvolle und elegante Signatur mit einer Mischung aus Gewürzen  Amber und holzigen Noten.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127262708&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ]
+    },
+    {
+      "merchant_product_id": "897029",
+      "expected_gtin": "3614273790826",
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "feb45a0bd1a0a1833490183c0b6a4129ed2264fea11cc7a91653aadd14995d00",
+      "fields": {
+        "aw_product_id": "37127264452",
+        "merchant_product_id": "897029",
+        "search_price": "129.95",
+        "last_updated": "2026-08-12 01:21:45",
+        "product_name": "Valentino Uomo Born in Roma Intense EdP Nat. Spray Intense",
+        "brand_name": "",
+        "description": "Valentino Born in Roma Uomo Eau de Parfum Intense ist eine moderne Neuinterpretation des legendären Born in Roma Herrenduftes. Der Duft ist eine Hommage an die ewige Stadt Rom und ihre beeindruckenden Sonnenuntergänge und zelebriert gleichzeitig die einzigartige Persönlichkeit seines Trägers. Inspiriert von einer unvergesslichen Nacht in Rom vereint dieses Eau de Parfum Intense Eleganz und Intensität in einer ausdrucksstarken Komposition. Der Amber-Fougère-Duft wird in der Kopfnote von intensiver  warmer Vanille eröffnet  die sofort Tiefe und Charakter verleiht. In der Herznote verbindet sich die Vanille mit einer markanten  ledrigen Vetiver-Note  die für eine maskuline und zugleich raffinierte Ausstrahlung sorgt. Abgerundet wird das Dufterlebnis durch eine frische Lavandin-Note in der Basis  die dem Duft einen eleganten und langanhaltenden Abschluss verleiht. Dieses Parfum für Herren steht für Stil  Stärke und Individualität.• Intensiver Herrenduft mit Amber-Fougère-Charakter • Eau de Parfum mit Vanille  Vetiver und Lavandin • Maskuliner Duft für moderne Männer • Langanhaltendes Parfum für Herren • Valentino Born in Roma Uomo Eau de Parfum Intense",
+        "merchant_deep_link": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127264452&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ]
+    },
+    {
+      "merchant_product_id": "904707",
+      "expected_gtin": "3700578504364",
+      "status": "REVIEW_ONLY_NOT_APPROVED",
+      "source_row_canonical_json_sha256": "95218fcb11b4588667da0ae083a3c2c1cd8c2bd31001e7dbe2607e94d847c5b9",
+      "fields": {
+        "aw_product_id": "37127265511",
+        "merchant_product_id": "904707",
+        "search_price": "290",
+        "last_updated": "2026-10-22 14:31:10",
+        "product_name": "Parfums de Marly Althair EdP Nat. Spray",
+        "brand_name": "",
+        "description": "Althair ist eine sinnlich-warme und zugleich aufregende Duftkomposition aus dem Hause Parfums de Marly  die das Wechselspiel von Kontrasten perfekt zum Ausdruck bringt: Vibrierende Moleküle treffen auf traditionelle Noten  um nur wenige Augenblicke später eine ganz besondere Symbiose einzugehen. So treffen Vanillearomen auf eine einzigartige Kombination aus Zitrusfrüchten und Gewürzen in Form von Orangenblüten  Bergamotte  warmem Kardamom und sinnlichem Zimt. Über allem thront die unwiderstehliche Anziehungskraft kraftvoller Bourbon-Vanille  die fein abgestimmt wird mit faszinierenden Aromen in Form von Amber  Holz  Leder und Moschus.",
+        "merchant_deep_link": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
+        "aw_deep_link": "https://www.awin1.com/pclick.php?p=37127265511&a=3099222&m=31081",
+        "merchant_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png"
+      },
+      "missing_fields": [
+        "price",
+        "currency",
+        "ean",
+        "gtin",
+        "product_GTIN",
+        "upc",
+        "in_stock",
+        "stock_status",
+        "availability",
+        "stock_quantity",
+        "delivery_cost",
+        "delivery_weight",
+        "size",
+        "volume",
+        "product_size",
+        "large_image",
+        "alternate_image",
+        "alternate_image_two",
+        "alternate_image_three",
+        "alternate_image_four"
+      ],
+      "withheld_fields": [
+        "aw_image_url"
+      ]
+    }
+  ],
+  "activation_allowed": false,
+  "image_publication_allowed": false,
+  "tracking_clicks_executed": 0,
+  "price_verified_at_not_inferred_from_import": true,
+  "workflow_run": {
+    "id": 40324201008,
+    "job_id": 121576555286,
+    "head_sha": "6a04f20f3060ef7a7a315be116a9d3c31873d3bb"
+  }
+}

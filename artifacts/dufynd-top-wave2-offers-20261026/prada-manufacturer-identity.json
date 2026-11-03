@@ -1,0 +1,21 @@
+{
+  "url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/8435137749607.html",
+  "observed_at": "2026-10-26T15:19:08.939699+00:00",
+  "http_status": 200,
+  "manufacturer_product_group_id": "MPL01352",
+  "manufacturer_variant": {
+    "name": "L'Homme Prada Eau de Toilette",
+    "sku": "8435137749607",
+    "size": "100ml",
+    "additionalProperty": [
+      {
+        "@type": "PropertyValue",
+        "name": "Volume",
+        "value": 100,
+        "unitCode": "MLT"
+      }
+    ],
+    "url": "https://www.prada-beauty.com/fragrance/lhomme-prada/lhomme-prada-eau-de-toilette/MPL01352.html?dwvar_MPL01352_size=100ml"
+  },
+  "limitation": "Manufacturer declares sku 8435137749607 for EDT100; independent historical Notino record labels this code gtin. No claim that Top official feed exposes GTIN."
+}

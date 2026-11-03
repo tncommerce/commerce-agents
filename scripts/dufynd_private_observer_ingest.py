@@ -15,7 +15,11 @@ import re
 from pathlib import Path
 from typing import Any, Protocol
 
-from private_broker.observer_contract import ProvenanceError, validate_source
+from private_broker.observer_contract import (
+    ProvenanceError,
+    validate_render_recovery_evidence,
+    validate_source,
+)
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
 
 MAX_ARTIFACT_BYTES = 262_144
@@ -28,6 +32,7 @@ GMAIL_PATHS = {
     "/v1/gmail/threads/1a0f6a90772a743d/metadata": "1a0f6a90772a743d",
 }
 EXPECTED_PATHS = frozenset({META_KEY, HEALTH_PATH, RENDER_PATH, *GMAIL_PATHS})
+RENDER_RECOVERY_PATHS = frozenset({META_KEY, HEALTH_PATH, RENDER_PATH})
 GMAIL_RESPONSE_KEYS = frozenset({"observation_id", "evidence"})
 GMAIL_EVIDENCE_KEYS = frozenset({"thread_id", "history_id", "messages"})
 GMAIL_MESSAGE_KEYS = frozenset(
@@ -54,6 +59,14 @@ class ControlPlane(Protocol):
 
     def begin_broker_acceptance(self, source: dict[str, Any]) -> dict[str, Any]: ...
 
+    def capture_broker_observation(
+        self, *, credential_id: str, observer_id: str, evidence: Any
+    ) -> dict[str, Any]: ...
+
+    def capture_render_observer_read(
+        self, *, source: dict[str, Any], health: dict[str, Any], evidence: Any
+    ) -> dict[str, Any]: ...
+
     def capture_broker_acceptance_observation(
         self,
         *,
@@ -73,6 +86,8 @@ def load_artifact(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_run_attempt: str,
+    expected_paths: frozenset[str] = EXPECTED_PATHS,
 ) -> dict[str, Any]:
     try:
         if path.stat().st_size > MAX_ARTIFACT_BYTES:
@@ -83,17 +98,99 @@ def load_artifact(
     except Exception:
         raise ArtifactError("observer artifact is unreadable") from None
 
-    if not isinstance(payload, dict) or set(payload) != EXPECTED_PATHS:
+    if not isinstance(payload, dict) or set(payload) != expected_paths:
         raise ArtifactError("observer artifact path set mismatch")
     try:
         payload[META_KEY] = validate_source(
             payload[META_KEY],
             expected_run_id=expected_run_id,
             expected_sha=expected_sha,
+            expected_run_attempt=expected_run_attempt,
         )
     except ProvenanceError as exc:
         raise ArtifactError(f"observer artifact provenance {exc}") from None
     return payload
+
+
+def ingest_render_recovery(
+    bridge: ControlPlane,
+    artifact_path: Path,
+    *,
+    failure_source: dict[str, Any],
+    expected_run_id: str,
+    expected_sha: str,
+    expected_run_attempt: str,
+) -> dict[str, Any]:
+    """Capture an independent Render observation from a failed Gmail run.
+
+    Existing RPCs enforce fresh provider health, the exact allowed service and
+    prior activation. This cannot start/finalize acceptance or acknowledge Gmail.
+    """
+    artifact = load_artifact(
+        artifact_path,
+        expected_run_id=expected_run_id,
+        expected_sha=expected_sha,
+        expected_run_attempt=expected_run_attempt,
+        expected_paths=RENDER_RECOVERY_PATHS,
+    )
+    if artifact[META_KEY] != failure_source or artifact[META_KEY]["run_attempt"] != str(
+        expected_run_attempt
+    ):
+        raise ArtifactError("render recovery failure provenance mismatch")
+    return _capture_render_artifact(bridge, artifact)
+
+
+def ingest_render_artifact(
+    bridge: ControlPlane,
+    artifact_path: Path,
+    *,
+    expected_run_id: str,
+    expected_sha: str,
+    expected_run_attempt: str,
+) -> dict[str, Any]:
+    """A successful, standalone Render read; never an all-provider acceptance."""
+    artifact = load_artifact(
+        artifact_path,
+        expected_run_id=expected_run_id,
+        expected_sha=expected_sha,
+        expected_run_attempt=expected_run_attempt,
+        expected_paths=RENDER_RECOVERY_PATHS,
+    )
+    return _capture_render_artifact(bridge, artifact)
+
+
+def _capture_render_artifact(bridge: ControlPlane, artifact: dict[str, Any]) -> dict[str, Any]:
+    """One strict durable boundary shared by success and Gmail-failure recovery."""
+    health, render = artifact[HEALTH_PATH], artifact[RENDER_PATH]
+    try:
+        validate_render_recovery_evidence(health, render)
+    except ProvenanceError:
+        raise ArtifactError("render evidence shape mismatch") from None
+    result = bridge.capture_render_observer_read(
+        source=artifact[META_KEY], health=health, evidence=render
+    )
+    _accepted(result, "render")
+    if (
+        result.get("activation_changed") is not False
+        or result.get("full_chain_complete") is not False
+        or result.get("business_success") is not False
+        or type(result.get("reused")) is not bool
+        or result.get("gmail_captures") != 0
+        or result.get("acks") != 0
+        or result.get("render_captures") != (0 if result["reused"] else 1)
+        or not isinstance(result.get("observed_at"), str)
+    ):
+        raise ArtifactError("render capture receipt mismatch")
+    return {
+        "render_captures": result["render_captures"],
+        "gmail_captures": 0,
+        "acks": 0,
+        "activation_changed": False,
+        "full_chain_complete": False,
+        "business_success": False,
+        "observed_at": result["observed_at"],
+        "reused": result["reused"],
+    }
 
 
 def _sanitize_gmail(path: str, raw: Any) -> tuple[str, dict[str, Any]]:
@@ -136,7 +233,15 @@ def _sanitize_gmail(path: str, raw: Any) -> tuple[str, dict[str, Any]]:
 def _accepted(result: Any, stage: str) -> None:
     if not isinstance(result, dict) or result.get("accepted") is not True:
         reason = result.get("reason") if isinstance(result, dict) else None
-        if reason not in {"blocked_configuration", "unknown_observer"}:
+        if reason not in {
+            "blocked_configuration",
+            "unknown_observer",
+            "render_receipt_conflict",
+            "render_receipt_invalid",
+            "stale_render_observation",
+            "superseded_render_observation",
+            "invalid_render_source",
+        }:
             reason = "rejected"
         raise ArtifactError(f"{stage} capture {reason}")
 
@@ -148,11 +253,13 @@ def ingest_artifact(
     *,
     expected_run_id: str,
     expected_sha: str,
+    expected_run_attempt: str,
 ) -> dict[str, int]:
     artifact = load_artifact(
         artifact_path,
         expected_run_id=expected_run_id,
         expected_sha=expected_sha,
+        expected_run_attempt=expected_run_attempt,
     )
 
     health = artifact[HEALTH_PATH]
@@ -222,8 +329,9 @@ def main() -> int:
     parser.add_argument("--ack-plan", type=Path, default=Path("broker-acks.json"))
     parser.add_argument("--expected-run-id", default=os.getenv("GITHUB_RUN_ID"))
     parser.add_argument("--expected-sha", default=os.getenv("GITHUB_SHA"))
+    parser.add_argument("--expected-run-attempt", default=os.getenv("GITHUB_RUN_ATTEMPT"))
     args = parser.parse_args()
-    if not args.expected_run_id or not args.expected_sha:
+    if not args.expected_run_id or not args.expected_sha or not args.expected_run_attempt:
         raise SystemExit("private observer ingest failed: expected workflow provenance is required")
 
     try:
@@ -233,6 +341,7 @@ def main() -> int:
             args.ack_plan,
             expected_run_id=args.expected_run_id,
             expected_sha=args.expected_sha,
+            expected_run_attempt=args.expected_run_attempt,
         )
     except ArtifactError as exc:
         raise SystemExit(f"private observer ingest failed: {exc}") from None

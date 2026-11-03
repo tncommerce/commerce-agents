@@ -1,0 +1,16 @@
+{
+  "passed": 8,
+  "cases": [
+    "01 single-statement apply rejects an injected failing postflight",
+    "02 failed atomic apply restores original planner, absent helper, checkpoint and session settings without client ROLLBACK",
+    "03 exact tool apply payload succeeds without invoking planner or creating tasks",
+    "04 successful atomic apply preserves checkpoint and restores session timeout settings",
+    "05 single-statement rollback rejects an injected failing postflight",
+    "06 failed atomic rollback preserves the applied planner and all saved state without client ROLLBACK",
+    "07 exact tool rollback payload restores baseline while retaining private helper and checkpoint",
+    "08 successful atomic rollback leaves no timeout session-state change"
+  ],
+  "productionExecution": false,
+  "engine": "PostgreSQL 17.5 on aarch64-unknown-linux-gnu, compiled by emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 3.1.74 (1092ec30a3fb1d46b1782ff1b4db5094d3d06ae5), 32-bit",
+  "scope": "single-statement migration payloads in offline PostgreSQL-WASM; Supabase transport and history registration not executed"
+}

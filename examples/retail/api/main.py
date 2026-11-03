@@ -15,6 +15,7 @@ from __future__ import annotations
 from fastapi import BackgroundTasks, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.concurrency import run_in_threadpool
 
 from commerce_common.memory import InMemoryMemoryStore, JsonFileMemoryStore
 from demo_common import (
@@ -58,9 +59,12 @@ backend = MockRetail(offer_store=offer_store)
 
 
 def _live_dufynd_offer_product(product_id: str) -> bool:
-    product = backend.customer_product(product_id)
+    # Scope is local catalog state. customer_product also reads live price
+    # evidence synchronously, before the offer route reaches its worker pool.
+    product = backend.product(product_id)
     return bool(
         product is not None
+        and backend._customer_visible_product(product)
         and product.product_id.startswith("SC-")
         and product.category == "fragrance"
         and product.in_stock
@@ -100,6 +104,8 @@ host = build_storefront_host(
     ),
     product_of=backend.customer_product,
     product_detail=product_detail,
+    # These read callbacks may perform synchronous merchant-evidence I/O.
+    catalog_in_threadpool=True,
 )
 app = host.app
 app.add_exception_handler(HTTPException, clickout_exception_handler)
@@ -155,7 +161,9 @@ async def product_offers(product_id: str) -> dict:
     if not _live_dufynd_offer_product(product_id):
         raise HTTPException(status_code=404, detail="Product not available")
 
-    offers = offer_store.offers_for(product_id)
+    # Cached evidence may still make a synchronous Supabase RPC. Never block
+    # the ASGI event loop or an unrelated buyer route while that RPC waits.
+    offers = await run_in_threadpool(offer_store.offers_for, product_id)
 
     return {
         "product_id": product_id,
@@ -218,7 +226,9 @@ async def merchant_clickout(
     qa: bool = False,
     measurement: str | None = None,
 ) -> RedirectResponse:
-    offer = offer_store.eligible_offer(offer_id)
+    # The same verified-offer evidence reader is synchronous; keep it outside
+    # the ASGI event loop without changing the fail-closed purchase gate.
+    offer = await run_in_threadpool(offer_store.eligible_offer, offer_id)
     if offer is None or not _live_dufynd_offer_product(offer.product_id):
         raise HTTPException(status_code=404, detail="Offer not available")
 

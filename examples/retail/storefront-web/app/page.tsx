@@ -29,16 +29,8 @@ const ASSISTANT = "DUFYND Advisor";
 
 function Wordmark() {
   return (
-    <span className="flex items-center gap-2.5 pr-1">
-      <img
-        src="/icon.svg"
-        alt=""
-        aria-hidden
-        width={30}
-        height={30}
-        className="h-[30px] w-[30px] rounded-lg"
-      />
-      <span className="text-[17px] font-bold tracking-[-0.02em] text-(--ink)">DUFYND</span>
+    <span className="flex items-center pr-1">
+      <span className="text-[24px] font-bold tracking-[-0.065em] text-[#30252d]">DUFYND</span>
     </span>
   );
 }
@@ -47,7 +39,7 @@ export default function StorefrontPage() {
   const session = useSession(api, { timeoutMs: 8_000 });
   const [view, setView] = useState<View>("assistant");
   const [panelOpen, setPanelOpen] = useState(false);
-  const analyticsSessionRef = useRef<string | null>(null);
+  const homepageViewTrackedRef = useRef(false);
   const consultationTrackedRef = useRef(false);
   const guidedStartRef = useRef<string | null>(null);
 
@@ -63,17 +55,19 @@ export default function StorefrontPage() {
   useEffect(() => {
     const trackCurrentPage = () => {
       if (!measurementAllowed()) {
-        analyticsSessionRef.current = null;
+        homepageViewTrackedRef.current = false;
         return;
       }
-      if (!session.sessionId || analyticsSessionRef.current === session.sessionId) return;
-      analyticsSessionRef.current = session.sessionId;
+      // Optional first-party measurement must never wait for advisor transport.
+      // This existing tracker owns the one consented homepage page_view.
+      if (homepageViewTrackedRef.current) return;
+      homepageViewTrackedRef.current = true;
       void trackAnalyticsEvent("page_view", { source: "storefront" });
     };
     const unsubscribe = subscribeMeasurement(trackCurrentPage);
     trackCurrentPage();
     return unsubscribe;
-  }, [session.sessionId]);
+  }, []);
   useEffect(() => {
     if (
       !session.sessionId ||

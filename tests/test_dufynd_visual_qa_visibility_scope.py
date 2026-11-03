@@ -9,7 +9,9 @@ def test_visual_qa_excludes_source_blocked_products_from_route_count() -> None:
     source = VISUAL_QA.read_text(encoding="utf-8")
 
     assert "function hasValidationBlockers(product)" in source
-    assert "const expectedFragranceCount = sourceCatalog.products.filter(" in source
+    assert "const sourceQualifiedProducts = sourceCatalog.products.filter(" in source
+    assert "const expectedFragranceCount = publishedRoutes.length;" in source
+    assert "const sourceQualifiedRoutes =" in source
     assert "!hasValidationBlockers(product)" in source
     assert "const blockedFragranceRoutes = new Set(" in source
     assert "const routes = coreRoutes.filter(" in source

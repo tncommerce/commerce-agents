@@ -125,6 +125,7 @@ def test_ingest_writes_ack_plan_only_after_all_durable_captures(tmp_path: Path) 
         ack_path,
         expected_run_id="123456789",
         expected_sha="a" * 40,
+        expected_run_attempt="1",
     )
 
     assert summary == {
@@ -173,6 +174,7 @@ def test_ingest_rejects_unknown_artifact_path_before_control_plane_write(tmp_pat
             ack_path,
             expected_run_id="123456789",
             expected_sha="a" * 40,
+            expected_run_attempt="1",
         )
 
     assert bridge.health_calls == []
@@ -196,6 +198,7 @@ def test_ingest_rejects_bad_observation_digest_before_capture(tmp_path: Path) ->
             ack_path,
             expected_run_id="123456789",
             expected_sha="a" * 40,
+            expected_run_attempt="1",
         )
 
     assert len(bridge.health_calls) == 1
@@ -218,6 +221,7 @@ def test_ingest_never_writes_ack_plan_after_rejected_capture(tmp_path: Path) -> 
             ack_path,
             expected_run_id="123456789",
             expected_sha="a" * 40,
+            expected_run_attempt="1",
         )
 
     assert not ack_path.exists()
@@ -236,6 +240,7 @@ def test_ingest_rejects_mismatched_source_run_before_control_plane_write(tmp_pat
             ack_path,
             expected_run_id="987654321",
             expected_sha="a" * 40,
+            expected_run_attempt="1",
         )
 
     assert bridge.health_calls == []

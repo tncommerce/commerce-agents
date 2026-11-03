@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime, timedelta
@@ -103,6 +104,16 @@ def database():
             next((ROOT / "supabase/migrations").glob("*gmail_observer_recovery.sql")).read_text()
             + next(
                 (ROOT / "supabase/migrations").glob("*gmail_owner_gate_persistence.sql")
+            ).read_text()
+        )
+        # The exact live-sourced, narrowly scoped event replay fix is installed
+        # only in CI's disposable database, never in production by this PR.
+        connection.execute(
+            next((ROOT / "supabase/migrations").glob("*purchase_event_rearm_guard.sql")).read_text()
+        )
+        connection.execute(
+            next(
+                (ROOT / "supabase/migrations").glob("*purchase_transport_diagnostics.sql")
             ).read_text()
         )
     yield
@@ -1817,6 +1828,523 @@ def test_purchase_non_200_never_creates_safe_evidence(purchase_net):
     assert result["decision"] == "transport_unverified"
 
 
+PURCHASE_TRANSPORT_MIGRATION = (
+    ROOT / "supabase/migrations/20261029100006_dufynd_purchase_transport_diagnostics.sql"
+)
+
+
+@pytest.fixture
+def purchase_transport_db(purchase_net):
+    """Real fenced worker and pg_net-shaped receipts; no HTTP and rollback per case."""
+    import psycopg
+
+    with psycopg.connect(DSN) as c:
+        try:
+            c.execute("set local statement_timeout='10s'")
+            # Recover the unchanged original definition for before/after
+            # comparisons; other purchase tests use the new migration above.
+            source = next(
+                (ROOT / "supabase/migrations").glob("*purchase_freshness_handler.sql")
+            ).read_text()
+            start = source.index("create function public.poll_dufynd_purchase_verification(")
+            end = source.index("end $$;", start) + len("end $$;")
+            c.execute(source[start:end].replace("create function", "create or replace function", 1))
+            # Verify the source actually matches the read-only production audit.
+            assert (
+                c.execute(
+                    "select md5(prosrc) from pg_proc where oid="
+                    "'public.evaluate_dufynd_purchase_page(jsonb,text,text,int,int)'::regprocedure"
+                ).fetchone()[0]
+                == "d0ae71c5061dd94c3d6d19ffab2830a1"
+            )
+            assert (
+                c.execute(
+                    "select md5(prosrc) from pg_proc where oid="
+                    "'public.poll_dufynd_purchase_verification(uuid)'::regprocedure"
+                ).fetchone()[0]
+                == "8490be2d72c3419116acf827345ff9f7"
+            )
+            baseline = c.execute(
+                "select pg_get_functiondef('public.poll_dufynd_purchase_verification(uuid)'::regprocedure)"
+            ).fetchone()[0]
+            c.execute(
+                baseline.replace(
+                    "public.poll_dufynd_purchase_verification(",
+                    "public.poll_dufynd_purchase_before_diagnostics(",
+                    1,
+                )
+            )
+            c.execute(PURCHASE_TRANSPORT_MIGRATION.read_text())
+            # Live pg_net has no unique constraint on response IDs. The older
+            # suite's convenience primary key would hide duplicate receipts.
+            c.execute(
+                "alter table net._http_response drop constraint if exists _http_response_pkey"
+            )
+            c.execute("truncate net._http_response")
+            c.execute("""
+                create or replace function net.http_get(url text,headers jsonb,timeout_milliseconds int)
+                returns bigint language plpgsql as $stub$
+                begin raise exception 'HTTP forbidden in transport diagnostic test'; end $stub$;
+                """)
+            c.execute(
+                "update dufynd_handler_contracts set contract=jsonb_set("
+                "contract,'{certification_status}','\"certified\"') "
+                "where handler_id='purchase_destination_freshness_audit'"
+            )
+            task = "purchase-transport:" + uuid4().hex
+            prepared = c.execute(
+                "select prepare_dufynd_execution(%s,%s,'supervisor',%s::jsonb,%s::jsonb,'durable')",
+                (
+                    task,
+                    task,
+                    json.dumps(["db:purchase-evidence:" + PURCHASE_OFFER]),
+                    json.dumps(purchase_payload()),
+                ),
+            ).fetchone()[0]
+            assert prepared["allowed"], prepared
+            execution = c.execute(
+                "select take_dufynd_execution('429','transport-test',%s)",
+                (prepared["execution"]["execution_id"],),
+            ).fetchone()[0]
+            assert (
+                execution
+                and c.execute(
+                    "select dufynd_execution_contract_valid(%s)", (execution["execution_id"],)
+                ).fetchone()[0]
+            )
+            c.execute(
+                "select set_config('dufynd.execution_write',%s,true)", (execution["execution_id"],)
+            )
+            c.execute(
+                "update dufynd_execution_runs set purchase_request_id=1,"
+                "purchase_shipping_request_id=2,purchase_requested_at=now()-interval '2 seconds' "
+                "where execution_id=%s",
+                (execution["execution_id"],),
+            )
+            c.execute(
+                "insert into net._http_response(id,status_code,content,created,timed_out) "
+                "values(1,200,%s,clock_timestamp(),false),(2,200,%s,clock_timestamp(),false)",
+                (PURCHASE_HTML, PURCHASE_SHIPPING),
+            )
+            yield c, execution
+        finally:
+            c.rollback()
+
+
+def purchase_transport_poll(c, execution, *, baseline=False):
+    name = (
+        "poll_dufynd_purchase_before_diagnostics"
+        if baseline
+        else "poll_dufynd_purchase_verification"
+    )
+    return c.execute(f"select public.{name}(%s)", (execution["execution_id"],)).fetchone()[0]
+
+
+@pytest.mark.parametrize("receipt,side", [(1, "product"), (2, "shipping")])
+@pytest.mark.parametrize("status", [403, 503, None, 0, 600])
+def test_purchase_transport_http_status_is_durable_and_bounded(
+    purchase_transport_db, receipt, side, status
+):
+    c, execution = purchase_transport_db
+    c.execute("update net._http_response set status_code=%s where id=%s", (status, receipt))
+    old = purchase_transport_poll(c, execution, baseline=True)
+    report = purchase_transport_poll(c, execution)
+    assert old["decision"] == report["decision"] == "transport_unverified"
+    assert {k: v for k, v in report.items() if k != "transport"} == old
+    diagnostic = report["transport"][side]
+    assert diagnostic["response_state"] == "received"
+    assert diagnostic["http_status"] == (status if status in (403, 503) else None)
+    assert diagnostic["error_class"] == (
+        "http_status_error" if status in (403, 503) else "http_status_unknown"
+    )
+    assert diagnostic["timed_out"] is False
+
+
+@pytest.mark.parametrize("receipt,side", [(1, "product"), (2, "shipping")])
+@pytest.mark.parametrize("byte_count", [250000, 250001])
+def test_purchase_transport_limit_counts_utf8_bytes_without_changing_decision(
+    purchase_transport_db, receipt, side, byte_count
+):
+    c, execution = purchase_transport_db
+    body = PURCHASE_HTML if receipt == 1 else PURCHASE_SHIPPING
+    remaining = byte_count - len(body.encode())
+    body += "é" * (remaining // 2) + "x" * (remaining % 2)
+    assert len(body.encode()) == byte_count
+    c.execute("update net._http_response set content=%s where id=%s", (body, receipt))
+    old = purchase_transport_poll(c, execution, baseline=True)
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == old["decision"]
+    if byte_count == 250000:
+        assert report == old and report["decision"] == "safe_evidence_refresh"
+    else:
+        assert report["decision"] == "transport_unverified"
+        assert report["transport"][side]["error_class"] == "body_too_large"
+        assert report["transport"][side]["response_bytes"] == byte_count
+        assert "é" not in json.dumps(report, ensure_ascii=False)
+
+
+@pytest.mark.parametrize("receipt,side", [(1, "product"), (2, "shipping")])
+@pytest.mark.parametrize("failure", ["timeout", "transport_error"])
+def test_purchase_transport_failure_never_records_raw_error_or_body(
+    purchase_transport_db, receipt, side, failure
+):
+    c, execution = purchase_transport_db
+    private = "secret://user:password@example.test/?access_token=private-canary"
+    c.execute(
+        "update net._http_response set timed_out=%s,error_msg=%s,content=%s where id=%s",
+        (failure == "timeout", private, private, receipt),
+    )
+    assert (
+        purchase_transport_poll(c, execution, baseline=True)["decision"] == "transport_unverified"
+    )
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "transport_unverified"
+    diagnostic = report["transport"][side]
+    assert diagnostic["error_class"] == failure
+    assert diagnostic["response_bytes"] == len(private.encode())
+    assert set(diagnostic) == {
+        "response_state",
+        "error_class",
+        "http_status",
+        "response_bytes",
+        "timed_out",
+    }
+    assert not any(
+        word in json.dumps(report) for word in ("private-canary", "password", "error_msg")
+    )
+
+
+@pytest.mark.parametrize("missing", [(1,), (2,), (1, 2)])
+@pytest.mark.parametrize("age", [59, 61])
+def test_purchase_transport_missing_response_stays_pending_then_unknown(
+    purchase_transport_db, missing, age
+):
+    c, execution = purchase_transport_db
+    c.execute("delete from net._http_response where id=any(%s)", (list(missing),))
+    c.execute(
+        "update dufynd_execution_runs set purchase_requested_at=clock_timestamp()-make_interval(secs=>%s) "
+        "where execution_id=%s",
+        (age, execution["execution_id"]),
+    )
+    old = purchase_transport_poll(c, execution, baseline=True)
+    report = purchase_transport_poll(c, execution)
+    if age == 59:
+        assert report is old is None
+    else:
+        assert report["decision"] == old["decision"] == "transport_unverified"
+        for receipt in missing:
+            assert report["transport"]["product" if receipt == 1 else "shipping"] == {
+                "response_state": "missing",
+                "error_class": "response_missing",
+                "http_status": None,
+                "response_bytes": None,
+                "timed_out": None,
+            }
+    assert c.execute("select count(*) from net._http_response").fetchone()[0] == 2 - len(missing)
+
+
+@pytest.mark.parametrize("receipt,side", [(1, "product"), (2, "shipping")])
+@pytest.mark.parametrize(
+    "timestamp_sql,reason",
+    [
+        ("clock_timestamp()+interval '1 hour'", "response_in_future"),
+        ("'infinity'::timestamptz", "response_time_nonfinite"),
+        ("NULL::timestamptz", "response_time_unknown"),
+    ],
+)
+def test_purchase_transport_invalid_receipt_time_cannot_refresh(
+    purchase_transport_db, receipt, side, timestamp_sql, reason
+):
+    c, execution = purchase_transport_db
+    c.execute(f"update net._http_response set created={timestamp_sql} where id=%s", (receipt,))
+    # These genuine unsafe-source regressions reproduced success before the fix.
+    assert (
+        purchase_transport_poll(c, execution, baseline=True)["decision"] == "safe_evidence_refresh"
+    )
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "transport_unverified"
+    assert report["transport"][side]["error_class"] == reason
+
+
+@pytest.mark.parametrize("receipt,side", [(1, "product"), (2, "shipping")])
+def test_purchase_transport_duplicate_id_cannot_choose_a_successful_receipt(
+    purchase_transport_db, receipt, side
+):
+    c, execution = purchase_transport_db
+    c.execute(
+        "insert into net._http_response(id,status_code,content,created,timed_out) "
+        "select id,503,'untrusted duplicate',created,false from net._http_response where id=%s",
+        (receipt,),
+    )
+    assert (
+        purchase_transport_poll(c, execution, baseline=True)["decision"] == "safe_evidence_refresh"
+    )
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "transport_unverified"
+    assert report["transport"][side] == {
+        "response_state": "ambiguous",
+        "error_class": "duplicate_response",
+        "http_status": None,
+        "response_bytes": None,
+        "timed_out": None,
+    }
+
+
+def test_purchase_transport_valid_receipt_after_transaction_start_remains_valid(
+    purchase_transport_db,
+):
+    c, execution = purchase_transport_db
+    assert c.execute("select bool_and(created>now()) from net._http_response").fetchone()[0]
+    old = purchase_transport_poll(c, execution, baseline=True)
+    report = purchase_transport_poll(c, execution)
+    assert report == old and report["decision"] == "safe_evidence_refresh"
+
+
+@pytest.mark.parametrize("content", [None, ""])
+def test_purchase_transport_missing_body_is_not_reported_as_zero_bytes(
+    purchase_transport_db, content
+):
+    c, execution = purchase_transport_db
+    c.execute(
+        "update net._http_response set status_code=503,content=%s,timed_out=null where id=1",
+        (content,),
+    )
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "transport_unverified"
+    assert report["transport"]["product"]["response_bytes"] == (None if content is None else 0)
+    assert report["transport"]["product"]["timed_out"] is None
+
+
+@pytest.mark.parametrize(
+    "timestamp_sql", ["clock_timestamp()+interval '1 hour'", "'infinity'::timestamptz"]
+)
+def test_purchase_transport_two_invalid_receipts_previously_forged_observation_time(
+    purchase_transport_db, timestamp_sql
+):
+    c, execution = purchase_transport_db
+    c.execute(f"update net._http_response set created={timestamp_sql}")
+    old = purchase_transport_poll(c, execution, baseline=True)
+    assert old["decision"] == "safe_evidence_refresh"
+    assert c.execute("select %s::timestamptz>clock_timestamp()", (old["observed_at"],)).fetchone()[
+        0
+    ]
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "transport_unverified"
+    assert c.execute(
+        "select isfinite(%s::timestamptz) and %s::timestamptz<=clock_timestamp()",
+        (report["observed_at"], report["observed_at"]),
+    ).fetchone()[0]
+
+
+def test_purchase_transport_receipt_clock_is_read_after_the_statement_started(
+    purchase_transport_db,
+):
+    c, execution = purchase_transport_db
+    # Local transport fixture models receipts arriving during the SELECT.
+    # now(), statement_timestamp(), or clock_timestamp() before receipt reads
+    # would wrongly reject these actual SQL-produced timestamps as future.
+    c.execute("alter table net._http_response rename to transport_test_receipts")
+    c.execute(
+        "update dufynd_execution_runs set purchase_requested_at=clock_timestamp() where execution_id=%s",
+        (execution["execution_id"],),
+    )
+    c.execute("""
+        create view net._http_response as select id,status_code,content,
+          clock_timestamp() as created,timed_out,error_msg from net.transport_test_receipts;
+        """)
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "safe_evidence_refresh"
+    assert "transport" not in report
+
+
+@pytest.mark.parametrize("receipt,side", [(1, "product"), (2, "shipping")])
+@pytest.mark.parametrize("reason", ["response_before_request", "response_stale"])
+def test_purchase_transport_existing_response_age_gates_are_preserved(
+    purchase_transport_db, receipt, side, reason
+):
+    c, execution = purchase_transport_db
+    if reason == "response_stale":
+        c.execute(
+            "update dufynd_execution_runs set purchase_requested_at=now()-interval '10 minutes' "
+            "where execution_id=%s",
+            (execution["execution_id"],),
+        )
+    age = 301 if reason == "response_stale" else 10
+    c.execute(
+        "update net._http_response set created=now()-make_interval(secs=>%s) where id=%s",
+        (age, receipt),
+    )
+    assert (
+        purchase_transport_poll(c, execution, baseline=True)["decision"] == "transport_unverified"
+    )
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "transport_unverified"
+    assert report["transport"][side]["error_class"] == reason
+
+
+@pytest.mark.parametrize("failure", ["http", "future", "infinity"])
+def test_purchase_transport_report_persists_through_real_hash_and_completion_guards(
+    purchase_transport_db, failure
+):
+    c, execution = purchase_transport_db
+    before = c.execute(
+        "select last_verified_at,canonical_identity,offer_contract "
+        "from dufynd_purchase_verification_targets where offer_id=%s",
+        (PURCHASE_OFFER,),
+    ).fetchone()
+    if failure == "http":
+        c.execute("update net._http_response set status_code=503 where id=1")
+    elif failure == "future":
+        c.execute("update net._http_response set created=clock_timestamp()+interval '1 hour'")
+    else:
+        c.execute("update net._http_response set created='infinity'::timestamptz")
+    checkpoint = c.execute(
+        "select checkpoint_dufynd_execution(%s,%s,'transport-test',1)",
+        (execution["execution_id"], execution["lease_token"]),
+    ).fetchone()[0]
+    assert checkpoint["last_checkpoint"]["audit"]["decision"] == "transport_unverified"
+    assert c.execute(
+        "select finish_dufynd_execution(%s,%s,'transport-test')",
+        (execution["execution_id"], execution["lease_token"]),
+    ).fetchone()[0]
+    assert c.execute(
+        "select report,report_hash=encode(sha256(convert_to(report::text,'UTF8')),'hex') "
+        "from dufynd_purchase_verification_evidence where execution_id=%s",
+        (execution["execution_id"],),
+    ).fetchone() == (checkpoint["last_checkpoint"]["audit"], True)
+    assert (
+        c.execute(
+            "select last_verified_at,canonical_identity,offer_contract "
+            "from dufynd_purchase_verification_targets where offer_id=%s",
+            (PURCHASE_OFFER,),
+        ).fetchone()
+        == before
+    )
+    assert c.execute(
+        "select retry_after=now()+interval '6 hours',last_result->>'decision' "
+        "from dufynd_purchase_verification_targets where offer_id=%s",
+        (PURCHASE_OFFER,),
+    ).fetchone() == (True, "transport_unverified")
+    assert c.execute(
+        "select status,worker_state from dufynd_autonomy_tasks where task_id=%s",
+        (execution["task_id"],),
+    ).fetchone() == ("blocked", "done")
+
+
+def test_purchase_transport_forward_migration_preserves_historical_receipt_and_hash(
+    purchase_transport_db,
+):
+    c, execution = purchase_transport_db
+    baseline = c.execute(
+        "select pg_get_functiondef('public.poll_dufynd_purchase_before_diagnostics(uuid)'::regprocedure)"
+    ).fetchone()[0]
+    c.execute(
+        baseline.replace(
+            "public.poll_dufynd_purchase_before_diagnostics(",
+            "public.poll_dufynd_purchase_verification(",
+            1,
+        )
+    )
+    c.execute("update net._http_response set status_code=503 where id=1")
+    c.execute(
+        "select checkpoint_dufynd_execution(%s,%s,'transport-test',1)",
+        (execution["execution_id"], execution["lease_token"]),
+    )
+    assert c.execute(
+        "select finish_dufynd_execution(%s,%s,'transport-test')",
+        (execution["execution_id"], execution["lease_token"]),
+    ).fetchone()[0]
+    before = c.execute(
+        "select to_jsonb(v),to_jsonb(e),to_jsonb(t),to_jsonb(target) "
+        "from dufynd_purchase_verification_evidence v join dufynd_execution_runs e using(execution_id) "
+        "join dufynd_autonomy_tasks t using(task_id) "
+        "join dufynd_purchase_verification_targets target on target.offer_id=v.offer_id "
+        "where v.execution_id=%s",
+        (execution["execution_id"],),
+    ).fetchone()
+    assert "transport" not in before[0]["report"]
+    for _ in range(2):
+        c.execute(PURCHASE_TRANSPORT_MIGRATION.read_text())
+        assert (
+            c.execute(
+                "select to_jsonb(v),to_jsonb(e),to_jsonb(t),to_jsonb(target) "
+                "from dufynd_purchase_verification_evidence v join dufynd_execution_runs e using(execution_id) "
+                "join dufynd_autonomy_tasks t using(task_id) "
+                "join dufynd_purchase_verification_targets target on target.offer_id=v.offer_id "
+                "where v.execution_id=%s",
+                (execution["execution_id"],),
+            ).fetchone()
+            == before
+        )
+
+
+def test_purchase_transport_evaluator_and_private_execution_boundary_are_unchanged(
+    purchase_transport_db,
+):
+    c, _ = purchase_transport_db
+    assert (
+        c.execute(
+            "select md5(prosrc) from pg_proc where oid="
+            "'public.evaluate_dufynd_purchase_page(jsonb,text,text,int,int)'::regprocedure"
+        ).fetchone()[0]
+        == "d0ae71c5061dd94c3d6d19ffab2830a1"
+    )
+    assert c.execute(
+        "select has_function_privilege('anon','public.poll_dufynd_purchase_verification(uuid)','execute'),"
+        "has_function_privilege('authenticated','public.poll_dufynd_purchase_verification(uuid)','execute'),"
+        "has_function_privilege('service_role','public.poll_dufynd_purchase_verification(uuid)','execute'),"
+        "prosecdef,proconfig from pg_proc where oid='public.poll_dufynd_purchase_verification(uuid)'::regprocedure"
+    ).fetchone() == (False, False, True, False, ["search_path=public"])
+
+
+@pytest.mark.parametrize(
+    "timestamp_sql,legacy_decision",
+    [
+        ("NULL::timestamptz", "safe_evidence_refresh"),
+        ("'-infinity'::timestamptz", "safe_evidence_refresh"),
+        ("'infinity'::timestamptz", "transport_unverified"),
+        ("clock_timestamp()+interval '1 hour'", "transport_unverified"),
+    ],
+)
+def test_purchase_transport_request_time_requires_provable_source_binding(
+    purchase_transport_db, timestamp_sql, legacy_decision
+):
+    c, execution = purchase_transport_db
+    c.execute(
+        f"update dufynd_execution_runs set purchase_requested_at={timestamp_sql} where execution_id=%s",
+        (execution["execution_id"],),
+    )
+    # The immutable task-packet guard does not cover this mutable transport field.
+    assert c.execute(
+        "select dufynd_execution_contract_valid(%s)", (execution["execution_id"],)
+    ).fetchone()[0]
+    assert purchase_transport_poll(c, execution, baseline=True)["decision"] == legacy_decision
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "transport_unverified"
+    assert report["transport"]["request_error_class"] == "request_time_invalid"
+
+
+@pytest.mark.parametrize(
+    "timestamp_sql",
+    ["NULL::timestamptz", "'infinity'::timestamptz", "clock_timestamp()+interval '1 hour'"],
+)
+def test_purchase_transport_missing_response_cannot_hide_unknown_request_time(
+    purchase_transport_db, timestamp_sql
+):
+    c, execution = purchase_transport_db
+    c.execute("delete from net._http_response")
+    c.execute(
+        f"update dufynd_execution_runs set purchase_requested_at={timestamp_sql} where execution_id=%s",
+        (execution["execution_id"],),
+    )
+    assert purchase_transport_poll(c, execution, baseline=True) is None
+    report = purchase_transport_poll(c, execution)
+    assert report["decision"] == "transport_unverified"
+    assert report["transport"]["request_error_class"] == "request_time_invalid"
+    assert report["transport"]["product"]["response_state"] == "missing"
+    assert report["transport"]["shipping"]["response_state"] == "missing"
+
+
 def test_purchase_ambiguous_primary_fields_fail_closed(purchase_net):
     assert purchase_decision(PURCHASE_HTML + '\n"productSku":"other"') == "ambiguous_primary_fields"
 
@@ -3101,3 +3629,213 @@ def test_mission_disabled_handler_and_public_access_fail_closed(mission_db):
         c.execute("select tick_dufynd_mission_v1()")
     with pytest.raises(psycopg.errors.RaiseException), c.transaction():
         c.execute("select start_dufynd_mission_v1('unsafe','social_publish')")
+
+
+def test_internal_purchase_event_only_wakes_named_task():
+    """Shared purchase observer must not rearm every historical generation."""
+    import psycopg
+
+    older = f"purchase-freshness:qa-old-{uuid4().hex}"
+    current = f"purchase-freshness:qa-new-{uuid4().hex}"
+    observer_source = f"purchase-freshness:qa-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (observer_source,),
+        ).fetchone()[0]
+        for task in (older, current):
+            db.execute(
+                "insert into dufynd_autonomy_tasks "
+                "(task_id,domain,title,instruction,status,worker_state,"
+                "budget_class,resource_scope,durability_policy) "
+                "values(%s,'supervisor','test','read-only verification',"
+                "'waiting_external','waiting_external','free',%s::jsonb,'durable')",
+                (task, '["db:test-purchase-event"]'),
+            )
+            db.execute(
+                "select bind_dufynd_external_wait(%s,%s,%s::jsonb)",
+                (task, oid, '["purchase.freshness.due"]'),
+            )
+        db.execute(
+            "insert into dufynd_jarvis_inbox("
+            "event_type,source_type,source_id,payload,fingerprint,related_task_ids)"
+            "values('purchase.freshness.due','internal_dependency',"
+            "%s,%s::jsonb,%s,%s::jsonb)",
+            (
+                observer_source,
+                json.dumps({"observer_id": oid, "evidence": {}}),
+                uuid4().hex,
+                json.dumps([current]),
+            ),
+        )
+        db.execute("select process_dufynd_external_events()")
+        status = dict(
+            db.execute(
+                "select task_id,status from dufynd_autonomy_tasks where task_id in (%s,%s)",
+                (older, current),
+            ).fetchall()
+        )
+        assert status[older] == "waiting_external"
+        assert status[current] == "ready"
+        wait_status = dict(
+            db.execute(
+                "select task_id,satisfied from dufynd_task_external_waits where task_id in (%s,%s)",
+                (older, current),
+            ).fetchall()
+        )
+        assert wait_status == {older: False, current: True}
+        # Same event must not generate second work, even on another cycle.
+        db.execute("select process_dufynd_external_events()")
+        assert (
+            db.execute(
+                "select status from dufynd_autonomy_tasks where task_id=%s",
+                (older,),
+            ).fetchone()[0]
+            == "waiting_external"
+        )
+        db.rollback()
+
+
+def test_released_purchase_attempt_is_not_rearmed_by_satisfied_wait():
+    """No old terminal purchase task can become ready from the broad sweep."""
+    import psycopg
+
+    task = f"purchase-freshness:qa-terminal-{uuid4().hex}"
+    observer_source = f"purchase-freshness:qa-terminal-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (observer_source,),
+        ).fetchone()[0]
+        db.execute(
+            "insert into dufynd_autonomy_tasks("
+            "task_id,domain,title,instruction,status,worker_state,"
+            "budget_class,resource_scope,durability_policy,durable_payload,released_at)"
+            "values(%s,'supervisor','test','old attempt',"
+            "'blocked','done','free',%s::jsonb,'durable',%s::jsonb,now())",
+            (
+                task,
+                '["db:test-purchase-terminal"]',
+                '{"kind":"purchase_destination_freshness_audit"}',
+            ),
+        )
+        db.execute(
+            "select bind_dufynd_external_wait(%s,%s,%s::jsonb)",
+            (task, oid, '["purchase.freshness.due"]'),
+        )
+        db.execute(
+            "update dufynd_task_external_waits set satisfied=true "
+            "where task_id=%s and observer_id=%s",
+            (task, oid),
+        )
+        db.execute("select process_dufynd_external_events()")
+        row = db.execute(
+            "select status,worker_state,released_at from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert row[0] == "blocked" and row[1] == "done"
+        assert row[2] is not None
+        db.rollback()
+
+
+def test_purchase_cleanup_backfill_is_receipt_bound_and_idempotent():
+    """Historical terminal task is cancelled, never called verified or restarted."""
+    import psycopg
+
+    task, prepared = durable_fixture(steps=1)
+    completed = take_execution(prepared["execution"])
+    assert execution_checkpoint(completed, 1)["status"] == "verifying"
+    assert finish_execution(completed)
+    assert execution_state(completed)["status"] == "completed"
+
+    with psycopg.connect(DSN) as db:
+        # Reproduce only the four historical rows' defining metadata in the
+        # disposable fixture. A real completed, fenced execution already exists.
+        db.execute(
+            "update dufynd_autonomy_tasks set status='ready',worker_state='ready',"
+            "durable_payload=%s::jsonb where task_id=%s",
+            ('{"kind":"purchase_destination_freshness_audit"}', task),
+        )
+        original = db.execute(
+            "select released_at,evidence from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert original[0] is not None
+        migration = next(
+            (ROOT / "supabase/migrations").glob("*purchase_event_rearm_guard.sql")
+        ).read_text()
+        # Reapply the exact migration deliberately; it must be repeatable.
+        db.execute(migration)
+        once = db.execute(
+            "select status,worker_state,released_at,evidence "
+            "from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert once[0] == "cancelled" and once[1] == "done"
+        assert once[2] == original[0]
+        reason = db.execute(
+            "select blocked_reason from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()[0]
+        assert reason == "superseded_completed_purchase_attempt"
+        db.execute(migration)
+        twice = db.execute(
+            "select status,worker_state,released_at,evidence "
+            "from dufynd_autonomy_tasks where task_id=%s",
+            (task,),
+        ).fetchone()
+        assert once == twice
+        execution_status = db.execute(
+            "select status from dufynd_execution_runs where execution_id=%s",
+            (completed["execution_id"],),
+        ).fetchone()[0]
+        assert execution_status == "completed"
+        db.rollback()
+
+
+def test_internal_dependency_event_provenance_only_marks_named_tasks():
+    """A shared observer event must never stamp unrelated task provenance."""
+    import psycopg
+
+    older = f"purchase-freshness:qa-provenance-old-{uuid4().hex}"
+    named = f"purchase-freshness:qa-provenance-new-{uuid4().hex}"
+    source = f"purchase-freshness:qa-provenance-{uuid4().hex}"
+    with psycopg.connect(DSN) as db:
+        oid = db.execute(
+            "select register_dufynd_observer('internal_dependency',%s)",
+            (source,),
+        ).fetchone()[0]
+        for task in (older, named):
+            db.execute(
+                "insert into dufynd_autonomy_tasks("
+                "task_id,domain,title,instruction,status,worker_state,"
+                "budget_class,resource_scope,durability_policy,dependencies)"
+                "values(%s,'supervisor','test','bounded metadata provenance',"
+                "'waiting_external','waiting_external','free',"
+                "%s::jsonb,'durable',%s::jsonb)",
+                (task, '["db:test-purchase-provenance"]', json.dumps([source])),
+            )
+        event_id = db.execute(
+            "insert into dufynd_jarvis_inbox("
+            "event_type,source_type,source_id,payload,fingerprint,related_task_ids)"
+            "values('purchase.freshness.due','internal_dependency',"
+            "%s,%s::jsonb,%s,%s::jsonb) returning event_id",
+            (
+                source,
+                json.dumps({"observer_id": oid, "evidence": {}}),
+                uuid4().hex,
+                json.dumps([named]),
+            ),
+        ).fetchone()[0]
+        db.execute("select process_dufynd_external_events()")
+        provenance = dict(
+            db.execute(
+                "select task_id,last_external_event_id "
+                "from dufynd_autonomy_tasks where task_id in (%s,%s)",
+                (older, named),
+            ).fetchall()
+        )
+        assert provenance[older] is None
+        assert provenance[named] == event_id
+        # No sale, no merchant proof, and no retained changes from this test.
+        db.rollback()

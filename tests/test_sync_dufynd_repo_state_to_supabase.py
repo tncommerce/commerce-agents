@@ -96,16 +96,20 @@ def test_build_sync_plan_creates_snapshot_and_stable_domain_tasks() -> None:
     assert content["requires_human_approval"] is False
 
 
-def test_apply_sync_plan_upserts_snapshot_and_tasks() -> None:
+def test_apply_sync_plan_only_refreshes_snapshot_when_tasks_are_absent() -> None:
     bridge = RecordingBridge()
     plan = build_sync_plan(sample_repo_status())
 
-    apply_sync_plan(bridge, plan)
+    result = apply_sync_plan(bridge, plan)
 
+    assert result == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 0,
+        "missing_tasks_not_created": 2,
+    }
     assert len(bridge.master_rows) == 1
     assert bridge.master_rows[0]["key"] == SNAPSHOT_KEY
-    assert len(bridge.tasks) == 2
-    assert bridge.tasks[0]["task_id"] == "repo_current_commerce"
+    assert bridge.tasks == []
 
 
 def test_apply_sync_plan_preserves_terminal_state_for_same_fingerprint() -> None:
@@ -114,6 +118,8 @@ def test_apply_sync_plan_preserves_terminal_state_for_same_fingerprint() -> None
             "repo_current_commerce": {
                 "task_id": "repo_current_commerce",
                 "status": "done",
+                "budget_class": "free",
+                "provider_cost_unknown": False,
                 "evidence": "source_fingerprint_sha256=abc123; completed in nightshift",
             }
         }
@@ -123,27 +129,35 @@ def test_apply_sync_plan_preserves_terminal_state_for_same_fingerprint() -> None
     apply_sync_plan(bridge, plan)
 
     commerce = next(task for task in bridge.tasks if task["task_id"] == "repo_current_commerce")
+    assert len(bridge.tasks) == 1
     assert commerce["status"] == "done"
     assert commerce["evidence"] == ("source_fingerprint_sha256=abc123; completed in nightshift")
 
 
-def test_apply_sync_plan_resets_task_when_repo_fingerprint_changes() -> None:
+def test_apply_sync_plan_never_reopens_completed_task_after_fingerprint_drift() -> None:
     bridge = RecordingBridge(
         existing_tasks={
             "repo_current_commerce": {
                 "task_id": "repo_current_commerce",
                 "status": "done",
+                "budget_class": "free",
+                "provider_cost_unknown": False,
                 "evidence": "source_fingerprint_sha256=old123; completed in prior state",
             }
         }
     )
     plan = build_sync_plan(sample_repo_status())
 
-    apply_sync_plan(bridge, plan)
+    changes = apply_sync_plan(bridge, plan)
 
-    commerce = next(task for task in bridge.tasks if task["task_id"] == "repo_current_commerce")
-    assert commerce["status"] == "ready"
-    assert "source_fingerprint_sha256=abc123" in commerce["evidence"]
+    assert changes == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 1,
+        "missing_tasks_not_created": 1,
+    }
+    assert bridge.tasks == []
+    assert bridge.existing_tasks["repo_current_commerce"]["status"] == "done"
+    assert bridge.master_rows[0]["value"]["source_fingerprint_sha256"] == "abc123"
 
 
 def test_build_sync_plan_requires_fingerprint() -> None:
@@ -163,6 +177,8 @@ def test_same_fingerprint_sync_repairs_false_technical_human_gate():
         existing_tasks={
             "repo_current_content": {
                 "status": "waiting_human_input",
+                "budget_class": "free",
+                "provider_cost_unknown": False,
                 "requires_human_approval": False,
                 "evidence": "source_fingerprint_sha256=abc123; manual observations pending",
             }
@@ -179,11 +195,122 @@ def test_sync_preserves_explicit_typed_owner_gate():
         existing_tasks={
             "repo_current_content": {
                 "status": "waiting_human_input",
+                "budget_class": "free",
                 "blocked_reason": "owner_decision",
                 "evidence": "source_fingerprint_sha256=abc123; actual decision required",
             }
         }
     )
-    apply_sync_plan(bridge, build_sync_plan(sample_repo_status()))
-    content = next(t for t in bridge.tasks if t["task_id"] == "repo_current_content")
-    assert content["status"] == "waiting_human_input"
+    effect = apply_sync_plan(bridge, build_sync_plan(sample_repo_status()))
+    assert effect == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 1,
+        "missing_tasks_not_created": 1,
+    }
+    assert bridge.tasks == []
+    assert bridge.existing_tasks["repo_current_content"]["status"] == "waiting_human_input"
+
+
+def test_snapshot_only_sync_preserves_waiting_model_tasks_after_fingerprint_drift() -> None:
+    bridge = RecordingBridge(
+        existing_tasks={
+            "repo_current_commerce": {
+                "status": "waiting_external",
+                "budget_class": "model",
+                "evidence": "source_fingerprint_sha256=previous-source",
+                "requires_human_approval": False,
+            },
+            "repo_current_content": {
+                "status": "done",
+                "evidence": "source_fingerprint_sha256=previous-source",
+            },
+        }
+    )
+    plan = build_sync_plan(sample_repo_status())
+    assert plan["tasks"][0]["status"] == "ready"
+    apply_sync_plan(bridge, plan, snapshot_only=True)
+    assert [row["key"] for row in bridge.master_rows] == [SNAPSHOT_KEY]
+    assert bridge.tasks == []
+    assert bridge.existing_tasks["repo_current_commerce"]["status"] == "waiting_external"
+    assert bridge.existing_tasks["repo_current_content"]["status"] == "done"
+
+
+def test_snapshot_only_mode_is_only_bound_to_manual_sync_state() -> None:
+    from pathlib import Path
+
+    import yaml
+
+    workflow = yaml.safe_load(
+        Path(".github/workflows/dufynd-jarvis-manual.yml").read_text(encoding="utf-8")
+    )
+    steps = workflow["jobs"]["jarvis"]["steps"]
+    sync_step = next(x for x in steps if x.get("name") == "Sync Jarvis control plane")
+    assert sync_step["env"]["DUFYND_SYNC_STATE_ONLY"] == (
+        "${{ inputs.mode == 'sync-state' && '1' || '0' }}"
+    )
+    script = sync_step["run"]
+    assert "--snapshot-only" in script
+    assert "--write" in script
+    assert "--machine-readable" in script
+    assert "${{ inputs." not in script
+
+
+def test_all_manual_active_approval_gates_run_before_any_state_writes() -> None:
+    # A refused process-next, Nightshift pilot or autonomous-cycle must not
+    # write even a snapshot or requeue source-drifted model-budget tasks.
+    from pathlib import Path
+
+    import yaml
+
+    wf = yaml.safe_load(
+        Path(".github/workflows/dufynd-jarvis-manual.yml").read_text(encoding="utf-8")
+    )
+    steps = wf["jobs"]["jarvis"]["steps"]
+    names = [step.get("name", "") for step in steps]
+
+    for gate in (
+        "Validate explicit active-run approval",
+        "Validate autonomous session switch",
+        "Validate explicit Nightshift pilot approval",
+    ):
+        assert names.index(gate) < names.index("Refresh repository Jarvis state")
+        assert names.index(gate) < names.index("Sync Jarvis control plane")
+    assert names.index("Sync Jarvis control plane") < names.index(
+        "Verify Jarvis control-plane freshness"
+    )
+    assert names.index("Restore clean worker checkout after control-plane sync") < names.index(
+        "Process one Jarvis event"
+    )
+    # All dispatch inputs continue to travel through env variables, never
+    # injected as untrusted shell source text.
+    for gate in (
+        "Validate explicit active-run approval",
+        "Validate autonomous session switch",
+        "Validate explicit Nightshift pilot approval",
+    ):
+        step = steps[names.index(gate)]
+        assert "${{ inputs." not in step["run"]
+        assert step["shell"] == "bash"
+    assert "GO-JARVIS-ACTIVE" in steps[names.index("Validate explicit active-run approval")]["run"]
+    assert (
+        "GO-JARVIS-NIGHTSHIFT"
+        in steps[names.index("Validate explicit Nightshift pilot approval")]["run"]
+    )
+
+
+def test_sync_state_retains_snapshot_only_after_early_approval_gates() -> None:
+    from pathlib import Path
+
+    import yaml
+
+    wf = yaml.safe_load(
+        Path(".github/workflows/dufynd-jarvis-manual.yml").read_text(encoding="utf-8")
+    )
+    steps = wf["jobs"]["jarvis"]["steps"]
+    sync_step = next(x for x in steps if x.get("name") == "Sync Jarvis control plane")
+    assert sync_step["env"]["DUFYND_SYNC_STATE_ONLY"] == (
+        "${{ inputs.mode == 'sync-state' && '1' || '0' }}"
+    )
+    assert "--snapshot-only" in sync_step["run"]
+    assert "--write --machine-readable" in sync_step["run"]
+    assert 'if [[ "${DUFYND_SYNC_STATE_ONLY:-}" == "1" ]]' in sync_step["run"]

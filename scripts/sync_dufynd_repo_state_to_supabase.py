@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.dufynd_jarvis_bridge import DufyndJarvisBridge
-from scripts.dufynd_jarvis_control_plane import HUMAN_REASONS
+from scripts.dufynd_jarvis_control_plane import ACTIVE_STATES, HUMAN_REASONS
 
 DEFAULT_REPO_STATUS_PATH = Path("examples/retail/data/scentai_jarvis_master_status.json")
 SNAPSHOT_KEY = "jarvis.repo_state_snapshot"
@@ -17,6 +17,10 @@ PRESERVED_SAME_FINGERPRINT_STATUSES = {
     "waiting_human_input",
     "waiting_external",
     "approval_required",
+    "cancelled",
+    "failed_retryable",
+    "failed_terminal",
+    "stale",
 }
 
 
@@ -133,15 +137,47 @@ def _evidence_has_fingerprint(evidence: object, fingerprint: str) -> bool:
 
 
 def _preserve_same_fingerprint_state(
-    bridge: DufyndJarvisBridge,
+    existing: dict[str, Any],
     task: dict[str, Any],
     fingerprint: str,
-) -> dict[str, Any]:
-    existing = bridge.load_autonomy_task(task["task_id"])
-    if not existing:
-        return task
+) -> dict[str, Any] | None:
+    """Skip unsafe implicit task transitions; sync is not a per-task owner GO.
+
+    A new repo fingerprint is metadata about source content, not permission to
+    reopen completed, blocked, leased or model-budget work. An owner-approved
+    task transition uses its own explicit, separately audited lifecycle action.
+    """
+    if not isinstance(existing, dict):
+        raise ValueError("existing_repo_task_must_be_object")
+    if existing.get("task_id") not in (None, task["task_id"]):
+        raise ValueError("existing_repo_task_identity_mismatch")
 
     existing_status = str(existing.get("status") or "")
+    if not existing_status:
+        return None
+    # The source generator does not carry this task's budget decision. Unknown
+    # cost class and all existing model tasks are immutable through repo sync,
+    # even when the fingerprint or source action changes.
+    if existing.get("budget_class") != "free" or existing.get("provider_cost_unknown") is not False:
+        return None
+    # Never overwrite a typed owner decision or an active worker lease.
+    if (
+        existing.get("requires_human_approval") is True
+        or existing.get("blocked_reason") in HUMAN_REASONS
+        or existing_status in ACTIVE_STATES
+        or existing.get("worker_state") in ACTIVE_STATES
+        or (
+            existing_status == "ready"
+            and existing.get("worker_state") in PRESERVED_SAME_FINGERPRINT_STATUSES
+        )
+    ):
+        return None
+    # A changed repository hash must not turn historical done/held work into
+    # ready tasks. New work needs a distinct ID or a separately gated lifecycle.
+    if existing_status in PRESERVED_SAME_FINGERPRINT_STATUSES and not _evidence_has_fingerprint(
+        existing.get("evidence"), fingerprint
+    ):
+        return None
     if (
         existing_status == "waiting_human_input"
         and task.get("status") == "waiting_external"
@@ -169,13 +205,45 @@ def _preserve_same_fingerprint_state(
     return preserved
 
 
-def apply_sync_plan(bridge: DufyndJarvisBridge, plan: dict[str, Any]) -> None:
+def apply_sync_plan(
+    bridge: DufyndJarvisBridge, plan: dict[str, Any], *, snapshot_only: bool = False
+) -> dict[str, int]:
     snapshot = plan["snapshot"]
-    bridge.upsert_master_status(**snapshot)
+    if snapshot_only:
+        bridge.upsert_master_status(**snapshot)
+        return {
+            "tasks_written": 0,
+            "existing_tasks_protected": 0,
+            "missing_tasks_not_created": 0,
+        }
 
+    # Read and classify every existing task before the first write. An API
+    # failure must not leave a new snapshot with half-reconciled task metadata.
     fingerprint = str(plan["source_fingerprint_sha256"])
+    approved_updates: list[dict[str, Any]] = []
+    protected_count = 0
+    missing_count = 0
     for task in plan["tasks"]:
-        bridge.upsert_autonomy_task(**_preserve_same_fingerprint_state(bridge, task, fingerprint))
+        existing = bridge.load_autonomy_task(task["task_id"])
+        if existing is None:
+            # Supabase defaults new tasks to budget_class='model'. A generic
+            # source refresh cannot authorize creation of new model work.
+            missing_count += 1
+            continue
+        candidate = _preserve_same_fingerprint_state(existing, task, fingerprint)
+        if candidate is None:
+            protected_count += 1
+        else:
+            approved_updates.append(candidate)
+
+    bridge.upsert_master_status(**snapshot)
+    for task in approved_updates:
+        bridge.upsert_autonomy_task(**task)
+    return {
+        "tasks_written": len(approved_updates),
+        "existing_tasks_protected": protected_count,
+        "missing_tasks_not_created": missing_count,
+    }
 
 
 def main() -> int:
@@ -187,18 +255,32 @@ def main() -> int:
     )
     parser.add_argument("--repo-status", type=Path, default=DEFAULT_REPO_STATUS_PATH)
     parser.add_argument("--write", action="store_true")
+    parser.add_argument(
+        "--snapshot-only",
+        action="store_true",
+        help="Update only the canonical control-plane snapshot; never requeue tasks.",
+    )
     parser.add_argument("--machine-readable", action="store_true")
     args = parser.parse_args()
 
     repo_status = load_json(args.repo_status)
     plan = build_sync_plan(repo_status)
 
+    effects = {
+        "tasks_written": 0,
+        "existing_tasks_protected": 0,
+        "missing_tasks_not_created": 0,
+    }
     if args.write:
-        apply_sync_plan(DufyndJarvisBridge(), plan)
+        effects = apply_sync_plan(DufyndJarvisBridge(), plan, snapshot_only=args.snapshot_only)
 
     report = {
         "dry_run": not args.write,
         "wrote": bool(args.write),
+        "snapshot_only": bool(args.snapshot_only),
+        "tasks_written": effects["tasks_written"],
+        "existing_tasks_protected": effects["existing_tasks_protected"],
+        "missing_tasks_not_created": effects["missing_tasks_not_created"],
         "snapshot_key": plan["snapshot"]["key"],
         "generated_at": plan["generated_at"],
         "source_fingerprint_sha256": plan["source_fingerprint_sha256"],

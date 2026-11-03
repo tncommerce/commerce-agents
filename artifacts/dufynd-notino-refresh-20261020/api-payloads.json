@@ -1,0 +1,77 @@
+{
+  "merchant_offers_sha256": "7a04d2862806a3a263ba378ec3794652c953a8686abc766ac90af32ae33a1493",
+  "payloads": {
+    "SC-PDM-DELINA-EDP-75": {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "offers": [
+        {
+          "offer_id": "notino-pdm-delina-edp-75",
+          "product_id": "SC-PDM-DELINA-EDP-75",
+          "merchant_id": "notino",
+          "merchant_name": "Notino",
+          "merchant_product_id": "PDM0227",
+          "price": 285.0,
+          "currency": "EUR",
+          "shipping_cost": 0.0,
+          "shipping_label": "Gratis Versand",
+          "total_price": 285.0,
+          "in_stock": true,
+          "variant_label": "75 ml · Eau de Parfum",
+          "clickout_path": "/api/clickout/notino-pdm-delina-edp-75",
+          "affiliate_link": true,
+          "last_updated_at": "2026-10-20T19:53:41.793000+00:00"
+        }
+      ],
+      "best_offer_id": "notino-pdm-delina-edp-75",
+      "affiliate_disclosure": "Lokaler QA-Replay der belegten Angebotsdaten; kein echter Händleraufruf."
+    },
+    "SC-YSL-BLACK-OPIUM-EDP-90": {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "offers": [
+        {
+          "offer_id": "notino-ysl-black-opium-edp-90",
+          "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+          "merchant_id": "notino",
+          "merchant_name": "Notino",
+          "merchant_product_id": "YSL2377",
+          "price": 116.0,
+          "currency": "EUR",
+          "shipping_cost": 0.0,
+          "shipping_label": "Gratis Versand",
+          "total_price": 116.0,
+          "in_stock": true,
+          "variant_label": "90 ml · Eau de Parfum",
+          "clickout_path": "/api/clickout/notino-ysl-black-opium-edp-90",
+          "affiliate_link": true,
+          "last_updated_at": "2026-10-20T19:53:42.736000+00:00"
+        }
+      ],
+      "best_offer_id": "notino-ysl-black-opium-edp-90",
+      "affiliate_disclosure": "Lokaler QA-Replay der belegten Angebotsdaten; kein echter Händleraufruf."
+    },
+    "SC-YSL-LIBRE-EDP-90": {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "offers": [
+        {
+          "offer_id": "notino-ysl-libre-edp-90",
+          "product_id": "SC-YSL-LIBRE-EDP-90",
+          "merchant_id": "notino",
+          "merchant_name": "Notino",
+          "merchant_product_id": "VZR11010",
+          "price": 130.0,
+          "currency": "EUR",
+          "shipping_cost": 0.0,
+          "shipping_label": "Gratis Versand",
+          "total_price": 130.0,
+          "in_stock": true,
+          "variant_label": "90 ml · Eau de Parfum · nachfüllbarer Flakon",
+          "clickout_path": "/api/clickout/notino-ysl-libre-edp-90",
+          "affiliate_link": true,
+          "last_updated_at": "2026-10-20T19:53:43.753000+00:00"
+        }
+      ],
+      "best_offer_id": "notino-ysl-libre-edp-90",
+      "affiliate_disclosure": "Lokaler QA-Replay der belegten Angebotsdaten; kein echter Händleraufruf."
+    }
+  }
+}

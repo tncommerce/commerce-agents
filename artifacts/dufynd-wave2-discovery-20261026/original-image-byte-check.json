@@ -1,0 +1,58 @@
+[
+  {
+    "merchant_product_id": "815682",
+    "original_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/815682_815682_061.png",
+    "final_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/815682_815682_061.png",
+    "status": 200,
+    "content_type": "image/png",
+    "bytes": 224142,
+    "sha256": "bc538f16d5696ca58a33b8c68f97698f33b649647e7849ace78715610e8a2b4f",
+    "png_signature_valid": true,
+    "width": 276,
+    "height": 600,
+    "modified": false,
+    "bytes_saved_at": "2026-10-26T15:17:36.567092+00:00"
+  },
+  {
+    "merchant_product_id": "827407",
+    "original_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/827407_3508441001114_051.png",
+    "final_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/827407_3508441001114_051.png",
+    "status": 200,
+    "content_type": "image/png",
+    "bytes": 187873,
+    "sha256": "7517bf257fe1ef9d6549422a6ca78083d7b55f6cd6b58fff9854076612db75a6",
+    "png_signature_valid": true,
+    "width": 329,
+    "height": 600,
+    "modified": false,
+    "bytes_saved_at": "2026-10-26T15:17:35.768301+00:00"
+  },
+  {
+    "merchant_product_id": "836129",
+    "original_url": "https://www.topparfuemerie.de/media/catalog/product/8/3/836129_8033488155070_051.png",
+    "final_url": "https://www.topparfuemerie.de/media/catalog/product/8/3/836129_8033488155070_051.png",
+    "status": 200,
+    "content_type": "image/png",
+    "bytes": 146514,
+    "sha256": "8408a51a5c883576d78b232d52e732434ee7c6c5da042d4ef15cf73fd4603bef",
+    "png_signature_valid": true,
+    "width": 274,
+    "height": 600,
+    "modified": false,
+    "bytes_saved_at": "2026-10-26T15:17:36.082881+00:00"
+  },
+  {
+    "merchant_product_id": "849457",
+    "original_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849457_3386460101035_051.png",
+    "final_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849457_3386460101035_051.png",
+    "status": 200,
+    "content_type": "image/png",
+    "bytes": 312984,
+    "sha256": "f2aeabc08fe190c223e8e402b4d7a999b6c8bf4071fd000a9cc8ff129102f1c4",
+    "png_signature_valid": true,
+    "width": 287,
+    "height": 600,
+    "modified": false,
+    "bytes_saved_at": "2026-10-26T15:17:35.974996+00:00"
+  }
+]

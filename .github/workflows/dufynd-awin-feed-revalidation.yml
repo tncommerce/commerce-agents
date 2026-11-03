@@ -2,6 +2,16 @@ name: DUFYND Awin Feed Revalidation
 
 on:
   workflow_dispatch:
+    inputs:
+      inventory_task:
+        description: "Bounded Awin check (review-only; no activation)"
+        required: true
+        type: choice
+        default: top_parfuemerie_review
+        options:
+          - top_parfuemerie_review
+          - perfumetrader_inventory
+          - perfumetrader_private_catalog
   # A reviewed recipient rotation runs this same workflow once on the development
   # branch. No default-branch bootstrap or credential changes are needed.
   push:
@@ -13,6 +23,7 @@ permissions:
 
 jobs:
   revalidate-top-parfuemerie:
+    if: ${{ github.ref == 'refs/heads/scentai-mvp' && (github.event_name != 'workflow_dispatch' || inputs.inventory_task == 'top_parfuemerie_review') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -22,6 +33,11 @@ jobs:
 
       - name: Install Python dependencies
         run: pip install -r requirements-dev.txt
+
+      - name: Build current public photo gap from exact release and approved originals
+        run: |
+          python scripts/build_dufynd_current_public_photo_gap.py \
+            --output "${RUNNER_TEMP}/current-public-photo-gap.json"
 
       - name: Require Awin data-feed secret
         shell: bash
@@ -105,16 +121,17 @@ jobs:
       - name: Review exact mapped public photo gaps (no approval)
         run: |
           python scripts/prepare_dufynd_catalog_photo_wave.py \
+            --gaps "${RUNNER_TEMP}/current-public-photo-gap.json" \
             --extracted-candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
             --output "${RUNNER_TEMP}/public-photo-exact-sku-review.json"
       # Source-bounded lead discovery; never mutates approvals or offers.
-      - name: Prepare 33 public missing-photo review leads
+      - name: Prepare current public missing-photo review leads
         run: |
           python scripts/report_dufynd_public_photo_feed_leads.py \
             --feed "${RUNNER_TEMP}/top-parfuemerie.csv" \
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
-            --gap docs/dufynd-catalog-photo-gap-20261011.json \
+            --gap "${RUNNER_TEMP}/current-public-photo-gap.json" \
             --output "${RUNNER_TEMP}/public-photo-gap-review.json"
       - name: Render prioritized public-photo contact sheet (review-only)
         run: |
@@ -126,6 +143,7 @@ jobs:
       - name: Gate mapped public packshots against current feed
         run: |
           python scripts/prepare_dufynd_catalog_photo_wave.py \
+            --gaps "${RUNNER_TEMP}/current-public-photo-gap.json" \
             --extracted-candidates "${RUNNER_TEMP}/merchant-feed-image-candidates.json" \
             --feed-metadata "${RUNNER_TEMP}/awin-feed-metadata.json" \
             --output "${RUNNER_TEMP}/public-photo-strict-variant-review.json"
@@ -140,6 +158,7 @@ jobs:
             ${{ runner.temp }}/release01-feed-image-review-candidates.json
             ${{ runner.temp }}/release01-feed-image-review.html
             ${{ runner.temp }}/public-photo-exact-sku-review.json
+            ${{ runner.temp }}/current-public-photo-gap.json
             ${{ runner.temp }}/public-photo-gap-review.json
             ${{ runner.temp }}/public-photo-gap-review.html
             ${{ runner.temp }}/public-photo-strict-variant-review.json
@@ -152,3 +171,47 @@ jobs:
         run: |
           echo "::error::Current Awin feed remains structurally blocked for Release 01 activation. Review artifact was generated for human image review only."
           exit 20
+
+  # One manual read of the current official inventory, without a feed download.
+  # Manual production opt-in; never concurrently with the larger Top feed job.
+  probe-perfumetrader-inventory:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && inputs.inventory_task == 'perfumetrader_inventory' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Read Perfumetrader feed inventory only
+        env:
+          AWIN_DATA_FEED_API_KEY: ${{ secrets.AWIN_DATA_FEED_API_KEY }}
+        run: python3 scripts/probe_dufynd_perfumetrader_feed_inventory.py
+
+  # Manual, selected DE feed only; no images, writes, or raw/plaintext artifacts.
+  review-perfumetrader-private-catalog:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/scentai-mvp' && inputs.inventory_task == 'perfumetrader_private_catalog' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+      - name: Install existing pinned encryption dependency
+        run: python -m pip install cryptography==50.0.0
+      - name: Read DE feed into temporary private review
+        env:
+          AWIN_DATA_FEED_API_KEY: ${{ secrets.AWIN_DATA_FEED_API_KEY }}
+        run: |
+          python scripts/review_dufynd_perfumetrader_catalog.py \
+            --recipient .github/dufynd-perfumetrader-review-recipient.pub \
+            --output "${RUNNER_TEMP}/perfumetrader-catalog.encrypted.json"
+      - name: Upload recipient-encrypted catalog evidence only
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dufynd-perfumetrader-private-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/perfumetrader-catalog.encrypted.json
+          if-no-files-found: error
+          retention-days: 1

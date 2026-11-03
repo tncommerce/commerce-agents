@@ -1,0 +1,198 @@
+{
+  "checked_at_utc_min": "2026-10-26T15:28:20.872788+00:00",
+  "checked_at_utc_max": "2026-10-26T15:29:28.587686+00:00",
+  "checked_local_date": "26.10.2026",
+  "checked_local_time_window": "16:28–16:29 Europe/Berlin (CET, UTC+1)",
+  "method": "Read-only GET of public server HTML, sitemap and six canonical merchant-offer API paths. No JavaScript/browser analytics, no affiliate routes, no basket or purchase requests.",
+  "public_catalog": {
+    "profile_count": 37,
+    "sitemap_profile_count": 37,
+    "catalog_and_sitemap_profile_sets_match": true,
+    "sitemap_total_routes": 62,
+    "original_photo_count": 4,
+    "original_photos": [
+      {
+        "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+        "slug": "lancome-la-vie-est-belle",
+        "image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+        "source": "licensed",
+        "variant": "100ml"
+      },
+      {
+        "product_id": "SC-PDM-DELINA-EDP-75",
+        "slug": "parfums-de-marly-delina",
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+        "source": "merchant_feed",
+        "variant": "75ml"
+      },
+      {
+        "product_id": "SC-YSL-LIBRE-EDP-90",
+        "slug": "yves-saint-laurent-libre",
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+        "source": "merchant_feed",
+        "variant": "90ml"
+      },
+      {
+        "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+        "slug": "yves-saint-laurent-black-opium",
+        "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+        "source": "merchant_feed",
+        "variant": "90ml"
+      }
+    ],
+    "catalog_robots_meta": [
+      "index, follow"
+    ],
+    "six_release_photos_live": false
+  },
+  "rabanne_public_api": {
+    "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+    "best_offer_id": "perfumetrader-rabanne-1-million-edt-100",
+    "merchant": "Perfumetrader",
+    "merchant_product_id": "16978322",
+    "variant_label": "100 ml · Eau de Toilette",
+    "price": 71.9,
+    "shipping_cost": 4.99,
+    "total_price": 76.89,
+    "currency": "EUR",
+    "in_stock": true,
+    "last_updated_at": "2026-10-26T14:28:00.205374+00:00",
+    "last_updated_at_berlin": "2026-10-26T15:28:00.205374+01:00",
+    "inferred_72h_expiry_berlin": "2026-10-29T15:28:00.205374+01:00",
+    "source_timestamp_note": "Timestamp observed in live payload, advanced since previous handoff; this task did not update it or recheck merchant source. The inference uses the existing 72-hour freshness policy."
+  },
+  "six_release_products_api": [
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "offer_count": 1,
+      "merchant_ids": [
+        "perfumetrader"
+      ],
+      "best_offer_id": "perfumetrader-rabanne-1-million-edt-100"
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "offer_count": 0,
+      "merchant_ids": [],
+      "best_offer_id": null
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "offer_count": 0,
+      "merchant_ids": [],
+      "best_offer_id": null
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "offer_count": 0,
+      "merchant_ids": [],
+      "best_offer_id": null
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "offer_count": 0,
+      "merchant_ids": [],
+      "best_offer_id": null
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "offer_count": 0,
+      "merchant_ids": [],
+      "best_offer_id": null
+    }
+  ],
+  "new_top_offers_live": 0,
+  "responses": [
+    {
+      "name": "catalog",
+      "url": "https://dufynd.de/duft",
+      "final_url": "https://dufynd.de/duft",
+      "checked_at_utc": "2026-10-26T15:28:20.872788+00:00",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "bytes": 147481,
+      "sha256": "39b5c8df46a6689842f2a837c2dc0b64575acd61ebd432c8791c13fc29ee2226",
+      "file": "execution3/live-http/catalog.html"
+    },
+    {
+      "name": "sitemap",
+      "url": "https://dufynd.de/sitemap.xml",
+      "final_url": "https://dufynd.de/sitemap.xml",
+      "checked_at_utc": "2026-10-26T15:28:20.878583+00:00",
+      "status": 200,
+      "content_type": "application/xml",
+      "bytes": 4912,
+      "sha256": "6b0431ce51047c202ac9e519c1068b8e6eb7f2104f53420f0e8d15e035ec5ec5",
+      "file": "execution3/live-http/sitemap.xml"
+    },
+    {
+      "name": "rabanne",
+      "url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100",
+      "final_url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100",
+      "checked_at_utc": "2026-10-26T15:28:20.881500+00:00",
+      "status": 200,
+      "content_type": "application/json",
+      "bytes": 798,
+      "sha256": "f7acba2bbce84b0d2cf6a855cafa00cec2dd655b354a58216c52829e10f68a85",
+      "file": "execution3/live-http/rabanne.json"
+    },
+    {
+      "name": "bois",
+      "url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "final_url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "checked_at_utc": "2026-10-26T15:28:20.882278+00:00",
+      "status": 200,
+      "content_type": "application/json",
+      "bytes": 229,
+      "sha256": "28f933210ed6b01e064fcf7761b9c886140b1e7ed0fa6e3f4589c1614af04841",
+      "file": "execution3/live-http/bois.json"
+    },
+    {
+      "name": "armani",
+      "url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-ARMANI-SWY-INTENSELY-100",
+      "final_url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-ARMANI-SWY-INTENSELY-100",
+      "checked_at_utc": "2026-10-26T15:28:25.579430+00:00",
+      "status": 200,
+      "content_type": "application/json",
+      "bytes": 218,
+      "sha256": "bb068e12b4fffef89617715b25edc620f30c449a7da00ea49069d242eeb2e2d9",
+      "file": "execution3/live-http/armani.json"
+    },
+    {
+      "name": "layton",
+      "url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-PDM-LAYTON-125",
+      "final_url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-PDM-LAYTON-125",
+      "checked_at_utc": "2026-10-26T15:29:28.578512+00:00",
+      "status": 200,
+      "bytes": 208,
+      "sha256": "1d10344f4e33e3c2d7f9b7f8e1ef2fc6935b730b0ed426a825f30b83f85a4863",
+      "file": "execution3/live-http/layton.json"
+    },
+    {
+      "name": "valentino",
+      "url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "final_url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "checked_at_utc": "2026-10-26T15:29:28.583711+00:00",
+      "status": 200,
+      "bytes": 228,
+      "sha256": "e6ff35fb94c7334db1c9bef74300218458a069e7d56662b8f565c6b1f1f7f634",
+      "file": "execution3/live-http/valentino.json"
+    },
+    {
+      "name": "althair",
+      "url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-PDM-ALTHAIR-125",
+      "final_url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-PDM-ALTHAIR-125",
+      "checked_at_utc": "2026-10-26T15:29:28.587686+00:00",
+      "status": 200,
+      "bytes": 209,
+      "sha256": "e5535e1809ec809a379ae0f1cbf35b59731a97c78c299bfafa0a50515c600bc7",
+      "file": "execution3/live-http/althair.json"
+    }
+  ],
+  "limitations": [
+    "HTTP source-state check, not new responsive browser QA",
+    "Only six release-product API payloads checked; no global claim that every other merchant/profile lacks offers",
+    "Original image bytes not downloaded again; original rights and hashes reused from existing evidence",
+    "Three erroneous variant IDs returned404 and were excluded; canonical IDs were read from existing proposed-offers.json and subsequently checked; initial connectivity probe was2GETs."
+  ]
+}

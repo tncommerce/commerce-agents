@@ -541,3 +541,42 @@ main:has(.wow-home)+div textarea {font-size:16px}
 @media(prefers-reduced-motion:reduce){
   .dufynd-scent-index,.dufynd-scent-index-aura{animation:none!important;transition:none!important}
 }
+
+/* RESET41: only published RC1. Card's legacy direct-child anchor rule would
+ * otherwise force the added CTA into a vertical, flex:1 layout. */
+.dufynd-catalog-page .dufynd-catalog-rc1-offer > a {
+  display:flex;
+  flex-direction:row;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-height:48px;
+  text-align:left;
+}
+.dufynd-catalog-page .dufynd-catalog-rc1-offer > a > span:last-child {
+  flex:none;
+  font-size:16px;
+  line-height:1;
+}
+@media (min-width:1024px) {
+  .dufynd-catalog-page article.dufynd-catalog-card:not([data-original-photo="true"]):has(> .dufynd-catalog-rc1-offer) {
+    row-gap:8px;
+  }
+  .dufynd-catalog-page article.dufynd-catalog-card:not([data-original-photo="true"]):has(> .dufynd-catalog-rc1-offer) > a:first-child {
+    grid-column:1;
+    grid-row:1 / span 2;
+  }
+  .dufynd-catalog-page article.dufynd-catalog-card:not([data-original-photo="true"]) > .dufynd-catalog-rc1-offer {
+    grid-column:2;
+    grid-row:1;
+    align-self:end;
+    margin:0;
+  }
+  .dufynd-catalog-page article.dufynd-catalog-card:not([data-original-photo="true"]):has(> .dufynd-catalog-rc1-offer) > .dufynd-catalog-card-actions {
+    grid-column:2;
+    grid-row:2;
+    align-self:start;
+    justify-content:space-between;
+    gap:6px;
+  }
+}

@@ -1,0 +1,824 @@
+{
+  "feature_sha": null,
+  "checkout_sha": null,
+  "run_id": null,
+  "data": "Unchanged public catalog; external requests blocked; synthetic empty offers only",
+  "sources": [
+    {
+      "file": "../lib/fragranceSearchIdentity.ts",
+      "sha256": "4ad3b23b57d8d4685806c29ff63514a4b747e91d47191e23df547d37caa73900"
+    },
+    {
+      "file": "../components/FragranceCatalogBrowser.tsx",
+      "sha256": "cb77859e09b547b88bb9bf9908a2c19583a830c89db69a1e56888322ddd19b69"
+    },
+    {
+      "file": "../components/SocialFragranceSearch.tsx",
+      "sha256": "20906d5a4b90e79f793f31f3ff6132d8ae9efa2a3d5f6e2c9fc95b531007639e"
+    },
+    {
+      "file": "compact-fragrance-search-qa.mjs",
+      "sha256": "9120a0633a2644e9a39f2fa239f56726926a7f5f10763b9b0eb4ec66091d7a7b"
+    },
+    {
+      "file": "../lib/generated/public-fragrances.json",
+      "sha256": "5af3fa0a40556b13db1970eb9b05895fc3818eca4a43279155ae809d25587410"
+    },
+    {
+      "file": "../lib/generated/public-catalog.json",
+      "sha256": "486f136dcbd776dec0419bed867ee15c3ed06b972f0768248f7f0898acf9802b"
+    }
+  ],
+  "observations": [
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "Black Opium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "Bois Impérial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "La Vie Est Belle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "Black Opium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "BLACKOPIUM EDP 90 ML",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "Bois Impérial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "BOISIMPERIAL EDP 100 ML",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "La Vie Est Belle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 320,
+      "route": "/start",
+      "query": "LAVIEESTBELLE EDP 100 ML",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "Black Opium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "Bois Impérial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "La Vie Est Belle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "Black Opium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "BLACKOPIUM EDP 90 ML",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "Bois Impérial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "BOISIMPERIAL EDP 100 ML",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "La Vie Est Belle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "route": "/start",
+      "query": "LAVIEESTBELLE EDP 100 ML",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 390,
+      "negative_queries": 32,
+      "surfaces": 2,
+      "results": 0
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "Black Opium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "Bois Impérial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "La Vie Est Belle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "Black Opium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "BLACKOPIUM EDP 90 ML",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "Bois Impérial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "BOISIMPERIAL EDP 100 ML",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "La Vie Est Belle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 768,
+      "route": "/start",
+      "query": "LAVIEESTBELLE EDP 100 ML",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "Black Opium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "Bois Impérial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "La Vie Est Belle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/duft",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "Black Opium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "BlackOpium EDP 90 ml",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "BLACKOPIUM EDP 90 ML",
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "Bois Impérial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "BoisImperial EDP 100 ml",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "BOISIMPERIAL EDP 100 ML",
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "La Vie Est Belle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "LaVieEstBelle EDP 100 ml",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    },
+    {
+      "width": 1440,
+      "route": "/start",
+      "query": "LAVIEESTBELLE EDP 100 ML",
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "results": 1
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "compact-search-320-catalog.png",
+      "width": 320,
+      "sha256": "742664ac2a523072a85bc4c3873b58584fb43b9e428526ebbca28be5b386ee1d"
+    },
+    {
+      "file": "compact-search-320-yves-saint-laurent-black-opium.png",
+      "width": 320,
+      "sha256": "1f1dbc1044ef9694b61ac58ca3e28ec84d4d73eef9a8a942c21c1cfb317fee40"
+    },
+    {
+      "file": "compact-search-320-essential-parfums-bois-imperial.png",
+      "width": 320,
+      "sha256": "d636bffe33a7802987e6627bd0358223dff97c54ac3d52b29da449ed30d4bae0"
+    },
+    {
+      "file": "compact-search-320-lancome-la-vie-est-belle.png",
+      "width": 320,
+      "sha256": "2aaae1296fe52e707505bd1c7f91259ff4b124a728cbd15562d6bdcb14d4cb74"
+    },
+    {
+      "file": "compact-search-320-comparison.png",
+      "width": 320,
+      "sha256": "fdd13ad4296240667c50aa90acad93fbdc3d850a3ce8f7478412d46f5447af72"
+    },
+    {
+      "file": "compact-search-320-social.png",
+      "width": 320,
+      "sha256": "3f1f5afbc914bc3b64b971a28603486cd00b7f59f7dc54ecc1d64dc153795c06"
+    },
+    {
+      "file": "compact-search-390-catalog.png",
+      "width": 390,
+      "sha256": "fc190f80f7019d804088c84d1f7f41b73f0b2be9c3c20b7e8f8ebdf1746523ab"
+    },
+    {
+      "file": "compact-search-390-yves-saint-laurent-black-opium.png",
+      "width": 390,
+      "sha256": "65c953de599912fda165092160f362f63de60bbdcc2777952acaa8f29459861b"
+    },
+    {
+      "file": "compact-search-390-essential-parfums-bois-imperial.png",
+      "width": 390,
+      "sha256": "b443808811616c81588340473dd6306ee1b2401f90e6ed8d1263326ad87e85b9"
+    },
+    {
+      "file": "compact-search-390-lancome-la-vie-est-belle.png",
+      "width": 390,
+      "sha256": "48e83b51534dc4eeef82637cc5736f85ce920df05b4619f2449e681172d46d4d"
+    },
+    {
+      "file": "compact-search-390-comparison.png",
+      "width": 390,
+      "sha256": "7ce00eb7b7fe35c111ffe4c19e0b8ddd2bfdf893dd2ebac755bef6551af79316"
+    },
+    {
+      "file": "compact-search-390-social.png",
+      "width": 390,
+      "sha256": "0a346fb9452dfb568bcd056160ed2d3d9c783841ab2bf0e2ec5f598681a50a3f"
+    },
+    {
+      "file": "compact-search-768-catalog.png",
+      "width": 768,
+      "sha256": "20760adee6184cd59eb827e73a8ef4cab59ce1d9eb9597694ff9edc2c305c6ca"
+    },
+    {
+      "file": "compact-search-768-yves-saint-laurent-black-opium.png",
+      "width": 768,
+      "sha256": "e6b70a1de3323debfcee450d88e2f15e0447986b8844c8be8acdac38a0be37cb"
+    },
+    {
+      "file": "compact-search-768-essential-parfums-bois-imperial.png",
+      "width": 768,
+      "sha256": "7160fdbc01dd2862cba61aabc667c4d4304f2ead83a421044e5d345c90021645"
+    },
+    {
+      "file": "compact-search-768-lancome-la-vie-est-belle.png",
+      "width": 768,
+      "sha256": "25959b0e8817f0240a7c1441052800f6a230df0b1b2173fbd3042d7370baeaae"
+    },
+    {
+      "file": "compact-search-768-comparison.png",
+      "width": 768,
+      "sha256": "de05222a00b4dd031795502d65a9ea585c9f825b58570fe67851e3e81d1fbaad"
+    },
+    {
+      "file": "compact-search-768-social.png",
+      "width": 768,
+      "sha256": "0e179bce6d8f6d0d4fdf3dbf0d062e62a8c0ecca6be75c5e088825920034295d"
+    },
+    {
+      "file": "compact-search-1440-catalog.png",
+      "width": 1440,
+      "sha256": "5f505579dd11ed39387b3a7d552cd0d2bb98b95ea6ecb39b6c3f19283919e181"
+    },
+    {
+      "file": "compact-search-1440-yves-saint-laurent-black-opium.png",
+      "width": 1440,
+      "sha256": "d533d6464ab30f614010481a014502d5e277491060bb7cdc254f008ba36534b5"
+    },
+    {
+      "file": "compact-search-1440-essential-parfums-bois-imperial.png",
+      "width": 1440,
+      "sha256": "3e579521f418fcc632eb256dc75dbffaef105e51def1bba9dc949094a0a9bc27"
+    },
+    {
+      "file": "compact-search-1440-lancome-la-vie-est-belle.png",
+      "width": 1440,
+      "sha256": "4c73fb4bfd0d3cf97fb854f19504a3e9b02ca9cb14420c1cf4926561273b6a71"
+    },
+    {
+      "file": "compact-search-1440-comparison.png",
+      "width": 1440,
+      "sha256": "e26462ffc16f6fa77b255ccc4d1f98fd21fcad891021065d4857747b9299e0bb"
+    },
+    {
+      "file": "compact-search-1440-social.png",
+      "width": 1440,
+      "sha256": "13924fdc4ed04e98b85e652ae62458d7a04462bd2e378195da8e67ca78bc3e41"
+    }
+  ],
+  "cases": [
+    {
+      "suite": "compact-public-name",
+      "width": 320,
+      "public_products": [
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+      ],
+      "home": true,
+      "catalog": true,
+      "social": true,
+      "comparison": true,
+      "filter_and_selection_restored": true,
+      "empty_offers": true,
+      "synthetic_functional_sessions": 1,
+      "analytics_requests": 0,
+      "merchant_clickouts": 0
+    },
+    {
+      "suite": "compact-public-name",
+      "width": 390,
+      "public_products": [
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+      ],
+      "home": true,
+      "catalog": true,
+      "social": true,
+      "comparison": true,
+      "filter_and_selection_restored": true,
+      "empty_offers": true,
+      "synthetic_functional_sessions": 1,
+      "analytics_requests": 0,
+      "merchant_clickouts": 0
+    },
+    {
+      "suite": "compact-public-name",
+      "width": 768,
+      "public_products": [
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+      ],
+      "home": true,
+      "catalog": true,
+      "social": true,
+      "comparison": true,
+      "filter_and_selection_restored": true,
+      "empty_offers": true,
+      "synthetic_functional_sessions": 1,
+      "analytics_requests": 0,
+      "merchant_clickouts": 0
+    },
+    {
+      "suite": "compact-public-name",
+      "width": 1440,
+      "public_products": [
+        "SC-YSL-BLACK-OPIUM-EDP-90",
+        "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+        "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+      ],
+      "home": true,
+      "catalog": true,
+      "social": true,
+      "comparison": true,
+      "filter_and_selection_restored": true,
+      "empty_offers": true,
+      "synthetic_functional_sessions": 1,
+      "analytics_requests": 0,
+      "merchant_clickouts": 0
+    }
+  ]
+}

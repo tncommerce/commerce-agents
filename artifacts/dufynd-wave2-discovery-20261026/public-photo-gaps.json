@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "public_profile_count": 37,
+  "excluded_original_photo_count": 10,
+  "source_website_head": "d953d3ad6aff48fe915c298acc40fdd352c94f81",
+  "status": "DISCOVERY_ONLY_NO_VARIANT_OR_IMAGE_APPROVAL",
+  "items": [
+    {
+      "product_id": "SC-LV-IMAGINATION-100",
+      "brand": "Louis Vuitton",
+      "name": "Imagination",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EDP-100",
+      "brand": "Arabiyat Prestige",
+      "name": "Marwa",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
+      "brand": "Arabiyat Prestige",
+      "name": "Marwa Extrait",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 60
+    },
+    {
+      "product_id": "SC-BUJAIRAMI-HECTIC-100",
+      "brand": "Bujairami",
+      "name": "Hectic",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-CREED-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Aventus",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
+      "brand": "Creed",
+      "name": "Absolu Aventus",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
+      "brand": "Afnan Perfumes",
+      "name": "Supremacy Collector's Edition",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
+      "brand": "Maison Asrar",
+      "name": "Vanguard",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-ARMAF-CDNIM-EDP-200",
+      "brand": "Armaf",
+      "name": "Club de Nuit Intense Man",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 200
+    },
+    {
+      "product_id": "SC-MONTBLANC-EXPLORER-100",
+      "brand": "Montblanc",
+      "name": "Explorer",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
+      "brand": "Al Haramain",
+      "name": "Détour Noir",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
+      "brand": "Orientica",
+      "name": "Royal Bleu",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 80
+    },
+    {
+      "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
+      "brand": "French Avenue",
+      "name": "Liquid Brun",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-BVLGARI-TYGAR-125",
+      "brand": "Bvlgari",
+      "name": "Le Gemme Tygar",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 125
+    },
+    {
+      "product_id": "SC-SOSPIRO-VIBRATO-100",
+      "brand": "Sospiro",
+      "name": "Vibrato",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-AFNAN-TURATHI-BLUE-90",
+      "brand": "Afnan Perfumes",
+      "name": "Turathi Blue",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 90
+    },
+    {
+      "product_id": "SC-MAISON-ASRAR-REGENT-100",
+      "brand": "Maison Asrar",
+      "name": "Regent",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-XERJOFF-NAXOS-100",
+      "brand": "Xerjoff",
+      "name": "Naxos",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-NUSUK-ATEEQ-100",
+      "brand": "Nusuk",
+      "name": "Ateeq",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-RAYHAAN-ITALIA-100",
+      "brand": "Rayhaan",
+      "name": "Italia",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-DIOR-HOMME-INTENSE-100",
+      "brand": "Dior",
+      "name": "Dior Homme Intense",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
+      "brand": "Al Wataniah",
+      "name": "Kayaan Classic",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
+      "brand": "Clive Christian",
+      "name": "Jump Up and Kiss Me Hedonistic",
+      "concentration": "Parfum",
+      "volume_ml": 50
+    },
+    {
+      "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
+      "brand": "Chanel",
+      "name": "Bleu de Chanel",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-DIOR-SAUVAGE-EDP-100",
+      "brand": "Dior",
+      "name": "Sauvage",
+      "concentration": "Eau de Parfum",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-PRADA-LHOMME-100",
+      "brand": "Prada",
+      "name": "L'Homme",
+      "concentration": "Eau de Toilette",
+      "volume_ml": 100
+    },
+    {
+      "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
+      "brand": "Al Ambra",
+      "name": "Dubai Musk",
+      "concentration": "Extrait de Parfum",
+      "volume_ml": 50
+    }
+  ],
+  "excluded_nonpublic_identity_hold": [
+    "SC-WIDIAN-LONDON-EXTRAIT-50"
+  ],
+  "offer_only_existing_originals": [
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant_product_id": "780879"
+    },
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant_product_id": "825869"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_product_id": "856448"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant_product_id": "787670"
+    }
+  ]
+}

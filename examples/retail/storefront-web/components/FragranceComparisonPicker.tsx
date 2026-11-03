@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import FragranceComparisonEvidence from "@/components/FragranceComparisonEvidence";
 import FragranceOffers from "@/components/FragranceOffers";
 import FragranceModel3D from "@/components/FragranceModel3D";
+import FragranceVariant from "@/components/FragranceVariant";
 import FragranceVisual from "@/components/FragranceVisual";
 import { appendAcquisitionAttribution, trackAnalyticsEvent } from "@/lib/analytics";
 import { accordLabel } from "@/lib/accordLabels";
@@ -15,6 +16,7 @@ import {
 } from "@/lib/fragranceCatalog";
 import { formatPriceReference } from "@/lib/priceReference";
 import { publicShareUrl } from "@/lib/shareUrl";
+import { catalogContext, withCatalogContext } from "@/lib/catalogJourney";
 import ManualShareLink from "@/components/ManualShareLink";
 import { targetGroupLabel } from "@/lib/targetLabels";
 
@@ -119,9 +121,11 @@ function ProfileMeter({
 function ProductMiniHeader({
   fragrance,
   side,
+  context,
 }: {
   fragrance: StaticFragrance;
   side: "left" | "right";
+  context: string;
 }) {
   // Product comparison photos have the same exact-source rights gate as the catalog.
   const productTruthVisual = originalPhotoFor(fragrance);
@@ -131,7 +135,7 @@ function ProductMiniHeader({
 
   return (
     <a
-      href={appendAcquisitionAttribution(`/duft/${fragrance.slug}`)}
+      href={appendAcquisitionAttribution(withCatalogContext(`/duft/${fragrance.slug}`, context))}
       className="dufynd-comparison-product-card overflow-hidden rounded-2xl border border-(--line) bg-(--card) shadow-(--shadow-sm)"
       data-dufynd-comparison-side={side}
     >
@@ -183,9 +187,7 @@ function ProductMiniHeader({
         <div className="mt-1 text-[15px] font-semibold leading-5 text-(--ink)">
           {fragrance.name}
         </div>
-        <div className="mt-1 text-[10.5px] text-(--ink-soft)">
-          {fragrance.concentration} · {fragrance.volume_ml} ml
-        </div>
+        <FragranceVariant concentration={fragrance.concentration} volume={fragrance.volume_ml} />
       </div>
     </a>
   );
@@ -211,11 +213,13 @@ export default function FragranceComparisonPicker({
   const [urlReady, setUrlReady] = useState(false);
   const [copyStatus, setCopyStatus] = useState("");
   const [manualUrl, setManualUrl] = useState("");
+  const [context, setContext] = useState("");
   const copyRequestRef = useRef(0);
   const trackedPairRef = useRef<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    setContext(catalogContext(new URLSearchParams(params.get("catalog") || "")));
     const requestedLeft = params.get("left") || "";
     const requestedRight = params.get("right") || "";
 
@@ -332,6 +336,8 @@ export default function FragranceComparisonPicker({
             Duft 1
           </span>
           <select
+            aria-label="Duft 1"
+            aria-describedby={left ? "comparison-left-variant" : undefined}
             value={leftId}
             onChange={(event) => {
               setLeftId(event.target.value);
@@ -339,7 +345,7 @@ export default function FragranceComparisonPicker({
               setCopyStatus("");
               setManualUrl("");
             }}
-            className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] text-(--ink) outline-none focus:border-(--accent)"
+            className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[16px] text-(--ink) outline-none focus:border-(--accent)"
           >
             <option value="">Duft auswählen …</option>
             {sorted.map((fragrance) => (
@@ -348,10 +354,11 @@ export default function FragranceComparisonPicker({
                 value={fragrance.product_id}
                 disabled={fragrance.product_id === rightId}
               >
-                {fragrance.brand} – {fragrance.name}
+                {fragrance.brand} – {fragrance.name} · {fragrance.concentration} · {fragrance.volume_ml} ml
               </option>
             ))}
           </select>
+          {left ? <span id="comparison-left-variant" className="mt-2 block text-[13px] leading-5 text-(--ink-soft)">{left.name} · {left.concentration} · {left.volume_ml} ml</span> : null}
         </label>
 
         <label>
@@ -359,6 +366,8 @@ export default function FragranceComparisonPicker({
             Duft 2
           </span>
           <select
+            aria-label="Duft 2"
+            aria-describedby={right ? "comparison-right-variant" : undefined}
             value={rightId}
             onChange={(event) => {
               setRightId(event.target.value);
@@ -366,7 +375,7 @@ export default function FragranceComparisonPicker({
               setCopyStatus("");
               setManualUrl("");
             }}
-            className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[12px] text-(--ink) outline-none focus:border-(--accent)"
+            className="h-11 w-full rounded-xl border border-(--line) bg-(--surface) px-3 text-[16px] text-(--ink) outline-none focus:border-(--accent)"
           >
             <option value="">Duft auswählen …</option>
             {sorted.map((fragrance) => (
@@ -375,10 +384,11 @@ export default function FragranceComparisonPicker({
                 value={fragrance.product_id}
                 disabled={fragrance.product_id === leftId}
               >
-                {fragrance.brand} – {fragrance.name}
+                {fragrance.brand} – {fragrance.name} · {fragrance.concentration} · {fragrance.volume_ml} ml
               </option>
             ))}
           </select>
+          {right ? <span id="comparison-right-variant" className="mt-2 block text-[13px] leading-5 text-(--ink-soft)">{right.name} · {right.concentration} · {right.volume_ml} ml</span> : null}
         </label>
       </div>
 
@@ -404,9 +414,11 @@ export default function FragranceComparisonPicker({
             >
               <span>vs</span>
             </div>
-            <ProductMiniHeader fragrance={left} side="left" />
-            <ProductMiniHeader fragrance={right} side="right" />
+            <ProductMiniHeader fragrance={left} side="left" context={context} />
+            <ProductMiniHeader fragrance={right} side="right" context={context} />
           </div>
+
+          <FragranceComparisonEvidence left={left} right={right} />
 
           <div
             role="table"
@@ -506,7 +518,6 @@ export default function FragranceComparisonPicker({
             Die DUFYND-Profilachsen sind redaktionelle Merkmale.
           </p>
 
-          <FragranceComparisonEvidence left={left} right={right} />
 
           <section className="dufynd-comparison-dna-stage relative mt-4 overflow-hidden rounded-2xl border border-[#d9bd82]/20 bg-[#15120f] p-4 text-white shadow-[0_18px_55px_-34px_rgba(36,24,8,0.9)] sm:p-5">
             <div

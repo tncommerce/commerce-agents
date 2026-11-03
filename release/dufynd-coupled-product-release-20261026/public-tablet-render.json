@@ -1,0 +1,200 @@
+{
+  "checked_at": "2026-10-26T15:11:37.335Z",
+  "scope": "Missing tablet-only public render check for frozen PR836 d953d3ad6aff48fe915c298acc40fdd352c94f81. Existing public export and previously verified unchanged image bytes reused; 19 build/source files hash-identical. Public API blocked; no mocked live offers or new downloads, builds, deployment. Prior passed390/1440 checks reused.",
+  "public_profile_count": 37,
+  "development_original_photo_count": 10,
+  "production_original_photo_count": 4,
+  "affiliate_or_analytics_requests": 0,
+  "checks": [
+    {
+      "product_id": "SC-PDM-DELINA-EDP-75",
+      "merchant_sku": "SC-PDM-DELINA-EDP-75",
+      "route": "/duft/parfums-de-marly-delina",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+      "image_sha256": "ae756bf1af5675524ba7f0c455f1c63337acc868dea9cdafafcc7ecb287a5b57",
+      "source_size": [
+        252,
+        519
+      ],
+      "display_size": [
+        300.96875,
+        377.203125
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "merchant_sku": "SC-YSL-BLACK-OPIUM-EDP-90",
+      "route": "/duft/yves-saint-laurent-black-opium",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+      "image_sha256": "25e72f57fd46750e6c06fac6f2bd316380316a98933a551adcaaf9fc620031cf",
+      "source_size": [
+        412,
+        600
+      ],
+      "display_size": [
+        300.96875,
+        377.203125
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-YSL-LIBRE-EDP-90",
+      "merchant_sku": "SC-YSL-LIBRE-EDP-90",
+      "route": "/duft/yves-saint-laurent-libre",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+      "image_sha256": "693e7bba7086b777d07579ed5931971e0d90a7ae3b7f36dd40dc2a8d726e30a4",
+      "source_size": [
+        258,
+        600
+      ],
+      "display_size": [
+        300.96875,
+        377.203125
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+      "merchant_sku": "924719",
+      "route": "/duft/essential-parfums-bois-imperial",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
+      "image_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+      "source_size": [
+        286,
+        600
+      ],
+      "display_size": [
+        123.921875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-ARMANI-SWY-INTENSELY-100",
+      "merchant_sku": "849484",
+      "route": "/duft/giorgio-armani-stronger-with-you-intensely",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+      "image_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+      "source_size": [
+        381,
+        600
+      ],
+      "display_size": [
+        165.09375,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-LAYTON-125",
+      "merchant_sku": "812773",
+      "route": "/duft/parfums-de-marly-layton",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
+      "image_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+      "source_size": [
+        270,
+        524
+      ],
+      "display_size": [
+        133.96875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
+      "merchant_sku": "897029",
+      "route": "/duft/valentino-uomo-born-in-roma-intense",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
+      "image_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+      "source_size": [
+        361,
+        600
+      ],
+      "display_size": [
+        156.421875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-PDM-ALTHAIR-125",
+      "merchant_sku": "904707",
+      "route": "/duft/parfums-de-marly-althair",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
+      "image_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
+      "source_size": [
+        800,
+        800
+      ],
+      "display_size": [
+        260,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+      "merchant_sku": "707368",
+      "route": "/duft/rabanne-1-million",
+      "width": 768,
+      "rendered_image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
+      "image_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+      "source_size": [
+        229,
+        600
+      ],
+      "display_size": [
+        99.21875,
+        260
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    },
+    {
+      "product_id": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "merchant_sku": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+      "route": "/duft/lancome-la-vie-est-belle",
+      "width": 768,
+      "rendered_image_url": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+      "image_sha256": "81618e5edba3e2ef29638aa2b348a206d6abe8ee636ebc57c92ffce2bf1f55b4",
+      "source_size": [
+        600,
+        600
+      ],
+      "display_size": [
+        300.96875,
+        377.203125
+      ],
+      "primary_over_cutout": true,
+      "private_candidate_hidden": true,
+      "status": "passed"
+    }
+  ]
+}

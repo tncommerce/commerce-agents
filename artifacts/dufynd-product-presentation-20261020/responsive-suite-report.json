@@ -1,0 +1,2228 @@
+{
+  "generated_at": "2026-10-20T13:56:38.252Z",
+  "base_url": "http://127.0.0.1:3020",
+  "checks": [
+    {
+      "label": "product-presentation",
+      "status": "passed",
+      "results": [
+        {
+          "width": 320,
+          "profiles": 5,
+          "images": [
+            {
+              "productId": "SC-YSL-LIBRE-EDP-90",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+              "naturalWidth": 258,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+              "naturalWidth": 412,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+              "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+              "naturalWidth": 600,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-PDM-DELINA-EDP-75",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+              "naturalWidth": 252,
+              "naturalHeight": 519,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            }
+          ],
+          "status": "passed",
+          "measurementRequests": 0,
+          "clickouts": 0
+        },
+        {
+          "width": 390,
+          "profiles": 5,
+          "images": [
+            {
+              "productId": "SC-YSL-LIBRE-EDP-90",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+              "naturalWidth": 258,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+              "naturalWidth": 412,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+              "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+              "naturalWidth": 600,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-PDM-DELINA-EDP-75",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+              "naturalWidth": 252,
+              "naturalHeight": 519,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            }
+          ],
+          "status": "passed",
+          "measurementRequests": 0,
+          "clickouts": 0
+        },
+        {
+          "width": 768,
+          "profiles": 5,
+          "images": [
+            {
+              "productId": "SC-YSL-LIBRE-EDP-90",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+              "naturalWidth": 258,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+              "naturalWidth": 412,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+              "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+              "naturalWidth": 600,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-PDM-DELINA-EDP-75",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+              "naturalWidth": 252,
+              "naturalHeight": 519,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            }
+          ],
+          "status": "passed",
+          "measurementRequests": 0,
+          "clickouts": 0
+        },
+        {
+          "width": 1440,
+          "profiles": 5,
+          "images": [
+            {
+              "productId": "SC-YSL-LIBRE-EDP-90",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/8/5/856448_3614272648425_051.png",
+              "naturalWidth": 258,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-YSL-BLACK-OPIUM-EDP-90",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/7/8/787670_3365440787971_051.png",
+              "naturalWidth": 412,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100",
+              "src": "https://fooddrinkssuppliers.com/media/cosmetics/3605533286555.webp",
+              "naturalWidth": 600,
+              "naturalHeight": 600,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            },
+            {
+              "productId": "SC-PDM-DELINA-EDP-75",
+              "src": "https://www.topparfuemerie.de/media/catalog/product/8/2/825869_3700578501998_051.png",
+              "naturalWidth": 252,
+              "naturalHeight": 519,
+              "complete": true,
+              "fit": "contain",
+              "transform": "none",
+              "contained": true
+            }
+          ],
+          "status": "passed",
+          "measurementRequests": 0,
+          "clickouts": 0
+        }
+      ]
+    },
+    {
+      "label": "mobile-discovery-journey",
+      "status": "passed",
+      "results": [
+        {
+          "width": 320,
+          "cases": 13,
+          "attributionWithContext": false,
+          "comparisonTray": {
+            "x": 16,
+            "y": 681.125,
+            "width": 288,
+            "height": 198.03125
+          },
+          "offerStates": [
+            "empty",
+            "error",
+            "wrong-product",
+            "synthetic-available"
+          ]
+        },
+        {
+          "width": 390,
+          "cases": 13,
+          "attributionWithContext": true,
+          "comparisonTray": {
+            "x": 16,
+            "y": 628.90625,
+            "width": 358,
+            "height": 182.640625
+          },
+          "offerStates": [
+            "empty",
+            "error",
+            "wrong-product",
+            "synthetic-available"
+          ]
+        },
+        {
+          "width": 768,
+          "cases": 13,
+          "attributionWithContext": false,
+          "comparisonTray": {
+            "x": 24,
+            "y": 615.8125,
+            "width": 720,
+            "height": 128.640625
+          },
+          "offerStates": [
+            "empty",
+            "error",
+            "wrong-product",
+            "synthetic-available"
+          ]
+        },
+        {
+          "width": 1440,
+          "cases": 13,
+          "attributionWithContext": false,
+          "comparisonTray": {
+            "x": 124,
+            "y": 667.890625,
+            "width": 1192,
+            "height": 128.640625
+          },
+          "offerStates": [
+            "empty",
+            "error",
+            "wrong-product",
+            "synthetic-available"
+          ]
+        }
+      ]
+    },
+    {
+      "label": "wow22-experience",
+      "status": "passed",
+      "results": [
+        {
+          "name": "home",
+          "width": 320,
+          "cls": 0,
+          "lcp": 236,
+          "overflow": 0,
+          "dom": 49.100000001490116,
+          "resources": 1107794,
+          "scrollFrames": 6,
+          "scrollHeight": 3628,
+          "searchBottom": 403.78125,
+          "keyboard": true,
+          "touch": true,
+          "reducedMotion": true,
+          "atlasDestination": "/duft/maison-asrar-vanguard",
+          "advisor": {
+            "inlineToConversation": true,
+            "requests": 2,
+            "mocked": true
+          }
+        },
+        {
+          "name": "catalog",
+          "width": 320,
+          "cls": 0,
+          "lcp": 72,
+          "overflow": 0,
+          "dom": 70.09999999776483,
+          "resources": 1058521
+        },
+        {
+          "name": "brands",
+          "width": 320,
+          "cls": 0,
+          "lcp": 72,
+          "overflow": 0,
+          "dom": 28.5,
+          "resources": 847965
+        },
+        {
+          "name": "rabanne",
+          "width": 320,
+          "cls": 0.026490911153584824,
+          "lcp": 112,
+          "overflow": 0,
+          "dom": 38.400000002235174,
+          "resources": 917339,
+          "offerStates": [
+            "error",
+            "available",
+            "empty"
+          ]
+        },
+        {
+          "name": "lancome",
+          "width": 320,
+          "cls": 0,
+          "lcp": 92,
+          "overflow": 0,
+          "dom": 50.5,
+          "resources": 917339
+        },
+        {
+          "name": "home",
+          "width": 390,
+          "cls": 0,
+          "lcp": 192,
+          "overflow": 0,
+          "dom": 40.80000000074506,
+          "resources": 1107794,
+          "scrollFrames": 6,
+          "scrollHeight": 3426,
+          "baselineScrollHeight": 5841,
+          "scrollReduction": 0.4134565998972779,
+          "searchBottom": 389.15625,
+          "keyboard": true,
+          "touch": true,
+          "reducedMotion": true,
+          "atlasDestination": "/duft/maison-asrar-vanguard",
+          "advisor": {
+            "inlineToConversation": true,
+            "requests": 2,
+            "mocked": true
+          }
+        },
+        {
+          "name": "catalog",
+          "width": 390,
+          "cls": 0,
+          "lcp": 80,
+          "overflow": 0,
+          "dom": 79.5,
+          "resources": 1058521
+        },
+        {
+          "name": "brands",
+          "width": 390,
+          "cls": 0,
+          "lcp": 72,
+          "overflow": 0,
+          "dom": 33.20000000298023,
+          "resources": 847965
+        },
+        {
+          "name": "rabanne",
+          "width": 390,
+          "cls": 0.041389211890211414,
+          "lcp": 116,
+          "overflow": 0,
+          "dom": 33.899999998509884,
+          "resources": 917339,
+          "offerStates": [
+            "error",
+            "available",
+            "empty"
+          ]
+        },
+        {
+          "name": "lancome",
+          "width": 390,
+          "cls": 0,
+          "lcp": 104,
+          "overflow": 0,
+          "dom": 36.100000001490116,
+          "resources": 917339
+        },
+        {
+          "name": "home",
+          "width": 768,
+          "cls": 0,
+          "lcp": 116,
+          "overflow": 0,
+          "dom": 36.69999999925494,
+          "resources": 1107794,
+          "scrollFrames": 4,
+          "scrollHeight": 3006,
+          "searchBottom": 536.71875,
+          "keyboard": true,
+          "touch": true,
+          "reducedMotion": true,
+          "atlasDestination": "/duft/maison-asrar-vanguard",
+          "advisor": {
+            "inlineToConversation": true,
+            "requests": 2,
+            "mocked": true
+          }
+        },
+        {
+          "name": "catalog",
+          "width": 768,
+          "cls": 0,
+          "lcp": 100,
+          "overflow": 0,
+          "dom": 33.29999999701977,
+          "resources": 1058521
+        },
+        {
+          "name": "brands",
+          "width": 768,
+          "cls": 0,
+          "lcp": 76,
+          "overflow": 0,
+          "dom": 68.69999999925494,
+          "resources": 847965
+        },
+        {
+          "name": "rabanne",
+          "width": 768,
+          "cls": 0.036502652343750004,
+          "lcp": 124,
+          "overflow": 0,
+          "dom": 55.29999999701977,
+          "resources": 917339,
+          "offerStates": [
+            "error",
+            "available",
+            "empty"
+          ]
+        },
+        {
+          "name": "lancome",
+          "width": 768,
+          "cls": 0,
+          "lcp": 128,
+          "overflow": 0,
+          "dom": 40,
+          "resources": 917339
+        },
+        {
+          "name": "home",
+          "width": 1024,
+          "cls": 0,
+          "lcp": 108,
+          "overflow": 0,
+          "dom": 35.399999998509884,
+          "resources": 1107794,
+          "scrollFrames": 4,
+          "scrollHeight": 2936,
+          "searchBottom": 489.765625,
+          "keyboard": true,
+          "touch": false,
+          "reducedMotion": true,
+          "atlasDestination": "/duft/maison-asrar-vanguard",
+          "advisor": {
+            "inlineToConversation": true,
+            "requests": 2,
+            "mocked": true
+          }
+        },
+        {
+          "name": "catalog",
+          "width": 1024,
+          "cls": 0,
+          "lcp": 96,
+          "overflow": 0,
+          "dom": 33.600000001490116,
+          "resources": 1058521
+        },
+        {
+          "name": "brands",
+          "width": 1024,
+          "cls": 0,
+          "lcp": 84,
+          "overflow": 0,
+          "dom": 35.100000001490116,
+          "resources": 847965
+        },
+        {
+          "name": "rabanne",
+          "width": 1024,
+          "cls": 0.06929181003570557,
+          "lcp": 84,
+          "overflow": 0,
+          "dom": 56.19999999925494,
+          "resources": 917339,
+          "offerStates": [
+            "error",
+            "available",
+            "empty"
+          ]
+        },
+        {
+          "name": "lancome",
+          "width": 1024,
+          "cls": 0,
+          "lcp": 132,
+          "overflow": 0,
+          "dom": 43,
+          "resources": 917339
+        },
+        {
+          "name": "home",
+          "width": 1440,
+          "cls": 0,
+          "lcp": 108,
+          "overflow": 0,
+          "dom": 32.100000001490116,
+          "resources": 1107794,
+          "scrollFrames": 4,
+          "scrollHeight": 2936,
+          "searchBottom": 509.640625,
+          "keyboard": true,
+          "touch": false,
+          "reducedMotion": true,
+          "atlasDestination": "/duft/maison-asrar-vanguard",
+          "advisor": {
+            "inlineToConversation": true,
+            "requests": 2,
+            "mocked": true
+          }
+        },
+        {
+          "name": "catalog",
+          "width": 1440,
+          "cls": 0,
+          "lcp": 108,
+          "overflow": 0,
+          "dom": 93.10000000149012,
+          "resources": 1058521
+        },
+        {
+          "name": "brands",
+          "width": 1440,
+          "cls": 0,
+          "lcp": 88,
+          "overflow": 0,
+          "dom": 75.5,
+          "resources": 847965
+        },
+        {
+          "name": "rabanne",
+          "width": 1440,
+          "cls": 0.04510689887152777,
+          "lcp": 100,
+          "overflow": 0,
+          "dom": 45.099999997764826,
+          "resources": 917339,
+          "offerStates": [
+            "error",
+            "available",
+            "empty"
+          ]
+        },
+        {
+          "name": "lancome",
+          "width": 1440,
+          "cls": 0,
+          "lcp": 136,
+          "overflow": 0,
+          "dom": 63.19999999925494,
+          "resources": 917339
+        },
+        {
+          "normalMotion": true
+        }
+      ]
+    },
+    {
+      "label": "brand-discovery-320",
+      "status": "passed",
+      "brands": 29,
+      "products": 37
+    },
+    {
+      "label": "brand-discovery-390",
+      "status": "passed",
+      "brands": 29,
+      "products": 37
+    },
+    {
+      "label": "brand-discovery-768",
+      "status": "passed",
+      "brands": 29,
+      "products": 37
+    },
+    {
+      "label": "brand-discovery-1440",
+      "status": "passed",
+      "brands": 29,
+      "products": 37
+    },
+    {
+      "label": "social-product-entry",
+      "status": "passed",
+      "cases": 4,
+      "measurements": [
+        {
+          "source": "instagram",
+          "width": 390,
+          "stage_height": 52,
+          "cta_bottom": 451.578125,
+          "offers_top": 669.078125,
+          "overflow": false,
+          "hold_overlay": "none"
+        },
+        {
+          "source": "youtube",
+          "width": 390,
+          "stage_height": 52,
+          "cta_bottom": 451.578125,
+          "offers_top": 669.078125,
+          "overflow": false,
+          "hold_overlay": "none"
+        },
+        {
+          "source": "instagram",
+          "width": 1440,
+          "stage_height": 52,
+          "cta_bottom": 276.890625,
+          "offers_top": 530.78125,
+          "overflow": false,
+          "hold_overlay": "none"
+        },
+        {
+          "source": "youtube",
+          "width": 1440,
+          "stage_height": 52,
+          "cta_bottom": 276.890625,
+          "offers_top": 530.78125,
+          "overflow": false,
+          "hold_overlay": "none"
+        }
+      ]
+    },
+    {
+      "label": "first-money-landing-states",
+      "status": "passed",
+      "cases": [
+        {
+          "width": 390,
+          "state": "error",
+          "status": "passed"
+        },
+        {
+          "width": 390,
+          "state": "empty",
+          "status": "passed"
+        },
+        {
+          "width": 1440,
+          "state": "error",
+          "status": "passed"
+        },
+        {
+          "width": 1440,
+          "state": "empty",
+          "status": "passed"
+        }
+      ],
+      "live_evidence": {
+        "source_url": "https://scentai-api-kxhe.onrender.com/api/merchant-offers/SC-RABANNE-1-MILLION-EDT-100",
+        "read_at": "2026-10-20T13:58:02.993Z",
+        "status": "API_UNAVAILABLE_OR_INVALID",
+        "http_status": null,
+        "sha256": null
+      }
+    },
+    {
+      "label": "note-sculpture",
+      "status": "passed",
+      "cases": 4
+    },
+    {
+      "label": "font-layout",
+      "status": "passed",
+      "cases": [
+        {
+          "width": 390,
+          "cls": 0,
+          "fontRequests": 1,
+          "search_operable": true
+        },
+        {
+          "width": 1440,
+          "cls": 0,
+          "fontRequests": 1,
+          "search_operable": true
+        }
+      ]
+    },
+    {
+      "label": "acquisition-entry",
+      "status": "passed",
+      "cases": [
+        {
+          "width": 390,
+          "source": "youtube",
+          "campaign": "release_week",
+          "qa_only": true
+        },
+        {
+          "width": 390,
+          "source": "instagram",
+          "campaign": "launch01_high_end",
+          "qa_only": true
+        },
+        {
+          "width": 390,
+          "source": "instagram",
+          "campaign": null,
+          "qa_only": true
+        },
+        {
+          "width": 390,
+          "source": "organic",
+          "campaign": null,
+          "qa_only": true
+        },
+        {
+          "width": 390,
+          "source": "unknown",
+          "campaign": null,
+          "qa_only": true
+        },
+        {
+          "width": 390,
+          "source": "google",
+          "campaign": "paid_search",
+          "qa_only": true
+        },
+        {
+          "width": 1440,
+          "source": "youtube",
+          "campaign": "release_week",
+          "qa_only": true
+        },
+        {
+          "width": 1440,
+          "source": "instagram",
+          "campaign": "launch01_high_end",
+          "qa_only": true
+        },
+        {
+          "width": 1440,
+          "source": "instagram",
+          "campaign": null,
+          "qa_only": true
+        },
+        {
+          "width": 1440,
+          "source": "organic",
+          "campaign": null,
+          "qa_only": true
+        },
+        {
+          "width": 1440,
+          "source": "unknown",
+          "campaign": null,
+          "qa_only": true
+        },
+        {
+          "width": 1440,
+          "source": "google",
+          "campaign": "paid_search",
+          "qa_only": true
+        }
+      ]
+    },
+    {
+      "label": "conversion-search",
+      "status": "passed",
+      "cases": [
+        {
+          "width": 320,
+          "home_search": true,
+          "social_search": true,
+          "wrong_variant_excluded": true,
+          "attribution": true,
+          "catalog_rc1_offer_route": true,
+          "rc1_save_compare_actions": true,
+          "rc1_unapproved_creative_excluded": true,
+          "non_rc1_offer_claim_suppressed": true,
+          "empty_offer_fallback": true,
+          "clickouts": 0
+        },
+        {
+          "width": 390,
+          "home_search": true,
+          "social_search": true,
+          "wrong_variant_excluded": true,
+          "attribution": true,
+          "catalog_rc1_offer_route": true,
+          "rc1_save_compare_actions": true,
+          "rc1_unapproved_creative_excluded": true,
+          "non_rc1_offer_claim_suppressed": true,
+          "empty_offer_fallback": true,
+          "clickouts": 0
+        },
+        {
+          "width": 1440,
+          "home_search": true,
+          "social_search": true,
+          "wrong_variant_excluded": true,
+          "attribution": true,
+          "catalog_rc1_offer_route": true,
+          "rc1_save_compare_actions": true,
+          "rc1_unapproved_creative_excluded": true,
+          "non_rc1_offer_claim_suppressed": true,
+          "empty_offer_fallback": true,
+          "clickouts": 0
+        },
+        {
+          "suite": "rc1-name-alias",
+          "width": 320,
+          "source": "instagram",
+          "consent": "denied",
+          "social_queries": 4,
+          "catalog_queries": 3,
+          "touch": true,
+          "keyboard": false,
+          "reduced_motion": true,
+          "actual_catalog_navigation": true,
+          "exact_offer_anchor": true,
+          "session_campaign_preserved": false,
+          "optional_fields_stripped": true,
+          "wrong_variants_excluded": false,
+          "analytics_requests": 0,
+          "merchant_clickouts": 0
+        },
+        {
+          "suite": "rc1-name-alias",
+          "width": 320,
+          "source": "tiktok",
+          "consent": "granted",
+          "social_queries": 4,
+          "catalog_queries": 3,
+          "touch": true,
+          "keyboard": false,
+          "reduced_motion": false,
+          "actual_catalog_navigation": true,
+          "exact_offer_anchor": true,
+          "session_campaign_preserved": true,
+          "optional_fields_stripped": false,
+          "wrong_variants_excluded": false,
+          "analytics_requests": 10,
+          "merchant_clickouts": 0
+        },
+        {
+          "suite": "rc1-name-alias",
+          "width": 390,
+          "source": "instagram",
+          "consent": "granted",
+          "social_queries": 4,
+          "catalog_queries": 3,
+          "touch": true,
+          "keyboard": false,
+          "reduced_motion": false,
+          "actual_catalog_navigation": true,
+          "exact_offer_anchor": true,
+          "session_campaign_preserved": true,
+          "optional_fields_stripped": false,
+          "wrong_variants_excluded": true,
+          "analytics_requests": 13,
+          "merchant_clickouts": 0
+        },
+        {
+          "suite": "rc1-name-alias",
+          "width": 390,
+          "source": "tiktok",
+          "consent": "denied",
+          "social_queries": 4,
+          "catalog_queries": 3,
+          "touch": true,
+          "keyboard": false,
+          "reduced_motion": true,
+          "actual_catalog_navigation": true,
+          "exact_offer_anchor": true,
+          "session_campaign_preserved": false,
+          "optional_fields_stripped": true,
+          "wrong_variants_excluded": true,
+          "analytics_requests": 0,
+          "merchant_clickouts": 0
+        },
+        {
+          "suite": "rc1-name-alias",
+          "width": 768,
+          "source": "instagram",
+          "consent": "denied",
+          "social_queries": 4,
+          "catalog_queries": 3,
+          "touch": true,
+          "keyboard": false,
+          "reduced_motion": true,
+          "actual_catalog_navigation": true,
+          "exact_offer_anchor": true,
+          "session_campaign_preserved": false,
+          "optional_fields_stripped": true,
+          "wrong_variants_excluded": false,
+          "analytics_requests": 0,
+          "merchant_clickouts": 0
+        },
+        {
+          "suite": "rc1-name-alias",
+          "width": 768,
+          "source": "tiktok",
+          "consent": "granted",
+          "social_queries": 4,
+          "catalog_queries": 3,
+          "touch": true,
+          "keyboard": false,
+          "reduced_motion": false,
+          "actual_catalog_navigation": true,
+          "exact_offer_anchor": true,
+          "session_campaign_preserved": true,
+          "optional_fields_stripped": false,
+          "wrong_variants_excluded": false,
+          "analytics_requests": 10,
+          "merchant_clickouts": 0
+        },
+        {
+          "suite": "rc1-name-alias",
+          "width": 1440,
+          "source": "instagram",
+          "consent": "granted",
+          "social_queries": 4,
+          "catalog_queries": 3,
+          "touch": false,
+          "keyboard": true,
+          "reduced_motion": false,
+          "actual_catalog_navigation": true,
+          "exact_offer_anchor": true,
+          "session_campaign_preserved": true,
+          "optional_fields_stripped": false,
+          "wrong_variants_excluded": false,
+          "analytics_requests": 10,
+          "merchant_clickouts": 0
+        },
+        {
+          "suite": "rc1-name-alias",
+          "width": 1440,
+          "source": "tiktok",
+          "consent": "denied",
+          "social_queries": 4,
+          "catalog_queries": 3,
+          "touch": false,
+          "keyboard": true,
+          "reduced_motion": true,
+          "actual_catalog_navigation": true,
+          "exact_offer_anchor": true,
+          "session_campaign_preserved": false,
+          "optional_fields_stripped": true,
+          "wrong_variants_excluded": false,
+          "analytics_requests": 0,
+          "merchant_clickouts": 0
+        }
+      ]
+    },
+    {
+      "label": "catalog-recovery",
+      "status": "passed",
+      "cases": 9
+    },
+    {
+      "label": "site13-storage-and-mobile-funnel",
+      "status": "passed",
+      "cases": 12
+    },
+    {
+      "label": "first-money-funnel-attribution",
+      "status": "passed",
+      "cases": 4
+    },
+    {
+      "label": "home-catalog-hydration",
+      "status": "passed",
+      "cases": 2
+    },
+    {
+      "label": "footer-navigation-attribution",
+      "status": "passed",
+      "cases": 36
+    },
+    {
+      "label": "error-recovery-navigation-attribution",
+      "status": "passed",
+      "cases": 8
+    },
+    {
+      "label": "library-navigation-attribution",
+      "status": "passed",
+      "cases": 56
+    },
+    {
+      "label": "home-navigation-attribution",
+      "status": "passed",
+      "cases": 32
+    },
+    {
+      "label": "acquisition-landing-navigation-attribution",
+      "status": "passed"
+    },
+    {
+      "label": "social-catalog-navigation-attribution",
+      "status": "passed"
+    },
+    {
+      "label": "social-search-attribution-handoff",
+      "status": "passed"
+    },
+    {
+      "label": "guided-link-attribution-handoff",
+      "status": "passed"
+    },
+    {
+      "label": "guided-start-url-context",
+      "status": "passed"
+    },
+    {
+      "label": "social-search-keyboard-dismissal",
+      "status": "passed"
+    },
+    {
+      "label": "library-import-latest-selection",
+      "status": "passed"
+    },
+    {
+      "label": "library-import-current-replacement",
+      "status": "passed"
+    },
+    {
+      "label": "product-share-latest-attempt",
+      "status": "passed"
+    },
+    {
+      "label": "manual-share-session-isolation",
+      "status": "passed"
+    },
+    {
+      "label": "analytics-event-post-timeout-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "library-read-failure-feedback",
+      "status": "passed",
+      "cases": 48
+    },
+    {
+      "label": "library-export-current-read",
+      "status": "passed",
+      "cases": 16
+    },
+    {
+      "label": "library-import-read-confirmation",
+      "status": "passed",
+      "cases": 16
+    },
+    {
+      "label": "library-save-read-recovery",
+      "status": "passed",
+      "cases": 16
+    },
+    {
+      "label": "library-save-storage-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "library-clear-storage-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "public-share-session-isolation-390",
+      "status": "passed"
+    },
+    {
+      "label": "offer-recovery-12-cases",
+      "status": "passed"
+    },
+    {
+      "label": "advisor-product-detail-recovery-390",
+      "status": "passed"
+    },
+    {
+      "label": "home-audience-visible-counts",
+      "status": "passed",
+      "counts": {
+        "men": 17,
+        "women": 4,
+        "unisex": 16
+      }
+    },
+    {
+      "label": "home-320",
+      "status": "passed",
+      "title": "DUFYND – Duftberatung & Parfumvergleich",
+      "body_length": 2935,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "social-start-320",
+      "status": "passed",
+      "title": "DUFYND – Duftfinder, Katalog, Alternativen & Geschenkberatung | DUFYND",
+      "body_length": 2563,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "acquisition-duftfinder-320",
+      "status": "passed",
+      "title": "Duftfinder – Parfum nach Anlass, Budget & Profil | DUFYND",
+      "body_length": 2274,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "catalog-320",
+      "status": "passed",
+      "title": "Parfums entdecken | DUFYND",
+      "body_length": 3933,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "comparisons-320",
+      "status": "passed",
+      "title": "Parfumvergleiche | DUFYND",
+      "body_length": 9947,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "comparison-turathi-tygar-320",
+      "status": "passed",
+      "title": "Afnan Perfumes Turathi Blue vs. Bvlgari Le Gemme Tygar | DUFYND",
+      "body_length": 2996,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "delina-320",
+      "status": "passed",
+      "title": "Parfums de Marly Delina – Eau de Parfum 75 ml | DUFYND",
+      "body_length": 2630,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "naxos-320",
+      "status": "passed",
+      "title": "Xerjoff Naxos – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3251,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "absolu-aventus-320",
+      "status": "passed",
+      "title": "Creed Absolu Aventus – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3334,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "prada-lhomme-320",
+      "status": "passed",
+      "title": "Prada L'Homme – Eau de Toilette 100 ml | DUFYND",
+      "body_length": 2637,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "bois-imperial-320",
+      "status": "passed",
+      "title": "Essential Parfums Bois Impérial – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2701,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "swy-intensely-320",
+      "status": "passed",
+      "title": "Giorgio Armani Stronger With You Intensely – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2691,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "vibrato-320",
+      "status": "passed",
+      "title": "Sospiro Vibrato – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3541,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "rabanne-1-million-320",
+      "status": "passed",
+      "title": "Rabanne 1 Million – Eau de Toilette 100 ml | DUFYND",
+      "body_length": 2229,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "la-vie-est-belle-320",
+      "status": "passed",
+      "title": "Lancôme La Vie est Belle – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2664,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "home-audience-visible-counts",
+      "status": "passed",
+      "counts": {
+        "men": 17,
+        "women": 4,
+        "unisex": 16
+      }
+    },
+    {
+      "label": "home-390",
+      "status": "passed",
+      "title": "DUFYND – Duftberatung & Parfumvergleich",
+      "body_length": 2935,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "social-start-390",
+      "status": "passed",
+      "title": "DUFYND – Duftfinder, Katalog, Alternativen & Geschenkberatung | DUFYND",
+      "body_length": 2563,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "acquisition-duftfinder-390",
+      "status": "passed",
+      "title": "Duftfinder – Parfum nach Anlass, Budget & Profil | DUFYND",
+      "body_length": 2274,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "catalog-390",
+      "status": "passed",
+      "title": "Parfums entdecken | DUFYND",
+      "body_length": 3933,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "comparisons-390",
+      "status": "passed",
+      "title": "Parfumvergleiche | DUFYND",
+      "body_length": 9947,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "comparison-turathi-tygar-390",
+      "status": "passed",
+      "title": "Afnan Perfumes Turathi Blue vs. Bvlgari Le Gemme Tygar | DUFYND",
+      "body_length": 2996,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "delina-390",
+      "status": "passed",
+      "title": "Parfums de Marly Delina – Eau de Parfum 75 ml | DUFYND",
+      "body_length": 2630,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "naxos-390",
+      "status": "passed",
+      "title": "Xerjoff Naxos – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3251,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "absolu-aventus-390",
+      "status": "passed",
+      "title": "Creed Absolu Aventus – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3334,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "prada-lhomme-390",
+      "status": "passed",
+      "title": "Prada L'Homme – Eau de Toilette 100 ml | DUFYND",
+      "body_length": 2637,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "bois-imperial-390",
+      "status": "passed",
+      "title": "Essential Parfums Bois Impérial – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2701,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "swy-intensely-390",
+      "status": "passed",
+      "title": "Giorgio Armani Stronger With You Intensely – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2691,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "vibrato-390",
+      "status": "passed",
+      "title": "Sospiro Vibrato – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3541,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "rabanne-1-million-390",
+      "status": "passed",
+      "title": "Rabanne 1 Million – Eau de Toilette 100 ml | DUFYND",
+      "body_length": 2229,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "la-vie-est-belle-390",
+      "status": "passed",
+      "title": "Lancôme La Vie est Belle – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2664,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "home-audience-visible-counts",
+      "status": "passed",
+      "counts": {
+        "men": 17,
+        "women": 4,
+        "unisex": 16
+      }
+    },
+    {
+      "label": "home-768",
+      "status": "passed",
+      "title": "DUFYND – Duftberatung & Parfumvergleich",
+      "body_length": 2937,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "social-start-768",
+      "status": "passed",
+      "title": "DUFYND – Duftfinder, Katalog, Alternativen & Geschenkberatung | DUFYND",
+      "body_length": 2563,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "acquisition-duftfinder-768",
+      "status": "passed",
+      "title": "Duftfinder – Parfum nach Anlass, Budget & Profil | DUFYND",
+      "body_length": 2274,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "catalog-768",
+      "status": "passed",
+      "title": "Parfums entdecken | DUFYND",
+      "body_length": 4763,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "comparisons-768",
+      "status": "passed",
+      "title": "Parfumvergleiche | DUFYND",
+      "body_length": 9947,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "comparison-turathi-tygar-768",
+      "status": "passed",
+      "title": "Afnan Perfumes Turathi Blue vs. Bvlgari Le Gemme Tygar | DUFYND",
+      "body_length": 2996,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "delina-768",
+      "status": "passed",
+      "title": "Parfums de Marly Delina – Eau de Parfum 75 ml | DUFYND",
+      "body_length": 2645,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "naxos-768",
+      "status": "passed",
+      "title": "Xerjoff Naxos – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3266,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "absolu-aventus-768",
+      "status": "passed",
+      "title": "Creed Absolu Aventus – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3349,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "prada-lhomme-768",
+      "status": "passed",
+      "title": "Prada L'Homme – Eau de Toilette 100 ml | DUFYND",
+      "body_length": 2652,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "bois-imperial-768",
+      "status": "passed",
+      "title": "Essential Parfums Bois Impérial – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2716,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "swy-intensely-768",
+      "status": "passed",
+      "title": "Giorgio Armani Stronger With You Intensely – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2706,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "vibrato-768",
+      "status": "passed",
+      "title": "Sospiro Vibrato – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3556,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "rabanne-1-million-768",
+      "status": "passed",
+      "title": "Rabanne 1 Million – Eau de Toilette 100 ml | DUFYND",
+      "body_length": 2244,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "la-vie-est-belle-768",
+      "status": "passed",
+      "title": "Lancôme La Vie est Belle – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2679,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "home-audience-visible-counts",
+      "status": "passed",
+      "counts": {
+        "men": 17,
+        "women": 4,
+        "unisex": 16
+      }
+    },
+    {
+      "label": "home-1440",
+      "status": "passed",
+      "title": "DUFYND – Duftberatung & Parfumvergleich",
+      "body_length": 2937,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "social-start-1440",
+      "status": "passed",
+      "title": "DUFYND – Duftfinder, Katalog, Alternativen & Geschenkberatung | DUFYND",
+      "body_length": 2563,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "acquisition-duftfinder-1440",
+      "status": "passed",
+      "title": "Duftfinder – Parfum nach Anlass, Budget & Profil | DUFYND",
+      "body_length": 2274,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "catalog-1440",
+      "status": "passed",
+      "title": "Parfums entdecken | DUFYND",
+      "body_length": 4763,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "comparisons-1440",
+      "status": "passed",
+      "title": "Parfumvergleiche | DUFYND",
+      "body_length": 9947,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "comparison-turathi-tygar-1440",
+      "status": "passed",
+      "title": "Afnan Perfumes Turathi Blue vs. Bvlgari Le Gemme Tygar | DUFYND",
+      "body_length": 2996,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "delina-1440",
+      "status": "passed",
+      "title": "Parfums de Marly Delina – Eau de Parfum 75 ml | DUFYND",
+      "body_length": 2645,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "naxos-1440",
+      "status": "passed",
+      "title": "Xerjoff Naxos – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3266,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "absolu-aventus-1440",
+      "status": "passed",
+      "title": "Creed Absolu Aventus – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3349,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "prada-lhomme-1440",
+      "status": "passed",
+      "title": "Prada L'Homme – Eau de Toilette 100 ml | DUFYND",
+      "body_length": 2652,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "bois-imperial-1440",
+      "status": "passed",
+      "title": "Essential Parfums Bois Impérial – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2716,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "swy-intensely-1440",
+      "status": "passed",
+      "title": "Giorgio Armani Stronger With You Intensely – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2706,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "vibrato-1440",
+      "status": "passed",
+      "title": "Sospiro Vibrato – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 3556,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "rabanne-1-million-1440",
+      "status": "passed",
+      "title": "Rabanne 1 Million – Eau de Toilette 100 ml | DUFYND",
+      "body_length": 2244,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "la-vie-est-belle-1440",
+      "status": "passed",
+      "title": "Lancôme La Vie est Belle – Eau de Parfum 100 ml | DUFYND",
+      "body_length": 2679,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "catalog-share-link",
+      "status": "passed"
+    },
+    {
+      "label": "catalog-audience-men",
+      "status": "passed",
+      "count": 17
+    },
+    {
+      "label": "catalog-audience-women",
+      "status": "passed",
+      "count": 4
+    },
+    {
+      "label": "catalog-audience-unisex",
+      "status": "passed",
+      "count": 16
+    },
+    {
+      "label": "catalog-audience-exclusive",
+      "status": "passed",
+      "count": 37
+    },
+    {
+      "label": "catalog-mobile-filter-interaction",
+      "status": "passed"
+    },
+    {
+      "label": "product-image-error-fallback",
+      "status": "passed"
+    },
+    {
+      "label": "product-image-error-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "product-studio-background-source-isolation",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-offer-request-timeout",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-offer-timeout-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "analytics-session-request-timeout",
+      "status": "passed"
+    },
+    {
+      "label": "analytics-session-timeout-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-clickout-attribution-link",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-clickout-live-consent-event",
+      "status": "passed"
+    },
+    {
+      "label": "offer-section-impression-tracking",
+      "status": "passed"
+    },
+    {
+      "label": "acquisition-navigation-clickout-attribution",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-clickout-session-correlation",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-discovery-session-correlation",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-discovery-session-failure-fallback",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-discovery-loading-stability",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-discovery-load-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-partner-request-timeout",
+      "status": "passed"
+    },
+    {
+      "label": "merchant-partner-timeout-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "storefront-session-request-timeout",
+      "status": "passed"
+    },
+    {
+      "label": "storefront-session-timeout-recovery",
+      "status": "passed"
+    },
+    {
+      "label": "product-detail-navigation-attribution",
+      "status": "passed"
+    },
+    {
+      "label": "comparison-detail-navigation-attribution",
+      "status": "passed"
+    },
+    {
+      "label": "comparison-footer-navigation-attribution",
+      "status": "passed"
+    },
+    {
+      "label": "comparison-internal-navigation-attribution",
+      "status": "passed"
+    },
+    {
+      "label": "comparison-product-navigation-attribution",
+      "status": "passed"
+    },
+    {
+      "label": "comparison-share-link",
+      "status": "passed"
+    },
+    {
+      "label": "library-backup-roundtrip",
+      "status": "passed"
+    },
+    {
+      "label": "blocked-detail-widian-london-390",
+      "status": "passed",
+      "http_status": 404
+    },
+    {
+      "label": "detail-sweep-afnan-perfumes-supremacy-collectors-edition-390",
+      "status": "passed",
+      "body_length": 3323,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-afnan-perfumes-turathi-blue-390",
+      "status": "passed",
+      "body_length": 3403,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-al-ambra-dubai-musk-390",
+      "status": "passed",
+      "body_length": 2712,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-al-haramain-detour-noir-390",
+      "status": "passed",
+      "body_length": 3304,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-al-wataniah-kayaan-classic-390",
+      "status": "passed",
+      "body_length": 3107,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-arabiyat-prestige-marwa-390",
+      "status": "passed",
+      "body_length": 3440,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-arabiyat-prestige-marwa-extrait-390",
+      "status": "passed",
+      "body_length": 3520,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-armaf-club-de-nuit-intense-man-390",
+      "status": "passed",
+      "body_length": 3284,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-bujairami-hectic-390",
+      "status": "passed",
+      "body_length": 3529,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-bvlgari-le-gemme-tygar-390",
+      "status": "passed",
+      "body_length": 3372,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-chanel-bleu-de-chanel-390",
+      "status": "passed",
+      "body_length": 2761,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-clive-christian-jump-up-and-kiss-me-hedonistic-390",
+      "status": "passed",
+      "body_length": 2824,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-creed-absolu-aventus-390",
+      "status": "passed",
+      "body_length": 3334,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-creed-aventus-390",
+      "status": "passed",
+      "body_length": 3262,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-dior-dior-homme-intense-390",
+      "status": "passed",
+      "body_length": 3079,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-dior-sauvage-390",
+      "status": "passed",
+      "body_length": 2674,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-essential-parfums-bois-imperial-390",
+      "status": "passed",
+      "body_length": 2701,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-french-avenue-liquid-brun-390",
+      "status": "passed",
+      "body_length": 3164,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-giorgio-armani-stronger-with-you-intensely-390",
+      "status": "passed",
+      "body_length": 2691,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-lancome-la-vie-est-belle-390",
+      "status": "passed",
+      "body_length": 2664,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-louis-vuitton-imagination-390",
+      "status": "passed",
+      "body_length": 3534,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-maison-asrar-regent-390",
+      "status": "passed",
+      "body_length": 3482,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-maison-asrar-vanguard-390",
+      "status": "passed",
+      "body_length": 3394,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-montblanc-explorer-390",
+      "status": "passed",
+      "body_length": 3274,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-nusuk-ateeq-390",
+      "status": "passed",
+      "body_length": 3254,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-orientica-royal-bleu-390",
+      "status": "passed",
+      "body_length": 3313,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-parfums-de-marly-althair-390",
+      "status": "passed",
+      "body_length": 3151,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-parfums-de-marly-delina-390",
+      "status": "passed",
+      "body_length": 2630,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-parfums-de-marly-layton-390",
+      "status": "passed",
+      "body_length": 3300,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-prada-lhomme-390",
+      "status": "passed",
+      "body_length": 2637,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-rabanne-1-million-390",
+      "status": "passed",
+      "body_length": 2229,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-rayhaan-italia-390",
+      "status": "passed",
+      "body_length": 3215,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-sospiro-vibrato-390",
+      "status": "passed",
+      "body_length": 3541,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-valentino-uomo-born-in-roma-intense-390",
+      "status": "passed",
+      "body_length": 2698,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-xerjoff-naxos-390",
+      "status": "passed",
+      "body_length": 3251,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-yves-saint-laurent-black-opium-390",
+      "status": "passed",
+      "body_length": 2634,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    },
+    {
+      "label": "detail-sweep-yves-saint-laurent-libre-390",
+      "status": "passed",
+      "body_length": 7358,
+      "horizontal_overflow": 0,
+      "visible_broken_images": [],
+      "forbidden_ui": [],
+      "directory_listing": false
+    }
+  ],
+  "failures": []
+}

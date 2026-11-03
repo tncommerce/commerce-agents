@@ -45,7 +45,7 @@
         "relationship_links": "SC-ARABIYAT-MARWA-EDP-100|inspired|high;SC-ARABIYAT-MARWA-EXTRAIT-60|inspired|medium;SC-BUJAIRAMI-HECTIC-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Louis Vuitton Imagination is a fresh, citrus, aquatic Eau de Parfum fragrance."
+      "short_description": "Imagination verbindet kalabrische Bergamotte und tunesisches Neroli mit schwarzem Tee. Ingwer, Zimt und Ambrox ergänzen das zitrische Duftprofil."
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EDP-100",
@@ -91,7 +91,7 @@
         "relationship_links": "SC-LV-IMAGINATION-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Arabiyat Prestige Marwa is a fresh, citrus, aquatic Eau de Parfum fragrance."
+      "short_description": "Bei Marwa Eau de Parfum treffen Bergamotte, Petitgrain und Ingwer auf Tee, Geranie und Weihrauch. Guajakholz, Ambroxan und Moschus bilden die Basis."
     },
     {
       "product_id": "SC-ARABIYAT-MARWA-EXTRAIT-60",
@@ -138,7 +138,7 @@
         "relationship_links": "SC-LV-IMAGINATION-100|inspired|medium"
       },
       "in_stock": true,
-      "short_description": "Arabiyat Prestige Marwa Extrait is a fresh, spicy, citrus Extrait de Parfum fragrance."
+      "short_description": "Marwa Extrait eröffnet mit Bergamotte, Orange und Zitrone. Zimt, Ingwer und Neroli führen zu schwarzem Tee, Guajakholz, Ambroxan und Weihrauch."
     },
     {
       "product_id": "SC-BUJAIRAMI-HECTIC-100",
@@ -184,7 +184,7 @@
         "relationship_links": "SC-LV-IMAGINATION-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Bujairami Hectic is a citrus, fresh, spicy Extrait de Parfum fragrance."
+      "short_description": "Hectic kombiniert Bergamotte, Orange und Zedratzitrone mit Ingwer, Zimt und Neroli. Schwarzer Tee, Guajakholz, Ambroxan und Weihrauch ergänzen die Basis."
     },
     {
       "product_id": "SC-CREED-AVENTUS-100",
@@ -230,7 +230,7 @@
         "relationship_links": "SC-ARMAF-CDNIM-EDP-200|clone|high;SC-MONTBLANC-EXPLORER-100|alternative|high"
       },
       "in_stock": true,
-      "short_description": "Creed Aventus is a fresh, fruity, citrus Eau de Parfum fragrance."
+      "short_description": "Aventus verbindet einen Ananasakkord mit kalabrischer Bergamotte. Birke und trockene Hölzer setzen dazu einen holzigen Gegenpol."
     },
     {
       "product_id": "SC-CREED-ABSOLU-AVENTUS-100",
@@ -276,7 +276,7 @@
         "relationship_links": "SC-AFNAN-SUPREMACY-COLLECTORS-100|inspired|high;SC-MAISON-ASRAR-VANGUARD-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Creed Absolu Aventus is a fruity, fresh, citrus Eau de Parfum fragrance."
+      "short_description": "Absolu Aventus verbindet Ananas und Bergamotte mit Kardamom und Labdanum. Grapefruit, Ingwer, Zimt und haitianischer Vetiver ergänzen das Duftprofil."
     },
     {
       "product_id": "SC-AFNAN-SUPREMACY-COLLECTORS-100",
@@ -322,7 +322,7 @@
         "relationship_links": "SC-CREED-ABSOLU-AVENTUS-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Afnan Perfumes Supremacy Collector's Edition is a fruity, fresh, citrus Eau de Parfum fragrance."
+      "short_description": "Ananas, Bergamotte und Apfel prägen Supremacy Collector’s Edition. Orangenblüte, Birke und Ambra führen zu einer Basis aus Eichenmoos, Moschus und Ambergris."
     },
     {
       "product_id": "SC-MAISON-ASRAR-VANGUARD-100",
@@ -368,7 +368,7 @@
         "relationship_links": "SC-CREED-ABSOLU-AVENTUS-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Maison Asrar Vanguard is a fruity, fresh, woody Eau de Parfum fragrance."
+      "short_description": "Vanguard verbindet Apfel, Ananas und schwarze Johannisbeere mit Zitrusnoten und rosa Pfeffer. Blüten, Zedernholz, Leder, Moos und Moschus ergänzen den Duft."
     },
     {
       "product_id": "SC-ARMAF-CDNIM-EDP-200",
@@ -414,7 +414,7 @@
         "relationship_links": "SC-CREED-AVENTUS-100|clone|high"
       },
       "in_stock": true,
-      "short_description": "Armaf Club de Nuit Intense Man is a citrus, smoky, fresh Eau de Parfum fragrance."
+      "short_description": "Club de Nuit Intense Man Eau de Parfum kombiniert Zitrone, Ananas und schwarze Johannisbeere. Birke, Jasmin und Rose treffen auf Ambra, Moschus, Patchouli und Vanille."
     },
     {
       "product_id": "SC-MONTBLANC-EXPLORER-100",
@@ -460,12 +460,12 @@
         "relationship_links": "SC-CREED-AVENTUS-100|alternative|high"
       },
       "in_stock": true,
-      "short_description": "Montblanc Explorer is a fresh, citrus, woody Eau de Parfum fragrance."
+      "short_description": "Explorer beginnt mit Bergamotte, rosa Pfeffer und Muskatellersalbei. Patchouli, Mahonie und Ambrofix treffen auf Vetiver, Leder und Zedernholz."
     },
     {
       "product_id": "SC-PDM-LAYTON-125",
       "title": "Parfums de Marly Layton Eau de Parfum 125 ml",
-      "image_url": "/products/pilot/pdm-layton-editorial.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/1/812773_3700578502322_051.png",
       "brand": "Parfums de Marly",
       "price": 219.26,
       "currency": "EUR",
@@ -503,10 +503,20 @@
         "market_price_eur": "219.26",
         "price_per_ml_eur": "1.75408",
         "price_checked_at": "2026-09-09",
-        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high"
+        "relationship_links": "SC-AL-HARAMAIN-DETOUR-NOIR-100|clone|high;SC-ORIENTICA-ROYAL-BLEU-80|inspired|high",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.833071+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "b93170d4eadbcbf1ec20173d467ea3ae2c327910674def2a9e7f246e029b11fd",
+        "image_variant": "125ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-layton-edp-nat-spray",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
-      "short_description": "Parfums de Marly Layton is a sweet, spicy, fruity Eau de Parfum fragrance."
+      "short_description": "Layton verbindet Apfel, Bergamotte und Kardamom mit Lavendel, Veilchen und Geranie. Vanille, Praline, Patchouli und Guajakholz bilden die Basis."
     },
     {
       "product_id": "SC-AL-HARAMAIN-DETOUR-NOIR-100",
@@ -552,7 +562,7 @@
         "relationship_links": "SC-PDM-LAYTON-125|clone|high"
       },
       "in_stock": true,
-      "short_description": "Al Haramain Détour Noir is a sweet, spicy, fruity Eau de Parfum fragrance."
+      "short_description": "Détour Noir vereint Apfel, Lavendel und Blütennoten mit Vanille und Zitrusnoten. Kardamom, Pfeffer, Sandelholz und Guajakholz ergänzen das würzige Profil."
     },
     {
       "product_id": "SC-ORIENTICA-ROYAL-BLEU-80",
@@ -598,12 +608,12 @@
         "relationship_links": "SC-PDM-LAYTON-125|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Orientica Royal Bleu is a sweet, spicy, oriental Eau de Parfum fragrance."
+      "short_description": "Royal Bleu kombiniert Bergamotte, Mandarine und grünen Apfel mit Lavendel und Pfeffer. Veilchen, Jasmin und Kardamom führen zu Vanille, Moschus und Hölzern."
     },
     {
       "product_id": "SC-PDM-ALTHAIR-125",
       "title": "Parfums de Marly Althaïr Eau de Parfum 125 ml",
-      "image_url": "/products/pilot/pdm-althair-editorial.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/0/904707_904707_061.png",
       "brand": "Parfums de Marly",
       "price": 239.99,
       "currency": "EUR",
@@ -641,10 +651,20 @@
         "market_price_eur": "239.99",
         "price_per_ml_eur": "1.91992",
         "price_checked_at": "2026-09-09",
-        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high"
+        "relationship_links": "SC-FRENCH-AVENUE-LIQUID-BRUN-100|clone|high",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:58.107745+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "e6326a3d151c6fff315f745acecdac56ed71dcecd0c93a00af3a3d475e588910",
+        "image_variant": "125ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/parfums-de-marly-althair-edp-nat-spray",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
-      "short_description": "Parfums de Marly Althaïr is a sweet, gourmand, creamy Eau de Parfum fragrance."
+      "short_description": "Althaïr verbindet Bergamotte, Mandarine und Elemi mit Orangenblüte, Zimt und Kardamom. Bourbonvanille, Praline und Guajakholz prägen die Basis."
     },
     {
       "product_id": "SC-FRENCH-AVENUE-LIQUID-BRUN-100",
@@ -690,7 +710,7 @@
         "relationship_links": "SC-PDM-ALTHAIR-125|clone|high"
       },
       "in_stock": true,
-      "short_description": "French Avenue Liquid Brun is a sweet, gourmand, creamy Eau de Parfum fragrance."
+      "short_description": "Liquid Brun eröffnet mit Zimt, Bergamotte, Kardamom und Orangenblüte. Bourbonvanille und Elemi treffen auf Praline, Moschus, Ambroxan und Guajakholz."
     },
     {
       "product_id": "SC-BVLGARI-TYGAR-125",
@@ -736,7 +756,7 @@
         "relationship_links": "SC-SOSPIRO-VIBRATO-100|alternative|high;SC-AFNAN-TURATHI-BLUE-90|inspired|high;SC-MAISON-ASRAR-REGENT-100|inspired|medium_high"
       },
       "in_stock": true,
-      "short_description": "Bvlgari Le Gemme Tygar is a citrus, fresh, woody Eau de Parfum fragrance."
+      "short_description": "Le Gemme Tygar konzentriert sein Duftprofil auf Grapefruit und Ambergris. Die zitrische Note steht im Mittelpunkt dieser Eau-de-Parfum-Variante."
     },
     {
       "product_id": "SC-SOSPIRO-VIBRATO-100",
@@ -783,7 +803,7 @@
         "product_cutout_url": "/products/sospiro-vibrato-100-cutout-production.webp"
       },
       "in_stock": true,
-      "short_description": "Sospiro Vibrato is a citrus, fresh, fruity Eau de Parfum fragrance."
+      "short_description": "Vibrato kombiniert Grapefruit, Bergamotte und Mandarine mit Ingwer und Rosmarin. Magnolie, Rose und Hölzer treffen auf Vetiver, Moschus, Ambra und Tonkabohne."
     },
     {
       "product_id": "SC-AFNAN-TURATHI-BLUE-90",
@@ -829,7 +849,7 @@
         "relationship_links": "SC-BVLGARI-TYGAR-125|inspired|high;SC-SOSPIRO-VIBRATO-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Afnan Perfumes Turathi Blue is a citrus, fresh, fruity Eau de Parfum fragrance."
+      "short_description": "Turathi Blue beginnt mit Mandarine und Bergamotte. Ambra und holzige Noten führen zu einer Basis aus Moschus, Gewürzen und Patchouli."
     },
     {
       "product_id": "SC-MAISON-ASRAR-REGENT-100",
@@ -876,12 +896,12 @@
         "relationship_links": "SC-BVLGARI-TYGAR-125|inspired|medium_high;SC-SOSPIRO-VIBRATO-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Maison Asrar Regent is a citrus, fresh, floral Eau de Parfum fragrance."
+      "short_description": "Regent verbindet Bergamotte, Grapefruit und Mandarine mit Ingwer. Iriswurzel, Jasmin und Orangenblüte treffen auf Ambra, Hölzer, Moschus und Tonkabohne."
     },
     {
       "product_id": "SC-ARMANI-SWY-INTENSELY-100",
       "title": "Giorgio Armani Stronger With You Intensely Eau de Parfum 100 ml",
-      "image_url": "/products/armani-swy-intensely-100-cutout-production.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
       "brand": "Giorgio Armani",
       "price": 66.04,
       "currency": "EUR",
@@ -920,10 +940,20 @@
         "price_per_ml_eur": "0.6604",
         "price_checked_at": "2026-09-09",
         "relationship_links": "",
-        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp"
+        "product_cutout_url": "/products/armani-swy-intensely-100-cutout-production.webp",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.832040+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "4aa8365d13506312fbc1cf591ec971c52786d987ccb046cddb5c6632ca30f5ac",
+        "image_variant": "100ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/giorgio-armani-emporio-armani-stronger-with-you-intensely-edp-nat-spray",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
-      "short_description": "Giorgio Armani Stronger With You Intensely is a sweet, gourmand, spicy Eau de Parfum fragrance."
+      "short_description": "Stronger With You Intensely verbindet Kastanie und rosa Pfeffer mit Lavendel und Salbei. Vanille und Amberholz bilden die Basis des Eau de Parfum."
     },
     {
       "product_id": "SC-XERJOFF-NAXOS-100",
@@ -970,7 +1000,7 @@
         "product_cutout_url": "/products/naxos-cutout-production.webp"
       },
       "in_stock": true,
-      "short_description": "Xerjoff Naxos is a sweet, spicy, gourmand Eau de Parfum fragrance."
+      "short_description": "Naxos verbindet Lavendel, Bergamotte und Zitrone mit Honig, Jasmin und Zimt. Tabak, Tonkabohne und Vanille prägen die Basis."
     },
     {
       "product_id": "SC-NUSUK-ATEEQ-100",
@@ -1016,7 +1046,7 @@
         "relationship_links": "SC-XERJOFF-NAXOS-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Nusuk Ateeq is a sweet, spicy, gourmand Extrait de Parfum fragrance."
+      "short_description": "Ateeq kombiniert Honig, Ambra und Zimt mit Grapefruit und Limette. Tabak, Lavendel und Jasmin führen zu Tonkabohne, Vanilleorchidee, Moschus und Zedernholz."
     },
     {
       "product_id": "SC-RAYHAAN-ITALIA-100",
@@ -1062,7 +1092,7 @@
         "relationship_links": "SC-XERJOFF-NAXOS-100|inspired|high"
       },
       "in_stock": true,
-      "short_description": "Rayhaan Italia is a sweet, spicy, creamy Eau de Parfum fragrance."
+      "short_description": "Italia beginnt mit Lavendel, Bergamotte und Zitrone. Honig, Zimt, Jasmin und Cashmeran treffen auf eine Basis aus Tabak, Tonkabohne und Vanille."
     },
     {
       "product_id": "SC-DIOR-HOMME-INTENSE-100",
@@ -1108,7 +1138,7 @@
         "relationship_links": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100|clone|high"
       },
       "in_stock": true,
-      "short_description": "Dior Homme Intense is a floral, powdery, sweet Eau de Parfum fragrance."
+      "short_description": "Dior Homme Intense stellt Iris in den Mittelpunkt. Ambrettesamen und holzige Noten ergänzen das Eau de Parfum."
     },
     {
       "product_id": "SC-AL-WATANIAH-KAYAAN-CLASSIC-100",
@@ -1154,12 +1184,12 @@
         "relationship_links": "SC-DIOR-HOMME-INTENSE-100|clone|high"
       },
       "in_stock": true,
-      "short_description": "Al Wataniah Kayaan Classic is a powdery, sweet, woody Eau de Parfum fragrance."
+      "short_description": "Kayaan Classic verbindet Iris und italienische Orange mit Leder und Rose. Ambrette, Zeder, Sandelholz und Oud bilden die Basis."
     },
     {
       "product_id": "SC-VALENTINO-BORN-IN-ROMA-INTENSE-100",
       "title": "Valentino Uomo Born In Roma Intense Eau de Parfum 100 ml",
-      "image_url": "/products/pilot/valentino-born-in-roma-intense-editorial.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/9/897029_3614273790826_051.png",
       "brand": "Valentino",
       "price": 66,
       "currency": "EUR",
@@ -1197,10 +1227,20 @@
         "market_price_eur": "66.0",
         "price_per_ml_eur": "0.66",
         "price_checked_at": "2026-09-10",
-        "relationship_links": ""
+        "relationship_links": "",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.834066+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "519f29b93f51457a04cfec5ede205d2ca42c3d13f040ac179c2e2694eaaf302f",
+        "image_variant": "100ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/valentino-uomo-born-in-roma-intense-edp-nat-spray-intense",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
-      "short_description": "Valentino Uomo Born In Roma Intense is a sweet, synthetic, fresh Eau de Parfum fragrance."
+      "short_description": "Uomo Born in Roma Intense verbindet Vanille und Ingwer mit provenzalischem Lavendel und Muskatnuss. Haitianischer Vetiver ergänzt das Eau de Parfum."
     },
     {
       "product_id": "SC-CLIVE-CHRISTIAN-HEDONISTIC-50",
@@ -1246,7 +1286,7 @@
         "relationship_links": ""
       },
       "in_stock": true,
-      "short_description": "Clive Christian Jump Up and Kiss Me Hedonistic is a sweet, fruity, spicy Parfum fragrance."
+      "short_description": "Jump Up and Kiss Me Hedonistic verbindet schwarze Kirsche mit Zitrusnoten, Salbei und Maté. Iris, Kakao und Tabak treffen auf Leder, Labdanum, Tonkabohne und Vanille."
     },
     {
       "product_id": "SC-CHANEL-BLEU-DE-CHANEL-EDP-100",
@@ -1292,7 +1332,7 @@
         "relationship_links": ""
       },
       "in_stock": true,
-      "short_description": "Chanel Bleu de Chanel is a fresh, citrus, woody Eau de Parfum fragrance."
+      "short_description": "Bleu de Chanel Eau de Parfum verbindet Zitrusnoten und Minze mit Ingwer, Muskat und Jasmin. Sandelholz, Vetiver, Weihrauch und Patchouli ergänzen die Basis."
     },
     {
       "product_id": "SC-DIOR-SAUVAGE-EDP-100",
@@ -1338,7 +1378,7 @@
         "relationship_links": ""
       },
       "in_stock": true,
-      "short_description": "Dior Sauvage is a fresh, spicy, synthetic Eau de Parfum fragrance."
+      "short_description": "Sauvage Eau de Parfum verbindet Bergamotte und Mandarine mit Sandelholz und Zeder. Vanille, Tonkabohne und Ambroxan ergänzen das Duftprofil."
     },
     {
       "product_id": "SC-PRADA-LHOMME-100",
@@ -1385,12 +1425,12 @@
         "product_cutout_url": "/products/prada-lhomme-100-cutout-production.webp"
       },
       "in_stock": true,
-      "short_description": "Prada L'Homme is a powdery, fresh, floral Eau de Toilette fragrance."
+      "short_description": "Prada L’Homme verbindet Neroli und Pfeffer mit Iris, Veilchen und Geranie. Ambra, Patchouli und Zeder ergänzen das Eau de Toilette."
     },
     {
       "product_id": "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
       "title": "Essential Parfums Bois Impérial Eau de Parfum 100 ml",
-      "image_url": "/products/pilot/bois-imperial-editorial.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/9/2/924719_3770010614630_051.png",
       "brand": "Essential Parfums",
       "price": 90.9,
       "currency": "EUR",
@@ -1428,10 +1468,20 @@
         "market_price_eur": "90.9",
         "price_per_ml_eur": "0.909",
         "price_checked_at": "2026-09-10",
-        "relationship_links": ""
+        "relationship_links": "",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.829585+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "2a961a37f2b349fe3b42b67f1285fdeeb38d428915c6ffd9219f002303d96b75",
+        "image_variant": "100ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/essential-parfums-bois-imperial-by-quentin-bisch-edp-nat-spray-nachfuellbar",
+        "image_source_merchant_id": "top-parfuemerie",
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed"
       },
       "in_stock": true,
-      "short_description": "Essential Parfums Bois Impérial is a fresh, woody, synthetic Eau de Parfum fragrance."
+      "short_description": "Bois Impérial verbindet Thai-Basilikum und Timut-Pfeffer mit haitianischem Vetiver. Georgywood und Akigalawood prägen die holzige Basis."
     },
     {
       "product_id": "SC-AL-AMBRA-DUBAI-MUSK-50",
@@ -1477,7 +1527,7 @@
         "relationship_links": ""
       },
       "in_stock": true,
-      "short_description": "Al Ambra Dubai Musk is a creamy, fresh, sweet Extrait de Parfum fragrance."
+      "short_description": "Dubai Musk kombiniert Magnolie und Zitrusnoten mit schwarzer Johannisbeere. Weißer und rosa Moschus treffen auf indisches Sandelholz."
     },
     {
       "product_id": "AR-1001",
@@ -3747,12 +3797,12 @@
         "image_share_alike_required": "true"
       },
       "in_stock": true,
-      "short_description": "Lancôme La Vie est Belle ist ein sweet, floral, fruity geprägter Duft."
+      "short_description": "La Vie est Belle verbindet Iris und Birne mit Orangenblüte und Jasmin. Ein Vanilleakkord und Patchouli ergänzen das Eau de Parfum."
     },
     {
       "product_id": "SC-RABANNE-1-MILLION-EDT-100",
       "title": "Rabanne 1 Million Eau de Toilette 100 ml",
-      "image_url": "/products/rabanne-1-million-edt-100-user-contentmaster.webp",
+      "image_url": "https://www.topparfuemerie.de/media/catalog/product/7/0/707368_3349666007921_051.png",
       "brand": "Rabanne",
       "price": 67.95,
       "currency": "EUR",
@@ -3790,8 +3840,17 @@
         "gtin": "3349666007921",
         "image_license_name": "",
         "image_license_url": "",
-        "image_attribution_text": "",
-        "image_share_alike_required": ""
+        "image_attribution_text": "top Parfümerie · Originalaufnahme aus dem offiziellen Awin-Produktfeed",
+        "image_share_alike_required": "",
+        "image_product_truth_provenance": "merchant_feed",
+        "image_reviewed_at": "2026-10-26T12:34:35.830868+00:00",
+        "image_rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+        "image_rights_checked_at": "2026-09-28",
+        "image_exact_variant_verified": "true",
+        "image_source_sha256": "3ba7e7de5e880986598d2a12897b7794268bcc426eea5a934d63a9b0945355aa",
+        "image_variant": "100ml",
+        "image_source_page_url": "https://www.topparfuemerie.de/rabanne-1-million-edt-nat-spray",
+        "image_source_merchant_id": "top-parfuemerie"
       },
       "in_stock": true,
       "short_description": "Rabanne 1 Million ist ein süß-würziger, orientalisch geprägter Duft."
@@ -3849,7 +3908,7 @@
         "image_variant": ""
       },
       "in_stock": true,
-      "short_description": "Parfums de Marly Delina ist ein floral, fruity, sweet geprägter Duft."
+      "short_description": "Delina verbindet Litschi, Rhabarber und Bergamotte mit türkischer Rose und Pfingstrose. Moschus, Vanille und Cashmeran ergänzen das Eau de Parfum."
     },
     {
       "product_id": "SC-YSL-LIBRE-EDP-90",
@@ -3904,7 +3963,7 @@
         "image_variant": ""
       },
       "in_stock": true,
-      "short_description": "Yves Saint Laurent Libre ist ein floral, sweet, fresh geprägter Duft."
+      "short_description": "Libre Eau de Parfum verbindet französischen Lavendel mit marokkanischer Orangenblüte. Vanille ergänzt das blumige Duftprofil."
     },
     {
       "product_id": "SC-YSL-BLACK-OPIUM-EDP-90",
@@ -3959,7 +4018,7 @@
         "image_variant": ""
       },
       "in_stock": true,
-      "short_description": "Yves Saint Laurent Black Opium ist ein sweet, gourmand, floral geprägter Duft."
+      "short_description": "Black Opium verbindet Kaffee und Vanille mit Orangenblüte, rosa Pfeffer und Jasmin. Patchouli und Zeder ergänzen das Eau de Parfum."
     }
   ]
 }

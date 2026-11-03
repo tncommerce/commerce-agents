@@ -1,0 +1,92 @@
+{
+  "production_sha": "5099ec4564a319c15bca8f8dc1c22a56c333e947",
+  "helper_blob": "51fa7b79fc7d830bc68406866a2169f93136f77a",
+  "data": "Unchanged public build, external requests blocked",
+  "observations": [
+    {
+      "route": "/duft",
+      "width": 390,
+      "query": "Black Opium EDP 90 ml",
+      "results": [
+        "Black Opium"
+      ]
+    },
+    {
+      "route": "/duft",
+      "width": 390,
+      "query": "BlackOpium EDP 90 ml",
+      "results": []
+    },
+    {
+      "route": "/duft",
+      "width": 390,
+      "query": "Bois Impérial EDP 100 ml",
+      "results": [
+        "Bois Impérial"
+      ]
+    },
+    {
+      "route": "/duft",
+      "width": 390,
+      "query": "BoisImperial EDP 100 ml",
+      "results": []
+    },
+    {
+      "route": "/duft",
+      "width": 390,
+      "query": "La Vie Est Belle EDP 100 ml",
+      "results": [
+        "La Vie est Belle"
+      ]
+    },
+    {
+      "route": "/duft",
+      "width": 390,
+      "query": "LaVieEstBelle EDP 100 ml",
+      "results": []
+    },
+    {
+      "route": "/start",
+      "width": 390,
+      "query": "Black Opium EDP 90 ml",
+      "results": [
+        "Black Opium"
+      ]
+    },
+    {
+      "route": "/start",
+      "width": 390,
+      "query": "BlackOpium EDP 90 ml",
+      "results": []
+    },
+    {
+      "route": "/start",
+      "width": 390,
+      "query": "Bois Impérial EDP 100 ml",
+      "results": [
+        "Bois Impérial"
+      ]
+    },
+    {
+      "route": "/start",
+      "width": 390,
+      "query": "BoisImperial EDP 100 ml",
+      "results": []
+    },
+    {
+      "route": "/start",
+      "width": 390,
+      "query": "La Vie Est Belle EDP 100 ml",
+      "results": [
+        "La Vie est Belle"
+      ]
+    },
+    {
+      "route": "/start",
+      "width": 390,
+      "query": "LaVieEstBelle EDP 100 ml",
+      "results": []
+    }
+  ],
+  "analytics_and_clickout_requests": []
+}

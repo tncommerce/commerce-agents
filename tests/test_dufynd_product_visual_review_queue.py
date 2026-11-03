@@ -62,7 +62,28 @@ def test_product_visual_review_queue_references_catalog_products() -> None:
         assert public_asset.is_file(), f"missing promoted asset: {public_asset}"
 
         product = products[product_id]
-        assert product["image_url"] == record["public_asset"]
+        replacement = record.get("storefront_primary_replacement")
+        if product_id == "SC-ARMANI-SWY-INTENSELY-100":
+            assert replacement == {
+                "image_url": "https://www.topparfuemerie.de/media/catalog/product/8/4/849484_3614272225718_051.png",
+                "provenance": "merchant_feed",
+                "rights_basis_id": "awin_top_parfuemerie_feed_materials_20260928",
+                "approval_basis": "explicit_user_visual_approval_2026-10-26",
+                "scope": "dufynd_storefront_primary_only",
+            }
+            assert product["image_url"] == replacement["image_url"]
+            assert any(
+                visual.get("url") == replacement["image_url"]
+                and visual.get("role") == "primary"
+                and visual.get("provenance") == replacement["provenance"]
+                and visual.get("rights_basis_id") == replacement["rights_basis_id"]
+                and visual.get("fidelity_status") == "verified"
+                and visual.get("variant") == "100ml"
+                for visual in product.get("visuals", [])
+            )
+        else:
+            assert replacement is None
+            assert product["image_url"] == record["public_asset"]
         assert any(
             visual.get("url") == record["public_asset"]
             and visual.get("role") in {"primary", "cutout"}

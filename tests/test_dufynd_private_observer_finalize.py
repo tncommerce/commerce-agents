@@ -80,6 +80,7 @@ def test_finalize_accepts_exact_receipt_then_reconciles(tmp_path: Path) -> None:
         path,
         expected_run_id="123456789",
         expected_sha="a" * 40,
+        expected_run_attempt="1",
     )
 
     assert result == {
@@ -102,6 +103,7 @@ def test_load_receipt_rejects_wrong_run_before_bridge(tmp_path: Path) -> None:
             path,
             expected_run_id="987654321",
             expected_sha="a" * 40,
+            expected_run_attempt="1",
         )
 
 
@@ -124,4 +126,5 @@ def test_load_receipt_rejects_incomplete_ack(summary: dict[str, int], tmp_path: 
             path,
             expected_run_id="123456789",
             expected_sha="a" * 40,
+            expected_run_attempt="1",
         )

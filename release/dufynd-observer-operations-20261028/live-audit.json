@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-10-28",
+  "repository": "tncommerce/commerce-agents",
+  "production_branch": "scentai-mvp",
+  "production_sha": "36cc84c34791284e4245ab4504ae020434dca89e",
+  "status": "draft_code_with_applied_bounded_monitoring_metadata",
+  "live_metadata": {
+    "applied_at": "2026-10-28T08:15:50.206067Z",
+    "retired": [
+      "github_pr:623",
+      "github_pr:625",
+      "github_ci:37016647384",
+      "github_ci:37033948872"
+    ],
+    "registered": [
+      "github_pr:802",
+      "github_pr:823",
+      "github_pr:837",
+      "github_pr:840"
+    ],
+    "new_interval_seconds": 1200,
+    "render_health": "stale",
+    "render_original_last_success_at": "2026-10-22T19:22:47.420333Z",
+    "source_evidence_preservation": [
+      {
+        "id": "github_ci:37016647384",
+        "exists": true,
+        "source_preserved": true
+      },
+      {
+        "id": "github_ci:37033948872",
+        "exists": true,
+        "source_preserved": true
+      },
+      {
+        "id": "github_pr:623",
+        "exists": true,
+        "source_preserved": true
+      },
+      {
+        "id": "github_pr:625",
+        "exists": true,
+        "source_preserved": true
+      },
+      {
+        "id": "render:srv-dakpfrnf3r2c73dr3f20",
+        "exists": true,
+        "source_preserved": true
+      }
+    ],
+    "verification": "All four new observers captured their expected exact PR heads through the existing natural cron; source evidence on retired/Render rows preserved.",
+    "final_pr_observations": [
+      {
+        "observer_id": "github_pr:802",
+        "health_status": "healthy",
+        "last_success_at": "2026-10-28 08:30:00.235269+00",
+        "sha": "39978a57820e7dbd68d22b803c748fe46a556554"
+      },
+      {
+        "observer_id": "github_pr:823",
+        "health_status": "healthy",
+        "last_success_at": "2026-10-28 08:22:00.117411+00",
+        "sha": "a9a8220d503d7db2bacfe1f4319188ca813878fa"
+      },
+      {
+        "observer_id": "github_pr:837",
+        "health_status": "healthy",
+        "last_success_at": "2026-10-28 08:26:00.220256+00",
+        "sha": "43b2793c754f18b47c335fef0f7348b77f22029e"
+      },
+      {
+        "observer_id": "github_pr:840",
+        "health_status": "healthy",
+        "last_success_at": "2026-10-28 08:20:00.231751+00",
+        "sha": "833feefcd6e4c525ef83fcd0a3a3f9f9b72629f3"
+      }
+    ]
+  },
+  "security": {
+    "policyless_rls_tables": 50,
+    "policyless_tables_with_anon_authenticated_grants": 11,
+    "anonymous_and_authenticated_bypassrls": false,
+    "public_security_definer_rpcs_callable": 0,
+    "public_noninvoker_views_callable": 0,
+    "mutable_search_path_procedures": [
+      {
+        "identity": "public.dufynd_ns_v1_cycle()",
+        "execution_acl": "{postgres=X/postgres}",
+        "security_invoker": true,
+        "transaction_control": true,
+        "definition_md5": "cc158747c58b5a3282da8de8d39859fe"
+      },
+      {
+        "identity": "public.dufynd_ns_v1_pilot_abort()",
+        "execution_acl": "{postgres=X/postgres}",
+        "security_invoker": true,
+        "transaction_control": true,
+        "definition_md5": "f9da986d0b8ae6bd9c4a901613d02a70"
+      }
+    ],
+    "set_clause_transaction_reproduction_sqlstate": "2D000",
+    "leaked_password_protection": "disabled; requires paid plan",
+    "actual_supabase_plan": "free / tier_free",
+    "auth_rls_grant_changes": 0
+  },
+  "render": {
+    "workspace": "tea-dakp99gu01pc73fvp6f0",
+    "api": {
+      "service": "srv-dakpfrnf3r2c73dr3f20",
+      "deployment": "dep-dbg7cgl9fdbs73d0b2p0",
+      "health_check_path": "",
+      "preview_generation": "off",
+      "pr_previews_enabled": false
+    },
+    "storefront": {
+      "service": "srv-dakpiajl550s73cp4lvg",
+      "deployment": "dep-dbg7q54s728c73dklukg",
+      "preview_generation": "off",
+      "pr_previews_enabled": false
+    },
+    "metrics_window": {
+      "from": "2026-10-27T10:30:34Z",
+      "to": "2026-10-28T08:00:00Z"
+    },
+    "api_http_counts": {
+      "200": 58,
+      "404": 4,
+      "499": 1,
+      "5xx": 0
+    },
+    "api_cpu_peak_cores": 0.001772,
+    "api_cpu_limit_cores": 0.5,
+    "api_memory_peak_bytes": 111181820,
+    "api_memory_limit_bytes": 536870900,
+    "missing_metrics": [
+      "static_site_http",
+      "api_p95_latency"
+    ]
+  },
+  "gsc": {
+    "source": "sc-domain:dufynd.de",
+    "data_usable": false,
+    "reason": "Windsor explicitly returns placeholder data; four connected accounts exceed Free one-account allowance",
+    "affected_canonical_notice_urls_identified": false
+  },
+  "validation": {
+    "python_focused_passed": 96,
+    "observer_postgres_passed": 11,
+    "local_postgres_version": "16.15",
+    "production_postgres_version": "17.6.1.166",
+    "combined_security_privacy_chromium_passed": 21,
+    "combined_metadata_checks_passed": 55,
+    "combined_application_tree": "2dc1be16bed72993b437f9fbde513299d1e5d46a",
+    "reused_remote_runs": [
+      "40496435977",
+      "40645190771",
+      "40591804637"
+    ],
+    "existing_178_page_suite_repeated": false,
+    "python_observer_passed": 86,
+    "python_operator_dashboard_passed": 10,
+    "additional_existing_owner_auth_smoke_passed": 1,
+    "planner_postgres_passed": 18,
+    "integrated_postgres_passed": 29,
+    "broad_dashboard_suite": "Interrupted at restricted-sandbox TestClient boundary; isolated boundary case passed with local socket permission. Only completed focused test runs are claimed."
+  },
+  "no_action_counts": {
+    "merges": 0,
+    "render_deployments": 0,
+    "remote_ci_dispatches": 0,
+    "new_paid_services": 0,
+    "new_model_activations": 0,
+    "merchant_clickouts": 0,
+    "emails_sent": 0,
+    "social_posts": 0,
+    "price_refreshes": 0,
+    "production_ddl": 0
+  },
+  "limits": [
+    "Draft workflow and migrations are not deployed",
+    "Render capture is one provider observation, not full-chain or business success",
+    "Three Gmail observers remain blocked",
+    "No executable business task was fabricated",
+    "No genuine Search Console metric or affected canonical URL was obtained",
+    "Exact release candidate must satisfy required branch checks and production/cost authorization"
+  ],
+  "operational_readback": {
+    "observed_at": "2026-10-28T08:29:30.145019+00:00",
+    "task_counts": {
+      "done": 1129,
+      "blocked": 4,
+      "cancelled": 7,
+      "waiting_external": 14
+    },
+    "executions_since_release": 0,
+    "cron_active": 12,
+    "failed_cron_since_release": 0,
+    "live_planner_state": "waiting_market_signal",
+    "private_observers": [
+      {
+        "type": "gmail",
+        "error": "credential_expired",
+        "health": "blocked_configuration",
+        "last_success_at": "2026-10-22T19:22:47.761891+00:00"
+      },
+      {
+        "type": "gmail",
+        "error": "credential_expired",
+        "health": "blocked_configuration",
+        "last_success_at": "2026-10-22T19:22:48.818934+00:00"
+      },
+      {
+        "type": "gmail",
+        "error": "credential_expired",
+        "health": "blocked_configuration",
+        "last_success_at": "2026-10-22T19:22:48.28187+00:00"
+      },
+      {
+        "type": "render",
+        "error": "observer_success_stale",
+        "health": "stale",
+        "last_success_at": "2026-10-22T19:22:47.420333+00:00"
+      }
+    ]
+  }
+}

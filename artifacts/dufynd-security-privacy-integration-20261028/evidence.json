@@ -1,0 +1,425 @@
+{
+  "verified_at_utc": "2026-10-28T08:07:39.096676+00:00",
+  "production_sha": "36cc84c34791284e4245ab4504ae020434dca89e",
+  "security_pr": {
+    "number": 840,
+    "head": "833feefcd6e4c525ef83fcd0a3a3f9f9b72629f3",
+    "required_ci_run": 40496435977,
+    "required_ci_status": "success"
+  },
+  "privacy_pr": {
+    "number": 823,
+    "head": "a9a8220d503d7db2bacfe1f4319188ca813878fa",
+    "source_bound_qa_sha": "4f4d7380f163d3df91acc09bb3eef5cd79dadd25",
+    "source_bound_qa_run": 40645190771,
+    "all_8_changed_blobs_match_qa": true
+  },
+  "combined_tree": "2dc1be16bed72993b437f9fbde513299d1e5d46a",
+  "assembly": "a9a8220d plus exact three dependency/lock files from833feefc; no production merge",
+  "manifest": {
+    "examples/package-lock.json": {
+      "sha256": "cc59961064e999e5e1d709d601c7da07b4e479621fd695f675d0c18619abc297",
+      "git_blob": "ef1f33ce78f5e238941585c7680150555012e557"
+    },
+    "examples/package.json": {
+      "sha256": "455408d6a7418ddac545b3d1ee4f027e4a42bc153894a0894f9c2a2105fe3d9c",
+      "git_blob": "89b3c40fcadd6abf4a4e9a5a2ceb034eb9544358"
+    },
+    "examples/retail/storefront-web/components/FragranceOffers.tsx": {
+      "sha256": "6ef9d8bccd74a6357d95caac60cb9bb1687fb953cc15ab1e4a5fdbc5cbad27ad",
+      "git_blob": "ef9eef8532d6a7473d80d9dac20bd3b11741091b"
+    },
+    "examples/retail/storefront-web/package.json": {
+      "sha256": "3dfaded954dd258f6a73474f5e46bdb78c0be5c799f5e08b24874996186e29f6",
+      "git_blob": "7579f5975cb6e7460fb33d0e2ae5fe6d028845ff"
+    },
+    "examples/retail/storefront-web/scripts/conversion-search-qa.mjs": {
+      "sha256": "5173131e4fc1851e085bd51e36b605e54c606b95793113d3f6f9d94932741a99",
+      "git_blob": "26572831aaca7900f2e7992ce0ca7a197a8752c3"
+    },
+    "examples/retail/storefront-web/scripts/dufynd-visual-qa.mjs": {
+      "sha256": "6535fe1c25de61dd3773f240c3ec88ea3373ac62530ef0eda58f03dca2ae547d",
+      "git_blob": "fd54898db59e2d25197b183931475aed3130d253"
+    },
+    "examples/retail/storefront-web/scripts/measurement-late-grant-qa.mjs": {
+      "sha256": "c1d9e9a65314288f0271e07e86cce06bbbaa101bdf22a2f64aff424a4e5bba15",
+      "git_blob": "07db184b578569047f2503abf3b0370c2f4e00e2"
+    },
+    "examples/retail/storefront-web/scripts/site13-funnel-qa.mjs": {
+      "sha256": "60947dc45e2d99031fd80a030bb8a49baa71bfe78c3c5876a7570476b04fab70",
+      "git_blob": "07f227ed93c02569357c93da218a91d9bb63e9b9"
+    },
+    "examples/retail/storefront-web/scripts/social-product-entry-qa.mjs": {
+      "sha256": "149510d00317ebcfc2499f831b92abf8856572310ae0dc2de1b63761afa4334b",
+      "git_blob": "dc0cae61887fa60cccf37d9ae484afdb0bf7e14f"
+    },
+    "examples/retail/storefront-web/scripts/test-offer-return-revalidation.mjs": {
+      "sha256": "608a766a50bff0e4b0518e19b5958ce7b61b62979efc4e287b1ec2a178dfdfc4",
+      "git_blob": "11e184c54f571a97d41379390cad364119c15506"
+    },
+    "examples/retail/storefront-web/scripts/wow-experience-qa.mjs": {
+      "sha256": "e867c8d5a1ea3918871c5a59a56c1dca315b7e989ca8cc311299ca569128cf63",
+      "git_blob": "bb4cef526b90d227638f8c868f4d5d1da2e4016d"
+    }
+  },
+  "dependency_runtime": {
+    "node": "v24.22.1",
+    "next": "16.4.3",
+    "sharp": "0.35.5",
+    "librsvg": "2.63.2",
+    "source_map_js": "1.2.2"
+  },
+  "build": {
+    "npm_ci": "PASS",
+    "prebuild": "PASS",
+    "next_static_build": "PASS",
+    "static_pages": 105,
+    "postbuild": "PASS",
+    "metadata_checks": 55,
+    "runtime_offers": "disabled",
+    "indexability": "default-off test build, not a production indexing assertion",
+    "network_note": "Existing next/font/google needed read-only download access. Sandbox-only compilation was stopped; the actual unchanged compilation completed with access."
+  },
+  "browser": {
+    "status": "PASS",
+    "browser": "140.0.7339.16",
+    "cases": 21,
+    "lateGrant": [
+      {
+        "width": 320,
+        "case": "late-grant-current-product",
+        "passed": true,
+        "noOfferRefetch": true,
+        "noImplicitGrant": true,
+        "blockedLicensedMedia": 1,
+        "externalMediaFetched": 0,
+        "realMerchantClicks": 0
+      },
+      {
+        "width": 390,
+        "case": "late-grant-current-product",
+        "passed": true,
+        "noOfferRefetch": true,
+        "noImplicitGrant": true,
+        "blockedLicensedMedia": 1,
+        "externalMediaFetched": 0,
+        "realMerchantClicks": 0
+      },
+      {
+        "width": 768,
+        "case": "late-grant-current-product",
+        "passed": true,
+        "noOfferRefetch": true,
+        "noImplicitGrant": true,
+        "blockedLicensedMedia": 1,
+        "externalMediaFetched": 0,
+        "realMerchantClicks": 0
+      },
+      {
+        "width": 1440,
+        "case": "late-grant-current-product",
+        "passed": true,
+        "noOfferRefetch": true,
+        "noImplicitGrant": true,
+        "blockedLicensedMedia": 1,
+        "externalMediaFetched": 0,
+        "realMerchantClicks": 0
+      }
+    ],
+    "noObserver": [
+      {
+        "width": 320,
+        "noObserver": true,
+        "functionalCtaVisible": true,
+        "unprovedOfferViews": 0,
+        "syntheticFixture": true
+      },
+      {
+        "width": 1440,
+        "noObserver": true,
+        "functionalCtaVisible": true,
+        "unprovedOfferViews": 0,
+        "syntheticFixture": true
+      }
+    ],
+    "conversion": [
+      {
+        "width": 320,
+        "home_search": true,
+        "social_search": true,
+        "wrong_variant_excluded": true,
+        "attribution": true,
+        "catalog_rc1_offer_route": true,
+        "rc1_save_compare_actions": true,
+        "rc1_unapproved_creative_excluded": true,
+        "non_rc1_offer_claim_suppressed": true,
+        "empty_offer_fallback": true,
+        "clickouts": 0
+      },
+      {
+        "width": 390,
+        "home_search": true,
+        "social_search": true,
+        "wrong_variant_excluded": true,
+        "attribution": true,
+        "catalog_rc1_offer_route": true,
+        "rc1_save_compare_actions": true,
+        "rc1_unapproved_creative_excluded": true,
+        "non_rc1_offer_claim_suppressed": true,
+        "empty_offer_fallback": true,
+        "clickouts": 0
+      },
+      {
+        "width": 1440,
+        "home_search": true,
+        "social_search": true,
+        "wrong_variant_excluded": true,
+        "attribution": true,
+        "catalog_rc1_offer_route": true,
+        "rc1_save_compare_actions": true,
+        "rc1_unapproved_creative_excluded": true,
+        "non_rc1_offer_claim_suppressed": true,
+        "empty_offer_fallback": true,
+        "clickouts": 0
+      },
+      {
+        "suite": "rc1-name-alias",
+        "width": 320,
+        "source": "instagram",
+        "consent": "denied",
+        "social_queries": 4,
+        "catalog_queries": 3,
+        "touch": true,
+        "keyboard": false,
+        "reduced_motion": true,
+        "actual_catalog_navigation": true,
+        "exact_offer_anchor": true,
+        "session_campaign_preserved": false,
+        "optional_fields_stripped": true,
+        "wrong_variants_excluded": false,
+        "analytics_requests": 0,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "rc1-name-alias",
+        "width": 320,
+        "source": "tiktok",
+        "consent": "granted",
+        "social_queries": 4,
+        "catalog_queries": 3,
+        "touch": true,
+        "keyboard": false,
+        "reduced_motion": false,
+        "actual_catalog_navigation": true,
+        "exact_offer_anchor": true,
+        "session_campaign_preserved": true,
+        "optional_fields_stripped": false,
+        "wrong_variants_excluded": false,
+        "analytics_requests": 10,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "rc1-name-alias",
+        "width": 390,
+        "source": "instagram",
+        "consent": "granted",
+        "social_queries": 4,
+        "catalog_queries": 3,
+        "touch": true,
+        "keyboard": false,
+        "reduced_motion": false,
+        "actual_catalog_navigation": true,
+        "exact_offer_anchor": true,
+        "session_campaign_preserved": true,
+        "optional_fields_stripped": false,
+        "wrong_variants_excluded": true,
+        "analytics_requests": 14,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "rc1-name-alias",
+        "width": 390,
+        "source": "tiktok",
+        "consent": "denied",
+        "social_queries": 4,
+        "catalog_queries": 3,
+        "touch": true,
+        "keyboard": false,
+        "reduced_motion": true,
+        "actual_catalog_navigation": true,
+        "exact_offer_anchor": true,
+        "session_campaign_preserved": false,
+        "optional_fields_stripped": true,
+        "wrong_variants_excluded": true,
+        "analytics_requests": 0,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "rc1-name-alias",
+        "width": 768,
+        "source": "instagram",
+        "consent": "denied",
+        "social_queries": 4,
+        "catalog_queries": 3,
+        "touch": true,
+        "keyboard": false,
+        "reduced_motion": true,
+        "actual_catalog_navigation": true,
+        "exact_offer_anchor": true,
+        "session_campaign_preserved": false,
+        "optional_fields_stripped": true,
+        "wrong_variants_excluded": false,
+        "analytics_requests": 0,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "rc1-name-alias",
+        "width": 768,
+        "source": "tiktok",
+        "consent": "granted",
+        "social_queries": 4,
+        "catalog_queries": 3,
+        "touch": true,
+        "keyboard": false,
+        "reduced_motion": false,
+        "actual_catalog_navigation": true,
+        "exact_offer_anchor": true,
+        "session_campaign_preserved": true,
+        "optional_fields_stripped": false,
+        "wrong_variants_excluded": false,
+        "analytics_requests": 10,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "rc1-name-alias",
+        "width": 1440,
+        "source": "instagram",
+        "consent": "granted",
+        "social_queries": 4,
+        "catalog_queries": 3,
+        "touch": false,
+        "keyboard": true,
+        "reduced_motion": false,
+        "actual_catalog_navigation": true,
+        "exact_offer_anchor": true,
+        "session_campaign_preserved": true,
+        "optional_fields_stripped": false,
+        "wrong_variants_excluded": false,
+        "analytics_requests": 10,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "rc1-name-alias",
+        "width": 1440,
+        "source": "tiktok",
+        "consent": "denied",
+        "social_queries": 4,
+        "catalog_queries": 3,
+        "touch": false,
+        "keyboard": true,
+        "reduced_motion": true,
+        "actual_catalog_navigation": true,
+        "exact_offer_anchor": true,
+        "session_campaign_preserved": false,
+        "optional_fields_stripped": true,
+        "wrong_variants_excluded": false,
+        "analytics_requests": 0,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "compact-public-name",
+        "width": 320,
+        "public_products": [
+          "SC-YSL-BLACK-OPIUM-EDP-90",
+          "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+        ],
+        "home": true,
+        "catalog": true,
+        "social": true,
+        "comparison": true,
+        "filter_and_selection_restored": true,
+        "empty_offers": true,
+        "synthetic_functional_sessions": 1,
+        "analytics_requests": 0,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "compact-public-name",
+        "width": 390,
+        "public_products": [
+          "SC-YSL-BLACK-OPIUM-EDP-90",
+          "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+        ],
+        "home": true,
+        "catalog": true,
+        "social": true,
+        "comparison": true,
+        "filter_and_selection_restored": true,
+        "empty_offers": true,
+        "synthetic_functional_sessions": 1,
+        "analytics_requests": 0,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "compact-public-name",
+        "width": 768,
+        "public_products": [
+          "SC-YSL-BLACK-OPIUM-EDP-90",
+          "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+        ],
+        "home": true,
+        "catalog": true,
+        "social": true,
+        "comparison": true,
+        "filter_and_selection_restored": true,
+        "empty_offers": true,
+        "synthetic_functional_sessions": 1,
+        "analytics_requests": 0,
+        "merchant_clickouts": 0
+      },
+      {
+        "suite": "compact-public-name",
+        "width": 1440,
+        "public_products": [
+          "SC-YSL-BLACK-OPIUM-EDP-90",
+          "SC-ESSENTIAL-PARFUMS-BOIS-IMPERIAL-100",
+          "SC-LANCOME-LA-VIE-EST-BELLE-EDP-100"
+        ],
+        "home": true,
+        "catalog": true,
+        "social": true,
+        "comparison": true,
+        "filter_and_selection_restored": true,
+        "empty_offers": true,
+        "synthetic_functional_sessions": 1,
+        "analytics_requests": 0,
+        "merchant_clickouts": 0
+      }
+    ],
+    "externalRequestsBlocked": 288,
+    "externalRequestsSent": 0,
+    "clickoutAttempts": 0,
+    "pageErrors": [],
+    "realMerchantClicks": 0,
+    "note": "Combined dependency/privacy tree; local synthetic API fixtures; merchant images aborted, not visually recertified."
+  },
+  "log_sha256": {
+    "dufynd-combined-build.log": "727da707e2622a96af986c74f441fe1f37c367058dfe7bf70bcd452a4322ab39",
+    "dufynd-combined-next-build.log": "523a0eba705be09a4ea5f3ac7d8e3c6268e52fe586b95bbc5ba92f3cd8c5e0f3",
+    "dufynd-combined-postbuild.log": "f4e62b17b558a32b30cf86e7b4b0088ed8c0bde3aaa1ad80cb8015b4c8600bca",
+    "dufynd-combined-browser.log": "70b262e0f39fade90dc36661dbb29b833a8e90dbbf37be86d13a9ce3a7ac7857"
+  },
+  "gates": {
+    "production_authorized": false,
+    "render_deployed": false,
+    "db_migrated": false,
+    "github_ci_dispatched": false,
+    "existing_178_browser_suite_repeated": false,
+    "formal_required_ci_substituted": false,
+    "zero_incremental_cost_release_confirmed": false
+  },
+  "security_preflight_3_file_hashes_match": true
+}

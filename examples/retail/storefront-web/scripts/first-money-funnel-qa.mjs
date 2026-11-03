@@ -1,3 +1,5 @@
+// Positive synthetic offers use this run’s clock; real source timestamps and
+// the separate stale/expiry negative fixtures must never be refreshed here.
 import { chooseMeasurement } from "./measurement-choice-qa.mjs";
 import assert from "node:assert/strict";
 
@@ -33,7 +35,7 @@ export async function verifyFirstMoneyFunnel(browser, baseUrl) {
               offer_id: offerId, product_id: productId, merchant_id: merchant.toLowerCase(), merchant_name: merchant,
               price: 99, currency: "EUR", shipping_cost: 0, total_price: 99, in_stock: true,
               affiliate_link: true, clickout_path: `/api/clickout/${offerId}`,
-              last_updated_at: "2026-10-04T12:00:00Z",
+              last_updated_at: new Date().toISOString(),
             }],
           },
         }));
