@@ -86,7 +86,6 @@ def configure(monkeypatch, client, *, mode="all"):
     monkeypatch.setattr(observer_read.httpx, "Client", lambda **kwargs: client)
 
 
-
 @pytest.mark.parametrize(
     "origin",
     [
@@ -110,7 +109,6 @@ def test_broker_origin_rejects_userinfo_before_oidc_or_artifact_write(
 
     assert client.calls == []
     assert list(tmp_path.iterdir()) == []
-
 
 
 def test_reports_bounded_oidc_status_without_token(monkeypatch):
