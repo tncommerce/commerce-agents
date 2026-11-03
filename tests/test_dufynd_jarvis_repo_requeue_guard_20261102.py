@@ -271,7 +271,9 @@ def test_free_budget_with_unverified_provider_cost_never_requeues(
     assert bridge.tasks == []
 
 
-@pytest.mark.parametrize("worker_state", ["done", "waiting_external", "blocked", "approval_required"])
+@pytest.mark.parametrize(
+    "worker_state", ["done", "waiting_external", "blocked", "approval_required"]
+)
 def test_contradictory_ready_task_with_terminal_worker_state_stays_held(
     worker_state: str,
 ) -> None:
