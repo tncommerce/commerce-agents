@@ -48,6 +48,7 @@ def task_state(
         "task_id": "repo_current_commerce",
         "status": status,
         "budget_class": budget_class,
+        "provider_cost_unknown": False,
         "requires_human_approval": requires_human_approval,
         "blocked_reason": blocked_reason,
         "worker_state": worker_state or status,
@@ -262,11 +263,11 @@ def test_free_budget_with_unverified_provider_cost_never_requeues(
     existing["provider_cost_unknown"] = provider_cost_unknown
     bridge = GuardBridge({"repo_current_commerce": existing})
     effects = apply_sync_plan(bridge, build_sync_plan(repo_state()))
-    if provider_cost_unknown is True:
-        assert effects["existing_tasks_protected"] == 1
-    else:
-        # Non-boolean untrusted data must never trigger an unverified task.
-        assert effects["existing_tasks_protected"] == 1
+    assert effects == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 1,
+        "missing_tasks_not_created": 1,
+    }
     assert bridge.tasks == []
 
 
