@@ -71,6 +71,48 @@ def test_exact_fresh_source_still_never_activates_or_approves_assets():
     assert value["candidates"][0]["tracking_click_verified"] is False
 
 
+def test_pinned_perfumetrader_article_is_searched_independently_of_title_and_gtin():
+    mappings = {
+        "mappings": [
+            {**MAPPING["mappings"][0], "merchant": merchant, "merchant_product_id": sku}
+            for merchant, sku in [("perfumetrader", "16978322"), ("mueller", "241929")]
+        ]
+    }
+    rows = [
+        source_row(merchant_product_id="16978322", product_name="Other", ean=""),
+        source_row(merchant_product_id="241929", product_name="Other", ean=""),
+        source_row(merchant_product_id="999"),
+    ]
+
+    def inspect(mappings, rows, schema):
+        return review.review_rows(
+            [PRODUCT], mappings, rows, META, SECRET, NOW, feed_validation={"status": schema}
+        )["profiles"][0]
+
+    verified = "VERIFIED_PRODUCT_CSV"
+    result = inspect(mappings, rows, verified)
+    assert result["mapped_merchant_sku_match_count"] == 1
+    assert result["candidate_count"] == 2
+    assert result["status"] == "MISMATCH"
+    by_sku = {c["fields"]["merchant_product_id"]: c for c in result["candidates"]}
+    assert "mapped_merchant_sku_mismatch" in by_sku["999"]["reasons"]
+    assert by_sku["16978322"]["gtin_exact"] is False
+    duplicate = inspect(mappings, rows + [source_row(merchant_product_id="16978322")], verified)
+    assert duplicate["mapped_merchant_sku_match_count"] == 2
+    assert duplicate["status"] == "BLOCKED"
+    assert inspect(mappings, [], verified)["mapped_merchant_sku_match_count"] == 0
+    assert inspect(mappings, rows, "BLOCKED")["mapped_merchant_sku_match_count"] is None
+    assert inspect(MAPPING, rows, verified)["mapped_merchant_sku_match_count"] is None
+    exact = inspect(mappings, [source_row(merchant_product_id="16978322")], verified)
+    assert exact["status"] == "EXACT_AND_FRESH"
+    assert exact["offer_activation_allowed"] is False
+    crowded = [source_row(merchant_product_id=str(i)) for i in range(6)]
+    crowded.append(source_row(merchant_product_id="16978322"))
+    truncated = inspect(mappings, crowded, verified)
+    assert truncated["candidate_truncation"]
+    assert truncated["candidates"][0]["fields"]["merchant_product_id"] == "16978322"
+
+
 @pytest.mark.parametrize(
     "changed",
     [
