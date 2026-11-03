@@ -96,17 +96,20 @@ def test_build_sync_plan_creates_snapshot_and_stable_domain_tasks() -> None:
     assert content["requires_human_approval"] is False
 
 
-def test_apply_sync_plan_upserts_snapshot_and_tasks() -> None:
+def test_apply_sync_plan_only_refreshes_snapshot_when_tasks_are_absent() -> None:
     bridge = RecordingBridge()
     plan = build_sync_plan(sample_repo_status())
 
     result = apply_sync_plan(bridge, plan)
 
-    assert result == {"tasks_written": 2, "existing_tasks_protected": 0}
+    assert result == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 0,
+        "missing_tasks_not_created": 2,
+    }
     assert len(bridge.master_rows) == 1
     assert bridge.master_rows[0]["key"] == SNAPSHOT_KEY
-    assert len(bridge.tasks) == 2
-    assert bridge.tasks[0]["task_id"] == "repo_current_commerce"
+    assert bridge.tasks == []
 
 
 def test_apply_sync_plan_preserves_terminal_state_for_same_fingerprint() -> None:
@@ -125,6 +128,7 @@ def test_apply_sync_plan_preserves_terminal_state_for_same_fingerprint() -> None
     apply_sync_plan(bridge, plan)
 
     commerce = next(task for task in bridge.tasks if task["task_id"] == "repo_current_commerce")
+    assert len(bridge.tasks) == 1
     assert commerce["status"] == "done"
     assert commerce["evidence"] == ("source_fingerprint_sha256=abc123; completed in nightshift")
 
@@ -144,8 +148,12 @@ def test_apply_sync_plan_never_reopens_completed_task_after_fingerprint_drift() 
 
     changes = apply_sync_plan(bridge, plan)
 
-    assert changes == {"tasks_written": 1, "existing_tasks_protected": 1}
-    assert [task["task_id"] for task in bridge.tasks] == ["repo_current_content"]
+    assert changes == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 1,
+        "missing_tasks_not_created": 1,
+    }
+    assert bridge.tasks == []
     assert bridge.existing_tasks["repo_current_commerce"]["status"] == "done"
     assert bridge.master_rows[0]["value"]["source_fingerprint_sha256"] == "abc123"
 
@@ -191,8 +199,12 @@ def test_sync_preserves_explicit_typed_owner_gate():
         }
     )
     effect = apply_sync_plan(bridge, build_sync_plan(sample_repo_status()))
-    assert effect == {"tasks_written": 1, "existing_tasks_protected": 1}
-    assert [task["task_id"] for task in bridge.tasks] == ["repo_current_commerce"]
+    assert effect == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 1,
+        "missing_tasks_not_created": 1,
+    }
+    assert bridge.tasks == []
     assert bridge.existing_tasks["repo_current_content"]["status"] == "waiting_human_input"
 
 
