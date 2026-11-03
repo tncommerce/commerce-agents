@@ -83,6 +83,28 @@ def configure_oidc(monkeypatch) -> None:
     monkeypatch.setenv("GITHUB_SHA", "a" * 40)
 
 
+@pytest.mark.parametrize(
+    "origin",
+    [
+        "https://@broker.example",
+        "https://:embedded-secret@broker.example",
+        "https://user:@broker.example",
+        "https://user:embedded-secret@broker.example",
+    ],
+)
+def test_broker_ack_rejects_any_userinfo_before_oidc(monkeypatch, tmp_path, origin):
+    configure_oidc(monkeypatch)
+    plan = tmp_path / "broker-acks.json"
+    write_plan(plan)
+
+    def refuse_network(**_kwargs):
+        raise AssertionError("No OIDC or broker connection may be opened")
+
+    with pytest.raises(observer_ack.AckFailure, match="^origin:invalid$"):
+        observer_ack.acknowledge(origin, plan, client_factory=refuse_network)
+
+
+
 def test_acknowledges_fixed_plan_then_verifies_idempotency(monkeypatch, tmp_path: Path) -> None:
     configure_oidc(monkeypatch)
     plan = tmp_path / "broker-acks.json"
