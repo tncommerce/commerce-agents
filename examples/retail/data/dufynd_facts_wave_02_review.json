@@ -18,7 +18,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "summary_de": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern.",
-      "editorial_description_de": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern. Kopfnoten: Calabrian bergamot; Herznoten: Bourbon geranium; Basisnoten: amber woods.",
+      "editorial_description_de": "Kalabrische Bergamotte eröffnet den Duft. Bourbon-Geranie verbindet sich mit Amberhölzern. Kopfnoten: Kalabrische Bergamotte; Herznoten: Bourbon-Geranie; Basisnoten: Amberhölzer.",
       "notes": {
         "top": [
           "Calabrian bergamot"
@@ -58,7 +58,7 @@
       "concentration": "Eau de Toilette",
       "volume_ml": 100,
       "summary_de": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis.",
-      "editorial_description_de": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis. Kopfnoten: pink pepper, orange blossom, clove; Herznoten: chestnut accord, guaiac wood, cade oil; Basisnoten: vanilla accord, Peru balsam, cashmeran.",
+      "editorial_description_de": "Pfeffer und Gewürznelke führen zu Kastanie und rauchigen Hölzern. Vanille, Perubalsam und Cashmeran ergänzen die Basis. Kopfnoten: Rosa Pfeffer, Orangenblüte, Gewürznelke; Herznoten: Kastanien-Akkord, Guajakholz, Wacholderteeröl; Basisnoten: Vanille-Akkord, Perubalsam, Cashmeran.",
       "notes": {
         "top": [
           "pink pepper",
@@ -104,7 +104,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "summary_de": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille.",
-      "editorial_description_de": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille. Kopfnoten: Italian lemon, mandarin, mint oil, candied apple; Herznoten: geranium, clary sage, AmberMax; Basisnoten: Atlas cedar, Virginia cedar, vetiver, patchouli, sandalwood, vanilla.",
+      "editorial_description_de": "Zitrus, Minze und kandierter Apfel eröffnen den Duft. Geranium und Salbei treffen auf eine holzige Basis mit Vanille. Kopfnoten: Italienische Zitrone, Mandarine, Minzöl, Kandierter Apfel; Herznoten: Geranie, Muskatellersalbei, Ambermax; Basisnoten: Atlaszeder, Virginia-Zeder, Vetiver, Patschuli, Sandelholz, Vanille.",
       "notes": {
         "top": [
           "Italian lemon",
@@ -154,7 +154,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 70,
       "summary_de": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten.",
-      "editorial_description_de": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten. Dokumentierte Duftnoten: jasmine flowers, saffron, ambergris accord, dry woody notes, ethyl maltol. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Jasmin und Safran treffen auf einen Ambra-Akkord, trockene Holznoten und süße Ethylmaltol-Facetten. Dokumentierte Duftnoten: Jasminblüten, Safran, Ambra-Akkord, Trockene Holznoten, Ethylmaltol. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -194,7 +194,7 @@
       "concentration": "Parfum",
       "volume_ml": 125,
       "summary_de": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz.",
-      "editorial_description_de": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz. Dokumentierte Duftnoten: mint, lavender, tonka bean, benzoin. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Minze und Lavendel verbinden sich mit Tonkabohne und Benzoeharz. Dokumentierte Duftnoten: Minze, Lavendel, Tonkabohne, Benzoeharz. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -233,7 +233,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "summary_de": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne.",
-      "editorial_description_de": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne. Dokumentierte Duftnoten: amber, patchouli, iris, sandalwood, roasted tonka bean. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Iris und Amber verbinden sich mit Patschuli, Sandelholz und gerösteter Tonkabohne. Dokumentierte Duftnoten: Amber, Patschuli, Iris, Sandelholz, Geröstete Tonkabohne. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -273,7 +273,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "summary_de": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil.",
-      "editorial_description_de": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil. Dokumentierte Duftnoten: cinnamon, nutmeg, bergamot, dates, praline, tuberose, vanilla, tonka bean, benzoin, myrrh, Akigalawood, amber wood. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Gewürze und Bergamotte treffen auf Dattel- und Pralinenfacetten. Vanille, Tonkabohne und Holznoten ergänzen das Profil. Dokumentierte Duftnoten: Zimt, Muskatnuss, Bergamotte, Datteln, Praline, Tuberose, Vanille, Tonkabohne, Benzoeharz, Myrrhe, Akigalawood, Amberholz. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -320,7 +320,7 @@
       "concentration": "Eau de Toilette",
       "volume_ml": 100,
       "summary_de": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver.",
-      "editorial_description_de": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver. Dokumentierte Duftnoten: geranium, clove, sandalwood, cedar, vetiver. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Geranium und Gewürznelke treffen auf Sandelholz, Zeder und Vetiver. Dokumentierte Duftnoten: Geranie, Gewürznelke, Sandelholz, Zeder, Vetiver. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -360,7 +360,7 @@
       "concentration": "Parfum Intense",
       "volume_ml": 100,
       "summary_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana.",
-      "editorial_description_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana. Dokumentierte Duftnoten: leather accord, patchouli, myrrh, cedar, amber, davana. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Lederakkord, Patschuli und Myrrhe treffen auf Zedernholz, Amber und Davana. Dokumentierte Duftnoten: Leder-Akkord, Patschuli, Myrrhe, Zeder, Amber, Davana. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -401,7 +401,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 125,
       "summary_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz.",
-      "editorial_description_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz. Kopfnoten: cinnamon, pepper; Herznoten: tobacco leaf, incense, cistus, osmanthus; Basisnoten: vanilla, musk, cedarwood.",
+      "editorial_description_de": "Zimt und Pfeffer eröffnen das Profil; Tabak, Weihrauch und Osmanthus treffen auf Vanille und Zedernholz. Kopfnoten: Zimt, Pfeffer; Herznoten: Tabakblatt, Weihrauch, Zistrose, Osmanthus; Basisnoten: Vanille, Moschus, Zedernholz.",
       "notes": {
         "top": [
           "cinnamon",
@@ -447,7 +447,7 @@
       "concentration": "Extrait de Parfum",
       "volume_ml": 100,
       "summary_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis.",
-      "editorial_description_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis. Kopfnoten: bergamot, green notes, blue ginger, pink pepper; Herznoten: blackcurrant, Turkish rose, cardamom; Basisnoten: patchouli, cedarwood, vanilla, benzoin, ambergris, musk, sandalwood.",
+      "editorial_description_de": "Ingwer und Bergamotte führen zu Kardamom und Rose; Vanille, Benzoe und Hölzer bilden die Basis. Kopfnoten: Bergamotte, Grüne Noten, Blauer Ingwer, Rosa Pfeffer; Herznoten: Schwarze Johannisbeere, Türkische Rose, Kardamom; Basisnoten: Patschuli, Zedernholz, Vanille, Benzoeharz, Ambra, Moschus, Sandelholz.",
       "notes": {
         "top": [
           "bergamot",
@@ -498,7 +498,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "summary_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis.",
-      "editorial_description_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis. Kopfnoten: rosemary, red pepper berries, bitter orange leaves; Herznoten: neroli, orris, jasmine, ylang-ylang; Basisnoten: vetiver, patchouli, sandalwood, cedarwood.",
+      "editorial_description_de": "Rosmarin und Bitterorangenblätter treffen auf Neroli, Iris und Jasmin; Sandelholz und Vetiver bilden die Basis. Kopfnoten: Rosmarin, Rote Pfefferbeeren, Bitterorangenblätter; Herznoten: Neroli, Iriswurzel, Jasmin, Ylang-Ylang; Basisnoten: Vetiver, Patschuli, Sandelholz, Zedernholz.",
       "notes": {
         "top": [
           "rosemary",
@@ -546,7 +546,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "summary_de": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber.",
-      "editorial_description_de": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber. Dokumentierte Duftnoten: black leather accord, cardamom, jasmine sambac, patchouli, white moss, amber. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Ein Lederakkord verbindet sich mit Kardamom, Jasmin-Sambac, Patschuli, weißem Moos und Amber. Dokumentierte Duftnoten: Schwarzer Leder-Akkord, Kardamom, Sambac-Jasmin, Patschuli, Weißes Moos, Amber. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -587,7 +587,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 100,
       "summary_de": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne.",
-      "editorial_description_de": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne. Dokumentierte Duftnoten: cardamom, pink pepper, patchouli, amber, oud, tonka bean. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Kardamom und rosa Pfeffer ergänzen Oud, Patschuli, Amber und Tonkabohne. Dokumentierte Duftnoten: Kardamom, Rosa Pfeffer, Patschuli, Amber, Oud, Tonkabohne. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -628,7 +628,7 @@
       "concentration": "Extrait de Parfum",
       "volume_ml": 100,
       "summary_de": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis.",
-      "editorial_description_de": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis. Kopfnoten: pear, frankincense, hazelnut, rose water, pink pepper, bitter almond; Herznoten: saffron, rose, sambac jasmine, osmanthus; Basisnoten: cistus, sandalwood, akigalawood, ambergris, vanilla, ambrette, georgywood, cypriol.",
+      "editorial_description_de": "Birne, Haselnuss und Weihrauch führen zu einem floralen Herzen mit Safran. Sandelholz, Vanille und weitere Holznoten bilden die Basis. Kopfnoten: Birne, Weihrauch, Haselnuss, Rosenwasser, Rosa Pfeffer, Bittermandel; Herznoten: Safran, Rose, Sambac-Jasmin, Osmanthus; Basisnoten: Zistrose, Sandelholz, Akigalawood, Ambra, Vanille, Ambrette, Georgywood, Cypriol.",
       "notes": {
         "top": [
           "pear",
@@ -683,7 +683,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 75,
       "summary_de": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille.",
-      "editorial_description_de": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille. Kopfnoten: almond, bergamot, mandarin; Herznoten: orange blossom, white flowers, powdery facets; Basisnoten: akigalawood, sandalwood, ambroxan, vanilla.",
+      "editorial_description_de": "Mandel und Zitrusnoten eröffnen das Profil. Weiße Blüten und pudrige Facetten führen zu Sandelholz, Ambroxan und Vanille. Kopfnoten: Mandel, Bergamotte, Mandarine; Herznoten: Orangenblüte, Weiße Blüten, Pudrige Facetten; Basisnoten: Akigalawood, Sandelholz, Ambroxan, Vanille.",
       "notes": {
         "top": [
           "almond",
@@ -730,7 +730,7 @@
       "concentration": "Parfum",
       "volume_ml": 100,
       "summary_de": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang.",
-      "editorial_description_de": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang. Kopfnoten: black pepper; Herznoten: orange blossom absolute; Basisnoten: woods, bourbon vanilla.",
+      "editorial_description_de": "Schwarzer Pfeffer trifft auf Orangenblüten-Absolue. Holznoten und Bourbon-Vanille bilden den Ausklang. Kopfnoten: Schwarzer Pfeffer; Herznoten: Orangenblüten-Absolue; Basisnoten: Hölzer, Bourbon-Vanille.",
       "notes": {
         "top": [
           "black pepper"
@@ -771,7 +771,7 @@
       "concentration": "Elixir",
       "volume_ml": 100,
       "summary_de": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter.",
-      "editorial_description_de": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter. Dokumentierte Duftnoten: grapefruit, cinnamon, nutmeg, cardamom, lavender, licorice, vetiver, patchouli, amber accord. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Grapefruit und Gewürze treffen auf Lavendel. Lakritz, Vetiver und Patschuli ergänzen den holzig-ambrierten Duftcharakter. Dokumentierte Duftnoten: Grapefruit, Zimt, Muskatnuss, Kardamom, Lavendel, Lakritz, Vetiver, Patschuli, Amber-Akkord. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -815,7 +815,7 @@
       "concentration": "Eau de Parfum",
       "volume_ml": 90,
       "summary_de": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten.",
-      "editorial_description_de": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten. Dokumentierte Duftnoten: cinnamon, rum, tobacco, saffron, sandalwood, hedione. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
+      "editorial_description_de": "Zimt, Rum und Tabak prägen das Profil. Safran, Sandelholz und Hedione ergänzen die dokumentierten Hauptnoten. Dokumentierte Duftnoten: Zimt, Rum, Tabak, Safran, Sandelholz, Hedion. Die vorhandenen Angaben werden nicht als vollständige Duftpyramide ausgegeben.",
       "notes": {
         "top": [],
         "heart": [],
@@ -856,7 +856,7 @@
       "concentration": "Eau de Toilette",
       "volume_ml": 100,
       "summary_de": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis.",
-      "editorial_description_de": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis. Kopfnoten: bergamot; Herznoten: cedar, lavender; Basisnoten: vetiver.",
+      "editorial_description_de": "Bergamotte eröffnet den Duft, gefolgt von Zedernholz und Lavendel. Vetiver bildet die Basis. Kopfnoten: Bergamotte; Herznoten: Zeder, Lavendel; Basisnoten: Vetiver.",
       "notes": {
         "top": [
           "bergamot"
@@ -897,7 +897,7 @@
       "concentration": "Parfum",
       "volume_ml": 100,
       "summary_de": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli.",
-      "editorial_description_de": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli. Kopfnoten: marine notes, bergamot; Herznoten: immortelle; Basisnoten: cistus absolute, patchouli.",
+      "editorial_description_de": "Marine Noten und Bergamotte eröffnen das Profil. Immortelle führt zu Zistrosen-Absolue und Patschuli. Kopfnoten: Marine Noten, Bergamotte; Herznoten: Immortelle; Basisnoten: Zistrosen-Absolue, Patschuli.",
       "notes": {
         "top": [
           "marine notes",
