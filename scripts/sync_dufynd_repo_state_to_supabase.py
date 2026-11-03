@@ -158,7 +158,7 @@ def _preserve_same_fingerprint_state(
     # The source generator does not carry this task's budget decision. Unknown
     # cost class and all existing model tasks are immutable through repo sync,
     # even when the fingerprint or source action changes.
-    if existing.get("budget_class") != "free" or existing.get("provider_cost_unknown") is True:
+    if existing.get("budget_class") != "free" or existing.get("provider_cost_unknown") is not False:
         return None
     # Never overwrite a typed owner decision or an active worker lease.
     if (
