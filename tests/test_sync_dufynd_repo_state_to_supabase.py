@@ -119,6 +119,7 @@ def test_apply_sync_plan_preserves_terminal_state_for_same_fingerprint() -> None
                 "task_id": "repo_current_commerce",
                 "status": "done",
                 "budget_class": "free",
+                "provider_cost_unknown": False,
                 "evidence": "source_fingerprint_sha256=abc123; completed in nightshift",
             }
         }
@@ -140,6 +141,7 @@ def test_apply_sync_plan_never_reopens_completed_task_after_fingerprint_drift() 
                 "task_id": "repo_current_commerce",
                 "status": "done",
                 "budget_class": "free",
+                "provider_cost_unknown": False,
                 "evidence": "source_fingerprint_sha256=old123; completed in prior state",
             }
         }
@@ -176,6 +178,7 @@ def test_same_fingerprint_sync_repairs_false_technical_human_gate():
             "repo_current_content": {
                 "status": "waiting_human_input",
                 "budget_class": "free",
+                "provider_cost_unknown": False,
                 "requires_human_approval": False,
                 "evidence": "source_fingerprint_sha256=abc123; manual observations pending",
             }
