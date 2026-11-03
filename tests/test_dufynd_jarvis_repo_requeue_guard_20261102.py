@@ -93,8 +93,12 @@ def test_model_budget_task_never_auto_reopened(status: str, same_fingerprint: bo
     bridge = GuardBridge({"repo_current_commerce": existing})
     effect = apply_sync_plan(bridge, build_sync_plan(repo_state()))
 
-    assert effect == {"tasks_written": 1, "existing_tasks_protected": 1}
-    assert [item["task_id"] for item in bridge.tasks] == ["repo_current_content"]
+    assert effect == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 1,
+        "missing_tasks_not_created": 1,
+    }
+    assert bridge.tasks == []
     assert bridge.existing["repo_current_commerce"] is existing
     assert bridge.master[0]["value"]["source_fingerprint_sha256"] == NEW_FINGERPRINT
 
@@ -171,7 +175,11 @@ def test_source_tightening_human_gate_still_blocks_existing_free_ready_task() ->
     bridge = GuardBridge({"repo_current_commerce": existing})
     effect = apply_sync_plan(bridge, build_sync_plan(repo_state(require_owner=True)))
     commerce = next(x for x in bridge.tasks if x["task_id"] == "repo_current_commerce")
-    assert effect == {"tasks_written": 2, "existing_tasks_protected": 0}
+    assert effect == {
+        "tasks_written": 1,
+        "existing_tasks_protected": 0,
+        "missing_tasks_not_created": 1,
+    }
     assert commerce["status"] == "approval_required"
     assert commerce["requires_human_approval"] is True
 
@@ -181,7 +189,11 @@ def test_unmodified_free_ready_task_can_be_safely_synced() -> None:
         {"repo_current_commerce": task_state("ready", fingerprint=NEW_FINGERPRINT)}
     )
     result = apply_sync_plan(bridge, build_sync_plan(repo_state()))
-    assert result["tasks_written"] == 2
+    assert result == {
+        "tasks_written": 1,
+        "existing_tasks_protected": 0,
+        "missing_tasks_not_created": 1,
+    }
     assert bridge.tasks[0]["status"] == "ready"
 
 
@@ -200,7 +212,11 @@ def test_snapshot_only_never_reads_or_writes_tasks() -> None:
     bridge = GuardBridge()
     bridge.throw_on = "repo_current_commerce"
     report = apply_sync_plan(bridge, build_sync_plan(repo_state()), snapshot_only=True)
-    assert report == {"tasks_written": 0, "existing_tasks_protected": 0}
+    assert report == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 0,
+        "missing_tasks_not_created": 0,
+    }
     assert bridge.lookups == []
     assert len(bridge.master) == 1
     assert bridge.tasks == []
@@ -217,6 +233,63 @@ def test_no_budget_or_leases_implicitly_granted_by_a_repo_sync() -> None:
         }
     )
     changes = apply_sync_plan(bridge, build_sync_plan(repo_state()))
-    assert changes == {"tasks_written": 0, "existing_tasks_protected": 2}
+    assert changes == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 2,
+        "missing_tasks_not_created": 0,
+    }
     assert bridge.tasks == []
     assert Counter(x.split(":")[0] for x in bridge.actions) == Counter({"read": 2, "write": 1})
+
+
+def test_new_domains_are_not_inserted_as_unapproved_model_work() -> None:
+    bridge = GuardBridge()
+    effects = apply_sync_plan(bridge, build_sync_plan(repo_state()))
+    assert effects == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 0,
+        "missing_tasks_not_created": 2,
+    }
+    assert bridge.tasks == []
+    assert len(bridge.master) == 1
+
+
+@pytest.mark.parametrize("provider_cost_unknown", [True, "true"])
+def test_free_budget_with_unverified_provider_cost_never_requeues(
+    provider_cost_unknown: object,
+) -> None:
+    existing = task_state("ready", fingerprint=NEW_FINGERPRINT)
+    existing["provider_cost_unknown"] = provider_cost_unknown
+    bridge = GuardBridge({"repo_current_commerce": existing})
+    effects = apply_sync_plan(bridge, build_sync_plan(repo_state()))
+    if provider_cost_unknown is True:
+        assert effects["existing_tasks_protected"] == 1
+    else:
+        # Non-boolean untrusted data must never trigger an unverified task.
+        assert effects["existing_tasks_protected"] == 1
+    assert bridge.tasks == []
+
+
+@pytest.mark.parametrize("worker_state", ["done", "waiting_external", "blocked", "approval_required"])
+def test_contradictory_ready_task_with_terminal_worker_state_stays_held(
+    worker_state: str,
+) -> None:
+    existing = task_state("ready", fingerprint=NEW_FINGERPRINT, worker_state=worker_state)
+    bridge = GuardBridge({"repo_current_commerce": existing})
+    effects = apply_sync_plan(bridge, build_sync_plan(repo_state()))
+    assert effects == {
+        "tasks_written": 0,
+        "existing_tasks_protected": 1,
+        "missing_tasks_not_created": 1,
+    }
+    assert bridge.tasks == []
+
+
+def test_existing_task_identity_mismatch_aborts_before_writing_snapshot() -> None:
+    existing = task_state("ready", fingerprint=NEW_FINGERPRINT)
+    existing["task_id"] = "repo_current_content"
+    bridge = GuardBridge({"repo_current_commerce": existing})
+    with pytest.raises(ValueError, match="existing_repo_task_identity_mismatch"):
+        apply_sync_plan(bridge, build_sync_plan(repo_state()))
+    assert bridge.master == []
+    assert bridge.tasks == []
