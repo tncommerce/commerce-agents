@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "scope": "dated_private_review_receipt",
+  "observed_on": "2026-11-02",
+  "source_branch": "scentai-mvp",
+  "source_commit": "e2940406d86688f56e8e080b81962a90f1b3cc7c",
+  "prior_public_evidence": "examples/retail/data/dufynd_live_commerce_evidence_20261102.json",
+  "official_awin_reads": [
+    {
+      "purpose": "top_parfuemerie_photo_source_review",
+      "run_id": 41513367309,
+      "artifact_id": 13175250509,
+      "artifact_sha256": "9e42279a1a213886d5d60b4f7b3008c07ccdf31319ced15a77a0ff3d06b75fb3",
+      "checked_at_utc": "2026-11-02T19:49:15+00:00"
+    },
+    {
+      "purpose": "perfumetrader_source_version_comparison",
+      "run_id": 41514218318,
+      "checked_at_utc": "2026-11-02T19:54:19+00:00"
+    },
+    {
+      "purpose": "perfumetrader_private_catalog",
+      "run_id": 41514614226,
+      "checked_at_utc": "2026-11-02T19:56:58.480341+00:00",
+      "artifact_id": 13175511128,
+      "encrypted_artifact_sha256": "a068d534cc01566d00c45f82fec0459e69d4ad49383529880cd33670ecacf83e",
+      "authenticated_decryption_verified": true,
+      "reader_revision": "e2940406d86688f56e8e080b81962a90f1b3cc7c",
+      "standalone_merchant_sku_search_at_that_revision": false
+    }
+  ],
+  "merchant_browser": {
+    "product_id": "SC-RABANNE-1-MILLION-EDT-100",
+    "variant_ml": 100,
+    "control_observed_at_utc": "2026-11-02T19:41:18.581Z",
+    "purchase_control_visible_and_enabled": true,
+    "browser_excerpts_sha256": "1d3a1144a9487368d6fe197397b4197a89d1c6069a33465ca01c4f4964032a6b",
+    "historical_link_verified_in_link_builder": false
+  },
+  "private_photo_review": {
+    "priority_gallery_files": 4,
+    "priority_official_feed_files": 4,
+    "additional_official_feed_files": 8,
+    "independent_licensed_files_checked": 3,
+    "original_bytes_in_repo": false,
+    "new_visual_or_publication_approvals": 0
+  },
+  "effects": {
+    "production_changes": 0,
+    "approved_originals_before": 10,
+    "pending_originals_before": 47,
+    "hidden_profiles_excluded": 21,
+    "new_approved_photos": 0,
+    "activated_offers": 0,
+    "affiliate_clickouts": 0,
+    "deployments": 0,
+    "database_writes": 0
+  },
+  "evidence_boundary": "Raw feeds, offer details and all new photographic materials are excluded from this repository receipt."
+}

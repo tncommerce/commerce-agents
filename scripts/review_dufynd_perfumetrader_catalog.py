@@ -437,21 +437,30 @@ def review_rows(
         rows = []
     for product in profiles:
         pid = product["product_id"]
-        expected = {
-            canonical_gtin(m.get("gtin") or m.get("ean"))
-            for m in mappings.get("mappings", [])
-            if m.get("product_id") == pid
-        }
+        product_mappings = [m for m in mappings.get("mappings", []) if m.get("product_id") == pid]
+        expected = {canonical_gtin(m.get("gtin") or m.get("ean")) for m in product_mappings}
         expected.discard(None)
+        merchant_skus = {
+            str(m["merchant_product_id"]).strip()
+            for m in product_mappings
+            if m.get("merchant") == "perfumetrader" and m.get("merchant_product_id")
+        } - {""}
         candidates = []
+        sku_matches = 0
         for row in rows:
             gtins = {canonical_gtin(row.get(f)) for f in GTIN_FIELDS}
             gtins.discard(None)
+            sku = str(row.get("merchant_product_id") or "").strip()
+            sku_matches += int(sku in merchant_skus)
             title_tokens = set(norm(row.get("product_name")).split())
             relevant = (
-                set(norm(product["name"]).split()) <= title_tokens
-                and set(norm(product["brand"]).split()) <= title_tokens
-            ) or bool(expected & gtins)
+                sku in merchant_skus
+                or bool(expected & gtins)
+                or (
+                    set(norm(product["name"]).split()) <= title_tokens
+                    and set(norm(product["brand"]).split()) <= title_tokens
+                )
+            )
             if not relevant:
                 continue
             volumes = [
@@ -479,6 +488,9 @@ def review_rows(
                 reasons.append("exact_name_concentration_volume_refill_match_missing")
             if contradictory_gtin:
                 reasons.append("gtin_mismatch")
+            sku_conflict = bool(merchant_skus and sku and sku not in merchant_skus)
+            if sku_conflict:
+                reasons.append("mapped_merchant_sku_mismatch")
             if size_conflict:
                 reasons.append("explicit_size_conflict")
             if size_incomplete:
@@ -560,7 +572,7 @@ def review_rows(
                 reasons.append("official_publisher_advertiser_bound_tracking_link_missing")
             if withheld:
                 reasons.append("unsafe_or_nonallowlisted_values_withheld")
-            if contradictory_gtin or size_conflict or not title_exact:
+            if contradictory_gtin or sku_conflict or size_conflict or not title_exact:
                 status = "MISMATCH"
             elif dt is not None and dt <= now and now - dt > timedelta(hours=72):
                 status = "STALE"
@@ -588,19 +600,20 @@ def review_rows(
                 }
             )
         candidates.sort(
-            key=lambda x: (not x["title_exact"], not x["gtin_exact"], x["source_row_sha256"])
+            key=lambda x: (
+                x["status"] == "MISMATCH",
+                not x["title_exact"],
+                not x["gtin_exact"],
+                x["source_row_sha256"],
+            )
         )
-        exact = [
-            c
-            for c in candidates
-            if c["title_exact"]
-            and not {"gtin_mismatch", "explicit_size_conflict"} & set(c["reasons"])
-        ]
-        status = (
-            "NOT_FOUND"
-            if not candidates
-            else ("BLOCKED" if len(exact) > 1 else exact[0]["status"] if exact else "MISMATCH")
-        )
+        exact = [c for c in candidates if c["status"] != "MISMATCH"]
+        if len(exact) > 1 or sku_matches > 1:
+            status = "BLOCKED"
+        elif exact:
+            status = exact[0]["status"]
+        else:
+            status = "MISMATCH" if candidates else "NOT_FOUND"
         results.append(
             {
                 **product,
@@ -609,6 +622,9 @@ def review_rows(
                 if verified_schema
                 else "BLOCKED_UNVERIFIED_SCHEMA",
                 "candidate_count": len(candidates),
+                "mapped_merchant_sku_match_count": sku_matches
+                if verified_schema and merchant_skus
+                else None,
                 "candidates": candidates[:3],
                 "candidate_truncation": len(candidates) > 3,
                 "ambiguous_exact_rows": len(exact) > 1,
