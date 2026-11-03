@@ -86,6 +86,33 @@ def configure(monkeypatch, client, *, mode="all"):
     monkeypatch.setattr(observer_read.httpx, "Client", lambda **kwargs: client)
 
 
+
+@pytest.mark.parametrize(
+    "origin",
+    [
+        "https://@broker.example",
+        "https://:embedded-secret@broker.example",
+        "https://user:@broker.example",
+        "https://user:embedded-secret@broker.example",
+    ],
+)
+def test_broker_origin_rejects_userinfo_before_oidc_or_artifact_write(
+    monkeypatch, tmp_path, origin
+):
+    client = FakeClient([])
+    configure(monkeypatch, client, mode="render")
+    monkeypatch.setenv("BROKER_ORIGIN", origin)
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "broker-observations.json").write_text("previous successful run")
+
+    with pytest.raises(SystemExit, match="^invalid broker origin$"):
+        observer_read.main()
+
+    assert client.calls == []
+    assert list(tmp_path.iterdir()) == []
+
+
+
 def test_reports_bounded_oidc_status_without_token(monkeypatch):
     client = FakeClient([FakeResponse(403, {"token": "must-not-leak"})])
     configure(monkeypatch, client)

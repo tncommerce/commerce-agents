@@ -128,7 +128,8 @@ def main():
         or url.path
         or url.query
         or url.fragment
-        or url.username
+        or url.username is not None
+        or url.password is not None
     ):
         raise SystemExit("invalid broker origin")
 
