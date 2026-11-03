@@ -34,6 +34,64 @@ def test_parse_timestamp_normalizes_utc() -> None:
     assert parsed.isoformat() == "2026-09-29T15:47:18+00:00"
 
 
+def test_parse_timestamp_requires_explicit_offset() -> None:
+    for value in (
+        "2026-09-29T15:47:18",
+        "2026-09-29 15:47:18",
+        "2026-09-29",
+        "",
+    ):
+        assert parse_timestamp(value) is None
+    shifted = parse_timestamp("2026-09-29T17:47:18+02:00")
+    assert shifted is not None
+    assert shifted.isoformat() == "2026-09-29T15:47:18+00:00"
+
+
+def test_naive_repo_timestamp_cannot_authorize_queue() -> None:
+    report = evaluate_freshness(
+        {
+            "generated_at": "2026-09-29T15:47:18",
+            "source_fingerprint_sha256": "repo-fingerprint",
+        },
+        {"master_status": [snapshot_row()]},
+        now=CHECKED_AT,
+    )
+    assert report["safe_to_use_autonomy_queue"] is False
+    assert "repo_generated_at_missing_or_invalid" in report["reasons"]
+
+
+def test_naive_db_source_timestamp_cannot_borrow_metadata_time() -> None:
+    row = snapshot_row(generated_at="2026-09-29T15:47:18")
+    row["last_verified_at"] = "2026-09-29T15:48:00+00:00"
+    report = evaluate_freshness(
+        {
+            "generated_at": "2026-09-29T15:47:18+00:00",
+            "source_fingerprint_sha256": "repo-fingerprint",
+        },
+        {"master_status": [row]},
+        now=CHECKED_AT,
+    )
+    assert report["safe_to_use_autonomy_queue"] is False
+    assert "repo_state_snapshot_timestamp_missing" in report["reasons"]
+
+
+def test_missing_embedded_source_timestamp_cannot_borrow_fresh_row_timestamp() -> None:
+    row = snapshot_row()
+    row["value"].pop("generated_at")
+    row["last_verified_at"] = CHECKED_AT.isoformat()
+    report = evaluate_freshness(
+        {
+            "generated_at": "2026-09-29T15:47:18+00:00",
+            "source_fingerprint_sha256": "repo-fingerprint",
+        },
+        {"master_status": [row]},
+        now=CHECKED_AT,
+    )
+    assert report["safe_to_use_autonomy_queue"] is False
+    assert "repo_state_snapshot_timestamp_missing" in report["reasons"]
+    assert report["supabase_generated_at"] is None
+
+
 def test_find_repo_snapshot_uses_canonical_key() -> None:
     row = snapshot_row()
 
